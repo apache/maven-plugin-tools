@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.training.plugins</groupId>
+  <artifactId>maven-echo-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>maven-echo-plugin Maven Mojo</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-tools-java5</artifactId>
+      <version>2.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.training.plugins</groupId>
+      <artifactId>mojo-dep</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.4-SNAPSHOT</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-tools-java5</artifactId>
+            <version>2.2-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>post-compile-descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>sonatype.repos</id>
+      <url>http://labs.sonatype.org/repository</url>
+    </repository>
+  </repositories>
+</project>
