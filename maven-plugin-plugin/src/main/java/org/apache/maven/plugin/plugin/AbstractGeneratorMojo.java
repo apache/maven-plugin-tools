@@ -37,12 +37,11 @@ import java.util.Set;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public abstract class AbstractGeneratorMojo
-    extends AbstractMojo
+public abstract class AbstractGeneratorMojo extends AbstractMojo
 {
     /**
      * The project currently being built.
-     *
+     * 
      * @parameter expression="${project}"
      * @required
      */
@@ -50,7 +49,7 @@ public abstract class AbstractGeneratorMojo
 
     /**
      * The component used for scanning the source tree for mojos.
-     *
+     * 
      * @parameter expression="${component.org.apache.maven.tools.plugin.scanner.MojoScanner}"
      * @required
      */
@@ -58,19 +57,15 @@ public abstract class AbstractGeneratorMojo
 
     /**
      * The goal prefix that will appear before the ":".
-     *
+     * 
      * @parameter
      */
     protected String goalPrefix;
 
     /**
-     * The names of extractors to use.
-     * <p/>
-     * If not set, all extractors will be used. If set to an empty extractor name, no extractors
-     * will be used.
-     * <p/>
-     * Example:
-     * <p/>
+     * The names of extractors to use. <p/> If not set, all extractors will be used. If set to an empty extractor name,
+     * no extractors will be used. <p/> Example: <p/>
+     * 
      * <pre>
      *  &lt;!-- Use all extractors --&gt;
      *  &lt;extractors/&gt;
@@ -83,7 +78,7 @@ public abstract class AbstractGeneratorMojo
      *      &lt;extractor&gt;bsh&lt;/extractor&gt;
      *  &lt;/extractors&gt;
      * </pre>
-     *
+     * 
      * @parameter
      */
     protected Set/* <String> */extractors;
@@ -92,13 +87,16 @@ public abstract class AbstractGeneratorMojo
 
     protected abstract Generator createGenerator();
 
-    public void execute()
-        throws MojoExecutionException
+    protected void instrumentProject( MavenProject project )
     {
-        if ( !project.getPackaging().equals( "maven-plugin" ) )
-        {
-            return;
-        }
+    }
+
+    public void execute() throws MojoExecutionException
+    {
+        // if ( !project.getPackaging().equals( "maven-plugin" ) )
+        // {
+        // return;
+        // }
 
         String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
         if ( goalPrefix == null )
@@ -107,8 +105,7 @@ public abstract class AbstractGeneratorMojo
         }
         else
         {
-            getLog().warn(
-                "Goal prefix is: " + goalPrefix + "; Maven currently expects it to be " + defaultGoalPrefix );
+            getLog().warn( "Goal prefix is: " + goalPrefix + "; Maven currently expects it to be " + defaultGoalPrefix );
         }
 
         mojoScanner.setActiveExtractors( extractors );
@@ -132,6 +129,8 @@ public abstract class AbstractGeneratorMojo
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
 
+            instrumentProject( project );
+
             mojoScanner.populatePluginDescriptor( project, pluginDescriptor );
 
             getOutputDirectory().mkdirs();
@@ -144,12 +143,14 @@ public abstract class AbstractGeneratorMojo
         }
         catch ( InvalidPluginDescriptorException e )
         {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
+            throw new MojoExecutionException(
+                                              "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
         }
         catch ( ExtractionException e )
         {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
+            throw new MojoExecutionException(
+                                              "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
         }
     }
