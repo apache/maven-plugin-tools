@@ -153,6 +153,8 @@ public class MavenProjectStub
 
     private List licenses;
 
+    private Build build;
+
     /**
      * Default constructor
      */
@@ -1017,7 +1019,7 @@ public class MavenProjectStub
      */
     public void setBuild( Build build )
     {
-        // nop
+        this.build = build;
     }
 
     /**
@@ -1027,7 +1029,7 @@ public class MavenProjectStub
      */
     public Build getBuild()
     {
-        return null;
+        return build;
     }
 
     /**
