@@ -427,6 +427,11 @@ public class JavaMojoDescriptorExtractor
                 pd.setRequirement( new Requirement( role, roleHint ) );
 
                 pd.setName( (String) entry.getKey() );
+
+                pd.setEditable( false );
+                /* TODO: or better like this? Need @component fields be editable for the user?
+                pd.setEditable( field.getTagByName( READONLY ) == null );
+                */
             }
             else
             {
