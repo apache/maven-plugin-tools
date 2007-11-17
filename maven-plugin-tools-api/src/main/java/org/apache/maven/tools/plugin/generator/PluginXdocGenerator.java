@@ -240,9 +240,9 @@ public class PluginXdocGenerator
 
         if ( list != null && list.size() > 0 )
         {
-            writeParameterSummary( list, w );
+            writeParameterSummary( mojoDescriptor, list, w );
 
-            writeParameterDetails( list, w );
+            writeParameterDetails( mojoDescriptor, list, w );
         }
     }
 
@@ -271,7 +271,7 @@ public class PluginXdocGenerator
         return filtered;
     }
 
-    private void writeParameterDetails( List parameterList, XMLWriter w )
+    private void writeParameterDetails( MojoDescriptor mojoDescriptor, List parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", "Parameter Details" );
@@ -294,12 +294,22 @@ public class PluginXdocGenerator
             w.endElement(); //p
 
             w.startElement( "ul" );
-            
+
             writeDetail( "Deprecated", parameter.getDeprecated(), w );
 
             writeDetail( "Type", parameter.getType(), w );
 
-            writeDetail( "Since", parameter.getSince(), w );
+            if ( StringUtils.isNotEmpty( parameter.getSince() ) )
+            {
+                writeDetail( "Since", parameter.getSince(), w );
+            }
+            else
+            {
+                if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
+                {
+                    writeDetail( "Since", mojoDescriptor.getSince(), w );
+                }
+            }
 
             if ( parameter.isRequired() )
             {
@@ -337,22 +347,22 @@ public class PluginXdocGenerator
         }
     }
 
-    private void writeParameterSummary( List parameterList, XMLWriter w )
+    private void writeParameterSummary( MojoDescriptor mojoDescriptor, List parameterList, XMLWriter w )
     {
         List requiredParams = getParametersByRequired( true, parameterList );
         if ( requiredParams.size() > 0 )
         {
-            writeParameterList( "Required Parameters", requiredParams, w );
+            writeParameterList( mojoDescriptor, "Required Parameters", requiredParams, w );
         }
 
         List optionalParams = getParametersByRequired( false, parameterList );
         if ( optionalParams.size() > 0 )
         {
-            writeParameterList( "Optional Parameters", optionalParams, w );
+            writeParameterList( mojoDescriptor, "Optional Parameters", optionalParams, w );
         }
     }
 
-    private void writeParameterList( String title, List parameterList, XMLWriter w )
+    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -365,6 +375,9 @@ public class PluginXdocGenerator
         w.endElement();//th
         w.startElement( "th" );
         w.writeText( "Type" );
+        w.endElement();//th
+        w.startElement( "th" );
+        w.writeText( "Since" );
         w.endElement();//th
         w.startElement( "th" );
         w.writeText( "Description" );
@@ -382,6 +395,23 @@ public class PluginXdocGenerator
             w.startElement( "td" );
             int index = parameter.getType().lastIndexOf( "." );
             w.writeMarkup( "<code>" + parameter.getType().substring( index + 1 ) + "</code>" );
+            w.endElement();//td
+            w.startElement( "td" );
+            if ( StringUtils.isNotEmpty( parameter.getSince() ) )
+            {
+                w.writeMarkup( "<code>" + parameter.getSince() + "</code>" );
+            }
+            else
+            {
+                if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
+                {
+                    w.writeMarkup( "<code>" + mojoDescriptor.getSince() + "</code>" );
+                }
+                else
+                {
+                    w.writeMarkup( "<code>-</code>" );
+                }
+            }
             w.endElement();//td
             w.startElement( "td" );
             String description = parameter.getDescription();
