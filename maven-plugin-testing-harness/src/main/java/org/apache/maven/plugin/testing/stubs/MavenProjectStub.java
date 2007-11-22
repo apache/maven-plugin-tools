@@ -1012,21 +1012,11 @@ public class MavenProjectStub
         // nop
     }
 
-    /**
-     * By default, do nothing.
-     *
-     * @see org.apache.maven.project.MavenProject#setBuild(org.apache.maven.model.Build)
-     */
     public void setBuild( Build build )
     {
         this.build = build;
     }
 
-    /**
-     * By default, return <code>null</code>.
-     *
-     * @see org.apache.maven.project.MavenProject#getBuild()
-     */
     public Build getBuild()
     {
         return build;
