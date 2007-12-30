@@ -385,7 +385,8 @@ public class ArtifactStub
      */
     public boolean isSnapshot()
     {
-        return false;
+        return Artifact.VERSION_FILE_PATTERN.matcher( version ).matches() ||
+        version.endsWith( Artifact.SNAPSHOT_VERSION );
     }
 
     /**
@@ -435,7 +436,7 @@ public class ArtifactStub
      */
     public boolean isRelease()
     {
-        return false;
+        return !isSnapshot();
     }
 
     /**

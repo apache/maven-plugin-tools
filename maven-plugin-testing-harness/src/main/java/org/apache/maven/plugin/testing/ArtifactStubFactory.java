@@ -40,17 +40,13 @@ import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * This class creates artifacts to be used for testing purposes. It can optionally create actual
- * files on the local disk for things like copying. It can create these files as archives with named
- * files inside to be used for testing things like unpack.
+ * This class creates artifacts to be used for testing purposes. It can optionally create actual files on the local disk
+ * for things like copying. It can create these files as archives with named files inside to be used for testing things
+ * like unpack. Also provided are some utility methods to quickly get a set of artifacts distinguished by various things
+ * like group,artifact,type,scope, etc It was originally developed for the dependency plugin, but can be useful in other
+ * plugins that need to simulate artifacts for unit tests.
  * 
- * Also provided are some utility methods to quickly get a set of artifacts distinguished by various things like
- * group,artifact,type,scope, etc
- * 
- * It was originally developed for the dependency plugin, but can be useful in other plugins that
- * need to simulate artifacts for unit tests.
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- *
  */
 public class ArtifactStubFactory
 {
@@ -66,16 +62,16 @@ public class ArtifactStubFactory
 
     /**
      * Default constructor. This should be used only if real files aren't needed...just the artifact objects
-     *
      */
     public ArtifactStubFactory()
     {
         this.workingDir = null;
         this.createFiles = false;
     }
-    
+
     /**
      * This constructor is to be used if files are needed and to set a working dir
+     * 
      * @param workingDir
      * @param createFiles
      */
@@ -86,8 +82,9 @@ public class ArtifactStubFactory
     }
 
     /**
-     * If set, the file will be created as a zip/jar/war with a file inside that can be
-     * checked to exist after unpacking.
+     * If set, the file will be created as a zip/jar/war with a file inside that can be checked to exist after
+     * unpacking.
+     * 
      * @param archiverManager
      */
     public void setUnpackableFile( ArchiverManager archiverManager )
@@ -109,7 +106,7 @@ public class ArtifactStubFactory
     }
 
     public Artifact createArtifact( String groupId, String artifactId, String version, String scope, String type,
-                                   String classifier )
+                                    String classifier )
         throws IOException
     {
         VersionRange vr = VersionRange.createFromVersion( version );
@@ -117,13 +114,17 @@ public class ArtifactStubFactory
     }
 
     public Artifact createArtifact( String groupId, String artifactId, VersionRange versionRange, String scope,
-                                   String type, String classifier, boolean optional )
+                                    String type, String classifier, boolean optional )
         throws IOException
     {
         ArtifactHandler ah = new DefaultArtifactHandlerStub( type, classifier );
 
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, versionRange, scope, type, classifier, ah,
-                                                 optional );
+        Artifact artifact =
+            new DefaultArtifact( groupId, artifactId, versionRange, scope, type, classifier, ah, optional );
+
+        //i have no idea why this needs to be done manually when isSnapshot is able to figure it out.
+        artifact.setRelease( !artifact.isSnapshot() );
+
         if ( createFiles )
         {
             setArtifactFile( artifact );
@@ -132,17 +133,16 @@ public class ArtifactStubFactory
     }
 
     /*
-     * Creates a file that can be copied or unpacked based on the passed in
-     * artifact
+     * Creates a file that can be copied or unpacked based on the passed in artifact
      */
     public void setArtifactFile( Artifact artifact )
         throws IOException
     {
-        if (this.workingDir == null )
+        if ( this.workingDir == null )
         {
-            throw new IllegalArgumentException("The workingDir must be set if createFiles is true.");
+            throw new IllegalArgumentException( "The workingDir must be set if createFiles is true." );
         }
-        
+
         String fileName = getFormattedFileName( artifact, false );
 
         File theFile = new File( this.workingDir, fileName );
@@ -184,8 +184,8 @@ public class ArtifactStubFactory
 
     static public String getUnpackableFileName( Artifact artifact )
     {
-        return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-"
-            + artifact.getClassifier() + "-" + artifact.getType() + ".txt";
+        return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-" +
+            artifact.getClassifier() + "-" + artifact.getType() + ".txt";
     }
 
     public void createUnpackableFile( Artifact artifact, File destFile )
@@ -323,8 +323,7 @@ public class ArtifactStubFactory
     }
 
     /**
-     * @param createFiles
-     *            The createFiles to set.
+     * @param createFiles The createFiles to set.
      */
     public void setCreateFiles( boolean createFiles )
     {
@@ -340,8 +339,7 @@ public class ArtifactStubFactory
     }
 
     /**
-     * @param workingDir
-     *            The workingDir to set.
+     * @param workingDir The workingDir to set.
      */
     public void setWorkingDir( File workingDir )
     {
@@ -357,8 +355,7 @@ public class ArtifactStubFactory
     }
 
     /**
-     * @param srcFile
-     *            The srcFile to set.
+     * @param srcFile The srcFile to set.
      */
     public void setSrcFile( File srcFile )
     {
@@ -366,8 +363,7 @@ public class ArtifactStubFactory
     }
 
     /**
-     * convience method to set values to variables in objects that don't have
-     * setters
+     * convience method to set values to variables in objects that don't have setters
      * 
      * @param object
      * @param variable
@@ -383,18 +379,14 @@ public class ArtifactStubFactory
 
         field.set( object, value );
     }
-    
+
     /**
-     * Builds the file name. If removeVersion is set, then the file name must be
-     * reconstructed from the artifactId, Classifier (if used) and Type.
-     * Otherwise, this method returns the artifact file name.
+     * Builds the file name. If removeVersion is set, then the file name must be reconstructed from the artifactId,
+     * Classifier (if used) and Type. Otherwise, this method returns the artifact file name.
      * 
-     * @param artifact
-     *            File to be formatted.
-     * @param removeVersion
-     *            Specifies if the version should be removed from the file name.
-     * @return Formatted file name in the format
-     *         artifactId-[version]-[classifier].[type]
+     * @param artifact File to be formatted.
+     * @param removeVersion Specifies if the version should be removed from the file name.
+     * @return Formatted file name in the format artifactId-[version]-[classifier].[type]
      */
     public static String getFormattedFileName( Artifact artifact, boolean removeVersion )
     {
@@ -426,10 +418,11 @@ public class ArtifactStubFactory
                 classifierString = "-" + artifact.getClassifier();
             }
 
-            destFileName = artifact.getArtifactId() + versionString + classifierString + "."
-                + artifact.getArtifactHandler().getExtension();
+            destFileName =
+                artifact.getArtifactId() + versionString + classifierString + "." +
+                    artifact.getArtifactHandler().getExtension();
         }
         return destFileName;
     }
-    
+
 }
