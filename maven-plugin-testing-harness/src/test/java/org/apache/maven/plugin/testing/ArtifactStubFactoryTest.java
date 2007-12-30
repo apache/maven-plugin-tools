@@ -21,6 +21,5 @@ public class ArtifactStubFactoryTest
     {
         ArtifactStubFactory factory = new ArtifactStubFactory();
         assertFalse(factory.isCreateFiles());
-        factory.getReleaseArtifact();
     }
 }

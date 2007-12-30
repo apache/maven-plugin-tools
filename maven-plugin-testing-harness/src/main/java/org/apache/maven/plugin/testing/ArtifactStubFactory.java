@@ -122,30 +122,86 @@ public class ArtifactStubFactory
         Artifact artifact =
             new DefaultArtifact( groupId, artifactId, versionRange, scope, type, classifier, ah, optional );
 
-        //i have no idea why this needs to be done manually when isSnapshot is able to figure it out.
+        // i have no idea why this needs to be done manually when isSnapshot is able to figure it out.
         artifact.setRelease( !artifact.isSnapshot() );
 
         if ( createFiles )
         {
-            setArtifactFile( artifact );
+            setArtifactFile( artifact,this.workingDir,this.srcFile,this.createUnpackableFile );
         }
         return artifact;
+    }
+
+    /**
+     * Creates a new empty file and attaches it to the artifact.
+     * 
+     * @param artifact to attach the file to.
+     * @param workingDir where to locate the new file
+     * @throws IOException
+     */
+    public void setArtifactFile( Artifact artifact, File workingDir )
+        throws IOException
+    {
+        setArtifactFile( artifact, workingDir, null, false );
+    }
+
+    /**
+     * Copyies the srcFile to the workingDir and then attaches it to the artifact. If srcFile is null, a new empty file
+     * will be created.
+     * 
+     * @param artifact to attach
+     * @param workingDir where to copy the srcFile.
+     * @param srcFile file to be attached.
+     * @throws IOException
+     */
+    public void setArtifactFile( Artifact artifact, File workingDir, File srcFile )
+        throws IOException
+    {
+        setArtifactFile( artifact, workingDir, srcFile, false );
+    }
+
+    /**
+     * Creates an unpackable file (zip,jar etc) containing an empty file.
+     * 
+     * @param artifact to attach
+     * @param workingDir where to create the file.
+     * @throws IOException
+     */
+    public void setUnpackableArtifactFile( Artifact artifact, File workingDir )
+        throws IOException
+    {
+        setArtifactFile( artifact, workingDir, null, true );
+    }
+
+    /**
+     * Creates an unpackable file (zip,jar etc) containing the srcFile. If srcFile is null, a new empty file will be
+     * created.
+     * 
+     * @param artifact to attach
+     * @param workingDir where to create the file.
+     * @throws IOException
+     */
+    public void setUnpackableArtifactFile( Artifact artifact, File workingDir, File srcFile )
+        throws IOException
+    {
+        setArtifactFile( artifact, workingDir, srcFile, true );
     }
 
     /*
      * Creates a file that can be copied or unpacked based on the passed in artifact
      */
-    public void setArtifactFile( Artifact artifact )
+    private void setArtifactFile( Artifact artifact, File workingDir, File srcFile, boolean createUnpackableFile )
         throws IOException
     {
-        if ( this.workingDir == null )
+        if ( workingDir == null )
         {
-            throw new IllegalArgumentException( "The workingDir must be set if createFiles is true." );
+            throw new IllegalArgumentException(
+                                                "The workingDir must be set if trying to create an actual artifact file." );
         }
 
         String fileName = getFormattedFileName( artifact, false );
 
-        File theFile = new File( this.workingDir, fileName );
+        File theFile = new File( workingDir, fileName );
         theFile.getParentFile().mkdirs();
 
         if ( srcFile == null )
