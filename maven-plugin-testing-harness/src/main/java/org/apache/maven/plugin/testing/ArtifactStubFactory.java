@@ -196,7 +196,7 @@ public class ArtifactStubFactory
         if ( workingDir == null )
         {
             throw new IllegalArgumentException(
-                                                "The workingDir must be set if trying to create an actual artifact file." );
+                                                "The workingDir must be set." );
         }
 
         String fileName = getFormattedFileName( artifact, false );
