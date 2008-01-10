@@ -36,9 +36,7 @@ import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 public class ResolverExpressionEvaluatorStub
     implements ExpressionEvaluator
 {
-    /**
-     * @see org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator#evaluate(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public Object evaluate( String expr )
         throws ExpressionEvaluationException
     {
@@ -123,18 +121,14 @@ public class ResolverExpressionEvaluatorStub
         return expr;
     }
 
-    /**
-     * @see org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator#alignToBaseDirectory(java.io.File)
-     */
+    /** {@inheritDoc} */
     public File alignToBaseDirectory( File file )
     {
         if ( file.getAbsolutePath().startsWith( PlexusTestCase.getBasedir() ) )
         {
             return file;
         }
-        else
-        {
-            return new File( PlexusTestCase.getBasedir() + File.pathSeparator + file.getPath() );
-        }
+
+        return new File( PlexusTestCase.getBasedir() + File.pathSeparator + file.getPath() );
     }
 }

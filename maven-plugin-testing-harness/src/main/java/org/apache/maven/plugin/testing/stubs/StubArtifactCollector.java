@@ -1,6 +1,6 @@
 package org.apache.maven.plugin.testing.stubs;
 
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +16,7 @@ package org.apache.maven.plugin.testing.stubs;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.util.HashSet;
@@ -35,34 +35,21 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 
 /**
- * 
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- *
+ * @version $Id: $
  */
 public class StubArtifactCollector
     implements ArtifactCollector
 {
-
     /**
-     * 
+     * Default constructor
      */
     public StubArtifactCollector()
     {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.maven.artifact.resolver.ArtifactCollector#collect(java.util.Set,
-     *      org.apache.maven.artifact.Artifact,
-     *      org.apache.maven.artifact.repository.ArtifactRepository,
-     *      java.util.List,
-     *      org.apache.maven.artifact.metadata.ArtifactMetadataSource,
-     *      org.apache.maven.artifact.resolver.filter.ArtifactFilter,
-     *      java.util.List)
-     */
+    /** {@inheritDoc} */
     public ArtifactResolutionResult collect( Set theArtifacts, Artifact theOriginatingArtifact,
                                             ArtifactRepository theLocalRepository, List theRemoteRepositories,
                                             ArtifactMetadataSource theSource, ArtifactFilter theFilter,
@@ -81,17 +68,7 @@ public class StubArtifactCollector
         return arr;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.maven.artifact.resolver.ArtifactCollector#collect(java.util.Set,
-     *      org.apache.maven.artifact.Artifact, java.util.Map,
-     *      org.apache.maven.artifact.repository.ArtifactRepository,
-     *      java.util.List,
-     *      org.apache.maven.artifact.metadata.ArtifactMetadataSource,
-     *      org.apache.maven.artifact.resolver.filter.ArtifactFilter,
-     *      java.util.List)
-     */
+    /** {@inheritDoc} */
     public ArtifactResolutionResult collect( Set theArtifacts, Artifact theOriginatingArtifact, Map theManagedVersions,
                                             ArtifactRepository theLocalRepository, List theRemoteRepositories,
                                             ArtifactMetadataSource theSource, ArtifactFilter theFilter,
@@ -109,5 +86,4 @@ public class StubArtifactCollector
         arr.setArtifactResolutionNodes( nodes );
         return arr;
     }
-
 }

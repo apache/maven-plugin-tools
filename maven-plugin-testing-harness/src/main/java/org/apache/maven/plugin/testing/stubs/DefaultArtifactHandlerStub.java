@@ -1,6 +1,6 @@
 package org.apache.maven.plugin.testing.stubs;
 
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,15 +16,16 @@ package org.apache.maven.plugin.testing.stubs;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
 
 /**
- * minimal artifact handler used by the stub factory to create unpackable archives.
- * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
+ * Minimal artifact handler used by the stub factory to create unpackable archives.
  *
+ * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
+ * @version $Id: $
  */
 public class DefaultArtifactHandlerStub
     implements ArtifactHandler
@@ -45,6 +46,10 @@ public class DefaultArtifactHandlerStub
 
     private boolean addedToClasspath;
 
+    /**
+     * @param t the artifact handler type
+     * @param c the artifact handler classifier
+     */
     public DefaultArtifactHandlerStub( String t, String c )
     {
         type = t;
@@ -56,11 +61,15 @@ public class DefaultArtifactHandlerStub
 
     }
 
+    /**
+     * @param t the artifact handler type
+     */
     public DefaultArtifactHandlerStub( String type )
     {
         this.type = type;
     }
 
+    /** {@inheritDoc} */
     public String getExtension()
     {
         if ( extension == null )
@@ -70,16 +79,21 @@ public class DefaultArtifactHandlerStub
         return extension;
     }
 
+    /**
+     * @return the artifact handler type
+     */
     public String getType()
     {
         return type;
     }
 
+    /** {@inheritDoc} */
     public String getClassifier()
     {
         return classifier;
     }
 
+    /** {@inheritDoc} */
     public String getDirectory()
     {
         if ( directory == null )
@@ -89,6 +103,7 @@ public class DefaultArtifactHandlerStub
         return directory;
     }
 
+    /** {@inheritDoc} */
     public String getPackaging()
     {
         if ( packaging == null )
@@ -98,11 +113,13 @@ public class DefaultArtifactHandlerStub
         return packaging;
     }
 
+    /** {@inheritDoc} */
     public boolean isIncludesDependencies()
     {
         return includesDependencies;
     }
 
+    /** {@inheritDoc} */
     public String getLanguage()
     {
         if ( language == null )
@@ -113,6 +130,7 @@ public class DefaultArtifactHandlerStub
         return language;
     }
 
+    /** {@inheritDoc} */
     public boolean isAddedToClasspath()
     {
         return addedToClasspath;

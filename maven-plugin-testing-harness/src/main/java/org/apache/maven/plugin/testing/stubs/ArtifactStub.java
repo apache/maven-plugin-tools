@@ -67,49 +67,37 @@ public class ArtifactStub
         return 0;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getGroupId()
-     */
+    /** {@inheritDoc} */
     public String getGroupId()
     {
         return groupId;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getArtifactId()
-     */
+    /** {@inheritDoc} */
     public String getArtifactId()
     {
         return artifactId;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getVersion()
-     */
+    /** {@inheritDoc} */
     public String getVersion()
     {
         return version;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#setVersion(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setVersion( String version )
     {
         this.version = version;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getScope()
-     */
+    /** {@inheritDoc} */
     public String getScope()
     {
         return scope;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getType()
-     */
+    /** {@inheritDoc} */
     public String getType()
     {
         return type;
@@ -125,41 +113,32 @@ public class ArtifactStub
         this.type = type;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getClassifier()
-     */
+    /** {@inheritDoc} */
     public String getClassifier()
     {
         return classifier;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#hasClassifier()
-     */
+    /** {@inheritDoc} */
     public boolean hasClassifier()
     {
         return classifier != null;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#getFile()
-     */
+    /** {@inheritDoc} */
     public File getFile()
     {
         return file;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#setFile(java.io.File)
-     */
+    /** {@inheritDoc} */
     public void setFile( File file )
     {
         this.file = file;
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getBaseVersion()
      */
     public String getBaseVersion()
@@ -178,8 +157,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getId()
      */
     public String getId()
@@ -188,19 +166,18 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>groupId:artifactId:type:classifier</code>.
-     *
+     * @return <code>groupId:artifactId:type:classifier</code>.
      * @see org.apache.maven.artifact.Artifact#getDependencyConflictId()
      */
     public String getDependencyConflictId()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append( getGroupId() );
         buffer.append( ":" ).append( getArtifactId() );
         buffer.append( ":" ).append( getType() );
         buffer.append( ":" ).append( getClassifier() );
-        
+
         return buffer.toString();
     }
 
@@ -215,8 +192,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getMetadataList()
      */
     public Collection getMetadataList()
@@ -224,21 +200,13 @@ public class ArtifactStub
         return null;
     }
 
-    /**
-     * Set a new artifact repository
-     *
-     * @see org.apache.maven.artifact.Artifact#setRepository(org.apache.maven.artifact.repository.ArtifactRepository)
-     */
+    /** {@inheritDoc} */
     public void setRepository( ArtifactRepository artifactRepository )
     {
         this.artifactRepository = artifactRepository;
     }
 
-    /**
-     * Returns repository for artifact 
-     *
-     * @see org.apache.maven.artifact.Artifact#getRepository()
-     */
+    /** {@inheritDoc} */
     public ArtifactRepository getRepository()
     {
         return artifactRepository;
@@ -255,8 +223,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getDownloadUrl()
      */
     public String getDownloadUrl()
@@ -275,8 +242,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getDependencyFilter()
      */
     public ArtifactFilter getDependencyFilter()
@@ -295,8 +261,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getArtifactHandler()
      */
     public ArtifactHandler getArtifactHandler()
@@ -305,8 +270,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getDependencyTrail()
      */
     public List getDependencyTrail()
@@ -324,17 +288,14 @@ public class ArtifactStub
         // nop
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#setScope(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setScope( String scope )
     {
         this.scope = scope;
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getVersionRange()
      */
     public VersionRange getVersionRange()
@@ -362,25 +323,20 @@ public class ArtifactStub
         // nop
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#setGroupId(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setGroupId( String groupId )
     {
         this.groupId = groupId;
     }
 
-    /**
-     * @see org.apache.maven.artifact.Artifact#setArtifactId(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setArtifactId( String artifactId )
     {
         this.artifactId = artifactId;
     }
 
     /**
-     * By default, return <code>false</code>.
-     *
+     * @return <code>false</code>.
      * @see org.apache.maven.artifact.Artifact#isSnapshot()
      */
     public boolean isSnapshot()
@@ -400,8 +356,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>false</code>.
-     *
+     * @return <code>false</code>.
      * @see org.apache.maven.artifact.Artifact#isResolved()
      */
     public boolean isResolved()
@@ -430,8 +385,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>false</code>.
-     *
+     * @return <code>false</code>.
      * @see org.apache.maven.artifact.Artifact#isRelease()
      */
     public boolean isRelease()
@@ -450,8 +404,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getAvailableVersions()
      */
     public List getAvailableVersions()
@@ -470,8 +423,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>false</code>.
-     *
+     * @return <code>false</code>.
      * @see org.apache.maven.artifact.Artifact#isOptional()
      */
     public boolean isOptional()
@@ -490,8 +442,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>null</code>.
-     *
+     * @return <code>null</code>.
      * @see org.apache.maven.artifact.Artifact#getSelectedVersion()
      */
     public ArtifactVersion getSelectedVersion()
@@ -501,8 +452,7 @@ public class ArtifactStub
     }
 
     /**
-     * By default, return <code>false</code>.
-     *
+     * @return <code>false</code>.
      * @see org.apache.maven.artifact.Artifact#isSelectedVersionKnown()
      */
     public boolean isSelectedVersionKnown()
@@ -547,5 +497,4 @@ public class ArtifactStub
             sb.append( getClassifier() );
         }
     }
-
 }
