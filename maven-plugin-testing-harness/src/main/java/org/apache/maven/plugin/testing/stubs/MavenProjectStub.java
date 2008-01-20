@@ -22,6 +22,7 @@ package org.apache.maven.plugin.testing.stubs;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -323,7 +324,7 @@ public class MavenProjectStub
     {
         if ( compileSourceRoots == null )
         {
-            compileSourceRoots = Collections.singletonList( string );
+            compileSourceRoots = new ArrayList( Collections.singletonList( string ) );
         }
         else
         {
@@ -338,7 +339,7 @@ public class MavenProjectStub
     {
         if ( scriptSourceRoots == null )
         {
-            scriptSourceRoots = Collections.singletonList( string );
+            scriptSourceRoots = new ArrayList( Collections.singletonList( string ) );
         }
         else
         {
@@ -353,7 +354,7 @@ public class MavenProjectStub
     {
         if ( testCompileSourceRoots == null )
         {
-            testCompileSourceRoots = Collections.singletonList( string );
+            testCompileSourceRoots = new ArrayList( Collections.singletonList( string ) );
         }
         else
         {
@@ -1393,7 +1394,7 @@ public class MavenProjectStub
     {
         if ( attachedArtifacts == null )
         {
-            this.attachedArtifacts = Collections.singletonList( artifact );
+            this.attachedArtifacts = new ArrayList( Collections.singletonList( artifact ) );
         }
         else
         {
