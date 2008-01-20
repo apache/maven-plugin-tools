@@ -14,6 +14,7 @@ this.tagsPattern = Pattern.compile( "(?s)" + tag + "\\s*(.*?)" + tagOrEndComment
 this.descriptionPattern = Pattern.compile( "(?s)\\r?\\n\\s*\\*" );
 this.typePattern = Pattern.compile( "type\\s*=\\s*\"(.*?)\"" );
 this.expressionPattern = Pattern.compile( "expression\\s*=\\s*\"(.*?)\"" );
+this.defaultValuePattern = Pattern.compile( "default-value\\s*=\\s*\"(.*?)\"" );
 this.phasePattern = Pattern.compile( "phase\\s*=\\s*\"(.*?)\"" );
 this.goalPattern = Pattern.compile( "goal\\s*=\\s*\"(.*?)\"" );
 this.lifecyclePattern = Pattern.compile( "lifecycle\\s*=\\s*\"(.*?)\"" );
@@ -61,6 +62,11 @@ createParameter( text, method )
             if ( m.find() )
             {
                 parameter.setExpression( m.group( 1 ) );
+            }
+            m = defaultValuePattern.matcher( value );
+            if ( m.find() )
+            {
+                parameter.setDefaultValue( m.group( 1 ) );
             }
         }
         value = tags.get( "component" );
