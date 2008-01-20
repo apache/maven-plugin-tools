@@ -82,7 +82,7 @@ public class StubArtifactResolver
             {
                 if ( factory != null )
                 {
-                    factory.setArtifactFile( artifact );
+                    factory.setArtifactFile( artifact, factory.getWorkingDir() );
                 }
             }
             catch ( IOException e )
