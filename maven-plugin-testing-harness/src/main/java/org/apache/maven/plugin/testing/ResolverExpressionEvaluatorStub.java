@@ -128,7 +128,13 @@ public class ResolverExpressionEvaluatorStub
         {
             return file;
         }
-
-        return new File( PlexusTestCase.getBasedir() + File.pathSeparator + file.getPath() );
+        else if ( file.isAbsolute() )
+        {
+            return file;
+        }
+        else
+        {
+            return new File( PlexusTestCase.getBasedir(), file.getPath() );
+        }
     }
 }
