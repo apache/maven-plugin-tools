@@ -132,6 +132,7 @@ public class PluginXdocGenerator
     {
         w.startElement( "p" );
         w.writeMarkup( "<b>Mojo Attributes</b>:" );
+        w.endElement(); //p
         w.startElement( "ul" );
 
         String value = mojoDescriptor.getDeprecated();
@@ -228,7 +229,6 @@ public class PluginXdocGenerator
         }
 
         w.endElement();//ul
-        w.endElement();//p
     }
 
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
@@ -456,5 +456,6 @@ public class PluginXdocGenerator
         return list;
     }
 }
+
 
 
