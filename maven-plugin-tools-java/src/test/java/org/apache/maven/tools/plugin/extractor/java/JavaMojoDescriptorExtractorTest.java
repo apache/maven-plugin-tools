@@ -117,5 +117,35 @@ public class JavaMojoDescriptorExtractorTest
 
         return result;
     }
+    
+    /**
+     * Check that the mojo descriptor extractor will ignore any annotations that are found.
+     * 
+     * @throws Exception
+     */
+    public void testAnnotationInPlugin()
+        throws Exception
+    {
+        JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
+    
+        File sourceFile = fileOf( "dir-flag.txt" );
+        
+        File dir = sourceFile.getParentFile();
+    
+        Model model = new Model();
+        model.setArtifactId( "maven-unitTesting-plugin" );
+    
+        MavenProject project = new MavenProject( model );
+    
+        project.setFile( new File( dir, "pom.xml" ) );
+        project.addCompileSourceRoot( new File( dir, "source3" ).getPath() );
+    
+        PluginDescriptor pluginDescriptor = new PluginDescriptor();
+        pluginDescriptor.setGoalPrefix( "test" );
+        List results = extractor.execute( project, pluginDescriptor );
+        assertEquals( 0, results.size() );
+    
+    }
+
 
 }
