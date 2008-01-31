@@ -92,6 +92,7 @@ public abstract class AbstractGeneratorMojo
 
     protected abstract Generator createGenerator();
 
+    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException
     {

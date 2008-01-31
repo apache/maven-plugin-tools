@@ -45,11 +45,13 @@ public class DescriptorGeneratorMojo
      */
     protected File outputDirectory;
 
+    /** {@inheritDoc} */
     protected File getOutputDirectory()
     {
         return outputDirectory;
     }
 
+    /** {@inheritDoc} */
     protected Generator createGenerator()
     {
         return new PluginDescriptorGenerator();

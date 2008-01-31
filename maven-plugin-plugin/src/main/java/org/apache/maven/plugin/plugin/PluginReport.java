@@ -83,33 +83,25 @@ public class PluginReport
      */
     protected MojoScanner mojoScanner;
 
-    /**
-     * @see org.apache.maven.reporting.AbstractMavenReport#getSiteRenderer()
-     */
+    /** {@inheritDoc} */
     protected Renderer getSiteRenderer()
     {
         return siteRenderer;
     }
 
-    /**
-     * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
-     */
+    /** {@inheritDoc} */
     protected String getOutputDirectory()
     {
         return outputDirectory;
     }
 
-    /**
-     * @see org.apache.maven.reporting.AbstractMavenReport#getProject()
-     */
+    /** {@inheritDoc} */
     protected MavenProject getProject()
     {
         return project;
     }
 
-    /**
-     * @see org.apache.maven.reporting.AbstractMavenReport#executeReport(java.util.Locale)
-     */
+    /** {@inheritDoc} */
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -156,25 +148,19 @@ public class PluginReport
         }
     }
 
-    /**
-     * @see org.apache.maven.reporting.MavenReport#getDescription(java.util.Locale)
-     */
+    /** {@inheritDoc} */
     public String getDescription( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.description" );
     }
 
-    /**
-     * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)
-     */
+    /** {@inheritDoc} */
     public String getName( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.name" );
     }
 
-    /**
-     * @see org.apache.maven.reporting.MavenReport#getOutputName()
-     */
+    /** {@inheritDoc} */
     public String getOutputName()
     {
         return "plugin-info";
@@ -223,17 +209,13 @@ public class PluginReport
             this.locale = locale;
         }
 
-        /**
-         * @see org.apache.maven.reporting.MavenReportRenderer#getTitle()
-         */
+        /** {@inheritDoc} */
         public String getTitle()
         {
             return getBundle( locale ).getString( "report.plugin.title" );
         }
 
-        /**
-         * @see org.apache.maven.reporting.AbstractMavenReportRenderer#renderBody()
-         */
+        /** {@inheritDoc} */
         public void renderBody()
         {
             startSection( getTitle() );

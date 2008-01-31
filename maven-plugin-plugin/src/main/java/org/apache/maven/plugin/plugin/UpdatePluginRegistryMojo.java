@@ -91,6 +91,7 @@ public class UpdatePluginRegistryMojo
      */
     private MavenPluginRegistryBuilder pluginRegistryBuilder;
 
+    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
