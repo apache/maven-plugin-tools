@@ -568,6 +568,13 @@ public class JavaMojoDescriptorExtractor
             builder.addSourceTree( new File( (String) i.next() ) );
         }
 
+        // TODO be more dynamic
+        if ( !project.getCompileSourceRoots()
+            .contains( new File( project.getBasedir(), "target/generated-sources/plugin" ).getAbsolutePath() ) )
+        {
+            builder.addSourceTree( new File( project.getBasedir(), "target/generated-sources/plugin" ) );
+        }
+
         return builder.getClasses();
     }
 

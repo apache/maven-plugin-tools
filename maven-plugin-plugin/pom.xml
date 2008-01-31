@@ -16,29 +16,34 @@
   ~ KIND, either express or implied.  See the License for the
   ~ specific language governing permissions and limitations
   ~ under the License.
-  
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <groupId>org.apache.maven</groupId>
-    <artifactId>maven-plugin-tools</artifactId>
-    <version>2.4-SNAPSHOT</version>
-  </parent>
   <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-plugins</artifactId>
+    <version>8</version>
+  </parent>
+
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-plugin-plugin</artifactId>
+  <version>2.4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
+
   <name>Maven PLUGIN Plugin</name>
   <description>
-    The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree, 
-    to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the 
-    plugin registry and the artifact metadata.
+    The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree,
+    to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the
+    plugin registry, the artifact metadata and a generic help goal.
   </description>
-  <inceptionYear>2001</inceptionYear>
+
   <prerequisites>
     <maven>2.0.6</maven>
   </prerequisites>
+
   <dependencies>
+    <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
@@ -130,14 +135,54 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.4.5</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.0-alpha-9</version>
     </dependency>
   </dependencies>
+
+  <!-- Copy from project up -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-java</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-beanshell</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-descriptor</artifactId>
+        <version>2.0.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.4.9</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -149,24 +194,33 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <!-- TODO add this
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generated-helpmojo</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    -->
   </build>
+
   <properties>
     <doxia.version>1.0-alpha-10-SNAPSHOT</doxia.version>
     <doxia-sitetools.version>1.0-alpha-10-SNAPSHOT</doxia-sitetools.version>
   </properties>
+
   <distributionManagement>
     <site>
       <id>apache.website</id>
       <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
     </site>
   </distributionManagement>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>
-

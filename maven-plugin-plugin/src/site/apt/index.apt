@@ -3,7 +3,7 @@
  ------
  Maria Odea Ching
  ------
- 27 July 2006
+ January 2008
  ------
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -26,11 +26,12 @@
 Maven 2 Plugin Plugin
 
  The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree, to include in the JAR.
- It is also used to generate Xdoc files for the Mojos as well as for updating the plugin registry and the artifact metadata.
+ It is also used to generate Xdoc files for the Mojos as well as for updating the plugin registry, the artifact metadata and
+ a generic help goal.
 
 * Goals Overview
 
-   The Plugin Plugin has five goals:
+   The Plugin Plugin has six goals:
 
    * {{{descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor.
 
@@ -45,6 +46,8 @@ Maven 2 Plugin Plugin
       artifact, for subsequent installation and deployment. The first use-case for this is to add the LATEST metadata
       (which is plugin-specific) for shipping alongside the plugin's artifact.
 
+   * {{{helpmojo-mojo.html}helpmojo}} generates an help mojo with describes all project mojos.
+
 * Usage
 
    Instructions on how to use the Plugin Plugin can be found {{{usage.html}here}}.
@@ -55,7 +58,6 @@ Maven 2 Plugin Plugin
 
    * {{{examples/generate-descriptor.html}Configuring Generation of Plugin Descriptor}}
 
+   * {{{examples/generate-help.html}Configuring Generation of Help Mojo}}
 
-
-
-
+   []

@@ -21,7 +21,6 @@
 
 <project name="Maven Plugin Plugin">
   <body>
-
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
@@ -31,11 +30,12 @@
 
     <menu name="Examples">
       <item name="Configuring Generation of Plugin Descriptor" href="/examples/generate-descriptor.html"/>
+      <item name="Configuring Generation of Plugin Documentation" href="/examples/generate-report.html"/>
+      <item name="Configuring Generation of HelpMojo" href="/examples/generate-help.html"/>
     </menu>
-    
+
     <menu name="Developers">
       <item name="Multiple Language Support: Redesign Notes" href="multiple-language-support.html"/>
     </menu>
   </body>
 </project>
-
