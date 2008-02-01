@@ -35,11 +35,12 @@ import java.util.List;
 
 /**
  * @todo add example usage tag that can be shown in the doco
+ * @version $Id$
  */
 public class PluginXdocGenerator
     implements Generator
 {
-
+    /** {@inheritDoc} */
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {

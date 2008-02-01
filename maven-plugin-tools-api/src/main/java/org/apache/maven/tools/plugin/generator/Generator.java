@@ -25,11 +25,20 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Generate something, for instance a plugin report, from a plugin descriptor.
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  * @version $Id$
  */
 public interface Generator
 {
+    /**
+     * Execute the generation for a given plugin descriptor.
+     *
+     * @param destinationDirectory required
+     * @param pluginDescriptor required
+     * @throws IOException if any
+     */
     void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException;
 }
