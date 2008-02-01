@@ -54,7 +54,7 @@ public class HelpGeneratorMojo
     /** {@inheritDoc} */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator( getLog() );
+        return new PluginHelpGenerator();
     }
 
     /** {@inheritDoc} */

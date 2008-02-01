@@ -35,7 +35,9 @@ import javax.swing.text.html.parser.ParserDelegator;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -47,6 +49,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @since 2.4
  */
 public class PluginHelpGenerator
+    extends AbstractLogEnabled
     implements Generator
 {
     private static final String LS = System.getProperty( "line.separator" );
@@ -55,16 +58,12 @@ public class PluginHelpGenerator
 
     private static final String HELP_GOAL = "help";
 
-    private final Log log;
-
     /**
      * Default constructor
-     *
-     * @param log
      */
-    public PluginHelpGenerator( Log log )
+    public PluginHelpGenerator()
     {
-        this.log = log;
+        this.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "PluginHelpGenerator" ) );
     }
 
     // ----------------------------------------------------------------------
@@ -93,9 +92,9 @@ public class PluginHelpGenerator
             if ( descriptor.getGoal().equals( HELP_GOAL )
                 && !descriptor.getImplementation().equals( packageName + "." + HELP_MOJO_CLASS_NAME ) )
             {
-                if ( log.isWarnEnabled() )
+                if ( getLogger().isWarnEnabled() )
                 {
-                    log.warn( "\n\nAn help goal (" + descriptor.getImplementation()
+                    getLogger().warn( "\n\nAn help goal (" + descriptor.getImplementation()
                         + ") already exists in this plugin. SKIPPED THE " + HELP_MOJO_CLASS_NAME + " GENERATION.\n" );
                 }
 
