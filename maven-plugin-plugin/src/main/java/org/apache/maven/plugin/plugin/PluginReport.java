@@ -19,8 +19,17 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -29,24 +38,18 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Generates the Plugin's documentation report.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id $
+ * @version $Id$
  * @goal report
  */
 public class PluginReport
@@ -82,6 +85,28 @@ public class PluginReport
      * @component
      */
     protected MojoScanner mojoScanner;
+
+    /**
+     * Specify some requirements to execute this plugin.
+     * Example:
+     * <pre>
+     * &lt;requirements&gt;<br/>
+     *   &lt;maven&gt;2.0&lt;/maven&gt;<br/>
+     *   &lt;jdk&gt;1.4&lt;/jdk&gt;<br/>
+     *   &lt;memory&gt;256m&lt;/memory&gt;<br/>
+     *   &lt;diskSpace&gt;1m&lt;/diskSpace&gt;<br/>
+     *   &lt;others&gt;<br/>
+     *     &lt;property&gt;<br/>
+     *       &lt;name&gt;SVN&lt;/name&gt;<br/>
+     *       &lt;value&gt;1.4.6&lt;/value&gt;<br/>
+     *     &lt;/property&gt;<br/>
+     *   &lt;/others&gt;<br/>
+     * &lt;/requirements&gt;
+     * </pre>
+     *
+     * @parameter
+     */
+    private Requirements requirements;
 
     /** {@inheritDoc} */
     protected Renderer getSiteRenderer()
@@ -133,7 +158,8 @@ public class PluginReport
             generatePluginDocumentation( pluginDescriptor );
 
             // Write the overview
-            PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
+            PluginOverviewRenderer r = new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor,
+                                                                   locale );
             r.render();
         }
         catch ( InvalidPluginDescriptorException e )
@@ -174,7 +200,7 @@ public class PluginReport
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
 
-            Generator generator = new PluginXdocGenerator();
+            PluginXdocGenerator generator = new PluginXdocGenerator();
             generator.execute( outputDir, pluginDescriptor );
         }
         catch ( IOException e )
@@ -196,13 +222,22 @@ public class PluginReport
     static class PluginOverviewRenderer
         extends AbstractMavenReportRenderer
     {
+        private final MavenProject project;
+
+        private final Requirements requirements;
+
         private final PluginDescriptor pluginDescriptor;
 
         private final Locale locale;
 
-        public PluginOverviewRenderer( Sink sink, PluginDescriptor pluginDescriptor, Locale locale )
+        public PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
+                                       PluginDescriptor pluginDescriptor, Locale locale )
         {
             super( sink );
+
+            this.project = project;
+
+            this.requirements = ( requirements == null ? new Requirements() : requirements );
 
             this.pluginDescriptor = pluginDescriptor;
 
@@ -220,41 +255,250 @@ public class PluginReport
         {
             startSection( getTitle() );
 
-            paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
+            if ( pluginDescriptor.getMojos() != null && pluginDescriptor.getMojos().size() > 0 )
+            {
+                paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
+
+                startTable();
+
+                String goalColumnName = getBundle( locale ).getString( "report.plugin.goals.column.goal" );
+                String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
+                tableHeader( new String[] { goalColumnName, descriptionColumnName } );
+
+                for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+                {
+                    MojoDescriptor mojo = (MojoDescriptor) i.next();
+
+                    String goalName = mojo.getFullGoalName();
+
+                    /*
+                     * Added ./ to define a relative path
+                     * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
+                     */
+                    String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
+
+                    String description = mojo.getDescription();
+                    if ( StringUtils.isEmpty( mojo.getDescription() ) )
+                    {
+                        description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
+                    }
+
+                    sink.tableRow();
+                    tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
+                    tableCell( description, true );
+                    sink.tableRow_();
+                }
+
+                endTable();
+            }
+            else
+            {
+                paragraph( getBundle( locale ).getString( "report.plugin.nogoal" ) );
+            }
+
+            endSection();
+
+            startSection( getBundle( locale ).getString( "report.plugin.systemrequirements" ) );
+
+            paragraph( getBundle( locale ).getString( "report.plugin.systemrequirements.intro" ) );
 
             startTable();
 
-            String goalColumnName = getBundle( locale ).getString( "report.plugin.goals.column.goal" );
-            String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
+            String maven = discoverMavenRequirement( project, requirements );
+            sink.tableRow();
+            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.maven" ) );
+            tableCell( ( maven != null ? maven : getBundle( locale )
+                .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+            sink.tableRow_();
 
-            tableHeader( new String[]{goalColumnName, descriptionColumnName} );
+            String jdk = discoverJdkRequirement( project, requirements );
+            sink.tableRow();
+            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.jdk" ) );
+            tableCell( ( jdk != null ? jdk : getBundle( locale )
+                .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+            sink.tableRow_();
 
-            for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            sink.tableRow();
+            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
+            tableCell( ( StringUtils.isNotEmpty( requirements.getMemory() )
+                                                                           ? requirements.getMemory()
+                                                                           : getBundle( locale )
+                                                                               .getString(
+                                                                                           "report.plugin.systemrequirements.nominimum" ) ) );
+            sink.tableRow_();
+
+            sink.tableRow();
+            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
+            tableCell( ( StringUtils.isNotEmpty( requirements.getDiskSpace() )
+                                                                              ? requirements.getDiskSpace()
+                                                                              : getBundle( locale )
+                                                                                  .getString(
+                                                                                              "report.plugin.systemrequirements.nominimum" ) ) );
+            sink.tableRow_();
+
+            if ( requirements.getOthers() != null && requirements.getOthers().size() > 0 )
             {
-                MojoDescriptor mojo = (MojoDescriptor) i.next();
-
-                String goalName = mojo.getFullGoalName();
-                /*
-                 * Added ./ to define a relative path
-                 * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
-                 */
-                String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
-                String description = mojo.getDescription();
-                if ( StringUtils.isEmpty( mojo.getDescription() ) )
+                for ( Iterator it = requirements.getOthers().keySet().iterator(); it.hasNext(); )
                 {
-                    description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
+                    String key = it.next().toString();
 
+                    sink.tableRow();
+                    tableCell( key );
+                    tableCell( ( StringUtils.isNotEmpty( requirements.getOthers().getProperty( key ) ) ? requirements
+                        .getOthers().getProperty( key ) : getBundle( locale )
+                        .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+                    sink.tableRow_();
                 }
-
-                sink.tableRow();
-                tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
-                tableCell( description, true );
-                sink.tableRow_();
             }
-
             endTable();
 
             endSection();
+
+            startSection( getBundle( locale ).getString( "report.plugin.usage" ) );
+
+            // Configuration
+            sink.paragraph();
+            text( getBundle( locale ).getString( "report.plugin.usage.intro" ) );
+
+            StringBuffer sb = new StringBuffer();
+            sb.append( "<project>" ).append( '\n' );
+            sb.append( "  ..." ).append( '\n' );
+            sb.append( "  <build>" ).append( '\n' );
+            sb.append( "    <pluginManagement>" ).append( '\n' );
+            sb.append( "      <plugin>" ).append( '\n' );
+            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+                .append( '\n' );
+            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+                .append( '\n' );
+            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+                .append( '\n' );
+            sb.append( "      </plugin>" ).append( '\n' );
+            sb.append( "      ..." ).append( '\n' );
+            sb.append( "    </pluginManagement>" ).append( '\n' );
+            sb.append( "    <plugins>" ).append( '\n' );
+            sb.append( "      <plugin>" ).append( '\n' );
+            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+                .append( '\n' );
+            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+                .append( '\n' );
+            sb.append( "      </plugin>" ).append( '\n' );
+            sb.append( "      ..." ).append( '\n' );
+            sb.append( "    </plugins>" ).append( '\n' );
+            sb.append( "  </build>" ).append( '\n' );
+            sb.append( "  ..." ).append( '\n' );
+            sb.append( "</project>" ).append( '\n' );
+
+            //mvn -U
+            verbatimText( sb.toString() );
+
+            sink.paragraph_();
+
+            endSection();
+        }
+
+        /**
+         * Try to lookup on the Maven prerequisites property.
+         * If not specified, uses the value defined by the user.
+         *
+         * @param project
+         * @param requirements
+         * @return the Maven version
+         */
+        private static String discoverMavenRequirement( MavenProject project, Requirements requirements )
+        {
+            String maven = requirements.getMaven();
+            if ( maven == null )
+            {
+                maven = ( project.getPrerequisites() != null ? project.getPrerequisites().getMaven() : null );
+            }
+
+            return maven;
+        }
+
+        /**
+         * Try to lookup on the <code>org.apache.maven.plugins:maven-compiler-plugin</code> plugin to
+         * find the value of the <code>target</code> option.
+         * If not specified, uses the value defined by the user.
+         * If not specified, uses the value of the system property <code>java.specification.version</code>.
+         *
+         * @param project
+         * @param requirements
+         * @return the JDK version
+         */
+        private static String discoverJdkRequirement( MavenProject project, Requirements requirements )
+        {
+            String jdk = requirements.getJdk();
+            if ( jdk == null )
+            {
+                if ( project.getPluginManagement() != null )
+                {
+                    jdk = discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap() );
+                }
+            }
+            if ( jdk == null )
+            {
+                jdk = discoverJdkRequirementFromPlugins( project.getPluginArtifactMap() );
+            }
+            if ( jdk == null )
+            {
+                jdk = System.getProperty( "java.specification.version" );
+            }
+
+            return jdk;
+        }
+
+        /**
+         * @param pluginsAsMap
+         * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
+         */
+        private static String discoverJdkRequirementFromPlugins( Map pluginsAsMap )
+        {
+            if ( pluginsAsMap == null )
+            {
+                return null;
+            }
+
+            String jdk = null;
+            for ( Iterator it = pluginsAsMap.keySet().iterator(); it.hasNext(); )
+            {
+                String key = it.next().toString();
+
+                if ( !key.equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
+                {
+                    continue;
+                }
+
+                Object value = pluginsAsMap.get( key );
+                Xpp3Dom pluginConf = null;
+
+                if ( value instanceof Plugin )
+                {
+                    Plugin plugin = (Plugin) value;
+
+                    pluginConf = (Xpp3Dom) plugin.getConfiguration();
+                }
+
+                if ( value instanceof ReportPlugin )
+                {
+                    ReportPlugin reportPlugin = (ReportPlugin) value;
+
+                    pluginConf = (Xpp3Dom) reportPlugin.getConfiguration();
+                }
+
+                if ( pluginConf == null )
+                {
+                    continue;
+                }
+
+                if ( pluginConf.getChild( "target" ) != null )
+                {
+                    continue;
+                }
+
+                jdk = pluginConf.getChild( "target" ).getValue();
+            }
+
+            return jdk;
         }
     }
 }

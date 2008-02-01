@@ -210,6 +210,25 @@
       </plugin>
     </plugins>
     -->
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <version>1.0-alpha-14</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>1.0.0</version>
+          <model>src/main/mdo/pluginRequirements.mdo</model>
+        </configuration>
+      </plugin>
+
+    </plugins>
   </build>
 
   <properties>
@@ -230,4 +249,8 @@
     <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
   </scm>
 
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
+  </issueManagement>
 </project>
