@@ -457,6 +457,3 @@ public class PluginXdocGenerator
         return list;
     }
 }
-
-
-
