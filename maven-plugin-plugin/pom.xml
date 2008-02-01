@@ -223,4 +223,11 @@
       <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
     </site>
   </distributionManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
+  </scm>
+
 </project>
