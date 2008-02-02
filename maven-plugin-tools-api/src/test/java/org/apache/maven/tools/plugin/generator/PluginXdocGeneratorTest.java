@@ -21,10 +21,24 @@ package org.apache.maven.tools.plugin.generator;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
- * @version $Id: PluginXdocGeneratorTest.java,v 1.1 2005/02/20 16:25:21 jdcasey
- *          Exp $
+ * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
+ * @version $Id$
  */
 public class PluginXdocGeneratorTest
     extends AbstractGeneratorTestCase
 {
+    public void testMakeHtmlValid()
+    {
+        String javadoc = "";
+        assertEquals( "", PluginXdocGenerator.makeHtmlValid( javadoc ) );
+
+        // true HTML
+        javadoc = "Generates <i>something</i> for the project.";
+        assertEquals( "Generates <i>something</i> for the project.", PluginXdocGenerator.makeHtmlValid( javadoc ) );
+
+        // wrong HTML
+        javadoc = "Generates <i>something</i> <b> for the project.";
+        assertEquals( "Generates <i>something</i> <b> for the project.</b>", PluginXdocGenerator
+            .makeHtmlValid( javadoc ) );
+    }
 }

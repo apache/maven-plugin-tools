@@ -19,19 +19,22 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.XMLWriter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringInputStream;
+import org.codehaus.plexus.util.StringOutputStream;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.XMLWriter;
+import org.w3c.tidy.Tidy;
 
 /**
  * @todo add example usage tag that can be shown in the doco
@@ -109,7 +112,7 @@ public class PluginXdocGenerator
 
         if ( mojoDescriptor.getDescription() != null )
         {
-            w.writeMarkup( mojoDescriptor.getDescription() );
+            w.writeMarkup( makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
         else
         {
@@ -193,8 +196,8 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup(
-                "Invokes the execution of the lifecycle phase <code>" + value + "</code> prior to executing itself." );
+            w.writeMarkup( "Invokes the execution of the lifecycle phase <code>" + value
+                + "</code> prior to executing itself." );
             w.endElement(); //li
         }
 
@@ -202,8 +205,8 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup(
-                "Invokes the execution of this plugin's goal <code>" + value + "</code> prior to executing itself." );
+            w.writeMarkup( "Invokes the execution of this plugin's goal <code>" + value
+                + "</code> prior to executing itself." );
             w.endElement(); //li
         }
 
@@ -289,6 +292,10 @@ public class PluginXdocGenerator
             if ( StringUtils.isEmpty( description ) )
             {
                 description = "No Description.";
+            }
+            else
+            {
+                description = makeHtmlValid( description );
             }
             w.startElement( "p" );
             w.writeMarkup( description );
@@ -420,6 +427,10 @@ public class PluginXdocGenerator
             {
                 description = "No description.";
             }
+            else
+            {
+                description = makeHtmlValid( description );
+            }
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 description = "<b>Deprecated</b>. " + description;
@@ -455,5 +466,41 @@ public class PluginXdocGenerator
         }
 
         return list;
+    }
+
+    /**
+     * @param description Javadoc description with HTML tags
+     * @return the description with valid HTML tags
+     */
+    protected static String makeHtmlValid( String description )
+    {
+        if ( StringUtils.isEmpty( description ) )
+        {
+            return "";
+        }
+
+        StringOutputStream out = new StringOutputStream();
+
+        // Using jTidy to clean comment
+        Tidy tidy = new Tidy();
+        tidy.setDocType( "loose" );
+        tidy.setXHTML( true );
+        tidy.setXmlOut( true );
+        tidy.setMakeClean( true );
+        tidy.setQuiet( true );
+        tidy.setShowWarnings( false );
+        tidy.parse( new StringInputStream( description ), out );
+
+        // strip the header/body stuff
+        String LS = System.getProperty( "line.separator" );
+        String commentCleaned = out.toString();
+        if ( StringUtils.isEmpty( commentCleaned ) )
+        {
+            return "";
+        }
+        int startPos = commentCleaned.indexOf( "<body>" + LS ) + 6 + LS.length();
+        int endPos = commentCleaned.indexOf( LS + "</body>" );
+
+        return commentCleaned.substring( startPos, endPos );
     }
 }
