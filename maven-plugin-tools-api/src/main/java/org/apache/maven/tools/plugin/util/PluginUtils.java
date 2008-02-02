@@ -19,6 +19,10 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.codehaus.plexus.component.repository.ComponentDependency;
@@ -26,18 +30,15 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * @author jdcasey
+ * @version $Id$
  */
 public final class PluginUtils
 {
-
     private PluginUtils()
     {
+        // nop
     }
 
     public static String[] findSources( String basedir, String include )
@@ -49,15 +50,15 @@ public final class PluginUtils
     {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( basedir );
-        scanner.setIncludes( new String[]{include} );
+        scanner.setIncludes( new String[] { include } );
         if ( !StringUtils.isEmpty( exclude ) )
         {
             // TODO: need default excludes in scanner
-            scanner.setExcludes( new String[]{exclude, "**/.svn/**"} );
+            scanner.setExcludes( new String[] { exclude, "**/.svn/**" } );
         }
         else
         {
-            scanner.setExcludes( new String[]{"**/.svn/**"} );
+            scanner.setExcludes( new String[] { "**/.svn/**" } );
         }
 
         scanner.scan();
@@ -67,7 +68,6 @@ public final class PluginUtils
 
     public static void writeDependencies( XMLWriter w, PluginDescriptor pluginDescriptor )
     {
-
         w.startElement( "dependencies" );
 
         for ( Iterator it = pluginDescriptor.getDependencies().iterator(); it.hasNext(); )
@@ -124,5 +124,4 @@ public final class PluginUtils
 
         w.endElement();
     }
-
 }
