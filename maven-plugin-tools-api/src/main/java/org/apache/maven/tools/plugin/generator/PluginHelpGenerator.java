@@ -478,7 +478,7 @@ public class PluginHelpGenerator
      * @return a String with HTML tags into pure text
      * @throws IOException if any
      */
-    private static String toText( String str )
+    protected static String toText( String str )
         throws IOException
     {
         if ( StringUtils.isEmpty( str ) )
