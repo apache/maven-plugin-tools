@@ -135,7 +135,7 @@ public class PluginXdocGenerator
     private void writeGoalAttributes( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
         w.startElement( "p" );
-        w.writeMarkup( "<b>Mojo Attributes</b>:" );
+        w.writeMarkup( "<strong>Mojo Attributes</strong>:" );
         w.endElement(); //p
         w.startElement( "ul" );
 
@@ -285,7 +285,7 @@ public class PluginXdocGenerator
             Parameter parameter = (Parameter) parameters.next();
 
             w.startElement( "p" );
-            w.writeMarkup( "<b><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a></b>" );
+            w.writeMarkup( "<strong><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a></strong>" );
             w.endElement(); //p
 
             String description = parameter.getDescription();
@@ -348,7 +348,7 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "<b>" + param + "</b>: <code>" );
+            w.writeMarkup( "<strong>" + param + "</strong>: <code>" );
             w.writeText( value );
             w.writeMarkup( "</code>" );
             w.endElement(); //li
@@ -398,7 +398,7 @@ public class PluginXdocGenerator
 
             w.startElement( "tr" );
             w.startElement( "td" );
-            w.writeMarkup( "<b><a href=\"#" + parameter.getName() + "\">" + parameter.getName() + "</a></b>" );
+            w.writeMarkup( "<strong><a href=\"#" + parameter.getName() + "\">" + parameter.getName() + "</a></strong>" );
             w.endElement();//td
             w.startElement( "td" );
             int index = parameter.getType().lastIndexOf( "." );
@@ -433,7 +433,7 @@ public class PluginXdocGenerator
             }
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = "<b>Deprecated</b>. " + description;
+                description = "<strong>Deprecated</strong>. " + description;
             }
             w.writeMarkup( description );
 
