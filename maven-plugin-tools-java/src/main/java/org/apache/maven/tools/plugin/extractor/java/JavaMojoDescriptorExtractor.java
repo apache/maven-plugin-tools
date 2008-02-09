@@ -224,6 +224,17 @@ public class JavaMojoDescriptorExtractor
         }
 
         // ----------------------------------------------------------------------
+        // Deprecation hint
+        // ----------------------------------------------------------------------
+
+        DocletTag deprecated = javaClass.getTagByName( DEPRECATED );
+
+        if ( deprecated != null )
+        {
+            mojoDescriptor.setDeprecated( deprecated.getValue() );
+        }
+
+        // ----------------------------------------------------------------------
         // Phase name
         // ----------------------------------------------------------------------
 
