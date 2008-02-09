@@ -278,9 +278,15 @@ public class PluginReport
                     String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
 
                     String description = mojo.getDescription();
-                    if ( StringUtils.isEmpty( mojo.getDescription() ) )
+                    if ( StringUtils.isEmpty( description ) )
                     {
                         description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
+                    }
+
+                    String deprecated = mojo.getDeprecated();
+                    if ( StringUtils.isNotEmpty( deprecated ) )
+                    {
+                        description = "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> " + description;
                     }
 
                     sink.tableRow();
