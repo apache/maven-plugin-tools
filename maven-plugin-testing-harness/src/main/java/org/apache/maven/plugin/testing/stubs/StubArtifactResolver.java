@@ -38,7 +38,7 @@ import org.apache.maven.plugin.testing.ArtifactStubFactory;
  * Stub resolver. The constructor allows the specification of the exception to throw so that handling can be tested too.
  *
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id: $
+ * @version $Id$
  */
 public class StubArtifactResolver
     implements ArtifactResolver

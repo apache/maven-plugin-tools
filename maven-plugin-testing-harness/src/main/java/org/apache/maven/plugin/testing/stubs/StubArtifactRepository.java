@@ -27,7 +27,7 @@ import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id: $
+ * @version $Id$
  */
 public class StubArtifactRepository
     implements ArtifactRepository

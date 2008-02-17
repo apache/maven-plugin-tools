@@ -25,7 +25,7 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
  * Minimal artifact handler used by the stub factory to create unpackable archives.
  *
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id: $
+ * @version $Id$
  */
 public class DefaultArtifactHandlerStub
     implements ArtifactHandler

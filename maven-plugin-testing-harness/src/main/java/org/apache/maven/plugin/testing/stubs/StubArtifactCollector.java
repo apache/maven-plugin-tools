@@ -36,7 +36,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id: $
+ * @version $Id$
  */
 public class StubArtifactCollector
     implements ArtifactCollector

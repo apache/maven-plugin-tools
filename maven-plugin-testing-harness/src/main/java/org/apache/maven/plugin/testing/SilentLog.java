@@ -27,7 +27,7 @@ import org.codehaus.plexus.logging.Logger;
  * to turn off logs during testing where they aren't desired.
  *
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id: SilentLog.java 546355 2007-06-12 02:00:02Z brianf $
+ * @version $Id$
  */
 public class SilentLog
     implements Log, Logger
