@@ -42,7 +42,7 @@ import java.lang.reflect.AccessibleObject;
 /**
  * TODO: add a way to use the plugin POM for the lookup so that the user doesn't have to provide the a:g:v:goal
  * as the role hint for the mojo lookup.
- * TODO: standarize the execution of the mojo and looking at the results, but could simply have a template method
+ * TODO: standardize the execution of the mojo and looking at the results, but could simply have a template method
  * for verifying the state of the mojo post execution
  * TODO: need a way to look at the state of the mojo without adding getters, this could be where we finally specify
  * the expressions which extract values from the mojo.
@@ -303,7 +303,7 @@ public abstract class AbstractMojoTestCase
     }
 
     /**
-     * convience method to obtain the value of a variable on a mojo that might not have a getter.
+     * Convenience method to obtain the value of a variable on a mojo that might not have a getter.
      *
      * NOTE: the caller is responsible for casting to to what the desired type is.
      *
@@ -323,7 +323,7 @@ public abstract class AbstractMojoTestCase
     }
 
     /**
-     * convience method to obtain all variables and values from the mojo (including its superclasses)
+     * Convenience method to obtain all variables and values from the mojo (including its superclasses)
      *
      * Note: the values in the map are of type Object so the caller is responsible for casting to desired types.
      *
@@ -337,7 +337,7 @@ public abstract class AbstractMojoTestCase
     }
 
     /**
-     * convience method to obtain all variables and values from the mojo (including its superclasses)
+     * Convenience method to obtain all variables and values from the mojo (including its superclasses)
      *
      * Note: the values in the map are of type Object so the caller is responsible for casting to desired types.
      *
@@ -373,7 +373,8 @@ public abstract class AbstractMojoTestCase
     }
 
     /**
-     * convience method to set values to variables in objects that don't have setters
+     * Convenience method to set values to variables in objects that don't have setters
+     *
      * @param object
      * @param variable
      * @param value
@@ -417,20 +418,14 @@ public abstract class AbstractMojoTestCase
                 {
                     throw new Exception( "unable to determine " + element );
                 }
-                else
-                {
-                    return elementDom.getValue();
-                }
+
+                return elementDom.getValue();
             }
-            else
-            {
-                throw new Exception( "unable to determine " + element );
-            }
+
+            throw new Exception( "unable to determine " + element );
         }
-        else
-        {
-            return elementDom.getValue();
-        }
+
+        return elementDom.getValue();
     }
 
     /**
@@ -448,9 +443,7 @@ public abstract class AbstractMojoTestCase
         {
             return;
         }
-        else
-        {
-            throw new Exception( "container is null, make sure super.setUp() is called" );
-        }
+
+        throw new Exception( "container is null, make sure super.setUp() is called" );
     }
 }
