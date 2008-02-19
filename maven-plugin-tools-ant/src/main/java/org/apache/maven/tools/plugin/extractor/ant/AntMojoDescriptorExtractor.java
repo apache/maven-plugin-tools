@@ -36,14 +36,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
+ *
+ * @version $Id$
+ */
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
 {
-
+    /** Default metada file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
 
+    /** Default Ant build file extension */
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
 
+    /** {@inheritDoc} */
     protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
                                                        PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
@@ -156,11 +163,13 @@ public class AntMojoDescriptorExtractor
         return descriptors;
     }
 
+    /** {@inheritDoc} */
     protected String getScriptFileExtension()
     {
         return SCRIPT_FILE_EXTENSION;
     }
 
+    /** {@inheritDoc} */
     protected String getMetadataFileExtension()
     {
         return METADATA_FILE_EXTENSION;

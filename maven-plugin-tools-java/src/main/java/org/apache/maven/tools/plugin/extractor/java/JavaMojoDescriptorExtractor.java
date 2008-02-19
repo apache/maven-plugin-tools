@@ -46,40 +46,49 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Extracts Mojo descriptors from Java sources.
+ * Extracts Mojo descriptors from <a href="http://java.sun.com/">Java</a> sources.
+ * <br/>
+ * For more information, have a look to:
+ * <a href="http://maven.apache.org/developers/mojo-api-specification.html">http://maven.apache.org/developers/mojo-api-specification.html</a>
  *
  * @todo add example usage tag that can be shown in the doco
  * @todo need to add validation directives so that systems embedding maven2 can
  * get validation directives to help users in IDEs.
+ * @version $Id$
  */
 public class JavaMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
+    /** Refer to <code>&#64;instantiationStrategy</code> */
     public static final String MAVEN_PLUGIN_INSTANTIATION = "instantiationStrategy";
 
+    /** Refer to <code>&#64;configurator</code> */
     public static final String CONFIGURATOR = "configurator";
 
+    /** Refer to <code>&#64;parameter</code> */
     public static final String PARAMETER = "parameter";
 
+    /** Refer to <code>expression</code> combined to <code>&#64;parameter</code> */
     public static final String PARAMETER_EXPRESSION = "expression";
 
+    /** Refer to <code>default-value</code> combined to <code>&#64;parameter</code> */
     public static final String PARAMETER_DEFAULT_VALUE = "default-value";
 
+    /** Refer to <code>alias</code> combined to <code>&#64;parameter</code> */
     public static final String PARAMETER_ALIAS = "alias";
 
+    /** Refer to <code>&#64;since</code> */
     public static final String SINCE = "since";
 
-    /**
-     * This defines the default implementation in the case the parameter type is an interface.
-     */
+    /** This defines the default implementation in the case the parameter type is an interface.
+     * Refer to <code>implementation</code> combined to &#64;parameter */
     public static final String PARAMETER_IMPLEMENTATION = "implementation";
 
     /**
      * This indicates the base name of the bean properties used to read/write this parameter's value.
-     * So:
-     *
-     * @parameter property="project"
+     * <br/>
+     * Refer to <code>&#64;parameter property="project"</code>
      * <p/>
      * Would say there is a getProject() method and a setProject(Project) method. Here the field
      * name would not be the basis for the parameter's name. This mode of operation will allow the
@@ -87,48 +96,74 @@ public class JavaMojoDescriptorExtractor
      */
     public static final String PARAMETER_PROPERTY = "property";
 
+    /** Refer to <code>&#64;required</code> */
     public static final String REQUIRED = "required";
 
+    /** Refer to <code>&#64;deprecated</code> */
     public static final String DEPRECATED = "deprecated";
 
+    /** Refer to <code>&#64;readonly</code> */
     public static final String READONLY = "readonly";
 
+    /** Refer to <code>&#64;goal</code> */
     public static final String GOAL = "goal";
 
+    /** Refer to <code>&#64;phase</code> */
     public static final String PHASE = "phase";
 
+    /** Refer to <code>&#64;execute</code> */
     public static final String EXECUTE = "execute";
 
+    /** Refer to <code>lifecycle</code> combined to <code>&#64;execute</code> */
     public static final String EXECUTE_LIFECYCLE = "lifecycle";
 
+    /** Refer to <code>phase</code> combined to <code>&#64;execute</code> */
     public static final String EXECUTE_PHASE = "phase";
 
+    /** Refer to <code>goal</code> combined to <code>&#64;execute</code> */
     public static final String EXECUTE_GOAL = "goal";
 
+    /** Refer to <code>&#64;description</code> */
     public static final String GOAL_DESCRIPTION = "description";
 
+    /** Refer to <code>requiresDependencyResolution</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_REQUIRES_DEPENDENCY_RESOLUTION = "requiresDependencyResolution";
 
+    /** Refer to <code>requiresProject</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_REQUIRES_PROJECT = "requiresProject";
 
+    /** Refer to <code>requiresReports</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_REQUIRES_REPORTS = "requiresReports";
 
+    /** Refer to <code>aggregator</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_IS_AGGREGATOR = "aggregator";
 
+    /** Refer to <code>requiresOnline</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_REQUIRES_ONLINE = "requiresOnline";
 
+    /** Refer to <code>inheritByDefault</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_INHERIT_BY_DEFAULT = "inheritByDefault";
 
+    /** Refer to <code>attainAlways</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_MULTI_EXECUTION_STRATEGY = "attainAlways";
 
+    /** Refer to <code>attainAlways</code> combined to <code>&#64;goal</code> */
     public static final String GOAL_REQUIRES_DIRECT_INVOCATION = "requiresDirectInvocation";
 
+    /** Refer to <code>&#64;component</code> */
     public static final String COMPONENT = "component";
 
+    /** Refer to <code>role</code> combined to <code>&#64;component</code> */
     public static final String COMPONENT_ROLE = "role";
 
+    /** Refer to <code>roleHint</code> combined to <code>&#64;component</code> */
     public static final String COMPONENT_ROLEHINT = "roleHint";
 
+    /**
+     * @param parameter not null
+     * @param i
+     * @throws InvalidParameterException if any
+     */
     protected void validateParameter( Parameter parameter, int i )
         throws InvalidParameterException
     {
@@ -161,6 +196,11 @@ public class JavaMojoDescriptorExtractor
     // Mojo descriptor creation from @tags
     // ----------------------------------------------------------------------
 
+    /**
+     * @param javaClass not null
+     * @return a mojo descriptor
+     * @throws InvalidPluginDescriptorException if any
+     */
     protected MojoDescriptor createMojoDescriptor( JavaClass javaClass )
         throws InvalidPluginDescriptorException
     {
@@ -543,6 +583,7 @@ public class JavaMojoDescriptorExtractor
         return rawParams;
     }
 
+    /** {@inheritDoc} */
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
@@ -569,8 +610,11 @@ public class JavaMojoDescriptorExtractor
         return descriptors;
     }
 
+    /**
+     * @param project not null
+     * @return an array of java class
+     */
     protected JavaClass[] discoverClasses( final MavenProject project )
-        throws ExtractionException
     {
         JavaDocBuilder builder = new JavaDocBuilder();
 
@@ -589,6 +633,10 @@ public class JavaMojoDescriptorExtractor
         return builder.getClasses();
     }
 
+    /**
+     * @param mojoDescriptor not null
+     * @throws InvalidParameterException if any
+     */
     protected void validate( MojoDescriptor mojoDescriptor )
         throws InvalidParameterException
     {
