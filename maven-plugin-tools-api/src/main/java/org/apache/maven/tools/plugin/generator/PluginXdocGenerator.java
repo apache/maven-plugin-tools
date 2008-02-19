@@ -419,6 +419,8 @@ public class PluginXdocGenerator
         w.addAttribute( "name", title );
 
         w.startElement( "table" );
+        w.addAttribute( "border", "0" );
+        w.addAttribute( "align", "left" );
 
         w.startElement( "tr" );
         w.startElement( "th" );
