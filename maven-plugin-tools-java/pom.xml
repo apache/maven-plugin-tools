@@ -30,7 +30,7 @@
 
   <artifactId>maven-plugin-tools-java</artifactId>
   <name>Maven Plugin Tool for Java</name>
-  <description>Java extractor plugin tool.</description>
+  <description>Descriptor extractor for plugins written in Java.</description>
 
   <dependencies>
     <dependency>

@@ -30,7 +30,7 @@
 
   <artifactId>maven-plugin-tools-api</artifactId>
   <name>Maven Plugin Tools APIs</name>
-  <description>The Maven Plugin Tools APIs provides APIs to extracte Maven 2 Plugins informations and generate documentation.</description>
+  <description>The Maven Plugin Tools API provides an API to extract information from and generate documentation for Maven 2 Plugins.</description>
 
   <dependencies>
     <dependency>

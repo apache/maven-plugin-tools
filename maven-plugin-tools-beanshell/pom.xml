@@ -30,7 +30,7 @@
 
   <artifactId>maven-plugin-tools-beanshell</artifactId>
   <name>Maven Plugin Tool for Beanshell</name>
-  <description>Beanshell extractor plugin tool.</description>
+  <description>Descriptor extractor for plugins written in Beanshell.</description>
 
   <dependencies>
     <dependency>

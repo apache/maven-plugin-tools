@@ -30,7 +30,7 @@
 
   <artifactId>maven-plugin-tools-ant</artifactId>
   <name>Maven Plugin Tool for Ant</name>
-  <description>Ant extractor plugin tool.</description>
+  <description>Descriptor extractor for plugins written in Ant.</description>
 
   <dependencies>
     <dependency>
