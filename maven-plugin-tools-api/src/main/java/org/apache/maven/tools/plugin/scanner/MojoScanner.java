@@ -28,11 +28,20 @@ import java.util.Set;
 
 /**
  * @author jdcasey
+ * @version $Id$
  */
 public interface MojoScanner
 {
+    /** Plexus role for lookup */
     String ROLE = MojoScanner.class.getName();
 
+    /**
+     *
+     * @param project
+     * @param pluginDescriptor
+     * @throws ExtractionException
+     * @throws InvalidPluginDescriptorException
+     */
     void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException;
 

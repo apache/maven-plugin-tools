@@ -61,6 +61,7 @@ public class DefaultMojoScanner
     {
     }
 
+    /** {@inheritDoc} */
     public void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
