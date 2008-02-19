@@ -43,10 +43,13 @@ import java.util.Set;
  * @todo add example usage tag that can be shown in the doco
  * @todo need to add validation directives so that systems embedding maven2 can
  * get validation directives to help users in IDEs.
+ *
+ * @version $Id$
  */
 public class PluginDescriptorGenerator
     implements Generator
 {
+    /** {@inheritDoc} */
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {
@@ -436,17 +439,8 @@ public class PluginDescriptorGenerator
         w.endElement();
     }
 
-    public void element( XMLWriter w, String name, String value )
+    private void element( XMLWriter w, String name, String value )
     {
-        w.startElement( name );
-
-        if ( value == null )
-        {
-            value = "";
-        }
-
-        w.writeText( value );
-
-        w.endElement();
+        PluginUtils.element( w, name, value );
     }
 }
