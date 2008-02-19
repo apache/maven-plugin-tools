@@ -1,6 +1,6 @@
 package org.apache.maven.plugin.testing;
 
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +16,7 @@ package org.apache.maven.plugin.testing;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.io.File;
@@ -45,8 +45,9 @@ import org.codehaus.plexus.util.StringUtils;
  * like unpack. Also provided are some utility methods to quickly get a set of artifacts distinguished by various things
  * like group,artifact,type,scope, etc It was originally developed for the dependency plugin, but can be useful in other
  * plugins that need to simulate artifacts for unit tests.
- * 
+ *
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
+ * @version $Id$
  */
 public class ArtifactStubFactory
 {
@@ -71,7 +72,7 @@ public class ArtifactStubFactory
 
     /**
      * This constructor is to be used if files are needed and to set a working dir
-     * 
+     *
      * @param workingDir
      * @param createFiles
      */
@@ -84,7 +85,7 @@ public class ArtifactStubFactory
     /**
      * If set, the file will be created as a zip/jar/war with a file inside that can be checked to exist after
      * unpacking.
-     * 
+     *
      * @param archiverManager
      */
     public void setUnpackableFile( ArchiverManager archiverManager )
@@ -93,18 +94,46 @@ public class ArtifactStubFactory
         this.archiverManager = archiverManager;
     }
 
+    /**
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @return a <code>DefaultArtifact</code> instance for the given parameters
+     * @throws IOException if any
+     * @see #createArtifact(String, String, String, String, String, String)
+     */
     public Artifact createArtifact( String groupId, String artifactId, String version )
         throws IOException
     {
         return createArtifact( groupId, artifactId, version, Artifact.SCOPE_COMPILE, "jar", "" );
     }
 
+    /**
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @param scope
+     * @return a <code>DefaultArtifact</code> instance for the given parameters
+     * @throws IOException if any
+     * @see #createArtifact(String, String, String, String, String, String)
+     */
     public Artifact createArtifact( String groupId, String artifactId, String version, String scope )
         throws IOException
     {
         return createArtifact( groupId, artifactId, version, scope, "jar", "" );
     }
 
+    /**
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @param scope
+     * @param type
+     * @param classifier
+     * @return a <code>DefaultArtifact</code> instance for the given parameters
+     * @throws IOException if any
+     * @see #createArtifact(String, String, VersionRange, String, String, String, boolean)
+     */
     public Artifact createArtifact( String groupId, String artifactId, String version, String scope, String type,
                                     String classifier )
         throws IOException
@@ -113,6 +142,17 @@ public class ArtifactStubFactory
         return createArtifact( groupId, artifactId, vr, scope, type, classifier, false );
     }
 
+    /**
+     * @param groupId not null
+     * @param artifactId not null
+     * @param versionRange not null
+     * @param scope not null
+     * @param type not null
+     * @param classifier
+     * @param optional not null
+     * @return a <code>DefaultArtifact</code> instance
+     * @throws IOException if any
+     */
     public Artifact createArtifact( String groupId, String artifactId, VersionRange versionRange, String scope,
                                     String type, String classifier, boolean optional )
         throws IOException
@@ -134,7 +174,7 @@ public class ArtifactStubFactory
 
     /**
      * Creates a new empty file and attaches it to the artifact.
-     * 
+     *
      * @param artifact to attach the file to.
      * @param workingDir where to locate the new file
      * @throws IOException
@@ -148,7 +188,7 @@ public class ArtifactStubFactory
     /**
      * Copyies the srcFile to the workingDir and then attaches it to the artifact. If srcFile is null, a new empty file
      * will be created.
-     * 
+     *
      * @param artifact to attach
      * @param workingDir where to copy the srcFile.
      * @param srcFile file to be attached.
@@ -162,7 +202,7 @@ public class ArtifactStubFactory
 
     /**
      * Creates an unpackable file (zip,jar etc) containing an empty file.
-     * 
+     *
      * @param artifact to attach
      * @param workingDir where to create the file.
      * @throws IOException
@@ -176,10 +216,11 @@ public class ArtifactStubFactory
     /**
      * Creates an unpackable file (zip,jar etc) containing the srcFile. If srcFile is null, a new empty file will be
      * created.
-     * 
+     *
      * @param artifact to attach
      * @param workingDir where to create the file.
-     * @throws IOException
+     * @param srcFile
+     * @throws IOException if any
      */
     public void setUnpackableArtifactFile( Artifact artifact, File workingDir, File srcFile )
         throws IOException
@@ -187,8 +228,14 @@ public class ArtifactStubFactory
         setArtifactFile( artifact, workingDir, srcFile, true );
     }
 
-    /*
+    /**
      * Creates a file that can be copied or unpacked based on the passed in artifact
+     *
+     * @param artifact
+     * @param workingDir
+     * @param srcFile
+     * @param createUnpackableFile
+     * @throws IOException if any
      */
     private void setArtifactFile( Artifact artifact, File workingDir, File srcFile, boolean createUnpackableFile )
         throws IOException
@@ -216,18 +263,11 @@ public class ArtifactStubFactory
             }
             catch ( NoSuchArchiverException e )
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new IOException( "NoSuchArchiverException: " + e.getMessage() );
             }
             catch ( ArchiverException e )
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            catch ( IOException e )
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new IOException( "ArchiverException: " + e.getMessage() );
             }
         }
         else
@@ -238,12 +278,23 @@ public class ArtifactStubFactory
         artifact.setFile( theFile );
     }
 
+    /**
+     * @param artifact
+     * @return
+     */
     static public String getUnpackableFileName( Artifact artifact )
     {
         return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-" +
             artifact.getClassifier() + "-" + artifact.getType() + ".txt";
     }
 
+    /**
+     * @param artifact
+     * @param destFile
+     * @throws NoSuchArchiverException
+     * @throws ArchiverException if any
+     * @throws IOException if any
+     */
     public void createUnpackableFile( Artifact artifact, File destFile )
         throws NoSuchArchiverException, ArchiverException, IOException
     {
@@ -271,18 +322,33 @@ public class ArtifactStubFactory
         archiver.createArchive();
     }
 
+    /**
+     * @return a <code>DefaultArtifact</code> instance for <code>testGroupId:release:jar:1.0</code>
+     * @throws IOException if any
+     */
     public Artifact getReleaseArtifact()
         throws IOException
     {
         return createArtifact( "testGroupId", "release", "1.0" );
     }
 
+    /**
+     * @return a default <code>DefaultArtifact</code> instance for <code>testGroupId:snapshot:jar:2.0-SNAPSHOT</code>
+     * @throws IOException if any
+     */
     public Artifact getSnapshotArtifact()
         throws IOException
     {
         return createArtifact( "testGroupId", "snapshot", "2.0-SNAPSHOT" );
     }
 
+    /**
+     * @return a default set of release and snapshot <code>DefaultArtifact</code>, i.e.:
+     * <code>testGroupId:snapshot:jar:2.0-SNAPSHOT, testGroupId:release:jar:1.0</code>
+     * @throws IOException if any
+     * @see #getReleaseArtifact()
+     * @see #getSnapshotArtifact()
+     */
     public Set getReleaseAndSnapshotArtifacts()
         throws IOException
     {
@@ -292,6 +358,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a default set of <code>DefaultArtifact</code>, i.e.:
+     * <code>g:provided:jar:1.0, g:compile:jar:1.0, g:system:jar:1.0, g:test:jar:1.0, g:runtime:jar:1.0</code>
+     * @throws IOException if any
+     */
     public Set getScopedArtifacts()
         throws IOException
     {
@@ -304,6 +375,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>, i.e.:
+     * <code>g:d:zip:1.0, g:a:war:1.0, g:b:jar:1.0, g:c:sources:1.0, g:e:rar:1.0</code>
+     * @throws IOException if any
+     */
     public Set getTypedArtifacts()
         throws IOException
     {
@@ -316,6 +392,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>, i.e.:
+     * <code>g:c:jar:three:1.0, g:b:jar:two:1.0, g:d:jar:four:1.0, g:a:jar:one:1.0</code>
+     * @throws IOException if any
+     */
     public Set getClassifiedArtifacts()
         throws IOException
     {
@@ -327,6 +408,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>, i.e.:
+     * <code>g:d:zip:1.0, g:a:war:1.0, g:b:jar:1.0, g:e:rar:1.0</code>
+     * @throws IOException if any
+     */
     public Set getTypedArchiveArtifacts()
         throws IOException
     {
@@ -338,6 +424,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>, i.e.:
+     * <code>g:one:jar:a:1.0, g:two:jar:a:1.0, g:four:jar:a:1.0, g:three:jar:a:1.0</code>
+     * @throws IOException if any
+     */
     public Set getArtifactArtifacts()
         throws IOException
     {
@@ -349,6 +440,11 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>, i.e.:
+     * <code>one:group-one:jar:a:1.0, three:group-three:jar:a:1.0, four:group-four:jar:a:1.0, two:group-two:jar:a:1.0</code>
+     * @throws IOException if any
+     */
     public Set getGroupIdArtifacts()
         throws IOException
     {
@@ -360,6 +456,13 @@ public class ArtifactStubFactory
         return set;
     }
 
+    /**
+     * @return a set of <code>DefaultArtifact</code>
+     * @throws IOException if any
+     * @see #getTypedArtifacts()
+     * @see #getScopedArtifacts()
+     * @see #getReleaseAndSnapshotArtifacts()
+     */
     public Set getMixedArtifacts()
         throws IOException
     {
@@ -419,8 +522,8 @@ public class ArtifactStubFactory
     }
 
     /**
-     * convience method to set values to variables in objects that don't have setters
-     * 
+     * Convenience method to set values to variables in objects that don't have setters
+     *
      * @param object
      * @param variable
      * @param value
@@ -439,7 +542,7 @@ public class ArtifactStubFactory
     /**
      * Builds the file name. If removeVersion is set, then the file name must be reconstructed from the artifactId,
      * Classifier (if used) and Type. Otherwise, this method returns the artifact file name.
-     * 
+     *
      * @param artifact File to be formatted.
      * @param removeVersion Specifies if the version should be removed from the file name.
      * @return Formatted file name in the format artifactId-[version]-[classifier].[type]
