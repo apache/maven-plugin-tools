@@ -156,12 +156,12 @@
   </build>
 
   <modules>
-    <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-api</module>
+    <module>maven-plugin-tools-ant</module>
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-beanshell</module>
+    <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-model</module>
-    <module>maven-plugin-tools-ant</module>
     <module>maven-plugin-testing-harness</module>
   </modules>
 
