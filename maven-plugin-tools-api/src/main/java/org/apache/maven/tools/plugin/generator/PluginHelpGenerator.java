@@ -263,7 +263,7 @@ public class PluginHelpGenerator
         writer.write( "    private static final int DEFAULT_WIDTH = 80;" + LS );
         writer.write( LS );
         writer.write( "    /** 4 indent spaces */" + LS );
-        writer.write( "    private static final String DEFAULT_INDENT = repeat( \" \", 4 );" + LS );
+        writer.write( "    private static final String DEFAULT_INDENT = repeat( \" \", 2 );" + LS );
         writer.write( LS );
         writer.write( "    /**" + LS );
         writer.write( "     * If true, display all settable properies for each goal." + LS );
@@ -313,7 +313,7 @@ public class PluginHelpGenerator
                 writer.write( "            sb.append( \"\\n\" );" + LS );
                 writer.write( LS );
 
-                writer.write( "            sb.append( repeat( \" \", 4 ) );" + LS );
+                writer.write( "            sb.append( repeat( \" \", 2 ) );" + LS );
                 writer.write( "            sb.append( \"Available parameters:\" ).append( \"\\n\" );" + LS );
                 writer.write( LS );
                 writer.write( "            sb.append( \"\\n\" );" + LS );
@@ -345,7 +345,7 @@ public class PluginHelpGenerator
                             writer.write( "        }" + LS );
 
                             writer.write( "            for ( Iterator it = toLines( \"" + parameterDescription
-                                + "\", repeat( \" \", 8 ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
+                                + "\", repeat( \" \", 6 ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
                             writer.write( "            {" + LS );
                             writer.write( "                sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
                             writer.write( "            }" + LS );
