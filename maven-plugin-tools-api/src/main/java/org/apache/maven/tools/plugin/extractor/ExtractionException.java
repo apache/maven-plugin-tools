@@ -19,18 +19,32 @@ package org.apache.maven.tools.plugin.extractor;
  * under the License.
  */
 
+/**
+ * Wrap errors when extraction exception occurred.
+ *
+ * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
+ * @version $Id$
+ */
 public class ExtractionException
     extends Exception
 {
+    /** serialVersionUID */
+    static final long serialVersionUID = 9074953540861573535L;
 
+    /**
+     * @param message given message
+     * @param cause given cause
+     */
     public ExtractionException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
+    /**
+     * @param message a given message
+     */
     public ExtractionException( String message )
     {
         super( message );
     }
-
 }

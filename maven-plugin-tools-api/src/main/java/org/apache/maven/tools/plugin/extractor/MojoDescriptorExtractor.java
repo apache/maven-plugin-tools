@@ -27,11 +27,22 @@ import java.util.List;
 
 /**
  * @author jdcasey
+ * @version $Id$
  */
 public interface MojoDescriptorExtractor
 {
+    /** Plexus role for lookup */
     String ROLE = MojoDescriptorExtractor.class.getName();
 
+    /**
+     * Execute the mojo extraction.
+     *
+     * @param project not null Maven project
+     * @param pluginDescriptor not null plugin descriptor
+     * @return a list of mojo descriptors.
+     * @throws ExtractionException if any
+     * @throws InvalidPluginDescriptorException if any
+     */
     List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException;
 }

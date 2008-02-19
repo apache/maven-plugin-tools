@@ -38,11 +38,13 @@ import java.util.TreeMap;
 
 /**
  * @author jdcasey
+ * @version $Id$
  */
 public abstract class AbstractScriptedMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
+    /** {@inheritDoc} */
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
