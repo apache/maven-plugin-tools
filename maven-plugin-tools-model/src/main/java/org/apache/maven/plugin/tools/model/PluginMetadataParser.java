@@ -37,10 +37,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Parser for plugin metadata.
+ *
+ * @version $Id$
+ */
 public class PluginMetadataParser
 {
     public static final String IMPL_BASE_PLACEHOLDER = "<REPLACE-WITH-MOJO-PATH>";
 
+    /**
+     * @param metadataFile the metadata file to be parse
+     * @return a set of <code>MojoDescriptor</code>
+     * @throws PluginMetadataParseException if any
+     */
     public Set parseMojoDescriptors( File metadataFile )
         throws PluginMetadataParseException
     {
@@ -179,5 +189,4 @@ public class PluginMetadataParser
 
         return descriptor;
     }
-
 }

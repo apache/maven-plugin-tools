@@ -21,16 +21,26 @@ package org.apache.maven.plugin.tools.model;
 
 import java.io.File;
 
+/**
+ * Exception when plugin metadata parsing occurred.
+ *
+ * @version $Id$
+ */
 public class PluginMetadataParseException
     extends Exception
 {
-
-    static final long serialVersionUID = 1;
+    /** serialVersionUID */
+    static final long serialVersionUID = 4022348153707995574L;
 
     private final File metadataFile;
 
     private final String originalMessage;
 
+    /**
+     * @param metadataFile
+     * @param message
+     * @param cause
+     */
     public PluginMetadataParseException( File metadataFile, String message, Throwable cause )
     {
         super( "Error parsing file: " + metadataFile + ". Reason: " + message, cause );
@@ -39,6 +49,10 @@ public class PluginMetadataParseException
         this.originalMessage = message;
     }
 
+    /**
+     * @param metadataFile
+     * @param message
+     */
     public PluginMetadataParseException( File metadataFile, String message )
     {
         super( "Error parsing file: " + metadataFile + ". Reason: " + message );
@@ -47,14 +61,19 @@ public class PluginMetadataParseException
         this.originalMessage = message;
     }
 
+    /**
+     * @return the metadata file
+     */
     public File getMetadataFile()
     {
         return metadataFile;
     }
 
+    /**
+     * @return the original message
+     */
     public String getOriginalMessage()
     {
         return originalMessage;
     }
-
 }
