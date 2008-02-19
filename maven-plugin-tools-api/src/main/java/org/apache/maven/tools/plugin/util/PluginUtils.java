@@ -27,10 +27,13 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 /**
+ * Convenience methods to play with Maven plugins.
+ *
  * @author jdcasey
  * @version $Id$
  */
@@ -41,11 +44,22 @@ public final class PluginUtils
         // nop
     }
 
+    /**
+     * @param basedir
+     * @param include
+     * @return list of included files with default SCM excluded files
+     */
     public static String[] findSources( String basedir, String include )
     {
         return PluginUtils.findSources( basedir, include, null );
     }
 
+    /**
+     * @param basedir
+     * @param include
+     * @param exclude
+     * @return list of included files
+     */
     public static String[] findSources( String basedir, String include, String exclude )
     {
         DirectoryScanner scanner = new DirectoryScanner();
@@ -53,12 +67,11 @@ public final class PluginUtils
         scanner.setIncludes( new String[] { include } );
         if ( !StringUtils.isEmpty( exclude ) )
         {
-            // TODO: need default excludes in scanner
-            scanner.setExcludes( new String[] { exclude, "**/.svn/**" } );
+            scanner.setExcludes( new String[] { exclude, StringUtils.join( FileUtils.getDefaultExcludes(), "," ) } );
         }
         else
         {
-            scanner.setExcludes( new String[] { "**/.svn/**" } );
+            scanner.setExcludes( FileUtils.getDefaultExcludes() );
         }
 
         scanner.scan();
@@ -66,6 +79,10 @@ public final class PluginUtils
         return scanner.getIncludedFiles();
     }
 
+    /**
+     * @param w not null writer
+     * @param pluginDescriptor not null
+     */
     public static void writeDependencies( XMLWriter w, PluginDescriptor pluginDescriptor )
     {
         w.startElement( "dependencies" );
@@ -90,6 +107,10 @@ public final class PluginUtils
         w.endElement();
     }
 
+    /**
+     * @param dependencies not null list of <code>Dependency</code>
+     * @return list of component dependencies
+     */
     public static List toComponentDependencies( List dependencies )
     {
         List componentDeps = new LinkedList();
@@ -111,7 +132,12 @@ public final class PluginUtils
         return componentDeps;
     }
 
-    private static void element( XMLWriter w, String name, String value )
+    /**
+     * @param w not null writer
+     * @param name
+     * @param value
+     */
+    public static void element( XMLWriter w, String name, String value )
     {
         w.startElement( name );
 

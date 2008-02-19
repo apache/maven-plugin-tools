@@ -20,27 +20,31 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>maven-plugin-tools</artifactId>
     <groupId>org.apache.maven</groupId>
     <version>2.4-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
   <artifactId>maven-plugin-tools-beanshell</artifactId>
-  <name>Maven Plugin Tools for Beanshell</name>
+  <name>Maven Plugin Tool for Beanshell</name>
+  <description>Beanshell extractor plugin tool.</description>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-tools-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-descriptor</artifactId>
+    </dependency>
+    <dependency>
       <groupId>bsh</groupId>
       <artifactId>bsh</artifactId>
       <version>1.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-descriptor</artifactId>
     </dependency>
   </dependencies>
 </project>

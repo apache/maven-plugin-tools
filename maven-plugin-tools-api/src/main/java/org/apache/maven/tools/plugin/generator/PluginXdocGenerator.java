@@ -37,6 +37,7 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringInputStream;
 import org.codehaus.plexus.util.StringOutputStream;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.w3c.tidy.Tidy;
 
@@ -143,7 +144,7 @@ public class PluginXdocGenerator
         w.startElement( "p" );
         w.writeMarkup( mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
             + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
-            + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getFullGoalName() );
+            + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
         w.endElement(); //p
 
         w.startElement( "p" );
