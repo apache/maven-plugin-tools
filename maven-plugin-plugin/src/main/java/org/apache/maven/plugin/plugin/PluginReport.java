@@ -155,7 +155,7 @@ public class PluginReport
             mojoScanner.populatePluginDescriptor( project, pluginDescriptor );
 
             // Generate the plugin's documentation
-            generatePluginDocumentation( pluginDescriptor );
+            generatePluginDocumentation( pluginDescriptor, locale );
 
             // Write the overview
             PluginOverviewRenderer r = new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor,
@@ -192,7 +192,7 @@ public class PluginReport
         return "plugin-info";
     }
 
-    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor )
+    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Locale locale )
         throws MavenReportException
     {
         try
@@ -200,7 +200,7 @@ public class PluginReport
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator();
+            PluginXdocGenerator generator = new PluginXdocGenerator( locale );
             generator.execute( outputDir, pluginDescriptor );
         }
         catch ( IOException e )

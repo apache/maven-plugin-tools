@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +47,31 @@ import org.w3c.tidy.Tidy;
 public class PluginXdocGenerator
     implements Generator
 {
+    private final Locale locale;
+
+    /**
+     * Default constructor using <code>Locale.ENGLISH</code> as locale.
+     */
+    public PluginXdocGenerator()
+    {
+        this.locale = Locale.ENGLISH;
+    }
+
+    /**
+     * @param locale not null wanted locale.
+     */
+    public PluginXdocGenerator( Locale locale )
+    {
+        if ( locale == null )
+        {
+            this.locale = Locale.ENGLISH;
+        }
+        else
+        {
+            this.locale = locale;
+        }
+    }
+
     /** {@inheritDoc} */
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
@@ -111,14 +138,26 @@ public class PluginXdocGenerator
         w.addAttribute( "name", mojoDescriptor.getFullGoalName() );
 
         w.startElement( "p" );
+        w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.fullname" ) + "</strong>:" );
+        w.endElement(); //p
+        w.startElement( "p" );
+        w.writeMarkup( mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
+            + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
+            + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getFullGoalName() );
+        w.endElement(); //p
 
+        w.startElement( "p" );
+        w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.description" ) + "</strong>:" );
+        w.endElement(); //p
+
+        w.startElement( "p" );
         if ( mojoDescriptor.getDescription() != null )
         {
             w.writeMarkup( makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
         else
         {
-            w.writeText( "No description." );
+            w.writeText( getBundle( locale ).getString( "pluginxdoc.nodescription" ) );
         }
 
         w.endElement(); // p
@@ -137,36 +176,37 @@ public class PluginXdocGenerator
     private void writeGoalAttributes( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
         w.startElement( "p" );
-        w.writeMarkup( "<strong>Mojo Attributes</strong>:" );
+        w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.mojodescriptor.attributes" ) + "</strong>:" );
         w.endElement(); //p
+
         w.startElement( "ul" );
 
         String value = mojoDescriptor.getDeprecated();
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "This plugin goal has been deprecated: " + value + "" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.deprecated" ) + ": " + value + "." );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isProjectRequired() )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Requires a Maven 2.0 project to execute." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isAggregator() )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Executes as an aggregator plugin." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.aggregator" ) );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isDirectInvocationOnly() )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Executes by direct invocation only." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.directInvocationOnly" ) );
             w.endElement(); //li
         }
 
@@ -174,7 +214,7 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Requires dependency resolution of artifacts in scope: <code>" + value + "</code>" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.dependencyResolutionRequired" ) + ": <code>" + value + "</code>." );
             w.endElement(); //li
         }
 
@@ -182,7 +222,7 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Since version: <code>" + value + "</code>" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.since" ) + ": <code>" + value + "</code>." );
             w.endElement(); //li
         }
 
@@ -190,7 +230,7 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Automatically executes within the lifecycle phase: <code>" + value + "</code>" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.phase" ) + ": <code>" + value + "</code>." );
             w.endElement(); //li
         }
 
@@ -198,8 +238,8 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Invokes the execution of the lifecycle phase <code>" + value
-                + "</code> prior to executing itself." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executePhase1" ) + " <code>" + value
+                + "</code>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executePhase2" ) + "." );
             w.endElement(); //li
         }
 
@@ -207,8 +247,8 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Invokes the execution of this plugin's goal <code>" + value
-                + "</code> prior to executing itself." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executeGoal1" ) + " <code>" + value
+                + "</code> " + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executeGoal2" ) + "." );
             w.endElement(); //li
         }
 
@@ -216,21 +256,21 @@ public class PluginXdocGenerator
         if ( StringUtils.isNotEmpty( value ) )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Executes in its own lifecycle: <code>" + value + "</code>" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executeLifecycle" ) + ": <code>" + value + "</code>." );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isOnlineRequired() )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Requires that mvn runs in online mode." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.onlineRequired" ) );
             w.endElement(); //li
         }
 
         if ( !mojoDescriptor.isInheritedByDefault() )
         {
             w.startElement( "li" );
-            w.writeMarkup( "Is NOT inherited by default in multi-project builds." );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.inheritedByDefault" ) );
             w.endElement(); //li
         }
 
@@ -280,20 +320,20 @@ public class PluginXdocGenerator
     private void writeParameterDetails( MojoDescriptor mojoDescriptor, List parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
-        w.addAttribute( "name", "Parameter Details" );
+        w.addAttribute( "name", getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
 
         for ( Iterator parameters = parameterList.iterator(); parameters.hasNext(); )
         {
             Parameter parameter = (Parameter) parameters.next();
 
             w.startElement( "p" );
-            w.writeMarkup( "<strong><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a></strong>" );
+            w.writeMarkup( "<strong><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a>:</strong>" );
             w.endElement(); //p
 
             String description = parameter.getDescription();
             if ( StringUtils.isEmpty( description ) )
             {
-                description = "No Description.";
+                description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
             }
             else
             {
@@ -305,34 +345,34 @@ public class PluginXdocGenerator
 
             w.startElement( "ul" );
 
-            writeDetail( "Deprecated", parameter.getDeprecated(), w );
+            writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" ), parameter.getDeprecated(), w );
 
-            writeDetail( "Type", parameter.getType(), w );
+            writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.type" ), parameter.getType(), w );
 
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
             {
-                writeDetail( "Since", parameter.getSince(), w );
+                writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.since" ), parameter.getSince(), w );
             }
             else
             {
                 if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
                 {
-                    writeDetail( "Since", mojoDescriptor.getSince(), w );
+                    writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.since" ), mojoDescriptor.getSince(), w );
                 }
             }
 
             if ( parameter.isRequired() )
             {
-                writeDetail( "Required", "Yes", w );
+                writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.required" ), getBundle( locale ).getString( "pluginxdoc.yes" ), w );
             }
             else
             {
-                writeDetail( "Required", "No", w );
+                writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.required" ), getBundle( locale ).getString( "pluginxdoc.no" ), w );
             }
 
-            writeDetail( "Expression", parameter.getExpression(), w );
+            writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.expression" ), parameter.getExpression(), w );
 
-            writeDetail( "Default", parameter.getDefaultValue(), w );
+            writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.default" ), parameter.getDefaultValue(), w );
 
             w.endElement();//ul
 
@@ -362,13 +402,13 @@ public class PluginXdocGenerator
         List requiredParams = getParametersByRequired( true, parameterList );
         if ( requiredParams.size() > 0 )
         {
-            writeParameterList( mojoDescriptor, "Required Parameters", requiredParams, w );
+            writeParameterList( mojoDescriptor, getBundle( locale ).getString( "pluginxdoc.mojodescriptor.requiredParameters" ), requiredParams, w );
         }
 
         List optionalParams = getParametersByRequired( false, parameterList );
         if ( optionalParams.size() > 0 )
         {
-            writeParameterList( mojoDescriptor, "Optional Parameters", optionalParams, w );
+            writeParameterList( mojoDescriptor, getBundle( locale ).getString( "pluginxdoc.mojodescriptor.optionalParameters" ), optionalParams, w );
         }
     }
 
@@ -381,16 +421,16 @@ public class PluginXdocGenerator
 
         w.startElement( "tr" );
         w.startElement( "th" );
-        w.writeText( "Name" );
+        w.writeText( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.name" ) );
         w.endElement();//th
         w.startElement( "th" );
-        w.writeText( "Type" );
+        w.writeText( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.type" ) );
         w.endElement();//th
         w.startElement( "th" );
-        w.writeText( "Since" );
+        w.writeText( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.since" ) );
         w.endElement();//th
         w.startElement( "th" );
-        w.writeText( "Description" );
+        w.writeText( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.description" ) );
         w.endElement();//th
         w.endElement();//tr
 
@@ -427,7 +467,7 @@ public class PluginXdocGenerator
             String description = parameter.getDescription();
             if ( StringUtils.isEmpty( description ) )
             {
-                description = "No description.";
+                description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
             }
             else
             {
@@ -435,13 +475,13 @@ public class PluginXdocGenerator
             }
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = "<strong>Deprecated</strong>. " + description;
+                description = "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" ) + "</strong>. " + description;
             }
-            w.writeMarkup( description );
+            w.writeMarkup( description + " " );
 
             if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
             {
-                w.writeMarkup( " Default value is <code>" );
+                w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.defaultValue" ) + ": <code>" );
                 w.writeText( parameter.getDefaultValue() );
                 w.writeMarkup( "</code>." );
             }
@@ -616,5 +656,16 @@ public class PluginXdocGenerator
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Gets the resource bundle for the specified locale.
+     *
+     * @param locale The locale of the currently generated report.
+     * @return The resource bundle for the requested locale.
+     */
+    private ResourceBundle getBundle( Locale locale )
+    {
+        return ResourceBundle.getBundle( "pluginxdoc", locale, getClass().getClassLoader() );
     }
 }
