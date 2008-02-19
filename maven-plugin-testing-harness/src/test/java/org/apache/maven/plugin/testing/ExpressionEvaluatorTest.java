@@ -37,6 +37,7 @@ public class ExpressionEvaluatorTest
 
     private PlexusConfiguration pluginConfiguration;
 
+    /** {@inheritDoc} */
     protected void setUp()
         throws Exception
     {
@@ -64,6 +65,9 @@ public class ExpressionEvaluatorTest
         pluginConfiguration = extractPluginConfiguration( "maven-test-mojo", pomDom );
     }
 
+    /**
+     * @throws Exception if any
+     */
     public void testInjection()
         throws Exception
     {

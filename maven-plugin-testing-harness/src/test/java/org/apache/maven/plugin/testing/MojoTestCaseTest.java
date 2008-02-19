@@ -39,6 +39,7 @@ public class MojoTestCaseTest
 
     private PlexusConfiguration pluginConfiguration;
 
+    /** {@inheritDoc} */
     protected void setUp()
         throws Exception
     {
@@ -64,6 +65,9 @@ public class MojoTestCaseTest
         pluginConfiguration = extractPluginConfiguration( "maven-simple-plugin", pomDom );
     }
 
+    /**
+     * @throws Exception if any
+     */
     public void testPluginConfigurationExtraction()
         throws Exception
     {
@@ -72,6 +76,9 @@ public class MojoTestCaseTest
         assertEquals( "valueTwo", pluginConfiguration.getChild( "keyTwo" ).getValue() );
     }
 
+    /**
+     * @throws Exception if any
+     */
     public void testMojoConfiguration()
         throws Exception
     {
@@ -84,6 +91,9 @@ public class MojoTestCaseTest
         assertEquals( "valueTwo", mojo.getKeyTwo() );
     }
 
+    /**
+     * @throws Exception if any
+     */
     public void testVariableAccessWithoutGetter()
         throws Exception
     {
@@ -96,7 +106,9 @@ public class MojoTestCaseTest
         assertEquals( "valueTwo", (String)getVariableValueFromObject( mojo, "keyTwo" ) );
     }
 
-
+    /**
+     * @throws Exception if any
+     */
      public void testVariableAccessWithoutGetter2()
         throws Exception
     {
@@ -111,7 +123,9 @@ public class MojoTestCaseTest
         assertEquals( "valueTwo", (String)map.get( "keyTwo" ) );
     }
 
-
+    /**
+     * @throws Exception if any
+     */
     public void testSettingMojoVariables()
         throws Exception
     {

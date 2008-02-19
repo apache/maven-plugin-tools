@@ -65,13 +65,10 @@ public class StubArtifactResolver
         this.factory = factory;
     }
 
-    /*
+    /**
      * Creates dummy file and sets it in the artifact to simulate resolution
-     * (non-Javadoc)
      *
-     * @see org.apache.maven.artifact.resolver.ArtifactResolver#resolve(org.apache.maven.artifact.Artifact,
-     *      java.util.List,
-     *      org.apache.maven.artifact.repository.ArtifactRepository)
+     * @see org.apache.maven.artifact.resolver.ArtifactResolver#resolve(org.apache.maven.artifact.Artifact, java.util.List, org.apache.maven.artifact.repository.ArtifactRepository)
      */
     public void resolve( Artifact artifact, List remoteRepositories, ArtifactRepository localRepository )
         throws ArtifactResolutionException, ArtifactNotFoundException

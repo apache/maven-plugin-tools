@@ -25,20 +25,34 @@ package org.apache.maven.plugin.testing;
  * @author jesse
  * @version $Id$
  */
-public class ConfigurationException extends Exception
+public class ConfigurationException
+    extends Exception
 {
+    /** serialVersionUID */
+    static final long serialVersionUID = -6180939638742159065L;
+
+    /**
+     * @param message The detailed message.
+     */
     public ConfigurationException( String message )
     {
-        super(message);
+        super( message );
     }
 
+    /**
+     * @param cause The detailed cause.
+     */
     public ConfigurationException( Throwable cause )
     {
-        super(cause);
+        super( cause );
     }
 
+    /**
+     * @param message The detailed message.
+     * @param cause The detailed cause.
+     */
     public ConfigurationException( String message, Throwable cause )
     {
-        super(message, cause);
+        super( message, cause );
     }
 }
