@@ -188,7 +188,8 @@ public abstract class AbstractMojoTestCase
         if ( pluginConfiguration != null )
         {
             /* requires v10 of plexus container for lookup on expression evaluator
-             ExpressionEvaluator evaluator = (ExpressionEvaluator) getContainer().lookup( ExpressionEvaluator.ROLE, "stub-evaluator" );
+             ExpressionEvaluator evaluator = (ExpressionEvaluator) getContainer().lookup( ExpressionEvaluator.ROLE,
+                                                                                         "stub-evaluator" );
              */
             ExpressionEvaluator evaluator = new ResolverExpressionEvaluatorStub();
 

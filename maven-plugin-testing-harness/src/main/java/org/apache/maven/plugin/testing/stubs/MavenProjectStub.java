@@ -161,21 +161,25 @@ public class MavenProjectStub
      */
     public MavenProjectStub()
     {
-        this( (Model) new Model() );
+        this( new Model() );
     }
 
-    // kinda dangerous...
+    /**
+     * @param model the given model
+     */
     public MavenProjectStub( Model model )
     {
-        //  super(model);
         super( (Model) null );
         this.model = model;
     }
 
-    // kinda dangerous...
+    /**
+     * No project model is associated
+     *
+     * @param project the given project
+     */
     public MavenProjectStub( MavenProject project )
     {
-        //super(project);
         super( (Model) null );
     }
 
@@ -190,41 +194,31 @@ public class MavenProjectStub
         return "";
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getArtifact()
-     */
+    /** {@inheritDoc} */
     public Artifact getArtifact()
     {
         return artifact;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setArtifact(org.apache.maven.artifact.Artifact)
-     */
+    /** {@inheritDoc} */
     public void setArtifact( Artifact artifact )
     {
         this.artifact = artifact;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getModel()
-     */
+    /** {@inheritDoc} */
     public Model getModel()
     {
         return model;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getParent()
-     */
+    /** {@inheritDoc} */
     public MavenProject getParent()
     {
         return parent;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setParent(org.apache.maven.project.MavenProject)
-     */
+    /** {@inheritDoc} */
     public void setParent( MavenProject mavenProject )
     {
         this.parent = mavenProject;
@@ -250,9 +244,7 @@ public class MavenProjectStub
         return Collections.EMPTY_LIST;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#hasParent()
-     */
+    /** {@inheritDoc} */
     public boolean hasParent()
     {
         if ( parent != null )
@@ -263,25 +255,19 @@ public class MavenProjectStub
         return false;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getFile()
-     */
+    /** {@inheritDoc} */
     public File getFile()
     {
         return file;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setFile(java.io.File)
-     */
+    /** {@inheritDoc} */
     public void setFile( File file )
     {
         this.file = file;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getBasedir()
-     */
+    /** {@inheritDoc} */
     public File getBasedir()
     {
         return new File( PlexusTestCase.getBasedir() );
@@ -317,9 +303,7 @@ public class MavenProjectStub
         return null;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#addCompileSourceRoot(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void addCompileSourceRoot( String string )
     {
         if ( compileSourceRoots == null )
@@ -332,9 +316,7 @@ public class MavenProjectStub
         }
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#addScriptSourceRoot(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void addScriptSourceRoot( String string )
     {
         if ( scriptSourceRoots == null )
@@ -347,9 +329,7 @@ public class MavenProjectStub
         }
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#addTestCompileSourceRoot(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void addTestCompileSourceRoot( String string )
     {
         if ( testCompileSourceRoots == null )
@@ -362,33 +342,25 @@ public class MavenProjectStub
         }
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getCompileSourceRoots()
-     */
+    /** {@inheritDoc} */
     public List getCompileSourceRoots()
     {
         return compileSourceRoots;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getScriptSourceRoots()
-     */
+    /** {@inheritDoc} */
     public List getScriptSourceRoots()
     {
         return scriptSourceRoots;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getTestCompileSourceRoots()
-     */
+    /** {@inheritDoc} */
     public List getTestCompileSourceRoots()
     {
         return testCompileSourceRoots;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getCompileClasspathElements()
-     */
+    /** {@inheritDoc} */
     public List getCompileClasspathElements()
         throws DependencyResolutionRequiredException
     {
@@ -403,84 +375,64 @@ public class MavenProjectStub
         this.compileArtifacts = compileArtifacts;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getCompileArtifacts()
-     */
+    /** {@inheritDoc} */
     public List getCompileArtifacts()
     {
         return compileArtifacts;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getCompileDependencies()
-     */
+    /** {@inheritDoc} */
     public List getCompileDependencies()
     {
         return compileDependencies;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getTestClasspathElements()
-     */
+    /** {@inheritDoc} */
     public List getTestClasspathElements()
         throws DependencyResolutionRequiredException
     {
         return testClasspathElements;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getTestArtifacts()
-     */
+    /** {@inheritDoc} */
     public List getTestArtifacts()
     {
         return testArtifacts;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getTestDependencies()
-     */
+    /** {@inheritDoc} */
     public List getTestDependencies()
     {
         return testDependencies;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getRuntimeClasspathElements()
-     */
+    /** {@inheritDoc} */
     public List getRuntimeClasspathElements()
         throws DependencyResolutionRequiredException
     {
         return runtimeClasspathElements;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getRuntimeArtifacts()
-     */
+    /** {@inheritDoc} */
     public List getRuntimeArtifacts()
     {
         return runtimeArtifacts;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getRuntimeDependencies()
-     */
+    /** {@inheritDoc} */
     public List getRuntimeDependencies()
     {
         return runtimeDependencies;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getSystemClasspathElements()
-     */
+    /** {@inheritDoc} */
     public List getSystemClasspathElements()
         throws DependencyResolutionRequiredException
     {
         return systemClasspathElements;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getSystemArtifacts()
-     */
+    /** {@inheritDoc} */
     public List getSystemArtifacts()
     {
         return systemArtifacts;
@@ -654,22 +606,19 @@ public class MavenProjectStub
         this.model = model;
     }
 
+    /** {@inheritDoc} */
     public List getSystemDependencies()
     {
         return systemDependencies;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setModelVersion(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setModelVersion( String string )
     {
         this.modelVersion = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getModelVersion()
-     */
+    /** {@inheritDoc} */
     public String getModelVersion()
     {
         return modelVersion;
@@ -685,113 +634,85 @@ public class MavenProjectStub
         return "";
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setGroupId(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setGroupId( String string )
     {
         this.groupId = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getGroupId()
-     */
+    /** {@inheritDoc} */
     public String getGroupId()
     {
         return groupId;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setArtifactId(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setArtifactId( String string )
     {
         this.artifactId = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getArtifactId()
-     */
+    /** {@inheritDoc} */
     public String getArtifactId()
     {
         return artifactId;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setName(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setName( String string )
     {
         this.name = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getName()
-     */
+    /** {@inheritDoc} */
     public String getName()
     {
         return name;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setVersion(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setVersion( String string )
     {
         this.version = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getVersion()
-     */
+    /** {@inheritDoc} */
     public String getVersion()
     {
         return version;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getPackaging()
-     */
+    /** {@inheritDoc} */
     public String getPackaging()
     {
         return packaging;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setPackaging(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setPackaging( String string )
     {
         this.packaging = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setInceptionYear(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setInceptionYear( String string )
     {
         this.inceptionYear = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getInceptionYear()
-     */
+    /** {@inheritDoc} */
     public String getInceptionYear()
     {
         return inceptionYear;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setUrl(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setUrl( String string )
     {
         this.url = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getUrl()
-     */
+    /** {@inheritDoc} */
     public String getUrl()
     {
         return url;
@@ -867,17 +788,13 @@ public class MavenProjectStub
         return null;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setDescription(java.lang.String)
-     */
+    /** {@inheritDoc} */
     public void setDescription( String string )
     {
         this.description = string;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getDescription()
-     */
+    /** {@inheritDoc} */
     public String getDescription()
     {
         return description;
@@ -1013,11 +930,13 @@ public class MavenProjectStub
         // nop
     }
 
+    /** {@inheritDoc} */
     public void setBuild( Build build )
     {
         this.build = build;
     }
 
+    /** {@inheritDoc} */
     public Build getBuild()
     {
         return build;
@@ -1083,17 +1002,13 @@ public class MavenProjectStub
         return null;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setLicenses(java.util.List)
-     */
+    /** {@inheritDoc} */
     public void setLicenses( List licenses )
     {
         this.licenses = licenses;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getLicenses()
-     */
+    /** {@inheritDoc} */
     public List getLicenses()
     {
         return licenses;
@@ -1319,33 +1234,25 @@ public class MavenProjectStub
         // nop
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getCollectedProjects()
-     */
+    /** {@inheritDoc} */
     public List getCollectedProjects()
     {
         return collectedProjects;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setCollectedProjects(java.util.List)
-     */
+    /** {@inheritDoc} */
     public void setCollectedProjects( List list )
     {
         this.collectedProjects = list;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setPluginArtifactRepositories(java.util.List)
-     */
+    /** {@inheritDoc} */
     public void setPluginArtifactRepositories( List list )
     {
         this.pluginArtifactRepositories = list;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getPluginArtifactRepositories()
-     */
+    /** {@inheritDoc} */
     public List getPluginArtifactRepositories()
     {
         return pluginArtifactRepositories;
@@ -1371,25 +1278,19 @@ public class MavenProjectStub
         return Collections.EMPTY_LIST;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setActiveProfiles(java.util.List)
-     */
+    /** {@inheritDoc} */
     public void setActiveProfiles( List list )
     {
         activeProfiles = list;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getActiveProfiles()
-     */
+    /** {@inheritDoc} */
     public List getActiveProfiles()
     {
         return activeProfiles;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#addAttachedArtifact(org.apache.maven.artifact.Artifact)
-     */
+    /** {@inheritDoc} */
     public void addAttachedArtifact( Artifact artifact )
     {
         if ( attachedArtifacts == null )
@@ -1402,9 +1303,7 @@ public class MavenProjectStub
         }
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getAttachedArtifacts()
-     */
+    /** {@inheritDoc} */
     public List getAttachedArtifacts()
     {
         return attachedArtifacts;
@@ -1472,49 +1371,37 @@ public class MavenProjectStub
         // nop
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getDependencyArtifacts()
-     */
+    /** {@inheritDoc} */
     public Set getDependencyArtifacts()
     {
         return dependencyArtifacts;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setDependencyArtifacts(java.util.Set)
-     */
+    /** {@inheritDoc} */
     public void setDependencyArtifacts( Set set )
     {
         this.dependencyArtifacts = set;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setReleaseArtifactRepository(org.apache.maven.artifact.repository.ArtifactRepository)
-     */
+    /** {@inheritDoc} */
     public void setReleaseArtifactRepository( ArtifactRepository artifactRepository )
     {
         this.releaseArtifactRepository = artifactRepository;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setSnapshotArtifactRepository(org.apache.maven.artifact.repository.ArtifactRepository)
-     */
+    /** {@inheritDoc} */
     public void setSnapshotArtifactRepository( ArtifactRepository artifactRepository )
     {
         this.snapshotArtifactRepository = artifactRepository;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setOriginalModel(org.apache.maven.model.Model)
-     */
+    /** {@inheritDoc} */
     public void setOriginalModel( Model model )
     {
         this.originalModel = model;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getOriginalModel()
-     */
+    /** {@inheritDoc} */
     public Model getOriginalModel()
     {
         return originalModel;
@@ -1591,25 +1478,19 @@ public class MavenProjectStub
         return Collections.EMPTY_MAP;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#isExecutionRoot()
-     */
+    /** {@inheritDoc} */
     public boolean isExecutionRoot()
     {
         return executionRoot;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#setExecutionRoot(boolean)
-     */
+    /** {@inheritDoc} */
     public void setExecutionRoot( boolean b )
     {
         this.executionRoot = b;
     }
 
-    /**
-     * @see org.apache.maven.project.MavenProject#getDefaultGoal()
-     */
+    /** {@inheritDoc} */
     public String getDefaultGoal()
     {
         return defaultGoal;

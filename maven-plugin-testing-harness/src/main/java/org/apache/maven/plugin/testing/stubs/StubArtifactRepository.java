@@ -32,7 +32,7 @@ import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 public class StubArtifactRepository
     implements ArtifactRepository
 {
-    String baseDir = null;
+    private String baseDir = null;
 
     /**
      * Default constructor

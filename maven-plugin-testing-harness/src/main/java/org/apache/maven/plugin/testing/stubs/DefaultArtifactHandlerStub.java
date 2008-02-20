@@ -62,7 +62,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param t the artifact handler type
+     * @param type the artifact handler type
      */
     public DefaultArtifactHandlerStub( String type )
     {
@@ -137,8 +137,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theAddedToClasspath
-     *            The addedToClasspath to set.
+     * @param theAddedToClasspath The addedToClasspath to set.
      */
     public void setAddedToClasspath( boolean theAddedToClasspath )
     {
@@ -146,8 +145,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theClassifier
-     *            The classifier to set.
+     * @param theClassifier The classifier to set.
      */
     public void setClassifier( String theClassifier )
     {
@@ -155,8 +153,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theDirectory
-     *            The directory to set.
+     * @param theDirectory The directory to set.
      */
     public void setDirectory( String theDirectory )
     {
@@ -164,8 +161,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theExtension
-     *            The extension to set.
+     * @param theExtension The extension to set.
      */
     public void setExtension( String theExtension )
     {
@@ -173,8 +169,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theIncludesDependencies
-     *            The includesDependencies to set.
+     * @param theIncludesDependencies The includesDependencies to set.
      */
     public void setIncludesDependencies( boolean theIncludesDependencies )
     {
@@ -182,8 +177,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theLanguage
-     *            The language to set.
+     * @param theLanguage The language to set.
      */
     public void setLanguage( String theLanguage )
     {
@@ -191,8 +185,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param thePackaging
-     *            The packaging to set.
+     * @param thePackaging The packaging to set.
      */
     public void setPackaging( String thePackaging )
     {
@@ -200,8 +193,7 @@ public class DefaultArtifactHandlerStub
     }
 
     /**
-     * @param theType
-     *            The type to set.
+     * @param theType The type to set.
      */
     public void setType( String theType )
     {

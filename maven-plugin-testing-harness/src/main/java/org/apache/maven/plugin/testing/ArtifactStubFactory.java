@@ -51,15 +51,15 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class ArtifactStubFactory
 {
-    File workingDir;
+    private File workingDir;
 
-    boolean createFiles;
+    private boolean createFiles;
 
-    File srcFile;
+    private File srcFile;
 
-    boolean createUnpackableFile;
+    private boolean createUnpackableFile;
 
-    ArchiverManager archiverManager;
+    private ArchiverManager archiverManager;
 
     /**
      * Default constructor. This should be used only if real files aren't needed...just the artifact objects
@@ -167,7 +167,7 @@ public class ArtifactStubFactory
 
         if ( createFiles )
         {
-            setArtifactFile( artifact,this.workingDir,this.srcFile,this.createUnpackableFile );
+            setArtifactFile( artifact, this.workingDir, this.srcFile, this.createUnpackableFile );
         }
         return artifact;
     }
@@ -282,10 +282,10 @@ public class ArtifactStubFactory
      * @param artifact
      * @return
      */
-    static public String getUnpackableFileName( Artifact artifact )
+    public static String getUnpackableFileName( Artifact artifact )
     {
-        return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-" +
-            artifact.getClassifier() + "-" + artifact.getType() + ".txt";
+        return "" + artifact.getGroupId() + "-" + artifact.getArtifactId() + "-" + artifact.getVersion() + "-"
+            + artifact.getClassifier() + "-" + artifact.getType() + ".txt";
     }
 
     /**
@@ -442,7 +442,8 @@ public class ArtifactStubFactory
 
     /**
      * @return a set of <code>DefaultArtifact</code>, i.e.:
-     * <code>one:group-one:jar:a:1.0, three:group-three:jar:a:1.0, four:group-four:jar:a:1.0, two:group-two:jar:a:1.0</code>
+     * <code>one:group-one:jar:a:1.0, three:group-three:jar:a:1.0, four:group-four:jar:a:1.0,
+     * two:group-two:jar:a:1.0</code>
      * @throws IOException if any
      */
     public Set getGroupIdArtifacts()
@@ -577,9 +578,8 @@ public class ArtifactStubFactory
                 classifierString = "-" + artifact.getClassifier();
             }
 
-            destFileName =
-                artifact.getArtifactId() + versionString + classifierString + "." +
-                    artifact.getArtifactHandler().getExtension();
+            destFileName = artifact.getArtifactId() + versionString + classifierString + "."
+                + artifact.getArtifactHandler().getExtension();
         }
         return destFileName;
     }

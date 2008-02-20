@@ -43,12 +43,11 @@ import org.apache.maven.plugin.testing.ArtifactStubFactory;
 public class StubArtifactResolver
     implements ArtifactResolver
 {
+    private boolean throwArtifactResolutionException;
 
-    boolean throwArtifactResolutionException;
+    private boolean throwArtifactNotFoundException;
 
-    boolean throwArtifactNotFoundException;
-
-    ArtifactStubFactory factory;
+    private ArtifactStubFactory factory;
 
     /**
      * Default constructor
