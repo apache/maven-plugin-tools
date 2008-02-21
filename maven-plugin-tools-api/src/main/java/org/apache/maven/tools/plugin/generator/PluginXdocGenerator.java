@@ -20,8 +20,10 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -87,10 +89,11 @@ public class PluginXdocGenerator
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, File destinationDirectory )
         throws IOException
     {
-        FileWriter writer = null;
+        File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
+        OutputStreamWriter writer = null;
         try
         {
-            writer = new FileWriter( new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) ) );
+            writer = new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" );
 
             writeBody( writer, mojoDescriptor );
 
@@ -107,9 +110,9 @@ public class PluginXdocGenerator
         return mojo.getGoal() + "-mojo." + ext;
     }
 
-    private void writeBody( FileWriter writer, MojoDescriptor mojoDescriptor )
+    private void writeBody( OutputStreamWriter writer, MojoDescriptor mojoDescriptor )
     {
-        XMLWriter w = new PrettyPrintXMLWriter( writer );
+        XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), writer.getEncoding(), null );
 
         w.startElement( "document" );
 
