@@ -108,7 +108,7 @@ public class DefaultArtifactHandlerStub
     {
         if ( packaging == null )
         {
-            packaging = type;
+            packaging = getType();
         }
         return packaging;
     }
