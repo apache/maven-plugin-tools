@@ -341,8 +341,8 @@ public class ArtifactStub
      */
     public boolean isSnapshot()
     {
-        return Artifact.VERSION_FILE_PATTERN.matcher( version ).matches()
-            || version.endsWith( Artifact.SNAPSHOT_VERSION );
+        return Artifact.VERSION_FILE_PATTERN.matcher( getVersion() ).matches()
+            || getVersion().endsWith( Artifact.SNAPSHOT_VERSION );
     }
 
     /**
