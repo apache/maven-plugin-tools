@@ -25,9 +25,9 @@
 
 Maven Plugin Testing Mechanism
 
- The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojo, i.e. by pre-constructing the
+ The Maven Plugin Testing Harness provides mechanisms to manage tests on Mojos, i.e. by pre-constructing the
  {{{http://plexus.codehaus.org}Plexus}} components, providing stub objects for Maven functionality such as projects,
- and populating fields from an XML file that resembles the Plugin configuration in the POM.
+ and populating fields from an XML file that resembles the plugin configuration in the POM.
 
  The best way to start is to read the cookbook {{{getting-started/index.html}How to use Maven Plugin Testing Harness}}.
 

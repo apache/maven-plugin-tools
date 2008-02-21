@@ -106,7 +106,8 @@ public class MyArtifactStub
      * @param version
      * @param packaging
      */
-    public ProjectInfoPluginArtifactStub( String groupId, String artifactId, String version, String packaging )
+    public ProjectInfoPluginArtifactStub( String groupId, String artifactId,
+                                          String version, String packaging )
     {
         this.groupId = groupId;
         this.artifactId = artifactId;
@@ -204,7 +205,8 @@ public class MyProjectStub
     {
         ...
 
-        Artifact artifact = new MyArtifactStub( getGroupId(), getArtifactId(), getVersion(), getPackaging() );
+        Artifact artifact = new MyArtifactStub( getGroupId(), getArtifactId(),
+                                                getVersion(), getPackaging() );
         artifact.setArtifactHandler( new MyArtifactHandlerStub() );
         setArtifact( artifact );
 

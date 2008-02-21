@@ -41,7 +41,7 @@ public class MyMojo
 }
 ------
 
- To test a Mojo in a multiproject area, you need to define several stubs, i.e. for the main test project and his modules.
+ To test a Mojo in a multiproject area, you need to define several stubs, i.e. for the main test project and its modules.
 
 * Create Stubs
 
@@ -99,7 +99,7 @@ public class SubProject2Stub
 }
 -----
 
-* Configuring <<<project-to-test>>> pom
+* Configure <<<project-to-test>>> pom
 
 -----
 <project>

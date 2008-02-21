@@ -25,9 +25,9 @@
 
 Testing Complex Mojo Parameters
 
- <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for complex Mojo parameters testing.
+ <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for testing complex Mojo parameters.
 
- In a real plugin development, you will use specific Maven objects like <<<MavenProject>>>, <<<localRepository>>> or
+ In real plugin development, you will use specific Maven objects like <<<MavenProject>>>, <<<ArtifactRepository>>> or
  <<<MavenSettings>>>. You could use them by defining stubs.
 
  Suppose that you have the following dependencies in the maven-my-plugin pom:
@@ -90,7 +90,7 @@ public class MyMojo
 
 * Create Stubs
 
-  You need to create stubs objects to run <<<MyMojoTest#testSomething()>>>. By convention, the package name should
+  You need to create stub objects to run <<<MyMojoTest#testSomething()>>>. By convention, the package name should
   reflect the stubs, i.e. in our case <<<org.apache.maven.plugin.my.stubs>>>.
 
 -----
@@ -159,7 +159,7 @@ public class SettingsStub
 }
 -----
 
-* Configuring <<<project-to-test>>> pom
+* Configure <<<project-to-test>>> pom
 
 -----
 <project>
@@ -169,11 +169,11 @@ public class SettingsStub
       <plugin>
         <artifactId>maven-my-plugin</artifactId>
         <configuration>
-          <!-- Specify where this pom will be outputted files -->
+          <!-- Specify where this pom will output files -->
           <outputDirectory>target/test-harness/project-to-test</outputDirectory>
 
-          <!-- By default <<<${basedir}/target/local-repo", where basedir refer
-              to the basedir of maven-my-plugin. -->
+          <!-- By default <<<${basedir}/target/local-repo", where basedir refers
+               to the basedir of maven-my-plugin. -->
           <localRepository>${localRepository}</localRepository>
           <!-- The defined stubs -->
           <project implementation="org.apache.maven.plugin.my.stubs.MyProjectStub"/>

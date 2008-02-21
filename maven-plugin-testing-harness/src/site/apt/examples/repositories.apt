@@ -25,10 +25,10 @@
 
 Testing Using Repositories
 
- <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for repositories testing.
+ <<Note>>: This example improves the {{{../getting-started/index.html}cookbook}} for testing repositories.
 
- Developing Maven plugin needs often to have to play with repositories. Suppose that the MyMojo needs
- to download artifacts in your local repository, i.e.:
+ When developing a Maven plugin you often need to play with repositories. Suppose that the MyMojo needs
+ to download artifacts into your local repository, i.e.:
 
 -----
 public class MyMojo
@@ -108,7 +108,7 @@ public class MyProjectStub
 }
 -----
 
-* Configuring <<<project-to-test>>> pom
+* Configure <<<project-to-test>>> pom
 
 -----
 <project>
@@ -118,11 +118,11 @@ public class MyProjectStub
       <plugin>
         <artifactId>maven-my-plugin</artifactId>
         <configuration>
-          <!-- Specify where this pom will be outputted files -->
+          <!-- Specify where this pom will output files -->
           <outputDirectory>${basedir}/target/test-harness/project-to-test</outputDirectory>
 
-          <!-- By default <<<${basedir}/target/local-repo", where basedir refer
-              to the basedir of maven-my-plugin. -->
+          <!-- By default <<<${basedir}/target/local-repo", where basedir refers
+               to the basedir of maven-my-plugin. -->
           <localRepository>${localRepository}</localRepository>
           <!-- The defined stub -->
           <project implementation="org.apache.maven.plugin.my.stubs.MyProjectStub"/>

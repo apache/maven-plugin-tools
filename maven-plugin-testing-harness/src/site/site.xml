@@ -23,7 +23,7 @@
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
-      <item name="Getting Start" href="/getting-started/index.html"/>
+      <item name="Getting Started" href="/getting-started/index.html"/>
       <item name="FAQ" href="/faq.html"/>
     </menu>
 
