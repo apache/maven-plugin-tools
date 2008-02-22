@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.reporting.MavenReport;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
@@ -149,5 +150,44 @@ public final class PluginUtils
         w.writeText( value );
 
         w.endElement();
+    }
+
+    /**
+     * @param impl a Mojo implementation
+     * @return <code>true</code> is the Mojo implementation implements <code>MavenReport</code>,
+     * <code>false</code> otherwise.
+     */
+    public static boolean isMavenReport( String impl )
+    {
+        if ( impl == null )
+        {
+            throw new IllegalArgumentException( "mojo implementation should be declared" );
+        }
+
+        Object mojo = null;
+        try
+        {
+            Class clazz = Class.forName( impl );
+            mojo = clazz.newInstance();
+        }
+        catch ( ClassNotFoundException e )
+        {
+            return false;
+        }
+        catch ( InstantiationException e )
+        {
+            return false;
+        }
+        catch ( IllegalAccessException e )
+        {
+            return false;
+        }
+
+        if ( ( mojo != null ) && ( mojo instanceof MavenReport ) )
+        {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -210,7 +210,7 @@ public class PluginReport
 
     }
 
-    private static ResourceBundle getBundle( Locale locale )
+    protected static ResourceBundle getBundle( Locale locale )
     {
         return ResourceBundle.getBundle( "plugin-report", locale, PluginReport.class.getClassLoader() );
     }
@@ -255,52 +255,87 @@ public class PluginReport
         {
             startSection( getTitle() );
 
-            if ( pluginDescriptor.getMojos() != null && pluginDescriptor.getMojos().size() > 0 )
+            if ( !( pluginDescriptor.getMojos() != null && pluginDescriptor.getMojos().size() > 0 ) )
             {
-                paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
+                paragraph( getBundle( locale ).getString( "report.plugin.nogoal" ) );
+                endSection();
+                return;
+            }
 
-                startTable();
+            paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
 
-                String goalColumnName = getBundle( locale ).getString( "report.plugin.goals.column.goal" );
-                String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
-                tableHeader( new String[] { goalColumnName, descriptionColumnName } );
 
-                for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            boolean hasMavenReport = false;
+            for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            {
+                MojoDescriptor mojo = (MojoDescriptor) i.next();
+
+                if ( PluginUtils.isMavenReport( mojo.getImplementation() ) )
                 {
-                    MojoDescriptor mojo = (MojoDescriptor) i.next();
-
-                    String goalName = mojo.getFullGoalName();
-
-                    /*
-                     * Added ./ to define a relative path
-                     * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
-                     */
-                    String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
-
-                    String description = mojo.getDescription();
-                    if ( StringUtils.isEmpty( description ) )
-                    {
-                        description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
-                    }
-
-                    String deprecated = mojo.getDeprecated();
-                    if ( StringUtils.isNotEmpty( deprecated ) )
-                    {
-                        description = "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> " + description;
-                    }
-
-                    sink.tableRow();
-                    tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
-                    tableCell( description, true );
-                    sink.tableRow_();
+                    hasMavenReport = true;
                 }
+            }
 
-                endTable();
+            startTable();
+
+            String goalColumnName = getBundle( locale ).getString( "report.plugin.goals.column.goal" );
+            String isMavenReport = getBundle( locale ).getString( "report.plugin.goals.column.isMavenReport" );
+            String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
+            if ( hasMavenReport )
+            {
+                tableHeader( new String[] { goalColumnName, isMavenReport, descriptionColumnName } );
             }
             else
             {
-                paragraph( getBundle( locale ).getString( "report.plugin.nogoal" ) );
+                tableHeader( new String[] { goalColumnName, descriptionColumnName } );
             }
+
+            for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            {
+                MojoDescriptor mojo = (MojoDescriptor) i.next();
+
+                String goalName = mojo.getFullGoalName();
+
+                /*
+                 * Added ./ to define a relative path
+                 * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
+                 */
+                String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
+
+                String description = mojo.getDescription();
+                if ( StringUtils.isEmpty( description ) )
+                {
+                    description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
+                }
+
+                String deprecated = mojo.getDeprecated();
+                if ( StringUtils.isNotEmpty( deprecated ) )
+                {
+                    description = "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> " + description;
+                }
+
+                sink.tableRow();
+                tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
+                if ( hasMavenReport )
+                {
+                    if ( PluginUtils.isMavenReport( mojo.getImplementation() ) )
+                    {
+                        sink.tableCell();
+                        iconValid( locale );
+                        sink.tableCell_();
+                    }
+                    else
+                    {
+                        sink.tableCell();
+                        iconError( locale );
+                        sink.tableCell_();
+                    }
+                }
+                tableCell( description, true );
+                sink.tableRow_();
+            }
+
+            endTable();
 
             endSection();
 
@@ -370,6 +405,7 @@ public class PluginReport
             sb.append( "<project>" ).append( '\n' );
             sb.append( "  ..." ).append( '\n' );
             sb.append( "  <build>" ).append( '\n' );
+            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" ).append( '\n' );
             sb.append( "    <pluginManagement>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
             sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
@@ -381,21 +417,45 @@ public class PluginReport
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
             sb.append( "    </pluginManagement>" ).append( '\n' );
+            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" ).append( '\n' );
             sb.append( "    <plugins>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
             sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
                 .append( '\n' );
             sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
                 .append( '\n' );
+            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+            .append( '\n' );
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
             sb.append( "    </plugins>" ).append( '\n' );
             sb.append( "  </build>" ).append( '\n' );
+
+            if ( hasMavenReport )
+            {
+                sb.append( "  ..." ).append( '\n' );
+                sb.append( "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" ).append( '\n' );
+                sb.append( "  <reporting>" ).append( '\n' );
+                sb.append( "    <plugins>" ).append( '\n' );
+                sb.append( "      <plugin>" ).append( '\n' );
+                sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+                    .append( '\n' );
+                sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+                    .append( '\n' );
+                sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+                    .append( '\n' );
+                sb.append( "      </plugin>" ).append( '\n' );
+                sb.append( "      ..." ).append( '\n' );
+                sb.append( "    </plugins>" ).append( '\n' );
+                sb.append( "  </reporting>" ).append( '\n' );
+            }
+
             sb.append( "  ..." ).append( '\n' );
             sb.append( "</project>" ).append( '\n' );
 
-            //mvn -U
             verbatimText( sb.toString() );
+
+            linkPatternedText( getBundle( locale ).getString( "report.plugin.configuration.end" ) );
 
             sink.paragraph_();
 
@@ -505,6 +565,26 @@ public class PluginReport
             }
 
             return jdk;
+        }
+
+        private void iconError( Locale locale )
+        {
+            sink.figure();
+            sink.figureCaption();
+            sink.text( getBundle( locale ).getString( "report.plugin.icon.error" ) );
+            sink.figureCaption_();
+            sink.figureGraphics( "images/icon_error_sml.gif" );
+            sink.figure_();
+        }
+
+        private void iconValid( Locale locale )
+        {
+            sink.figure();
+            sink.figureCaption();
+            sink.text( getBundle( locale ).getString( "report.plugin.icon.valid" ) );
+            sink.figureCaption_();
+            sink.figureGraphics( "images/icon_success_sml.gif" );
+            sink.figure_();
         }
     }
 }

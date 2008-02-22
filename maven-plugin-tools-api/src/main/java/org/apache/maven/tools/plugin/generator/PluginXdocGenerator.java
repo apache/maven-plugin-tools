@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringInputStream;
 import org.codehaus.plexus.util.StringOutputStream;
@@ -141,8 +142,10 @@ public class PluginXdocGenerator
 
         w.addAttribute( "name", mojoDescriptor.getFullGoalName() );
 
+        writeReportNotice( mojoDescriptor, w );
+
         w.startElement( "p" );
-        w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.fullname" ) + "</strong>:" );
+        w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.mojodescriptor.fullname" ) + "</strong>:" );
         w.endElement(); //p
         w.startElement( "p" );
         w.writeMarkup( mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
@@ -175,6 +178,18 @@ public class PluginXdocGenerator
         w.endElement(); // body
 
         w.endElement(); // document
+    }
+
+    private void writeReportNotice( MojoDescriptor mojoDescriptor, XMLWriter w )
+    {
+        if ( PluginUtils.isMavenReport( mojoDescriptor.getImplementation() ) )
+        {
+            w.startElement( "p" );
+            w.writeMarkup( "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.notice.note" )
+                + "</strong>: " );
+            w.writeText( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.notice.isMavenReport" ) );
+            w.endElement(); //p
+        }
     }
 
     private void writeGoalAttributes( MojoDescriptor mojoDescriptor, XMLWriter w )
