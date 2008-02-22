@@ -27,6 +27,7 @@ import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
 import org.apache.maven.plugin.registry.Plugin;
 import org.apache.maven.plugin.registry.PluginRegistry;
 import org.apache.maven.plugin.registry.PluginRegistryUtils;
+import org.apache.maven.plugin.registry.TrackableBase;
 import org.apache.maven.plugin.registry.io.xpp3.PluginRegistryXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -42,11 +43,11 @@ import java.util.Date;
  *
  * @goal updateRegistry
  * @phase install
+ * @version $Id$
  */
 public class UpdatePluginRegistryMojo
     extends AbstractMojo
 {
-
     /**
      * Indicates whether the plugin-registry.xml is used by Maven or not
      * to manage plugin versions.
@@ -124,7 +125,7 @@ public class UpdatePluginRegistryMojo
         // if we can find the plugin, but we've gotten here, the useVersion must be missing; fill it in.
         if ( plugin != null )
         {
-            if ( PluginRegistry.GLOBAL_LEVEL.equals( plugin.getSourceLevel() ) )
+            if ( TrackableBase.GLOBAL_LEVEL.equals( plugin.getSourceLevel() ) )
             {
                 // do nothing. We don't rewrite the globals, under any circumstances.
                 getLog().warn( "Cannot update registered version for plugin {" + groupId + ":" + artifactId +
