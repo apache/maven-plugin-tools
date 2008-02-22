@@ -108,6 +108,14 @@ public class PluginReport
      */
     private Requirements requirements;
 
+    /**
+     * The goal prefix that will appear before the ":".
+     *
+     * @parameter expression="${goalPrefix}"
+     * @since 2.4
+     */
+    protected String goalPrefix;
+
     /** {@inheritDoc} */
     protected Renderer getSiteRenderer()
     {
@@ -135,7 +143,18 @@ public class PluginReport
             return;
         }
 
-        String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        // Copy from AbstractGeneratorMojo#execute()
+        String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        if ( goalPrefix == null )
+        {
+            goalPrefix = defaultGoalPrefix;
+        }
+        else
+        {
+            getLog().warn(
+                           "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
+                               + defaultGoalPrefix + "'.\n" );
+        }
 
         // TODO: could use this more, eg in the writing of the plugin descriptor!
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
