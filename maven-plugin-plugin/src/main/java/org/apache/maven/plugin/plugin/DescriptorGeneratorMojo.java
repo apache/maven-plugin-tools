@@ -33,6 +33,7 @@ import java.io.File;
  * @version $Id$
  * @goal descriptor
  * @phase generate-resources
+ * @requiresDependencyResolution runtime
  */
 public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
