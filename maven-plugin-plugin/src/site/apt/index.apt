@@ -23,11 +23,12 @@
 ~~ specific language governing permissions and limitations
 ~~ under the License.
 
-Maven 2 Plugin Plugin
+Maven Plugin Plugin
 
- The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree, to include in the JAR.
- It is also used to generate Xdoc files for the Mojos as well as for updating the plugin registry, the artifact metadata and
- a generic help goal.
+ The Maven Plugin Plugin is used to create a Maven plugin descriptor for any
+ {{{http://maven.apache.org/general.html#What_is_a_Mojo}Mojo}}'s found in the source tree, to include in the JAR.
+ It is also used to generate report files for the Mojos as well as for updating the plugin registry, the artifact
+ metadata and a generic help goal.
 
 * Goals Overview
 
@@ -37,16 +38,18 @@ Maven 2 Plugin Plugin
 
    * {{{report-mojo.html}plugin:report}} generates the plugin documentation report.
 
-   * {{{updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to reflect the
-      version being installed.
+   * {{{updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
+      reflect the version being installed.
 
    * {{{xdoc-mojo.html}plugin:xdoc}} generates Xdoc files for the project mojos or goals.
 
-   * {{{addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact metadata to the project's
-      artifact, for subsequent installation and deployment. The first use-case for this is to add the LATEST metadata
-      (which is plugin-specific) for shipping alongside the plugin's artifact.
+   * {{{addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
+      metadata to the project's artifact, for subsequent installation and deployment. The first use-case for this
+      is to add the LATEST metadata (which is plugin-specific) for shipping alongside the plugin's artifact.
 
    * {{{helpmojo-mojo.html}helpmojo}} generates an help mojo with describes all project mojos.
+
+   []
 
 * Usage
 
@@ -57,6 +60,8 @@ Maven 2 Plugin Plugin
    The following example shows how to use the Plugin Plugin in more advanced usecases:
 
    * {{{examples/generate-descriptor.html}Configuring Generation of Plugin Descriptor}}
+
+   * {{{examples/generate-report.html}Configuring Generation of Documentation Reports}}
 
    * {{{examples/generate-help.html}Configuring Generation of Help Mojo}}
 
