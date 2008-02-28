@@ -35,7 +35,7 @@
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
-  <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven 2 Plugins in a variety of languages.</description>
+  <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in a variety of languages.</description>
   <url>http://maven.apache.org/plugin-tools/</url>
   <inceptionYear>2004</inceptionYear>
 
