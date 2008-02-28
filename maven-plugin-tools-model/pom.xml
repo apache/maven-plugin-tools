@@ -23,13 +23,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>maven-plugin-tools</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>2.4-SNAPSHOT</version>
+    <artifactId>maven-plugin-tools</artifactId>
+    <version>2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-plugin-tools-model</artifactId>
   <name>Maven Plugin Metadata Model</name>
+  <description>The Maven Plugin Metadata Model provides an API to play with the Metadat model.</description>
 
   <build>
     <plugins>
@@ -55,10 +56,13 @@
   </build>
 
   <dependencies>
+    <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-descriptor</artifactId>
     </dependency>
+
+    <!-- plexus -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
