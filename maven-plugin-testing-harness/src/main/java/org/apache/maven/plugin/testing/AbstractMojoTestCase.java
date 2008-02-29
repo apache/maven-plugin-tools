@@ -248,6 +248,11 @@ public abstract class AbstractMojoTestCase
                         break;
                     }
                 }
+
+                if ( pluginConfigurationElement == null )
+                {
+                    throw new ConfigurationException( "Cannot find a configuration element for a plugin with an artifactId of " + artifactId + "." );
+                }
             }
         }
 
