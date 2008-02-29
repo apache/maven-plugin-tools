@@ -168,6 +168,7 @@
     <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-model</module>
     <module>maven-plugin-testing-harness</module>
+    <module>maven-plugin-tools-javadoc</module>
   </modules>
 
   <dependencyManagement>
