@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<body>
+  <style type="text/css">
+    table.bodyTable th {
+      color: white;
+      background-color: #bbb;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    table.bodyTable th, table.bodyTable td {
+      font-size: 11px;
+    }
+
+    table.bodyTable tr.a {
+      background-color: #ddd;
+    }
+
+    table.bodyTable tr.b {
+      background-color: #eee;
+    }
+  </style>
+
+  <h1>Mojo Javadoc Tags used by Maven Plugins</h1>
+  <p>Here is a reference of the Javadoc annotations that can be used to 'decorate' the Java sources
+    to allow Mojo to generate descriptors.</p>
+
+  <h2>Annotations specified at the class level</h2>
+  <table class="bodyTable">
+    <!-- Annotations listed by specific, autodetect and Javadoc, all alphabetical -->
+    <tr class="b">
+      <th>Descriptor Element</th>
+      <th>Annotation</th>
+      <th>Required?</th>
+      <th>Notes</th>
+    </tr>
+    <tr class="a">
+      <td>aggregator</td>
+      <td>@aggregator</td>
+      <td>No</td>
+      <td>Flags this Mojo to run it in a multi module way, i.e. aggregate the build with the set of
+        projects listed as modules.</td>
+    </tr>
+    <tr class="b">
+      <td>configurator</td>
+      <td>@configurator &lt;roleHint&gt;</td>
+      <td>No</td>
+      <td>The configurator type to use when injecting parameter values into this Mojo. The value is
+        normally deduced from the Mojo's implementation language, but can be specified to allow a
+        custom ComponentConfigurator implementation to be used. <i>NOTE: This will only be used in
+          very special cases, using a highly controlled vocabulary of possible values. (Elements
+          like this are why it's a good idea to use the descriptor tools.)</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>execute</td>
+      <td>
+        <ul>
+          <li>@execute phase=&quot;&lt;phaseName&gt;&quot;
+            lifecycle=&quot;&lt;lifecycleId&gt;&quot;</li>
+          <li>@execute phase=&quot;&lt;phaseName&gt;&quot;</li>
+
+          <li>@execute goal=&quot;&lt;goalName&gt;&quot;</li>
+        </ul>
+      </td>
+      <td>No</td>
+      <td>When this goal is invoked, it will first invoke a parallel lifecycle, ending at the given
+        phase. If a goal is provided instead of a phase, that goal will be executed in isolation.
+        The execution of either will not affect the current project, but instead make available the
+        <code>${executedProject}</code> expression if required. An alternate lifecycle can also be
+        provided: for more information see the documentation on the
+        <a href="../guides/introduction/introduction-to-the-lifecycle.html">build lifecycle</a>.</td>
+    </tr>
+    <tr class="b">
+      <td>executionStrategy</td>
+      <td>@executionStrategy &lt;strategy&gt;</td>
+      <td>No</td>
+      <td>Specify the execution strategy. <i>NOTE: Currently supports <b>once-per-session</b>,
+        <b>always</b>.</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>goal</td>
+      <td>@goal &lt;goalName&gt;</td>
+      <td>Yes</td>
+      <td>The name for the Mojo that users will reference from the command line to execute the Mojo
+        directly, or inside a POM in order to provide Mojo-specific configuration.</td>
+    </tr>
+    <tr class="b">
+      <td>inheritByDefault</td>
+      <td>@inheritByDefault &lt;true|false&gt;</td>
+      <td>No. Default: <code>true</code></td>
+      <td>Specify that the Mojo is inherited.</td>
+    </tr>
+    <tr class="a">
+      <td>instantiationStrategy </td>
+      <td>@instantiationStrategy  &lt;per-lookup&gt;</td>
+      <td>No. Default: <code>per-lookup</code></td>
+      <td>Specify the instantiation strategy.</td>
+    </tr>
+    <tr class="b">
+      <td>phase</td>
+      <td>@phase &lt;phaseName&gt;</td>
+      <td>No</td>
+      <td>Binds this Mojo to a particular phase of the standard build lifecycle, if specified.
+        <i>NOTE: This is only required if this Mojo is to participate in the standard build
+          process.</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>requiresDependencyResolution</td>
+      <td>@requiresDependencyResolution &lt;requiredScope&gt;</td>
+      <td>No</td>
+      <td>Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope)
+        to be resolved before it can execute. <i>NOTE: Currently supports <b>compile</b> ,
+          <b>runtime</b> , and <b>test</b> scopes. </i>
+      </td>
+    </tr>
+    <tr class="b">
+      <td>requiresDirectInvocation</td>
+      <td>@requiresDirectInvocation &lt;true|false&gt;</td>
+      <td>No. Default: <code>false</code></td>
+      <td>Flags this Mojo to be invoke directly.</td>
+    </tr>
+    <tr class="a">
+      <td>requiresOnline</td>
+      <td>@requiresOnline &lt;true|false&gt;</td>
+      <td>No. Default: <code>true</code></td>
+      <td>Flags this Mojo to be run in online mode.</td>
+    </tr>
+    <tr class="b">
+      <td>requiresProject</td>
+      <td>@requiresProject &lt;true|false&gt;</td>
+      <td>No. Default: <code>true</code></td>
+      <td>Flags this Mojo to run inside of a project.</td>
+    </tr>
+    <tr class="a">
+      <td>requiresReports</td>
+      <td>@requiresReports &lt;true|false&gt;</td>
+      <td>No. Default: <code>false</code></td>
+      <td>Flags this Mojo to require reports.</td>
+    </tr>
+
+    <!-- Autodetect -->
+    <tr class="b">
+      <td>description</td>
+      <td>none (detected)</td>
+      <td>No</td>
+      <td>The description of this Mojo's functionality. <i>Using the toolset, this will be the
+          class-level Javadoc description provided. NOTE: While this is not a required part of the
+          Mojo specification, it SHOULD be provided to enable future tool support for browsing, etc.
+          and for clarity.</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>implementation</td>
+      <td>none (detected)</td>
+      <td>Yes</td>
+      <td>The Mojo's fully-qualified class name (or script path in the case of non-Java Mojos).</td>
+    </tr>
+    <tr class="b">
+      <td>language</td>
+      <td>none (detected)</td>
+      <td>No. Default: <code>java</code></td>
+      <td>The implementation language for this Mojo (Java, beanshell, etc.).</td>
+    </tr>
+
+    <!-- Javadoc -->
+    <tr class="a">
+      <td>deprecated</td>
+      <td>@deprecated &lt;deprecated-text&gt;</td>
+      <td>No</td>
+      <td>Specify the version when the Mojo was deprecated to the API. Similar to Javadoc deprecated.
+        This will trigger a warning when a user tries to configure a parameter
+        marked as deprecated.</td>
+    </tr>
+    <tr class="b">
+      <td>since</td>
+      <td>@since &lt;since-text&gt;</td>
+      <td>No</td>
+      <td>Specify the version when the Mojo was added to the API. Similar to Javadoc since.</td>
+    </tr>
+  </table>
+
+  <h2>Annotations specified at the field level</h2>
+  <table class="bodyTable">
+    <!-- Annotations listed by specific, autodetect and Javadoc, all alphabetical -->
+    <tr class="b">
+      <th>Descriptor Element</th>
+      <th>Annotation</th>
+      <th>Required?</th>
+      <th>Notes</th>
+    </tr>
+    <tr class="a">
+      <td>alias</td>
+      <td>@parameter alias=&quot;myAlias&quot;</td>
+      <td>No</td>
+      <td>Specifies an alias which can be used to configure this parameter from the POM. This is
+        primarily useful to improve user-friendliness, where Mojo field names are not intuitive to
+        the user or are otherwise not conducive to configuration via the POM.</td>
+    </tr>
+    <tr class="b">
+      <td>configuration</td>
+      <td>@component role=&quot;...&quot; roleHint=&quot;...&quot;</td>
+      <td>No</td>
+      <td> Populates the field with an instance of a Plexus component. This is like declaring a
+        <i>requirement</i> in a Plexus component. The default requirement will have a role equal
+        to the declared type of the field, and will use the default role hint. You can customise
+        either of these by providing a <code>role</code> and/or <code>roleHint</code> parameter.
+        <i>e.g.</i>
+        <code>@component role=&quot;org.apache.maven.artifact.ArtifactHandler&quot;
+          roleHint=&quot;ear&quot;</code><b>Note:</b> This is identical to the deprecated
+        form of parameter: <code>@parameter
+          expression=&quot;${component.yourpackage.YourComponentClass}&quot;</code>. </td>
+    </tr>
+    <tr class="a">
+      <td>configuration</td>
+      <td>@parameter expression=&quot;${someExpression}&quot;
+        default-value=&quot;value&quot;</td>
+      <td>No</td>
+      <td>Specifies the expression used to calculate the value to be injected into this parameter of
+        the Mojo at buildtime. This is commonly used to refer to specific elements in the POM, such
+        as ${project.build.resources}, which refers to the List of resources meant to accompany the
+        classes in the resulting jar file. The default value is used when the expression evaluates
+        to <code>null</code> . <i>NOTE: If not specified, an expression of ${&lt;name&gt;}
+          is assumed, which can only be satisfied from POM configuration or System properties. The
+          use of '${' and '}' is required to delimit actual expressions which may be evaluated.</i>
+      </td>
+    </tr>
+    <tr class="b">
+      <td>editable</td>
+      <td>@readonly</td>
+      <td>No</td>
+      <td>Specifies that this parameter cannot be configured directly by the user (as in the case of
+        POM-specified configuration). This is useful when you want to force the user to use common
+        POM elements rather than plugin configurations, as in the case where you want to use the
+        artifact's final name as a parameter. In this case, you want the user to modify
+        &lt;build&gt;&lt;finalName/&gt;&lt;/build&gt; rather than specifying
+        a value for finalName directly in the plugin configuration section. It is also useful to
+        ensure that - for example - a List-typed parameter which expects items of type Artifact
+        doesn't get a List full of Strings. <i>NOTE: Specification of this annotation flags the
+          parameter as non-editable; there is no true/false value.</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>required</td>
+      <td>@required</td>
+      <td>No</td>
+      <td>Whether this parameter is required for the Mojo to function. This is used to validate the
+        configuration for a Mojo before it is injected, and before the Mojo is executed from some
+        half-state. <i>NOTE: Specification of this annotation flags the parameter as required; there
+          is no true/false value.</i>
+      </td>
+    </tr>
+
+    <!-- Autodetect -->
+    <tr class="b">
+      <td>description</td>
+      <td>none (detected)</td>
+      <td>No</td>
+      <td>The description of this parameter's use inside the Mojo. <i>Using the toolset, this is
+          detected as the Javadoc description for the field. NOTE: While this is not a required part
+          of the parameter specification, it SHOULD be provided to enable future tool support for
+          browsing, etc. and for clarity.</i>
+      </td>
+    </tr>
+    <tr class="a">
+      <td>name</td>
+      <td>none (detected)</td>
+      <td>Yes</td>
+      <td>The name of the parameter, to be used in configuring this parameter from the Mojo's
+        declared defaults (discussed below) or from the POM. <i>Using the toolset, this is detected
+          as the Java field name.</i>
+      </td>
+    </tr>
+    <tr class="b">
+      <td>type</td>
+      <td>none (detected)</td>
+      <td>Yes</td>
+      <td>The Java type for this parameter. This is used to validate the result of any expressions
+        used to calculate the value which should be injected into the Mojo for this parameter.
+          <i>Using the toolset, this is detected as the class of the Java field corresponding to
+          this parameter.</i>
+      </td>
+    </tr>
+
+    <!-- Javadoc -->
+    <tr class="a">
+      <td>deprecated</td>
+      <td>@deprecated &lt;deprecated-text&gt;</td>
+      <td>No</td>
+      <td>Specify the version when the Mojo was deprecated to the API. Similar to Javadoc deprecated.
+        This will trigger a warning when a user tries to configure a parameter
+        marked as deprecated.</td>
+    </tr>
+    <tr class="b">
+      <td>since</td>
+      <td>@since &lt;since-text&gt;</td>
+      <td>No</td>
+      <td>Specify the version when the Mojo was added to the API. Similar to Javadoc since.</td>
+    </tr>
+  </table>
+
+  <h2>Resources</h2>
+  <ul>
+    <li><a href="http://maven.apache.org/developers/mojo-api-specification.html#The_Descriptor_and_Annotations">Mojo API Specification</a></li>
+  </ul>
+</body>
