@@ -522,11 +522,12 @@ public class PluginReport
             }
             if ( jdk == null )
             {
-                jdk = discoverJdkRequirementFromPlugins( project.getPluginArtifactMap() );
+                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap() );
             }
             if ( jdk == null )
             {
-                jdk = System.getProperty( "java.specification.version" );
+                // The Maven Compiler Plugin uses a fixed default value, not the current JDK version.
+                jdk = "1.1";
             }
 
             return jdk;
@@ -575,7 +576,7 @@ public class PluginReport
                     continue;
                 }
 
-                if ( pluginConf.getChild( "target" ) != null )
+                if ( pluginConf.getChild( "target" ) == null )
                 {
                     continue;
                 }
