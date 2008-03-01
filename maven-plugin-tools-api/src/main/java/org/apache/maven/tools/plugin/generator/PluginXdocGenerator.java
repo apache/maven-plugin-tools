@@ -326,6 +326,17 @@ public class PluginXdocGenerator
 
             writeParameterDetails( mojoDescriptor, list, w );
         }
+        else
+        {
+            w.startElement( "subsection" );
+            w.addAttribute( "name", getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameters" ) );
+
+            w.startElement( "p" );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.noParameter" ) );
+            w.endElement(); //p
+
+            w.endElement();
+        }
     }
 
     private List filterParameters( List parameterList )
