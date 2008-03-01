@@ -51,6 +51,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-repository-metadata</artifactId>
       <version>2.0</version>
     </dependency>
@@ -75,11 +80,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-tools-java</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact-manager</artifactId>
       <version>2.0</version>
     </dependency>
@@ -87,11 +87,6 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-tools-beanshell</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
@@ -104,15 +99,22 @@
       <version>2.0.4</version>
     </dependency>
 
+    <!-- Maven runtime -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-tools-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-tools-beanshell</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-sink-api</artifactId>
-      <version>${doxiaVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.doxia</groupId>
-      <artifactId>doxia-core</artifactId>
       <version>${doxiaVersion}</version>
     </dependency>
     <dependency>
