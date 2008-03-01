@@ -219,7 +219,7 @@ public class PluginReport
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator( locale );
+            PluginXdocGenerator generator = new PluginXdocGenerator( project, locale );
             generator.execute( outputDir, pluginDescriptor );
         }
         catch ( IOException e )
@@ -289,7 +289,7 @@ public class PluginReport
             {
                 MojoDescriptor mojo = (MojoDescriptor) i.next();
 
-                if ( PluginUtils.isMavenReport( mojo.getImplementation() ) )
+                if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
                 {
                     hasMavenReport = true;
                 }
@@ -337,7 +337,7 @@ public class PluginReport
                 tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
                 if ( hasMavenReport )
                 {
-                    if ( PluginUtils.isMavenReport( mojo.getImplementation() ) )
+                    if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
                     {
                         sink.tableCell();
                         iconValid( locale );

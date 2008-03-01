@@ -19,8 +19,9 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
-import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -32,9 +33,8 @@ import java.util.Collections;
  * @author jdcasey
  */
 public class PluginUtilsTest
-    extends TestCase
+    extends AbstractMojoTestCase
 {
-
     public void testShouldTrimArtifactIdToFindPluginId()
     {
         assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "maven-artifactId-plugin" ) );
@@ -64,9 +64,9 @@ public class PluginUtilsTest
 
         String output = sWriter.toString();
 
-        String pattern = "<dependencies>" + "<dependency>" + "<groupId>testGroupId</groupId>" +
-            "<artifactId>testArtifactId</artifactId>" + "<type>pom</type>" + "<version>0.0.0</version>" +
-            "</dependency>" + "</dependencies>";
+        String pattern = "<dependencies>" + "<dependency>" + "<groupId>testGroupId</groupId>"
+            + "<artifactId>testArtifactId</artifactId>" + "<type>pom</type>" + "<version>0.0.0</version>"
+            + "</dependency>" + "</dependencies>";
 
         assertEquals( pattern, output );
     }
@@ -96,4 +96,26 @@ public class PluginUtilsTest
         assertEquals( 1, files.length );
     }
 
+    public void testIsMavenReport()
+        throws Exception
+    {
+        try
+        {
+            PluginUtils.isMavenReport( null, null );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            assertTrue( true );
+        }
+
+        String impl = "org.apache.maven.tools.plugin.util.stubs.MavenReportStub";
+
+        MavenProjectStub stub = new MavenProjectStub();
+        stub.setCompileSourceRoots( Collections.singletonList( getBasedir() + "/target/classes" ) );
+
+        assertTrue( PluginUtils.isMavenReport( impl, stub ) );
+
+        impl = "org.apache.maven.tools.plugin.util.stubs.MojoStub";
+        assertFalse( PluginUtils.isMavenReport( impl, stub ) );
+    }
 }

@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringInputStream;
@@ -53,19 +54,35 @@ public class PluginXdocGenerator
 {
     private final Locale locale;
 
+    private final MavenProject project;
+
     /**
      * Default constructor using <code>Locale.ENGLISH</code> as locale.
+     * Used only in test cases.
      */
     public PluginXdocGenerator()
     {
+        this.project = null;
+        this.locale = Locale.ENGLISH;
+    }
+
+    /**
+     * Constructor using <code>Locale.ENGLISH</code> as locale.
+     *
+     * @param project not null Maven project.
+     */
+    public PluginXdocGenerator( MavenProject project )
+    {
+        this.project = project;
         this.locale = Locale.ENGLISH;
     }
 
     /**
      * @param locale not null wanted locale.
      */
-    public PluginXdocGenerator( Locale locale )
+    public PluginXdocGenerator( MavenProject project, Locale locale )
     {
+        this.project = project;
         if ( locale == null )
         {
             this.locale = Locale.ENGLISH;
@@ -182,7 +199,7 @@ public class PluginXdocGenerator
 
     private void writeReportNotice( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        if ( PluginUtils.isMavenReport( mojoDescriptor.getImplementation() ) )
+        if ( PluginUtils.isMavenReport( mojoDescriptor.getImplementation(), project ) )
         {
             w.startElement( "p" );
             w.writeMarkup( "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.notice.note" )

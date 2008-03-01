@@ -51,6 +51,6 @@ public class XdocGeneratorMojo
     /** {@inheritDoc} */
     protected Generator createGenerator()
     {
-        return new PluginXdocGenerator();
+        return new PluginXdocGenerator( project );
     }
 }
