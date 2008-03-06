@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2</version>
   </parent>
 
   <artifactId>maven-plugin-tools-model</artifactId>
@@ -74,8 +74,8 @@
   </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-model/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.2maven-plugin-tools-model</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.2maven-plugin-tools-model</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/tags/maven-plugin-tools-2.2/maven-plugin-tools-model</url>
   </scm>
 </project>

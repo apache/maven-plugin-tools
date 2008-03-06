@@ -25,12 +25,12 @@
   <parent>
     <artifactId>maven-plugin-tools</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2</version>
   </parent>
 
   <artifactId>maven-plugin-tools-javadoc</artifactId>
   <name>Maven Plugin Tools Javadoc</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <inceptionYear>2008</inceptionYear>
 
   <dependencies>
@@ -146,8 +146,8 @@
  </profiles>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.2maven-plugin-tools-javadoc</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.2maven-plugin-tools-javadoc</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/tags/maven-plugin-tools-2.2/maven-plugin-tools-javadoc</url>
   </scm>
 </project>
