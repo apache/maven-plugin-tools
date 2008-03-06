@@ -50,4 +50,10 @@
       <version>1.3.0</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</url>
+  </scm>
 </project>

@@ -53,4 +53,10 @@
       <artifactId>plexus-utils</artifactId>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-ant/</url>
+  </scm>
 </project>

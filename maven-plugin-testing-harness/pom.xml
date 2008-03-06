@@ -94,4 +94,10 @@
       </plugin>
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-testing-harness/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-testing-harness/</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-testing-harness/</url>
+  </scm>
 </project>
