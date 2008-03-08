@@ -275,7 +275,7 @@ public class PluginXdocGenerator
         {
             w.startElement( "li" );
             w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executePhase1" ) + " <code>" + value
-                + "</code>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executePhase2" ) + "." );
+                + "</code> " + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.executePhase2" ) + "." );
             w.endElement(); //li
         }
 
