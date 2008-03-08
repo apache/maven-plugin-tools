@@ -167,7 +167,6 @@
     <module>maven-plugin-tools-beanshell</module>
     <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-model</module>
-    <module>maven-plugin-testing-harness</module>
     <module>maven-plugin-tools-javadoc</module>
   </modules>
 
@@ -195,12 +194,6 @@
         <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-plugin-testing-harness</artifactId>
-        <version>${pluginTestingHarnessVersion}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-descriptor</artifactId>
         <version>2.0.5</version>
@@ -217,6 +210,13 @@
         <artifactId>plexus-container-default</artifactId>
         <version>1.0-alpha-9</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>${pluginTestingHarnessVersion}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -231,6 +231,6 @@
 
   <properties>
     <pluginToolsVersion>2.2-SNAPSHOT</pluginToolsVersion>
-    <pluginTestingHarnessVersion>1.2-SNAPSHOT</pluginTestingHarnessVersion>
+    <pluginTestingHarnessVersion>1.1</pluginTestingHarnessVersion>
   </properties>
 </project>
