@@ -195,7 +195,7 @@ public abstract class AbstractMojoTaglet
             }
 
             String name = token2.nextToken();
-            String value = token2.nextToken().replace( "\"", "" );
+            String value = token2.nextToken().replaceAll( "\"", "" );
 
             if ( getAllowedParameterNames() != null && !Arrays.asList( getAllowedParameterNames() ).contains( name ) )
             {

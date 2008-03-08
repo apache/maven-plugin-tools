@@ -183,7 +183,7 @@ public final class PluginUtils
             }
             catch ( DependencyResolutionRequiredException e )
             {
-                throw new IllegalArgumentException( e );
+                throw (RuntimeException) new IllegalArgumentException().initCause( e );
             }
 
             List urls = new ArrayList( classPathStrings.size() );
@@ -195,7 +195,7 @@ public final class PluginUtils
                 }
                 catch ( MalformedURLException e )
                 {
-                    throw new IllegalArgumentException( e );
+                    throw (RuntimeException) new IllegalArgumentException().initCause( e );
                 }
             }
 
