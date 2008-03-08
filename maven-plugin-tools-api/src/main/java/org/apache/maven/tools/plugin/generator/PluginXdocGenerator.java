@@ -228,21 +228,21 @@ public class PluginXdocGenerator
         if ( mojoDescriptor.isProjectRequired() )
         {
             w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.projectRequired" ) + "." );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isAggregator() )
         {
             w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.aggregator" ) );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.aggregator" ) + "." );
             w.endElement(); //li
         }
 
         if ( mojoDescriptor.isDirectInvocationOnly() )
         {
             w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.directInvocationOnly" ) );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.directInvocationOnly" ) + "." );
             w.endElement(); //li
         }
 
@@ -299,14 +299,14 @@ public class PluginXdocGenerator
         if ( mojoDescriptor.isOnlineRequired() )
         {
             w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.onlineRequired" ) );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.onlineRequired" ) + "." );
             w.endElement(); //li
         }
 
         if ( !mojoDescriptor.isInheritedByDefault() )
         {
             w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.inheritedByDefault" ) );
+            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.inheritedByDefault" ) + "." );
             w.endElement(); //li
         }
 
