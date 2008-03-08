@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Dependency;
@@ -36,8 +38,11 @@ import org.apache.maven.reporting.MavenReport;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringInputStream;
+import org.codehaus.plexus.util.StringOutputStream;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.w3c.tidy.Tidy;
 
 /**
  * Convenience methods to play with Maven plugins.
@@ -221,4 +226,151 @@ public final class PluginUtils
 
         return false;
     }
+
+    /**
+     * @param description Javadoc description with HTML tags
+     * @return the description with valid HTML tags
+     */
+    public static String makeHtmlValid( String description )
+    {
+        if ( StringUtils.isEmpty( description ) )
+        {
+            return "";
+        }
+
+        StringOutputStream out = new StringOutputStream();
+
+        // Using jTidy to clean comment
+        Tidy tidy = new Tidy();
+        tidy.setDocType( "loose" );
+        tidy.setXHTML( true );
+        tidy.setXmlOut( true );
+        tidy.setMakeClean( true );
+        tidy.setQuiet( true );
+        tidy.setShowWarnings( false );
+        tidy.parse( new StringInputStream( decodeJavadocTags( description ) ), out );
+
+        // strip the header/body stuff
+        String LS = System.getProperty( "line.separator" );
+        String commentCleaned = out.toString();
+        if ( StringUtils.isEmpty( commentCleaned ) )
+        {
+            return "";
+        }
+        int startPos = commentCleaned.indexOf( "<body>" + LS ) + 6 + LS.length();
+        int endPos = commentCleaned.indexOf( LS + "</body>" );
+
+        return commentCleaned.substring( startPos, endPos );
+    }
+
+    /**
+     * Decodes javadoc inline tags into equivalent HTML tags. For instance, the inline tag "{@code <A&B>}" should be
+     * rendered as "<code>&lt;A&amp;B&gt;</code>".
+     *
+     * @param description The javadoc description to decode, may be <code>null</code>.
+     * @return The decoded description, never <code>null</code>.
+     */
+    static String decodeJavadocTags( String description )
+    {
+        if ( StringUtils.isEmpty( description ) )
+        {
+            return "";
+        }
+
+        StringBuffer decoded = new StringBuffer( description.length() + 1024 );
+
+        Matcher matcher = Pattern.compile( "\\{@(\\w+)\\s*([^\\}]*)\\}" ).matcher( description );
+        while ( matcher.find() )
+        {
+            String tag = matcher.group( 1 );
+            String text = matcher.group( 2 );
+            text = StringUtils.replace( text, "&", "&amp;" );
+            text = StringUtils.replace( text, "<", "&lt;" );
+            text = StringUtils.replace( text, ">", "&gt;" );
+            if ( "code".equals( tag ) )
+            {
+                text = "<code>" + text + "</code>";
+            }
+            else if ( "link".equals( tag ) || "linkplain".equals( tag ) || "value".equals( tag ) )
+            {
+                String pattern = "(([^#\\.\\s]+\\.)*([^#\\.\\s]+))?" + "(#([^\\(\\s]*)(\\([^\\)]*\\))?\\s*(\\S.*)?)?";
+                final int LABEL = 7;
+                final int CLASS = 3;
+                final int MEMBER = 5;
+                final int ARGS = 6;
+                Matcher link = Pattern.compile( pattern ).matcher( text );
+                if ( link.matches() )
+                {
+                    text = link.group( LABEL );
+                    if ( StringUtils.isEmpty( text ) )
+                    {
+                        text = link.group( CLASS );
+                        if ( StringUtils.isEmpty( text ) )
+                        {
+                            text = "";
+                        }
+                        if ( StringUtils.isNotEmpty( link.group( MEMBER ) ) )
+                        {
+                            if ( StringUtils.isNotEmpty( text ) )
+                            {
+                                text += '.';
+                            }
+                            text += link.group( MEMBER );
+                            if ( StringUtils.isNotEmpty( link.group( ARGS ) ) )
+                            {
+                                text += "()";
+                            }
+                        }
+                    }
+                }
+                if ( !"linkplain".equals( tag ) )
+                {
+                    text = "<code>" + text + "</code>";
+                }
+            }
+            matcher.appendReplacement( decoded, ( text != null ) ? quoteReplacement( text ) : "" );
+        }
+        matcher.appendTail( decoded );
+
+        return decoded.toString();
+    }
+
+    /**
+     * Returns a literal replacement <code>String</code> for the specified <code>String</code>. This method
+     * produces a <code>String</code> that will work as a literal replacement <code>s</code> in the
+     * <code>appendReplacement</code> method of the {@link Matcher} class. The <code>String</code> produced will
+     * match the sequence of characters in <code>s</code> treated as a literal sequence. Slashes ('\') and dollar
+     * signs ('$') will be given no special meaning. TODO: copied from Matcher class of Java 1.5, remove once target
+     * platform can be upgraded
+     * 
+     * @see <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Matcher.html">java.util.regex.Matcher</a>
+     * @param s The string to be literalized
+     * @return A literal string replacement
+     */
+    private static String quoteReplacement( String s )
+    {
+        if ( ( s.indexOf( '\\' ) == -1 ) && ( s.indexOf( '$' ) == -1 ) )
+            return s;
+        StringBuffer sb = new StringBuffer();
+        for ( int i = 0; i < s.length(); i++ )
+        {
+            char c = s.charAt( i );
+            if ( c == '\\' )
+            {
+                sb.append( '\\' );
+                sb.append( '\\' );
+            }
+            else if ( c == '$' )
+            {
+                sb.append( '\\' );
+                sb.append( '$' );
+            }
+            else
+            {
+                sb.append( c );
+            }
+        }
+        return sb.toString();
+    }
+
 }

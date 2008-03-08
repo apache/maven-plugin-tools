@@ -118,4 +118,74 @@ public class PluginUtilsTest
         impl = "org.apache.maven.tools.plugin.util.stubs.MojoStub";
         assertFalse( PluginUtils.isMavenReport( impl, stub ) );
     }
+
+    public void testMakeHtmlValid()
+    {
+        String javadoc = "";
+        assertEquals( "", PluginUtils.makeHtmlValid( javadoc ) );
+
+        // true HTML
+        javadoc = "Generates <i>something</i> for the project.";
+        assertEquals( "Generates <i>something</i> for the project.", PluginUtils.makeHtmlValid( javadoc ) );
+
+        // wrong HTML
+        javadoc = "Generates <i>something</i> <b> for the project.";
+        assertEquals( "Generates <i>something</i> <b> for the project.</b>", PluginUtils
+            .makeHtmlValid( javadoc ) );
+    }
+
+    public void testDecodeJavadocTags()
+    {
+        String javadoc = null;
+        assertEquals( "", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "";
+        assertEquals( "", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@code text}";
+        assertEquals( "<code>text</code>", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@code <A&B>}";
+        assertEquals( "<code>&lt;A&amp;B&gt;</code>", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@literal text}";
+        assertEquals( "text", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@literal text}  {@literal text}";
+        assertEquals( "text  text", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@literal <A&B>}";
+        assertEquals( "&lt;A&amp;B&gt;", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@link Class}";
+        assertEquals( "<code>Class</code>", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain Class}";
+        assertEquals( "Class", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain #field}";
+        assertEquals( "field", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain Class#field}";
+        assertEquals( "Class.field", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain #method()}";
+        assertEquals( "method()", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain #method(Object arg)}";
+        assertEquals( "method()", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain #method(Object, String)}";
+        assertEquals( "method()", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain #method(Object, String) label}";
+        assertEquals( "label", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain Class#method(Object, String)}";
+        assertEquals( "Class.method()", PluginUtils.decodeJavadocTags( javadoc ) );
+
+        javadoc = "{@linkplain Class#method(Object, String) label}";
+        assertEquals( "label", PluginUtils.decodeJavadocTags( javadoc ) );
+    }
+
 }

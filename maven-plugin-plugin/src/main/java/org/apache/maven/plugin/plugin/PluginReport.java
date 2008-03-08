@@ -326,6 +326,10 @@ public class PluginReport
                 {
                     description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
                 }
+                else
+                {
+                    description = PluginUtils.makeHtmlValid( description );
+                }
 
                 String deprecated = mojo.getDeprecated();
                 if ( StringUtils.isNotEmpty( deprecated ) )
