@@ -105,7 +105,7 @@ public class JavadocReportTest
     public void testMojoTaglets()
         throws Exception
     {
-        File testPom = new File( getBasedir(), "src/test/resources/unit/javadoc/javadoc-plugin-config.xml" );
+        File testPom = new File( getBasedir(), "target/test-classes/unit/javadoc/javadoc-plugin-config.xml" );
         PlexusConfiguration pluginConfiguration = extractPluginConfiguration( "maven-javadoc-plugin", testPom );
 
         JavadocReport mojo = (JavadocReport) lookupMojo( "org.apache.maven.plugins", "maven-javadoc-plugin", "2.3",
