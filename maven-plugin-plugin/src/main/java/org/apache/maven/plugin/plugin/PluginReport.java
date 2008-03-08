@@ -344,13 +344,13 @@ public class PluginReport
                     if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
                     {
                         sink.tableCell();
-                        iconValid( locale );
+                        sink.text( getBundle( locale ).getString( "report.plugin.isReport" ) );
                         sink.tableCell_();
                     }
                     else
                     {
                         sink.tableCell();
-                        iconError( locale );
+                        sink.text( getBundle( locale ).getString( "report.plugin.isNotReport" ) );
                         sink.tableCell_();
                     }
                 }
@@ -589,26 +589,6 @@ public class PluginReport
             }
 
             return jdk;
-        }
-
-        private void iconError( Locale locale )
-        {
-            sink.figure();
-            sink.figureCaption();
-            sink.text( getBundle( locale ).getString( "report.plugin.icon.error" ) );
-            sink.figureCaption_();
-            sink.figureGraphics( "images/icon_error_sml.gif" );
-            sink.figure_();
-        }
-
-        private void iconValid( Locale locale )
-        {
-            sink.figure();
-            sink.figureCaption();
-            sink.text( getBundle( locale ).getString( "report.plugin.icon.valid" ) );
-            sink.figureCaption_();
-            sink.figureGraphics( "images/icon_success_sml.gif" );
-            sink.figure_();
         }
     }
 }
