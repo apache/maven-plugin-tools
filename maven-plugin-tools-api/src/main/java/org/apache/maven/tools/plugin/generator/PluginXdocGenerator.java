@@ -175,7 +175,7 @@ public class PluginXdocGenerator
         w.endElement(); //p
 
         w.startElement( "p" );
-        if ( mojoDescriptor.getDescription() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
             w.writeMarkup( makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
