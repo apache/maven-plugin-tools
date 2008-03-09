@@ -249,8 +249,8 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4maven-plugin-plugin</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4maven-plugin-plugin</developerConnection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4/maven-plugin-plugin</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4/maven-plugin-plugin</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/tags/maven-plugin-tools-2.4/maven-plugin-plugin</url>
   </scm>
 
