@@ -112,7 +112,7 @@ under the License.
           </taglets>
 
           <tagletArtifact>
-            <groupId>org.apache.maven</groupId>
+            <groupId>org.apache.maven.plugintools</groupId>
             <artifactId>maven-plugin-tools-javadoc</artifactId>
             <version>@project.version@</version>
           </tagletArtifact>
