@@ -75,7 +75,7 @@
       <version>2.0</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.maven.plugintools</groupId>
+        <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-api</artifactId>
     </dependency>
     <dependency>
@@ -101,12 +101,12 @@
 
     <!-- Maven runtime -->
     <dependency>
-      <groupId>org.apache.maven.plugintools</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-java</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.plugintools</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-beanshell</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -149,22 +149,22 @@
     <dependencies>
       <!-- maven -->
       <dependency>
-        <groupId>org.apache.maven.plugintools</groupId>
+        <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-api</artifactId>
         <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.maven.plugintools</groupId>
+        <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-model</artifactId>
         <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.maven.plugintools</groupId>
+        <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-java</artifactId>
         <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.maven.plugintools</groupId>
+        <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-beanshell</artifactId>
         <version>${pluginToolsVersion}</version>
       </dependency>
