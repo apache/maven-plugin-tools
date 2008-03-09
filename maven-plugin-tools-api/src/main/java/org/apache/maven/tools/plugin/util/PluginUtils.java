@@ -185,6 +185,10 @@ public final class PluginUtils
             try
             {
                 classPathStrings = project.getCompileClasspathElements();
+                if ( project.getExecutionProject() != null )
+                {
+                    classPathStrings.addAll( project.getExecutionProject().getCompileClasspathElements() );
+                }
             }
             catch ( DependencyResolutionRequiredException e )
             {
@@ -204,9 +208,8 @@ public final class PluginUtils
                 }
             }
 
-            URLClassLoader projectClassLoader = new URLClassLoader( (URL[]) urls.toArray( new URL[urls.size()] ),
+            classLoader = new URLClassLoader( (URL[]) urls.toArray( new URL[urls.size()] ),
                                                                     classLoader );
-            classLoader = projectClassLoader;
         }
 
         Class clazz = null;
@@ -342,7 +345,7 @@ public final class PluginUtils
      * match the sequence of characters in <code>s</code> treated as a literal sequence. Slashes ('\') and dollar
      * signs ('$') will be given no special meaning. TODO: copied from Matcher class of Java 1.5, remove once target
      * platform can be upgraded
-     * 
+     *
      * @see <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Matcher.html">java.util.regex.Matcher</a>
      * @param s The string to be literalized
      * @return A literal string replacement
