@@ -113,7 +113,7 @@
                   </goals>
                   <configuration>
                     <tasks>
-                      <copy todir="${project.build.testOutputDirectory}/unit" encoding="ISO-8859-1" overwrite="true">
+                      <copy todir="${project.build.testOutputDirectory}/unit" encoding="UTF-8" overwrite="true">
                         <fileset dir="${basedir}/src/test/resources/unit" includes="**/*.xml"/>
                         <filterset>
                           <filter token="project.version" value="${project.version}"/>
