@@ -44,7 +44,7 @@ import com.sun.tools.doclets.Taglet;
  * </pre>
  * <b>Note</b>: This taglet is similar to call the <code>Javadoc</code> tool with the following:
  * <pre>
- * javadoc ... -tag 'phase:t:Is binded to the specified phase of the standard build lifecycle:'
+ * javadoc ... -tag 'phase:t:Is bound to the specified phase of the standard build lifecycle:'
  * </pre>
  *
  * @see <a href="package-summary.html#package_description">package-summary.html</a>
@@ -57,7 +57,7 @@ public class MojoPhaseTypeTaglet
 {
     private static final String NAME = JavaMojoAnnotation.PHASE;
 
-    protected static final String HEADER = "Is binded to the specified phase of the standard build lifecycle";
+    protected static final String HEADER = "Is bound to the specified phase of the standard build lifecycle";
 
     /**
      * @return By default, return the string defined in {@linkplain #HEADER}.
