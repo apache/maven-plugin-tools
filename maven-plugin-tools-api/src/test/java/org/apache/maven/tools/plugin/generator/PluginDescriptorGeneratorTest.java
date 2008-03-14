@@ -24,10 +24,10 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -81,7 +81,7 @@ public class PluginDescriptorGeneratorTest
         StringWriter sWriter = new StringWriter();
         PrintWriter pWriter = new PrintWriter( sWriter );
 
-        BufferedReader reader = new BufferedReader( new FileReader( pluginDescriptorFile ) );
+        BufferedReader reader = new BufferedReader( ReaderFactory.newXmlReader( pluginDescriptorFile ) );
 
         String line = null;
         while ( ( line = reader.readLine() ) != null )

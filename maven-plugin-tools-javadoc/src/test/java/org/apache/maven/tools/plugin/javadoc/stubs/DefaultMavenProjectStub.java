@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.javadoc.stubs;
  */
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +36,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.codehaus.plexus.util.ReaderFactory;
 
 /**
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -54,7 +54,8 @@ public class DefaultMavenProjectStub
 
         try
         {
-            model = pomReader.read( new FileReader( new File( getBasedir(), "javadoc-plugin-config.xml" ) ) );
+            File pomFile = new File( getBasedir(), "javadoc-plugin-config.xml" );
+            model = pomReader.read( ReaderFactory.newXmlReader( pomFile ) );
             setModel( model );
         }
         catch ( Exception e )

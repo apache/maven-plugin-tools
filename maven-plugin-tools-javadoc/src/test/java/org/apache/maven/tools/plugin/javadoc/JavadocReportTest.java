@@ -21,8 +21,9 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 
 import org.apache.maven.artifact.Artifact;
@@ -85,7 +86,7 @@ public class JavadocReportTest
         throws IOException
     {
         String str = "", strTmp = "";
-        BufferedReader in = new BufferedReader( new FileReader( file ) );
+        BufferedReader in = new BufferedReader( new InputStreamReader( new FileInputStream( file ), "ISO-8859-1" ) );
 
         while ( ( strTmp = in.readLine() ) != null )
         {

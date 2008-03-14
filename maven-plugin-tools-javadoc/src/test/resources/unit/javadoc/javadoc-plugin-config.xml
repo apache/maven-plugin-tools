@@ -56,6 +56,9 @@ under the License.
 
           <debug>true</debug>
           <show>private</show>
+          <encoding>ISO-8859-1</encoding>
+          <docencoding>ISO-8859-1</docencoding>
+          <charset>ISO-8859-1</charset>
 
           <taglets>
             <taglet>
