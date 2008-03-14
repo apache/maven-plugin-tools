@@ -53,6 +53,16 @@
       <artifactId>maven-plugin-tools-api</artifactId>
     </dependency>
 
+    <!-- plexus -->
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+
     <!-- misc -->
     <dependency>
       <groupId>qdox</groupId>
