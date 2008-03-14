@@ -23,7 +23,9 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.io.IOException;
 
 /**
@@ -85,10 +87,10 @@ public class MyMojo
 
         File touch = new File( f, "touch.txt" );
 
-        FileWriter w = null;
+        Writer w = null;
         try
         {
-            w = new FileWriter( touch );
+            w = new OutputStreamWriter( new FileOutputStream( touch ), "UTF-8" );
 
             w.write( "touch.txt" );
         }
