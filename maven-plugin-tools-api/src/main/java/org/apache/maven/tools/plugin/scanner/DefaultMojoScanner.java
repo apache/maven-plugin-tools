@@ -104,7 +104,22 @@ public class DefaultMojoScanner
 
         if ( numMojoDescriptors == 0 )
         {
-            throw new InvalidPluginDescriptorException( "No mojo descriptors found in plugin." );
+            //MPLUGIN-102. Restore the old functionality and allow a deprecation period
+            //throw new InvalidPluginDescriptorException( "No mojo descriptors were found in this project." );
+            for (int i= 0; i < 10; i++)
+            {
+                logger.warn("");
+            }
+            logger.warn("*******************************************************");
+            logger.warn("Deprecation Alert:");
+            logger.warn("No mojo descriptors were found in this project, which has a packaging type of maven-plugin.");
+            logger.warn("In future versions of the plugin tools, this will fail the build.");
+            logger.warn("If this project is an archetype, change the packaging type from maven-plugin to maven-archetype.");
+            logger.warn("********************************************************");
+            for (int i= 0; i < 10; i++)
+            {
+                logger.warn("");
+            }
         }
     }
 
