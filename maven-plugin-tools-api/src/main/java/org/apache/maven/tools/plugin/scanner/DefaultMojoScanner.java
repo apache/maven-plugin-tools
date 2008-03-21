@@ -112,7 +112,7 @@ public class DefaultMojoScanner
             }
             logger.warn("*******************************************************");
             logger.warn("Deprecation Alert:");
-            logger.warn("No mojo descriptors were found in this project, which has a packaging type of maven-plugin.");
+            logger.warn("No mojo descriptors were found in this project which has a packaging type of maven-plugin.");
             logger.warn("In future versions of the plugin tools, this will fail the build.");
             logger.warn("If this project is an archetype, change the packaging type from maven-plugin to maven-archetype.");
             logger.warn("********************************************************");
