@@ -208,7 +208,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
-        <version>1.0-alpha-9</version>
+        <version>1.0-alpha-9-stable-1</version>
       </dependency>
 
       <dependency>
@@ -231,7 +231,7 @@
   </dependencies>
 
   <properties>
-    <pluginToolsVersion>2.4</pluginToolsVersion>
+    <pluginToolsVersion>2.5-SNAPSHOT</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.1</pluginTestingHarnessVersion>
   </properties>
 </project>
