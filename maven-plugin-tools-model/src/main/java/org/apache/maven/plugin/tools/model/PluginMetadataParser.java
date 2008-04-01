@@ -25,11 +25,11 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.tools.model.io.xpp3.PluginMetadataXpp3Reader;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashSet;
@@ -60,7 +60,7 @@ public class PluginMetadataParser
 
         try
         {
-            reader = new FileReader( metadataFile );
+            reader = ReaderFactory.newXmlReader( metadataFile );
 
             PluginMetadataXpp3Reader metadataReader = new PluginMetadataXpp3Reader();
 
