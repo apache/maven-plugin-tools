@@ -295,8 +295,8 @@ public class PluginHelpGenerator
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
 
             String goal = descriptor.getFullGoalName();
-            String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ? toText( descriptor
-                .getDescription() ) : "No description available.";
+            String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
+                StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
 
             writer.write( "        sb.append( \"" + goal + "\" ).append( \"\\n\" );" + LS );
             writer.write( "        for ( Iterator it = toLines( \"" + description + "\" ).iterator(); it.hasNext(); )"
@@ -330,10 +330,8 @@ public class PluginHelpGenerator
                         if ( expression == null || !expression.startsWith( "${component." ) )
                         {
                             String parameterName = parameter.getName();
-                            String parameterDescription = StringUtils.isNotEmpty( parameter.getDescription() )
-                                                                                                              ? toText( parameter
-                                                                                                                  .getDescription() )
-                                                                                                              : "No description available.";
+                            String parameterDescription = StringUtils.isNotEmpty( parameter.getDescription() ) ?
+                                StringUtils.escape( toText( parameter.getDescription() ) ) : "No description available.";
                             String parameterDefaultValue = parameterName
                                 + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
                                     + parameter.getDefaultValue() + "')" : "" );
