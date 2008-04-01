@@ -30,11 +30,12 @@ import org.apache.maven.plugin.registry.PluginRegistryUtils;
 import org.apache.maven.plugin.registry.TrackableBase;
 import org.apache.maven.plugin.registry.io.xpp3.PluginRegistryXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -166,12 +167,12 @@ public class UpdatePluginRegistryMojo
         // only rewrite the user-level registry if one existed before, or if we've created user-level data here.
         if ( extractedUserRegistry != null )
         {
-            FileWriter fWriter = null;
+            Writer fWriter = null;
 
             try
             {
                 pluginRegistryFile.getParentFile().mkdirs();
-                fWriter = new FileWriter( pluginRegistryFile );
+                fWriter = WriterFactory.newXmlWriter( pluginRegistryFile );
 
                 PluginRegistryXpp3Writer writer = new PluginRegistryXpp3Writer();
 
