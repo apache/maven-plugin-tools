@@ -503,6 +503,10 @@ public class PluginReport
             {
                 maven = ( project.getPrerequisites() != null ? project.getPrerequisites().getMaven() : null );
             }
+            if ( maven == null )
+            {
+                maven = "2.0";
+            }
 
             return maven;
         }

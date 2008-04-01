@@ -41,7 +41,6 @@ under the License.
           <version>1.0.0</version>
           <type>String</type>
           <identifier>true</identifier>
-          <defaultValue>2.0</defaultValue>
         </field>
         <field>
           <name>jdk</name>
