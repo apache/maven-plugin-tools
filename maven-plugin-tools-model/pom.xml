@@ -39,7 +39,9 @@
         <artifactId>modello-maven-plugin</artifactId>
         <version>1.0-alpha-18</version>
         <configuration>
-          <model>src/main/mdo/plugin-metadata.mdo</model>
+          <models>
+            <model>src/main/mdo/plugin-metadata.mdo</model>
+          </models>
           <version>1.0.0</version>
         </configuration>
         <executions>
