@@ -130,8 +130,19 @@ public class PluginUtilsTest
 
         // wrong HTML
         javadoc = "Generates <i>something</i> <b> for the project.";
-        assertEquals( "Generates <i>something</i> <b> for the project.</b>", PluginUtils
-            .makeHtmlValid( javadoc ) );
+        assertEquals( "Generates <i>something</i> <b> for the project.</b>", PluginUtils.makeHtmlValid( javadoc ) );
+
+        // special characters
+        javadoc = "& &amp; < > \u00A0";
+        assertEquals( "&amp; &amp; &lt; &gt; \u00A0", PluginUtils.makeHtmlValid( javadoc ) );
+
+        // non ASCII characters
+        javadoc = "\u00E4 \u00F6 \u00FC \u00DF";
+        assertEquals( javadoc, PluginUtils.makeHtmlValid( javadoc ) );
+
+        // non Latin1 characters
+        javadoc = "\u0130 \u03A3 \u05D0 \u06DE";
+        assertEquals( javadoc, PluginUtils.makeHtmlValid( javadoc ) );
     }
 
     public void testDecodeJavadocTags()

@@ -19,7 +19,10 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,10 +41,9 @@ import org.apache.maven.reporting.MavenReport;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringInputStream;
-import org.codehaus.plexus.util.StringOutputStream;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.w3c.tidy.Configuration;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -241,29 +243,42 @@ public final class PluginUtils
             return "";
         }
 
-        StringOutputStream out = new StringOutputStream();
+        String commentCleaned = decodeJavadocTags( description );
 
         // Using jTidy to clean comment
         Tidy tidy = new Tidy();
         tidy.setDocType( "loose" );
         tidy.setXHTML( true );
         tidy.setXmlOut( true );
+        tidy.setCharEncoding( Configuration.UTF8 );
         tidy.setMakeClean( true );
+        tidy.setNumEntities( true );
+        tidy.setQuoteNbsp( false );
         tidy.setQuiet( true );
         tidy.setShowWarnings( false );
-        tidy.parse( new StringInputStream( decodeJavadocTags( description ) ), out );
+        try
+        {
+            ByteArrayOutputStream out = new ByteArrayOutputStream( commentCleaned.length() + 256 );
+            tidy.parse( new ByteArrayInputStream( commentCleaned.getBytes( "UTF-8" ) ), out );
+            commentCleaned = out.toString("UTF-8");
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            // cannot happen as every JVM must support UTF-8, see also class javadoc for java.nio.charset.Charset
+        }
 
-        // strip the header/body stuff
-        String LS = System.getProperty( "line.separator" );
-        String commentCleaned = out.toString();
         if ( StringUtils.isEmpty( commentCleaned ) )
         {
             return "";
         }
+
+        // strip the header/body stuff
+        String LS = System.getProperty( "line.separator" );
         int startPos = commentCleaned.indexOf( "<body>" + LS ) + 6 + LS.length();
         int endPos = commentCleaned.indexOf( LS + "</body>" );
+        commentCleaned = commentCleaned.substring( startPos, endPos );
 
-        return commentCleaned.substring( startPos, endPos );
+        return commentCleaned;
     }
 
     /**
