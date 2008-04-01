@@ -35,6 +35,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -524,7 +525,7 @@ public class PluginHelpGenerator
             }
         };
 
-        parser.parse( new StringReader( str ), htmlCallback, true );
+        parser.parse( new StringReader( PluginUtils.makeHtmlValid( str ) ), htmlCallback, true );
 
         return StringUtils.replace( sb.toString(), "\"", "'" ); // for CDATA
     }

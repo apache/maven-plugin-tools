@@ -39,5 +39,9 @@ public class PluginHelpGeneratorTest
         // wrong HTML
         javadoc = "Generates <i>something</i> <b> for the project.";
         assertEquals( "Generates something for the project.", PluginHelpGenerator.toText( javadoc ) );
+
+        // javadoc inline tags
+        javadoc = "Generates {@code something} for the project.";
+        assertEquals( "Generates something for the project.", PluginHelpGenerator.toText( javadoc ) );
     }
 }
