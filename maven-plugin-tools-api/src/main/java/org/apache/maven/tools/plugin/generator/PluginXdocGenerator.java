@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -103,12 +104,14 @@ public class PluginXdocGenerator
         throws IOException
     {
         File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
-        OutputStreamWriter writer = null;
+        String encoding = "UTF-8";
+        Writer writer = null;
         try
         {
-            writer = new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" );
+            writer = new OutputStreamWriter( new FileOutputStream( outputFile ), encoding );
 
-            writeBody( writer, mojoDescriptor );
+            XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), encoding, null );
+            writeBody( mojoDescriptor, w );
 
             writer.flush();
         }
@@ -123,10 +126,8 @@ public class PluginXdocGenerator
         return mojo.getGoal() + "-mojo." + ext;
     }
 
-    private void writeBody( OutputStreamWriter writer, MojoDescriptor mojoDescriptor )
+    private void writeBody( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), writer.getEncoding(), null );
-
         w.startElement( "document" );
 
         // ----------------------------------------------------------------------
