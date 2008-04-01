@@ -30,8 +30,10 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +55,8 @@ public class PluginDescriptorGenerator
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {
+        String encoding = "UTF-8";
+
         File f = new File( destinationDirectory, "plugin.xml" );
 
         if ( !f.getParentFile().exists() )
@@ -60,12 +64,12 @@ public class PluginDescriptorGenerator
             f.getParentFile().mkdirs();
         }
 
-        FileWriter writer = null;
+        Writer writer = null;
         try
         {
-            writer = new FileWriter( f );
+            writer = new OutputStreamWriter( new FileOutputStream( f ), encoding );
 
-            XMLWriter w = new PrettyPrintXMLWriter( writer );
+            XMLWriter w = new PrettyPrintXMLWriter( writer, encoding, null );
 
             w.startElement( "plugin" );
 
