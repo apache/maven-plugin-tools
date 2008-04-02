@@ -263,8 +263,8 @@ public class PluginHelpGenerator
         writer.write( "    /** 80-character display buffer */" + LS );
         writer.write( "    private static final int DEFAULT_WIDTH = 80;" + LS );
         writer.write( LS );
-        writer.write( "    /** 4 indent spaces */" + LS );
-        writer.write( "    private static final String DEFAULT_INDENT = repeat( \" \", 2 );" + LS );
+        writer.write( "    /** 2 indent spaces */" + LS );
+        writer.write( "    private static final int DEFAULT_INDENT = 2;" + LS );
         writer.write( LS );
         writer.write( "    /**" + LS );
         writer.write( "     * If true, display all settable properies for each goal." + LS );
@@ -300,11 +300,7 @@ public class PluginHelpGenerator
                 StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
 
             writer.write( "        sb.append( \"" + goal + "\" ).append( \"\\n\" );" + LS );
-            writer.write( "        for ( Iterator it = toLines( \"" + description + "\" ).iterator(); it.hasNext(); )"
-                + LS );
-            writer.write( "        {" + LS );
-            writer.write( "            sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
-            writer.write( "        }" + LS );
+            writer.write( "        appendDescription( sb, \"" + description + "\", DEFAULT_INDENT );" + LS );
 
             if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
             {
@@ -337,17 +333,8 @@ public class PluginHelpGenerator
                                 + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
                                     + parameter.getDefaultValue() + "')" : "" );
 
-                            writer.write( "        for ( Iterator it = toLines( \"" + parameterDefaultValue
-                                + "\", repeat( \" \", 4 ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
-                            writer.write( "        {" + LS );
-                            writer.write( "            sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
-                            writer.write( "        }" + LS );
-
-                            writer.write( "            for ( Iterator it = toLines( \"" + parameterDescription
-                                + "\", repeat( \" \", 6 ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
-                            writer.write( "            {" + LS );
-                            writer.write( "                sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
-                            writer.write( "            }" + LS );
+                            writer.write( "            appendDescription( sb, \"" + parameterDefaultValue + "\", 4 );" + LS );
+                            writer.write( "            appendDescription( sb, \"" + parameterDescription + "\", 6 );" + LS );
                         }
                     }
                 }
@@ -363,11 +350,7 @@ public class PluginHelpGenerator
         // TODO Should be discovered
         writer.write( "        sb.append( \"" + getFullHelpGoalName( pluginDescriptor ) + "\" ).append( \"\\n\" );"
             + LS );
-        writer.write( "        for ( Iterator it = toLines( \"" + getHelpDescription( pluginDescriptor )
-            + "\" ).iterator(); it.hasNext(); )" + LS );
-        writer.write( "        {" + LS );
-        writer.write( "            sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
-        writer.write( "        }" + LS );
+        writer.write( "        appendDescription( sb, \"" + getHelpDescription( pluginDescriptor ) + "\", DEFAULT_INDENT );" + LS );
 
         writer.write( LS );
 
@@ -400,20 +383,6 @@ public class PluginHelpGenerator
         writer.write( "        }" + LS );
         writer.write( LS );
         writer.write( "        return buffer.toString();" + LS );
-        writer.write( "    }" + LS );
-        writer.write( LS );
-        writer.write( "    /**" + LS );
-        writer.write( "     * <p>Give a list of lines for the <code>str</code>. " + "Each line is indented by 4 spaces"
-            + LS );
-        writer.write( "     * and has a maximum of <code>80</code> characters.</p>" + LS );
-        writer.write( "     *" + LS );
-        writer.write( "     * @param str String to split in lines" + LS );
-        writer.write( "     * @return List of lines" + LS );
-        writer.write( "     * @throws NullPointerException if str is <code>null</code>" + LS );
-        writer.write( "     */" + LS );
-        writer.write( "    private static List toLines( String str )" + LS );
-        writer.write( "    {" + LS );
-        writer.write( "        return toLines( str, DEFAULT_INDENT, DEFAULT_WIDTH );" + LS );
         writer.write( "    }" + LS );
         writer.write( LS );
         writer.write( "    /**" + LS );
@@ -467,6 +436,14 @@ public class PluginHelpGenerator
         writer.write( "        }" + LS );
         writer.write( LS );
         writer.write( "        return sentences;" + LS );
+        writer.write( "    }" + LS );
+        writer.write( LS );
+        writer.write( "    private static void appendDescription( StringBuffer sb, String description, int indent )" + LS );
+        writer.write( "    {" + LS );
+        writer.write( "        for ( Iterator it = toLines( description, repeat( \" \", indent ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
+        writer.write( "        }" + LS );
         writer.write( "    }" + LS );
     }
 
