@@ -40,7 +40,7 @@ public class TestUtils
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL resource = cl.getResource( classname );
 
-        assertEquals( resource.getPath(), basedir + classname );
+        assertEquals( URLDecoder.decode( resource.getPath(), "UTF-8" ), basedir + classname );
     }
 
     public static String dirname( String file ) throws UnsupportedEncodingException
