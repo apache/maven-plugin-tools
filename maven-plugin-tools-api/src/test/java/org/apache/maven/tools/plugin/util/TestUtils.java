@@ -21,7 +21,9 @@ package org.apache.maven.tools.plugin.util;
 
 import junit.framework.TestCase;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 /**
  * @author jdcasey
@@ -30,7 +32,7 @@ public class TestUtils
     extends TestCase
 {
 
-    public void testDirnameFunction_METATEST()
+    public void testDirnameFunction_METATEST() throws UnsupportedEncodingException
     {
         String classname = getClass().getName().replace( '.', '/' ) + ".class";
         String basedir = TestUtils.dirname( classname );
@@ -41,14 +43,16 @@ public class TestUtils
         assertEquals( resource.getPath(), basedir + classname );
     }
 
-    public static String dirname( String file )
+    public static String dirname( String file ) throws UnsupportedEncodingException
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL fileResource = cl.getResource( file );
 
         String fullPath = fileResource.getPath();
 
-        return fullPath.substring( 0, fullPath.length() - file.length() );
+        String path = fullPath.substring( 0, fullPath.length() - file.length() );
+
+        return URLDecoder.decode( path, "UTF-8" ); // necessary for JDK 1.5+, where spaces are escaped to %20
     }
 
 }
