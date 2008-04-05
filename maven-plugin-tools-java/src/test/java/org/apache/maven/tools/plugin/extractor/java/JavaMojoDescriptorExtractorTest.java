@@ -27,7 +27,9 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -104,7 +106,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
 
-    private File fileOf( String classpathResource )
+    private File fileOf( String classpathResource ) throws UnsupportedEncodingException
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL resource = cl.getResource( classpathResource );
@@ -112,7 +114,8 @@ public class JavaMojoDescriptorExtractorTest
         File result = null;
         if ( resource != null )
         {
-            result = new File( resource.getPath() );
+            // URLDecoder.decode necessary for JDK 1.5+, where spaces are escaped to %20
+            result = new File( URLDecoder.decode( resource.getPath(), "UTF-8" ) );
         }
 
         return result;
