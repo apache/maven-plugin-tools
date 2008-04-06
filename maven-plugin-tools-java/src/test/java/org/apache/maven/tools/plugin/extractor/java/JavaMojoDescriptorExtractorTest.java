@@ -106,7 +106,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
 
-    private File fileOf( String classpathResource ) throws UnsupportedEncodingException
+    private File fileOf( String classpathResource )
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL resource = cl.getResource( classpathResource );
@@ -114,8 +114,19 @@ public class JavaMojoDescriptorExtractorTest
         File result = null;
         if ( resource != null )
         {
-            // URLDecoder.decode necessary for JDK 1.5+, where spaces are escaped to %20
-            result = new File( URLDecoder.decode( resource.getPath(), "UTF-8" ) );
+            try
+            {
+                /*
+                 * FIXME: URL encoding and HTML form encoding are not the same. Use FileUtils.toFile(URL) from
+                 * plexus-utils once PLXUTILS-56 is released.
+                 */
+                // URLDecoder.decode necessary for JDK 1.5+, where spaces are escaped to %20
+                result = new File( URLDecoder.decode( resource.getPath(), "UTF-8" ) );
+            }
+            catch ( UnsupportedEncodingException e )
+            {
+                throw new Error( "Broken JVM, UTF-8 must be supported", e );
+            }
         }
 
         return result;

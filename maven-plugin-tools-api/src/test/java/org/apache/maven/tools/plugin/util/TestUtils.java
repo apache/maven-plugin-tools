@@ -43,7 +43,7 @@ public class TestUtils
         assertEquals( URLDecoder.decode( resource.getPath(), "UTF-8" ), basedir + classname );
     }
 
-    public static String dirname( String file ) throws UnsupportedEncodingException
+    public static String dirname( String file )
     {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL fileResource = cl.getResource( file );
@@ -52,7 +52,19 @@ public class TestUtils
 
         String path = fullPath.substring( 0, fullPath.length() - file.length() );
 
-        return URLDecoder.decode( path, "UTF-8" ); // necessary for JDK 1.5+, where spaces are escaped to %20
+        try
+        {
+            /*
+             * FIXME: URL encoding and HTML form encoding are not the same. Use FileUtils.toFile(URL) from plexus-utils
+             * once PLXUTILS-56 is released.
+             */
+            // necessary for JDK 1.5+, where spaces are escaped to %20
+            return URLDecoder.decode( path, "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            throw new Error( "Broken JVM, UTF-8 must be supported", e );
+        }
     }
 
 }

@@ -27,7 +27,6 @@ import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 
 /**
@@ -72,7 +71,7 @@ public class PluginUtilsTest
         assertEquals( pattern, output );
     }
 
-    public void testShouldFindTwoScriptsWhenNoExcludesAreGiven() throws UnsupportedEncodingException
+    public void testShouldFindTwoScriptsWhenNoExcludesAreGiven()
     {
         String testScript = "test.txt";
 
@@ -84,7 +83,7 @@ public class PluginUtilsTest
         assertEquals( 2, files.length );
     }
 
-    public void testShouldFindOneScriptsWhenAnExcludeIsGiven() throws UnsupportedEncodingException
+    public void testShouldFindOneScriptsWhenAnExcludeIsGiven()
     {
         String testScript = "test.txt";
 
