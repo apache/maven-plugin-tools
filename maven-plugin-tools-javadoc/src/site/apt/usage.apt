@@ -87,7 +87,7 @@ Usage
 *--------------------------------------------+---------------------------------+
 | MojoGoalTypeTaglet                         | -tag 'goal:t:This Mojo is defined by the goal name:'
 *--------------------------------------------+---------------------------------+
-| MojoInheritedByDefaultTypeTaglet           | -tag 'inheritedByDefault:t:Is this Mojo inherited'
+| MojoInheritByDefaultTypeTaglet             | -tag 'inheritByDefault:t:Is this Mojo inherited'
 *--------------------------------------------+---------------------------------+
 | MojoInstantiationStrategyTypeTaglet        | -tag 'instantiationStrategy:t:Is instantiated with the strategy:'
 *--------------------------------------------+---------------------------------+
