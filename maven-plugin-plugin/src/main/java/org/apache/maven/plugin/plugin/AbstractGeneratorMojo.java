@@ -45,13 +45,14 @@ public abstract class AbstractGeneratorMojo
      *
      * @parameter expression="${project}"
      * @required
+     * @readonly
      */
     protected MavenProject project;
 
     /**
      * The component used for scanning the source tree for mojos.
      *
-     * @parameter expression="${component.org.apache.maven.tools.plugin.scanner.MojoScanner}"
+     * @component
      * @required
      */
     protected MojoScanner mojoScanner;

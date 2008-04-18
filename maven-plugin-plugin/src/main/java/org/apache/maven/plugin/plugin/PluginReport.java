@@ -50,6 +50,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
+ * @since 2.0
  * @goal report
  * @execute phase="compile"
  */
@@ -59,8 +60,7 @@ public class PluginReport
     /**
      * Report output directory.
      *
-     * @parameter expression="${project.build.directory}/generated-site/xdoc"
-     * @required
+     * @parameter default-value="${project.build.directory}/generated-site/xdoc"
      */
     private String outputDirectory;
 

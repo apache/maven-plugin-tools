@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
  * and deployment. The first use-case for this is to add the LATEST metadata (which is plugin-specific)
  * for shipping alongside the plugin's artifact.
  *
+ * @since 2.0
  * @phase package
  * @goal addPluginArtifactMetadata
  */

@@ -40,8 +40,7 @@ public class HelpGeneratorMojo
     /**
      * The directory where the generated <code>HelpMojo</code> file will be put.
      *
-     * @parameter expression="${project.build.directory}/generated-sources/plugin"
-     * @required
+     * @parameter default-value="${project.build.directory}/generated-sources/plugin"
      */
     protected File outputDirectory;
 

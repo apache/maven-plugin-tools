@@ -42,6 +42,7 @@ import java.util.Date;
 /**
  * Update the user plugin registry (if it's in use) to reflect the version we're installing.
  *
+ * @since 2.0
  * @goal updateRegistry
  * @phase install
  * @version $Id$

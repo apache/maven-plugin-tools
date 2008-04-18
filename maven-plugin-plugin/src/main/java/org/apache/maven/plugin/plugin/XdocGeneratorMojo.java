@@ -29,6 +29,7 @@ import java.io.File;
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id$
+ * @since 2.0
  * @goal xdoc
  */
 public class XdocGeneratorMojo
@@ -37,8 +38,7 @@ public class XdocGeneratorMojo
     /**
      * The directory where the generated Xdoc files will be put.
      *
-     * @parameter expression="${project.build.directory}/generated-site/xdoc"
-     * @required
+     * @parameter default-value="${project.build.directory}/generated-site/xdoc"
      */
     protected File outputDirectory;
 

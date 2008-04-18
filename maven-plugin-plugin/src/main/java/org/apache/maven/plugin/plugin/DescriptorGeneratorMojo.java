@@ -31,6 +31,7 @@ import java.io.File;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
+ * @since 2.0
  * @goal descriptor
  * @phase generate-resources
  * @requiresDependencyResolution runtime
@@ -41,8 +42,7 @@ public class DescriptorGeneratorMojo
     /**
      * The directory where the generated plugin.xml file will be put.
      *
-     * @parameter expression="${project.build.outputDirectory}/META-INF/maven"
-     * @required
+     * @parameter default-value="${project.build.outputDirectory}/META-INF/maven"
      */
     protected File outputDirectory;
 
