@@ -325,56 +325,7 @@ public class PluginHelpGenerator
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
 
-            String goal = descriptor.getFullGoalName();
-            String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
-                StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
-
-            writer.write( "        sb.append( \"" + goal + "\" ).append( \"\\n\" );" + LS );
-            writer.write( "        appendDescription( sb, \"" + description + "\", DEFAULT_INDENT );" + LS );
-
-            if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
-            {
-                writer.write( "        if ( detail )" + LS );
-                writer.write( "        {" + LS );
-
-                writer.write( "            sb.append( \"\\n\" );" + LS );
-                writer.write( LS );
-
-                writer.write( "            sb.append( repeat( \" \", 2 ) );" + LS );
-                writer.write( "            sb.append( \"Available parameters:\" ).append( \"\\n\" );" + LS );
-                writer.write( LS );
-                writer.write( "            sb.append( \"\\n\" );" + LS );
-                writer.write( LS );
-
-                for ( Iterator it2 = descriptor.getParameters().iterator(); it2.hasNext(); )
-                {
-                    Parameter parameter = (Parameter) it2.next();
-
-                    if ( parameter.isEditable() )
-                    {
-                        String expression = parameter.getExpression();
-
-                        if ( expression == null || !expression.startsWith( "${component." ) )
-                        {
-                            String parameterName = parameter.getName();
-                            String parameterDescription = StringUtils.isNotEmpty( parameter.getDescription() ) ?
-                                StringUtils.escape( toText( parameter.getDescription() ) ) : "No description available.";
-                            String parameterDefaultValue = parameterName
-                                + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
-                                    + parameter.getDefaultValue() + "')" : "" );
-
-                            writer.write( "            appendDescription( sb, \"" + parameterDefaultValue + "\", 4 );" + LS );
-                            writer.write( "            appendDescription( sb, \"" + parameterDescription + "\", 6 );" + LS );
-                        }
-                    }
-                }
-
-                writer.write( "        }" + LS );
-            }
-
-            writer.write( LS );
-            writer.write( "        sb.append( \"\\n\" );" + LS );
-            writer.write( LS );
+            writeGoal( writer, descriptor );
         }
 
         // TODO Should be discovered
@@ -389,6 +340,67 @@ public class PluginHelpGenerator
         writer.write( "            getLog().info( sb.toString() );" + LS );
         writer.write( "        }" + LS );
         writer.write( "    }" + LS );
+    }
+
+    private static void writeGoal( Writer writer, MojoDescriptor descriptor )
+        throws IOException
+    {
+        String goal = descriptor.getFullGoalName();
+        String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
+            StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
+
+        writer.write( "        sb.append( \"" + goal + "\" ).append( \"\\n\" );" + LS );
+        writer.write( "        appendDescription( sb, \"" + description + "\", DEFAULT_INDENT );" + LS );
+
+        if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
+        {
+            writer.write( "        if ( detail )" + LS );
+            writer.write( "        {" + LS );
+
+            writer.write( "            sb.append( \"\\n\" );" + LS );
+            writer.write( LS );
+
+            writer.write( "            sb.append( repeat( \" \", 2 ) );" + LS );
+            writer.write( "            sb.append( \"Available parameters:\" ).append( \"\\n\" );" + LS );
+            writer.write( LS );
+            writer.write( "            sb.append( \"\\n\" );" + LS );
+            writer.write( LS );
+
+            for ( Iterator it = descriptor.getParameters().iterator(); it.hasNext(); )
+            {
+                Parameter parameter = (Parameter) it.next();
+
+                if ( parameter.isEditable() )
+                {
+                    writeParameter( writer, parameter );
+                }
+            }
+
+            writer.write( "        }" + LS );
+        }
+
+        writer.write( LS );
+        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( LS );
+    }
+
+    private static void writeParameter( Writer writer, Parameter parameter )
+        throws IOException
+    {
+        String expression = parameter.getExpression();
+
+        if ( expression == null || !expression.startsWith( "${component." ) )
+        {
+            String parameterName = parameter.getName();
+            String parameterDescription = StringUtils.isNotEmpty( parameter.getDescription() ) ?
+                StringUtils.escape( toText( parameter.getDescription() ) ) : "No description available.";
+            String parameterDefaultValue = parameterName
+                + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
+                    + parameter.getDefaultValue() + "')" : "" );
+
+            writer.write( "            appendDescription( sb, \"" + parameterDefaultValue + "\", 4 );" + LS );
+            writer.write( "            appendDescription( sb, \"" + parameterDescription + "\", 6 );" + LS );
+        }
     }
 
     private static void writeUtilities( Writer writer )
