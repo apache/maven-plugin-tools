@@ -84,36 +84,37 @@ public class PluginHelpGenerator
             return;
         }
 
-        String packageName = discoverPackageName( pluginDescriptor );
-
-        File helpClass = new File( destinationDirectory, packageName.replace( '.', File.separatorChar )
-            + File.separator + HELP_MOJO_CLASS_NAME + ".java" );
+        MojoDescriptor helpDescriptor = makeHelpDescriptor( pluginDescriptor );
 
         // Verify that no help goal already exists
         for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
 
-            if ( descriptor.getGoal().equals( HELP_GOAL )
-                && !descriptor.getImplementation().equals( packageName + "." + HELP_MOJO_CLASS_NAME ) )
+            if ( descriptor.getGoal().equals( helpDescriptor.getGoal() )
+                && !descriptor.getImplementation().equals( helpDescriptor.getImplementation() ) )
             {
                 if ( getLogger().isWarnEnabled() )
                 {
-                    getLogger().warn( "\n\nAn help goal (" + descriptor.getImplementation()
-                        + ") already exists in this plugin. SKIPPED THE " + HELP_MOJO_CLASS_NAME + " GENERATION.\n" );
+                    getLogger().warn(
+                                      "\n\nA help goal (" + descriptor.getImplementation()
+                                          + ") already exists in this plugin. SKIPPED THE "
+                                          + helpDescriptor.getImplementation() + " GENERATION.\n" );
                 }
 
                 return;
             }
         }
 
+        String sourcePath = helpDescriptor.getImplementation().replace( '.', File.separatorChar ) + ".java";
+        File helpClass = new File( destinationDirectory, sourcePath );
         helpClass.getParentFile().mkdirs();
 
         Writer writer = null;
         try
         {
             writer = new FileWriter( helpClass );
-            writeClass( writer, packageName, pluginDescriptor );
+            writeClass( writer, pluginDescriptor, helpDescriptor );
             writer.flush();
         }
         finally
@@ -127,34 +128,41 @@ public class PluginHelpGenerator
     // ----------------------------------------------------------------------
 
     /**
-     * @return the help goal for the generated mojo
+     * Creates a minimalistic mojo descriptor for the generated help goal.
+     * 
+     * @param pluginDescriptor The descriptor of the plugin for which to generate a help goal, must not be
+     *            <code>null</code>.
+     * @return The mojo descriptor for the generated help goal, never <code>null</code>.
      */
-    private static String getHelpGoalName()
+    private static MojoDescriptor makeHelpDescriptor( PluginDescriptor pluginDescriptor )
     {
-        return HELP_GOAL;
-    }
+        MojoDescriptor descriptor = new MojoDescriptor();
 
-    /**
-     * @return the full help goal name for the generated mojo
-     */
-    private static String getFullHelpGoalName( PluginDescriptor pluginDescriptor )
-    {
-        return pluginDescriptor.getGoalPrefix() + ":" + getHelpGoalName();
-    }
+        descriptor.setPluginDescriptor( pluginDescriptor );
 
-    /**
-     * @param pluginDescriptor
-     * @return the help description for the generated mojo
-     */
-    private static String getHelpDescription( PluginDescriptor pluginDescriptor )
-    {
-        return "Display help information on '" + pluginDescriptor.getPluginLookupKey() + "' plugin. Call 'mvn "
-            + getFullHelpGoalName( pluginDescriptor ) + " -Ddetail=true' to display all details.";
+        descriptor.setLanguage( "java" );
+
+        descriptor.setGoal( HELP_GOAL );
+
+        String packageName = discoverPackageName( pluginDescriptor );
+        if ( StringUtils.isNotEmpty( packageName ) )
+        {
+            descriptor.setImplementation( packageName + '.' + HELP_MOJO_CLASS_NAME );
+        }
+        else
+        {
+            descriptor.setImplementation( HELP_MOJO_CLASS_NAME );
+        }
+
+        descriptor.setDescription( "Display help information on '" + pluginDescriptor.getPluginLookupKey()
+            + "' plugin. Call 'mvn " + descriptor.getFullGoalName() + " -Ddetail=true' to display parameter details." );
+
+        return descriptor;
     }
 
     /**
      * Find the best package name, based on the number of hits of actual Mojo classes.
-     *
+     * 
      * @param pluginDescriptor
      * @return the best name of the package for the generated mojo
      */
@@ -202,16 +210,25 @@ public class PluginHelpGenerator
     }
 
     /**
-     * Generated the <code>HelpMojo</code> class.
-     *
+     * Generates the <code>HelpMojo</code> class.
+     * 
      * @param writer
-     * @param packageName
      * @param pluginDescriptor
+     * @param helpDescriptor
      * @throws IOException if any
      */
-    private static void writeClass( Writer writer, String packageName, PluginDescriptor pluginDescriptor )
+    private static void writeClass( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor )
         throws IOException
     {
+        String packageName = "";
+        String simpleName = helpDescriptor.getImplementation();
+        int dot = simpleName.lastIndexOf( '.' );
+        if ( dot >= 0 )
+        {
+            packageName = simpleName.substring( 0, dot );
+            simpleName = simpleName.substring( dot + 1 );
+        }
+
         if ( packageName.length() > 0 )
         {
             writer.write( "package " + packageName + ";" + LS );
@@ -221,9 +238,9 @@ public class PluginHelpGenerator
         writeImports( writer );
         writer.write( LS );
 
-        writeMojoJavadoc( writer, pluginDescriptor );
+        writeMojoJavadoc( writer, pluginDescriptor, helpDescriptor );
 
-        writer.write( "public class HelpMojo" + LS );
+        writer.write( "public class " + simpleName + LS );
         writer.write( "    extends AbstractMojo" + LS );
         writer.write( "{" + LS );
 
@@ -231,7 +248,7 @@ public class PluginHelpGenerator
 
         writer.write( LS );
 
-        writeExecute( writer, pluginDescriptor );
+        writeExecute( writer, pluginDescriptor, helpDescriptor );
 
         writer.write( LS );
         writeUtilities( writer );
@@ -250,14 +267,15 @@ public class PluginHelpGenerator
         writer.write( "import org.apache.maven.plugin.MojoExecutionException;" + LS );
     }
 
-    private static void writeMojoJavadoc( Writer writer, PluginDescriptor pluginDescriptor )
+    private static void writeMojoJavadoc( Writer writer, PluginDescriptor pluginDescriptor,
+                                          MojoDescriptor helpDescriptor )
         throws IOException
     {
         writer.write( "/**" + LS );
-        writer.write( " * " + getHelpDescription( pluginDescriptor ) + LS );
+        writer.write( " * " + helpDescriptor.getDescription() + LS );
         writer.write( " *" + LS );
         writer.write( " * @version generated on " + new Date() + LS );
-        writer.write( " * @goal " + getHelpGoalName() + LS );
+        writer.write( " * @goal " + helpDescriptor.getGoal() + LS );
         writer.write( " * @requiresProject false" + LS );
         writer.write( " */" + LS );
     }
@@ -279,19 +297,19 @@ public class PluginHelpGenerator
         writer.write( "    private boolean detail;" + LS );
     }
 
-    private static void writeExecute( Writer writer, PluginDescriptor pluginDescriptor )
+    private static void writeExecute( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor )
         throws IOException
     {
-        List mojoDescriptors = new ArrayList( pluginDescriptor.getMojos() );
+        List mojoDescriptors = new ArrayList();
 
-        for ( Iterator it = mojoDescriptors.iterator(); it.hasNext(); )
+        mojoDescriptors.add( helpDescriptor );
+        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
             MojoDescriptor mojoDescriptor = (MojoDescriptor) it.next();
 
-            if ( getHelpGoalName().equals( mojoDescriptor.getGoal() ) )
+            if ( !helpDescriptor.getGoal().equals( mojoDescriptor.getGoal() ) )
             {
-                // remove previously generated help goal
-                it.remove();
+                mojoDescriptors.add( mojoDescriptor );
             }
         }
 
@@ -315,8 +333,8 @@ public class PluginHelpGenerator
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
         writer.write( "        sb.append( \"The '" + pluginDescriptor.getPluginLookupKey() + "' plugin has "
-            + ( mojoDescriptors.size() + 1 ) + " "
-            + ( ( mojoDescriptors.size() + 1 ) > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
+            + mojoDescriptors.size() + " "
+            + ( mojoDescriptors.size() > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
         writer.write( "        sb.append( \"\\n\" );" + LS );
 
         writer.write( LS );
@@ -327,13 +345,6 @@ public class PluginHelpGenerator
 
             writeGoal( writer, descriptor );
         }
-
-        // TODO Should be discovered
-        writer.write( "        sb.append( \"" + getFullHelpGoalName( pluginDescriptor ) + "\" ).append( \"\\n\" );"
-            + LS );
-        writer.write( "        appendDescription( sb, \"" + getHelpDescription( pluginDescriptor ) + "\", DEFAULT_INDENT );" + LS );
-
-        writer.write( LS );
 
         writer.write( "        if ( getLog().isInfoEnabled() )" + LS );
         writer.write( "        {" + LS );
