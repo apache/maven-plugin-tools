@@ -254,6 +254,7 @@ public class PluginHelpGenerator
         writer.write( " *" + LS );
         writer.write( " * @version generated on " + new Date() + LS );
         writer.write( " * @goal " + getHelpGoalName() + LS );
+        writer.write( " * @requiresProject false" + LS );
         writer.write( " */" + LS );
     }
 
