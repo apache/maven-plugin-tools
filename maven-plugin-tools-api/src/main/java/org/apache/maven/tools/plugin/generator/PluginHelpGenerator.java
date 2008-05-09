@@ -268,7 +268,7 @@ public class PluginHelpGenerator
         writer.write( "    private static final int DEFAULT_INDENT = 2;" + LS );
         writer.write( LS );
         writer.write( "    /**" + LS );
-        writer.write( "     * If true, display all settable properies for each goal." + LS );
+        writer.write( "     * If <code>true</code>, display all settable properties for each goal." + LS );
         writer.write( "     *" + LS );
         writer.write( "     * @parameter expression=\"${detail}\" default-value=\"false\"" + LS );
         writer.write( "     */" + LS );
