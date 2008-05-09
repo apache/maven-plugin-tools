@@ -24,9 +24,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.text.html.HTMLEditorKit;
@@ -278,6 +282,31 @@ public class PluginHelpGenerator
     private static void writeExecute( Writer writer, PluginDescriptor pluginDescriptor )
         throws IOException
     {
+        List mojoDescriptors = new ArrayList( pluginDescriptor.getMojos() );
+
+        for ( Iterator it = mojoDescriptors.iterator(); it.hasNext(); )
+        {
+            MojoDescriptor mojoDescriptor = (MojoDescriptor) it.next();
+
+            if ( getHelpGoalName().equals( mojoDescriptor.getGoal() ) )
+            {
+                // remove previously generated help goal
+                it.remove();
+            }
+        }
+
+        Collections.sort( mojoDescriptors, new Comparator()
+        {
+
+            public int compare( Object arg0, Object arg1 )
+            {
+                MojoDescriptor mojo0 = (MojoDescriptor) arg0;
+                MojoDescriptor mojo1 = (MojoDescriptor) arg1;
+                return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
+            }
+
+        } );
+
         writer.write( "    /** {@inheritDoc} */" + LS );
         writer.write( "    public void execute()" + LS );
         writer.write( "        throws MojoExecutionException" + LS );
@@ -286,21 +315,15 @@ public class PluginHelpGenerator
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
         writer.write( "        sb.append( \"The '" + pluginDescriptor.getPluginLookupKey() + "' plugin has "
-            + ( pluginDescriptor.getMojos().size() + 1 ) + " "
-            + ( ( pluginDescriptor.getMojos().size() + 1 ) > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
+            + ( mojoDescriptors.size() + 1 ) + " "
+            + ( ( mojoDescriptors.size() + 1 ) > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
         writer.write( "        sb.append( \"\\n\" );" + LS );
 
         writer.write( LS );
 
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        for ( Iterator it = mojoDescriptors.iterator(); it.hasNext(); )
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
-
-            if ( getHelpGoalName().equals( descriptor.getGoal() ) )
-            {
-                // don't document help goal twice
-                continue;
-            }
 
             String goal = descriptor.getFullGoalName();
             String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
