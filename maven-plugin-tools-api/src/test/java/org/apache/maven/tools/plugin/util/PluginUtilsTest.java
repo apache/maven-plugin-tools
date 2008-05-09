@@ -132,6 +132,10 @@ public class PluginUtilsTest
         javadoc = "Generates <i>something</i> <b> for the project.";
         assertEquals( "Generates <i>something</i> <b> for the project.</b>", PluginUtils.makeHtmlValid( javadoc ) );
 
+        // wrong XHTML
+        javadoc = "Line1<br>Line2";
+        assertEquals( "Line1<br/>Line2", PluginUtils.makeHtmlValid( javadoc ).replaceAll( "\\s", "" ) );
+
         // special characters
         javadoc = "& &amp; < > \u00A0";
         assertEquals( "&amp; &amp; &lt; &gt; \u00A0", PluginUtils.makeHtmlValid( javadoc ) );

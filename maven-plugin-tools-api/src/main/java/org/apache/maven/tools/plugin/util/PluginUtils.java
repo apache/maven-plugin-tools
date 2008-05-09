@@ -233,8 +233,10 @@ public final class PluginUtils
     }
 
     /**
-     * @param description Javadoc description with HTML tags
-     * @return the description with valid HTML tags
+     * Fixes some javadoc comment to become a valid XHTML snippet.
+     * 
+     * @param description Javadoc description with HTML tags, may be <code>null</code>.
+     * @return The description with valid XHTML tags, never <code>null</code>.
      */
     public static String makeHtmlValid( String description )
     {
