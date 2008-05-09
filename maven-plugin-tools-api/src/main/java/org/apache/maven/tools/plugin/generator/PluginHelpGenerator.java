@@ -296,6 +296,12 @@ public class PluginHelpGenerator
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
 
+            if ( getHelpGoalName().equals( descriptor.getGoal() ) )
+            {
+                // don't document help goal twice
+                continue;
+            }
+
             String goal = descriptor.getFullGoalName();
             String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
                 StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
