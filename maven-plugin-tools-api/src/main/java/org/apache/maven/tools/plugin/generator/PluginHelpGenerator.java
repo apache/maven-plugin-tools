@@ -154,8 +154,8 @@ public class PluginHelpGenerator
             descriptor.setImplementation( HELP_MOJO_CLASS_NAME );
         }
 
-        descriptor.setDescription( "Display help information on '" + pluginDescriptor.getPluginLookupKey()
-            + "' plugin. Call 'mvn " + descriptor.getFullGoalName() + " -Ddetail=true' to display parameter details." );
+        descriptor.setDescription( "Display help information on " + pluginDescriptor.getArtifactId()
+            + ". Call 'mvn " + descriptor.getFullGoalName() + " -Ddetail=true' to display parameter details." );
 
         return descriptor;
     }
@@ -332,8 +332,20 @@ public class PluginHelpGenerator
 
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
-        writer.write( "        sb.append( \"The '" + pluginDescriptor.getPluginLookupKey() + "' plugin has "
-            + mojoDescriptors.size() + " "
+
+        writer.write( "        sb.append( \"" + pluginDescriptor.getId() + "\" ).append( \"\\n\" );" + LS );
+        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( LS );
+
+        writer.write( "        sb.append( \""
+            + StringUtils.escape( pluginDescriptor.getName() + " " + pluginDescriptor.getVersion() )
+            + "\" ).append( \"\\n\" );" + LS );
+        writer.write( "        appendDescription( sb, \"" + toDescription( pluginDescriptor.getDescription() )
+            + "\", DEFAULT_INDENT );" + LS );
+        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( LS );
+
+        writer.write( "        sb.append( \"This plugin has " + mojoDescriptors.size() + " "
             + ( mojoDescriptors.size() > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
         writer.write( "        sb.append( \"\\n\" );" + LS );
 
@@ -356,12 +368,9 @@ public class PluginHelpGenerator
     private static void writeGoal( Writer writer, MojoDescriptor descriptor )
         throws IOException
     {
-        String goal = descriptor.getFullGoalName();
-        String description = StringUtils.isNotEmpty( descriptor.getDescription() ) ?
-            StringUtils.escape( toText( descriptor.getDescription() ) ) : "No description available.";
-
-        writer.write( "        sb.append( \"" + goal + "\" ).append( \"\\n\" );" + LS );
-        writer.write( "        appendDescription( sb, \"" + description + "\", DEFAULT_INDENT );" + LS );
+        writer.write( "        sb.append( \"" + descriptor.getFullGoalName() + "\" ).append( \"\\n\" );" + LS );
+        writer.write( "        appendDescription( sb, \"" + toDescription( descriptor.getDescription() )
+            + "\", DEFAULT_INDENT );" + LS );
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
         {
@@ -403,8 +412,7 @@ public class PluginHelpGenerator
         if ( expression == null || !expression.startsWith( "${component." ) )
         {
             String parameterName = parameter.getName();
-            String parameterDescription = StringUtils.isNotEmpty( parameter.getDescription() ) ?
-                StringUtils.escape( toText( parameter.getDescription() ) ) : "No description available.";
+            String parameterDescription = toDescription( parameter.getDescription() );
             String parameterDefaultValue = parameterName
                 + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
                     + parameter.getDefaultValue() + "')" : "" );
@@ -501,14 +509,30 @@ public class PluginHelpGenerator
     }
 
     /**
+     * Gets the effective string to use for the plugin/mojo/parameter description.
+     * 
+     * @param description The description of the element, may be <code>null</code>.
+     * @return The effective description string, never <code>null</code>.
+     */
+    private static String toDescription( String description )
+    {
+        if ( StringUtils.isNotEmpty( description ) )
+        {
+            return StringUtils.escape( toText( description ) );
+        }
+        else
+        {
+            return "(no description available)";
+        }
+    }
+
+    /**
      * Remove HTML tags from a string
      *
      * @param str
      * @return a String with HTML tags into pure text
-     * @throws IOException if any
      */
     protected static String toText( String str )
-        throws IOException
     {
         if ( StringUtils.isEmpty( str ) )
         {
@@ -555,7 +579,14 @@ public class PluginHelpGenerator
             }
         };
 
-        parser.parse( new StringReader( PluginUtils.makeHtmlValid( str ) ), htmlCallback, true );
+        try
+        {
+            parser.parse( new StringReader( PluginUtils.makeHtmlValid( str ) ), htmlCallback, true );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
 
         return StringUtils.replace( sb.toString(), "\"", "'" ); // for CDATA
     }
