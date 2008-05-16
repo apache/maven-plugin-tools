@@ -32,7 +32,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
 
@@ -261,7 +264,6 @@ public class PluginHelpGenerator
         writer.write( "import java.util.ArrayList;" + LS );
         writer.write( "import java.util.Iterator;" + LS );
         writer.write( "import java.util.List;" + LS );
-        writer.write( "import java.util.StringTokenizer;" + LS );
         writer.write( LS );
         writer.write( "import org.apache.maven.plugin.AbstractMojo;" + LS );
         writer.write( "import org.apache.maven.plugin.MojoExecutionException;" + LS );
@@ -283,15 +285,19 @@ public class PluginHelpGenerator
     private static void writeVariables( Writer writer )
         throws IOException
     {
-        writer.write( "    /** 80-character display buffer */" + LS );
-        writer.write( "    private static final int DEFAULT_WIDTH = 80;" + LS );
+        writer.write( "    /**" + LS );
+        writer.write( "     * The maximum length of a display line." + LS );
+        writer.write( "     */" + LS );
+        writer.write( "    private int lineLength = 80;" + LS );
         writer.write( LS );
-        writer.write( "    /** 2 indent spaces */" + LS );
-        writer.write( "    private static final int DEFAULT_INDENT = 2;" + LS );
+        writer.write( "    /**" + LS );
+        writer.write( "     * The number of spaces per indentation level." + LS );
+        writer.write( "     */" + LS );
+        writer.write( "    private int indentSize = 2;" + LS );
         writer.write( LS );
         writer.write( "    /**" + LS );
         writer.write( "     * If <code>true</code>, display all settable properties for each goal." + LS );
-        writer.write( "     *" + LS );
+        writer.write( "     * " + LS );
         writer.write( "     * @parameter expression=\"${detail}\" default-value=\"false\"" + LS );
         writer.write( "     */" + LS );
         writer.write( "    private boolean detail;" + LS );
@@ -333,21 +339,20 @@ public class PluginHelpGenerator
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
 
-        writer.write( "        sb.append( \"" + pluginDescriptor.getId() + "\" ).append( \"\\n\" );" + LS );
-        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( "        append( sb, \"" + pluginDescriptor.getId() + "\", 0 );" + LS );
+        writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
 
-        writer.write( "        sb.append( \""
+        writer.write( "        append( sb, \""
             + StringUtils.escape( pluginDescriptor.getName() + " " + pluginDescriptor.getVersion() )
-            + "\" ).append( \"\\n\" );" + LS );
-        writer.write( "        appendDescription( sb, \"" + toDescription( pluginDescriptor.getDescription() )
-            + "\", DEFAULT_INDENT );" + LS );
-        writer.write( "        sb.append( \"\\n\" );" + LS );
+            + "\", 0 );" + LS );
+        writer.write( "        append( sb, \"" + toDescription( pluginDescriptor.getDescription() ) + "\", 1 );" + LS );
+        writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
 
-        writer.write( "        sb.append( \"This plugin has " + mojoDescriptors.size() + " "
-            + ( mojoDescriptors.size() > 1 ? "goals" : "goal" ) + ":\" ).append( \"\\n\" );" + LS );
-        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( "        append( sb, \"This plugin has " + mojoDescriptors.size() + " "
+            + ( mojoDescriptors.size() > 1 ? "goals" : "goal" ) + ":\", 0 );" + LS );
+        writer.write( "        append( sb, \"\", 0 );" + LS );
 
         writer.write( LS );
 
@@ -368,23 +373,17 @@ public class PluginHelpGenerator
     private static void writeGoal( Writer writer, MojoDescriptor descriptor )
         throws IOException
     {
-        writer.write( "        sb.append( \"" + descriptor.getFullGoalName() + "\" ).append( \"\\n\" );" + LS );
-        writer.write( "        appendDescription( sb, \"" + toDescription( descriptor.getDescription() )
-            + "\", DEFAULT_INDENT );" + LS );
+        writer.write( "        append( sb, \"" + descriptor.getFullGoalName() + "\", 0 );" + LS );
+        writer.write( "        append( sb, \"" + toDescription( descriptor.getDescription() ) + "\", 1 );" + LS );
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
         {
             writer.write( "        if ( detail )" + LS );
             writer.write( "        {" + LS );
 
-            writer.write( "            sb.append( \"\\n\" );" + LS );
-            writer.write( LS );
-
-            writer.write( "            sb.append( repeat( \" \", 2 ) );" + LS );
-            writer.write( "            sb.append( \"Available parameters:\" ).append( \"\\n\" );" + LS );
-            writer.write( LS );
-            writer.write( "            sb.append( \"\\n\" );" + LS );
-            writer.write( LS );
+            writer.write( "            append( sb, \"\", 0 );" + LS );
+            writer.write( "            append( sb, \"Available parameters:\", 1 );" + LS );
+            writer.write( "            append( sb, \"\", 0 );" + LS );
 
             for ( Iterator it = descriptor.getParameters().iterator(); it.hasNext(); )
             {
@@ -392,6 +391,7 @@ public class PluginHelpGenerator
 
                 if ( parameter.isEditable() )
                 {
+                    writer.write( LS );
                     writeParameter( writer, parameter );
                 }
             }
@@ -400,7 +400,7 @@ public class PluginHelpGenerator
         }
 
         writer.write( LS );
-        writer.write( "        sb.append( \"\\n\" );" + LS );
+        writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
     }
 
@@ -417,8 +417,8 @@ public class PluginHelpGenerator
                 + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
                     + parameter.getDefaultValue() + "')" : "" );
 
-            writer.write( "            appendDescription( sb, \"" + parameterDefaultValue + "\", 4 );" + LS );
-            writer.write( "            appendDescription( sb, \"" + parameterDescription + "\", 6 );" + LS );
+            writer.write( "            append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
+            writer.write( "            append( sb, \"" + parameterDescription + "\", 3 );" + LS );
         }
     }
 
@@ -445,66 +445,109 @@ public class PluginHelpGenerator
         writer.write( LS );
         writer.write( "        return buffer.toString();" + LS );
         writer.write( "    }" + LS );
+
         writer.write( LS );
-        writer.write( "    /**" + LS );
-        writer
-            .write( "     * <p>Give a list of lines for the <code>str</code>. Each line is indented by <code>indent</code>"
-                + LS );
-        writer.write( "     * and has a maximum of <code>size</code> characters.</p>" + LS );
-        writer.write( "     *" + LS );
-        writer.write( "     * @param str String to split in lines" + LS );
-        writer.write( "     * @param indent the string to precede each line" + LS );
-        writer.write( "     * @param size the size of the character display buffer" + LS );
-        writer.write( "     * @return List of lines" + LS );
-        writer.write( "     * @throws IllegalArgumentException if <code>size < 0</code>" + LS );
-        writer.write( "     * @throws NullPointerException if str is <code>null</code>" + LS );
-        writer.write( "     */" + LS );
-        writer.write( "    private static List toLines( String str, String indent, int size )" + LS );
+        writer.write( "    private void append( StringBuffer sb, String description, int indent )" + LS );
         writer.write( "    {" + LS );
-        writer.write( "        List sentences = new ArrayList();" + LS );
-        writer.write( LS );
-        writer.write( "        if ( indent == null )" + LS );
+        writer.write( "        for ( Iterator it = toLines( description, indent ).iterator(); it.hasNext(); )" + LS );
         writer.write( "        {" + LS );
-        writer.write( "            indent = \"\";" + LS );
+        writer.write( "            sb.append( it.next().toString() ).append( '\\n' );" + LS );
         writer.write( "        }" + LS );
-        writer.write( LS );
-        writer.write( "        if ( size < 0 )" + LS );
-        writer.write( "        {" + LS );
-        writer.write( "            throw new IllegalArgumentException( \"size should be positive\" );" + LS );
-        writer.write( "        }" + LS );
-        writer.write( LS );
-        writer.write( "        StringBuffer tmp = new StringBuffer( indent );" + LS );
-        writer.write( "        StringTokenizer tokenizer = new StringTokenizer( str, \" \" );" + LS );
-        writer.write( "        while ( tokenizer.hasMoreTokens() )" + LS );
-        writer.write( "        {" + LS );
-        writer.write( "            String word = tokenizer.nextToken();" + LS );
-        writer.write( LS );
-        writer.write( "            if ( tmp.length() + word.length() + 1 < size )" + LS );
-        writer.write( "            {" + LS );
-        writer.write( "                tmp.append( word ).append( \" \" );" + LS );
-        writer.write( "            }" + LS );
-        writer.write( "            else" + LS );
-        writer.write( "            {" + LS );
-        writer.write( "                sentences.add( tmp.toString() );" + LS );
-        writer.write( "                tmp = new StringBuffer( indent );" + LS );
-        writer.write( "                tmp.append( word ).append( \" \" );" + LS );
-        writer.write( "            }" + LS );
-        writer.write( "        }" + LS );
-        writer.write( LS );
-        writer.write( "        if ( tmp.toString().length() > 0 )" + LS );
-        writer.write( "        {" + LS );
-        writer.write( "            sentences.add( tmp.toString() );" + LS );
-        writer.write( "        }" + LS );
-        writer.write( LS );
-        writer.write( "        return sentences;" + LS );
         writer.write( "    }" + LS );
+
         writer.write( LS );
-        writer.write( "    private static void appendDescription( StringBuffer sb, String description, int indent )" + LS );
+        writer.write( "    /** " + LS );
+        writer.write( "     * Splits the specified text into lines of convenient display length." + LS );
+        writer.write( "     * " + LS );
+        writer.write( "     * @param text The text to split into lines, must not be <code>null</code>." + LS );
+        writer.write( "     * @param indent The base indentation level of each line, must not be negative." + LS );
+        writer.write( "     * @return The sequence of display lines, never <code>null</code>." + LS );
+        writer.write( "     */" + LS );
+        writer.write( "    private List toLines( String text, int indent )" + LS );
         writer.write( "    {" + LS );
-        writer.write( "        for ( Iterator it = toLines( description, repeat( \" \", indent ), DEFAULT_WIDTH ).iterator(); it.hasNext(); )" + LS );
+        writer.write( "        List lines = new ArrayList();" + LS );
+        writer.write( LS );
+        writer.write( "        String ind = repeat( \"\\t\", indent );" + LS );
+        writer.write( "        String[] plainLines = text.split( \"(\\r\\n)|(\\r)|(\\n)\" );" + LS );
+        writer.write( "        for ( int i = 0; i < plainLines.length; i++ )" + LS );
         writer.write( "        {" + LS );
-        writer.write( "            sb.append( it.next().toString() ).append( \"\\n\" );" + LS );
+        writer.write( "            toLines( lines, ind + plainLines[i] );" + LS );
         writer.write( "        }" + LS );
+        writer.write( LS );
+        writer.write( "        return lines;" + LS );
+        writer.write( "    }" + LS );
+
+        writer.write( LS );
+        writer.write( "    /** " + LS );
+        writer.write( "     * Adds the specified line to the output sequence, performing line wrapping if necessary." + LS );
+        writer.write( "     * " + LS );
+        writer.write( "     * @param lines The sequence of display lines, must not be <code>null</code>." + LS );
+        writer.write( "     * @param line The line to add, must not be <code>null</code>." + LS );
+        writer.write( "     */" + LS );
+        writer.write( "    private void toLines( List lines, String line )" + LS );
+        writer.write( "    {" + LS );
+        writer.write( "        int lineIndent = getIndentLevel( line );" + LS );
+        writer.write( "        StringBuffer buf = new StringBuffer( 256 );" + LS );
+        writer.write( "        String[] tokens = line.split( \" +\" );" + LS );
+        writer.write( "        for ( int i = 0; i < tokens.length; i++ )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            String token = tokens[i];" + LS );
+        writer.write( "            if ( i > 0 )" + LS );
+        writer.write( "            {" + LS );
+        writer.write( "                if ( buf.length() + token.length() >= lineLength )" + LS );
+        writer.write( "                {" + LS );
+        writer.write( "                    lines.add( buf.toString() );" + LS );
+        writer.write( "                    buf.setLength( 0 );" + LS );
+        writer.write( "                    buf.append( repeat( \" \", lineIndent * indentSize ) );" + LS );
+        writer.write( "                }" + LS );
+        writer.write( "                else" + LS );
+        writer.write( "                {" + LS );
+        writer.write( "                    buf.append( ' ' );" + LS );
+        writer.write( "                }" + LS );
+        writer.write( "            }" + LS );
+        writer.write( "            for ( int j = 0; j < token.length(); j++ )" + LS );
+        writer.write( "            {" + LS );
+        writer.write( "                char c = token.charAt( j );" + LS );
+        writer.write( "                if ( c == '\\t' )" + LS );
+        writer.write( "                {" + LS );
+        writer.write( "                    buf.append( repeat( \" \", indentSize - buf.length() % indentSize ) );" + LS );
+        writer.write( "                }" + LS );
+        writer.write( "                else if ( c == '\\u00A0' )" + LS );
+        writer.write( "                {" + LS );
+        writer.write( "                    buf.append( ' ' );" + LS );
+        writer.write( "                }" + LS );
+        writer.write( "                else" + LS );
+        writer.write( "                {" + LS );
+        writer.write( "                    buf.append( c );" + LS );
+        writer.write( "                }" + LS );
+        writer.write( "            }" + LS );
+        writer.write( "        }" + LS );
+        writer.write( "        lines.add( buf.toString() );" + LS );
+        writer.write( "    }" + LS );
+
+        writer.write( LS );
+        writer.write( "    /** " + LS );
+        writer.write( "     * Gets the indentation level of the specified line." + LS );
+        writer.write( "     * " + LS );
+        writer.write( "     * @param line The line whose indentation level should be retrieved, must not be <code>null</code>." + LS );
+        writer.write( "     * @return The indentation level of the line." + LS );
+        writer.write( "     */" + LS );
+        writer.write( "    private static int getIndentLevel( String line )" + LS );
+        writer.write( "    {" + LS );
+        writer.write( "        int level = 0;" + LS );
+        writer.write( "        for ( int i = 0; i < line.length() && line.charAt( i ) == '\\t'; i++ )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            level++;" + LS );
+        writer.write( "        }" + LS );
+        writer.write( "        for ( int i = level + 1; i <= level + 4 && i < line.length(); i++ )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            if ( line.charAt( i ) == '\\t' )" + LS );
+        writer.write( "            {" + LS );
+        writer.write( "                level++;" + LS );
+        writer.write( "                break;" + LS );
+        writer.write( "            }" + LS );
+        writer.write( "        }" + LS );
+        writer.write( "        return level;" + LS );
         writer.write( "    }" + LS );
     }
 
@@ -527,14 +570,24 @@ public class PluginHelpGenerator
     }
 
     /**
-     * Remove HTML tags from a string
-     *
-     * @param str
-     * @return a String with HTML tags into pure text
+     * Converts a HTML fragment as extracted from a javadoc comment to a plain text string. This method tries to retain
+     * as much of the text formatting as possible by means of the following transformations:
+     * <ul>
+     * <li>List items are converted to leading tabs (U+0009), followed by the item number/bullet, another tab and
+     * finally the item contents. Each tab denotes an increase of indentation.</li>
+     * <li>Flow breaking elements as well as literal line terminators in preformatted text are converted to a newline
+     * (U+000A) to denote a mandatory line break.</li>
+     * <li>Consecutive spaces and line terminators from character data outside of preformatted text will be normalized
+     * to a single space. The resulting space denotes a possible point for line wrapping.</li>
+     * <li>Each space in preformatted text will be converted to a non-breaking space (U+00A0).</li>
+     * </ul>
+     * 
+     * @param html The HTML fragment to convert to plain text, may be <code>null</code>.
+     * @return A string with HTML tags converted into pure text, never <code>null</code>.
      */
-    protected static String toText( String str )
+    protected static String toText( String html )
     {
-        if ( StringUtils.isEmpty( str ) )
+        if ( StringUtils.isEmpty( html ) )
         {
             return "";
         }
@@ -544,50 +597,237 @@ public class PluginHelpGenerator
         HTMLEditorKit.Parser parser = new ParserDelegator();
         HTMLEditorKit.ParserCallback htmlCallback = new HTMLEditorKit.ParserCallback()
         {
+            /**
+             * Holds the index of the current item in a numbered list.
+             */
+            class Counter
+            {
+                public int value;
+            }
+
+            /**
+             * A flag whether the parser is currently in the body element.
+             */
+            private boolean body;
+
+            /**
+             * A flag whether the parser is currently processing preformatted text, actually a counter to track nesting.
+             */
+            private int preformatted;
+
+            /**
+             * The current indentation depth for the output.
+             */
+            private int depth;
+
+            /**
+             * A stack of {@link Counter} objects corresponding to the nesting of (un-)ordered lists. A
+             * <code>null</code> element denotes an unordered list.
+             */
+            private Stack numbering = new Stack();
+
+            /**
+             * A flag whether an implicit line break is pending in the output buffer. This flag is used to postpone the
+             * output of implicit line breaks until we are sure that are not to be merged with other implicit line
+             * breaks.
+             */
+            private boolean pendingNewline;
+
+            /**
+             * A flag whether we have just parsed a simple tag.
+             */
+            private boolean simpleTag;
+
+            /** {@inheritDoc} */
+            public void handleSimpleTag( HTML.Tag t, MutableAttributeSet a, int pos )
+            {
+                simpleTag = true;
+                if ( body && HTML.Tag.BR.equals( t ) )
+                {
+                    newline( false );
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void handleStartTag( HTML.Tag t, MutableAttributeSet a, int pos )
+            {
+                simpleTag = false;
+                if ( body && ( t.breaksFlow() || t.isBlock() ) )
+                {
+                    newline( true );
+                }
+                if ( HTML.Tag.OL.equals( t ) )
+                {
+                    numbering.push( new Counter() );
+                }
+                else if ( HTML.Tag.UL.equals( t ) )
+                {
+                    numbering.push( null );
+                }
+                else if ( HTML.Tag.LI.equals( t ) )
+                {
+                    Counter counter = (Counter) numbering.peek();
+                    if ( counter == null )
+                    {
+                        text( "-\t" );
+                    }
+                    else
+                    {
+                        text( ++counter.value + ".\t" );
+                    }
+                    depth++;
+                }
+                else if ( HTML.Tag.DD.equals( t ) )
+                {
+                    depth++;
+                }
+                else if ( t.isPreformatted() )
+                {
+                    preformatted++;
+                }
+                else if ( HTML.Tag.BODY.equals( t ) )
+                {
+                    body = true;
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void handleEndTag( HTML.Tag t, int pos )
+            {
+                if ( HTML.Tag.OL.equals( t ) || HTML.Tag.UL.equals( t ) )
+                {
+                    numbering.pop();
+                }
+                else if ( HTML.Tag.LI.equals( t ) || HTML.Tag.DD.equals( t ) )
+                {
+                    depth--;
+                }
+                else if ( t.isPreformatted() )
+                {
+                    preformatted--;
+                }
+                else if ( HTML.Tag.BODY.equals( t ) )
+                {
+                    body = false;
+                }
+                if ( body && ( t.breaksFlow() || t.isBlock() ) && !HTML.Tag.LI.equals( t ) )
+                {
+                    if ( ( HTML.Tag.P.equals( t ) || HTML.Tag.PRE.equals( t ) || HTML.Tag.OL.equals( t )
+                        || HTML.Tag.UL.equals( t ) || HTML.Tag.DL.equals( t ) )
+                        && numbering.isEmpty() )
+                    {
+                        newline( pendingNewline = false );
+                    }
+                    else
+                    {
+                        newline( true );
+                    }
+                }
+            }
+
             /** {@inheritDoc} */
             public void handleText( char[] data, int pos )
             {
-                // the parser parses things like <br /> as "\n>"
-                if ( data[0] == '>' )
+                /*
+                 * NOTE: Parsers before JRE 1.6 will parse XML-conform simple tags like <br/> as "<br>" followed by
+                 * the text event ">..." so we need to watch out for the closing angle bracket.
+                 */
+                int offset = 0;
+                if ( simpleTag && data[0] == '>' )
                 {
-                    for ( int i = 1; i < data.length; i++ )
+                    simpleTag = false;
+                    for ( ++offset; offset < data.length && data[offset] <= ' '; )
                     {
-                        if ( data[i] == '\n' )
-                        {
-                            sb.append( ' ' );
-                        }
-                        else
-                        {
-                            sb.append( data[i] );
-                        }
+                        offset++;
                     }
+                }
+                if ( offset < data.length )
+                {
+                    String text = new String( data, offset, data.length - offset );
+                    text( text );
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void flush()
+            {
+                flushPendingNewline();
+            }
+
+            /**
+             * Writes a line break to the plain text output.
+             * 
+             * @param implicit A flag whether this is an explicit or implicit line break. Explicit line breaks are
+             *            always written to the output whereas consecutive implicit line breaks are merged into a single
+             *            line break.
+             */
+            private void newline( boolean implicit )
+            {
+                if ( implicit )
+                {
+                    pendingNewline = true;
                 }
                 else
                 {
-                    for ( int i = 0; i < data.length; i++ )
+                    flushPendingNewline();
+                    sb.append( '\n' );
+                }
+            }
+
+            /**
+             * Flushes a pending newline (if any).
+             */
+            private void flushPendingNewline()
+            {
+                if ( pendingNewline )
+                {
+                    pendingNewline = false;
+                    if ( sb.length() > 0 )
                     {
-                        if ( data[i] == '\n' )
-                        {
-                            sb.append( ' ' );
-                        }
-                        else
-                        {
-                            sb.append( data[i] );
-                        }
+                        sb.append( '\n' );
                     }
                 }
+            }
+
+            /**
+             * Writes the specified character data to the plain text output. If the last output was a line break, the
+             * character data will automatically be prefixed with the current indent.
+             * 
+             * @param data The character data, must not be <code>null</code>.
+             */
+            private void text( String data )
+            {
+                flushPendingNewline();
+                if ( sb.length() <= 0 || sb.charAt( sb.length() - 1 ) == '\n' )
+                {
+                    for ( int i = 0; i < depth; i++ )
+                    {
+                        sb.append( '\t' );
+                    }
+                }
+                String text;
+                if ( preformatted > 0 )
+                {
+                    text = data.replace( ' ', '\u00A0' );
+                }
+                else
+                {
+                    text = data.replace( '\n', ' ' );
+                }
+                sb.append( text );
             }
         };
 
         try
         {
-            parser.parse( new StringReader( PluginUtils.makeHtmlValid( str ) ), htmlCallback, true );
+            parser.parse( new StringReader( PluginUtils.makeHtmlValid( html ) ), htmlCallback, true );
         }
         catch ( IOException e )
         {
             throw new RuntimeException( e );
         }
 
-        return StringUtils.replace( sb.toString(), "\"", "'" ); // for CDATA
+        return sb.toString().replace( '\"', '\'' ); // for CDATA
     }
+
 }
