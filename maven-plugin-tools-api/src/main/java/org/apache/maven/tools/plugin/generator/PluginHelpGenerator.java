@@ -160,6 +160,41 @@ public class PluginHelpGenerator
         descriptor.setDescription( "Display help information on " + pluginDescriptor.getArtifactId()
             + ". Call 'mvn " + descriptor.getFullGoalName() + " -Ddetail=true' to display parameter details." );
 
+        try
+        {
+            {
+                Parameter param = new Parameter();
+                param.setName( "detail" );
+                param.setType( "boolean" );
+                param.setDescription( "If <code>true</code>, display all settable properties for each goal." );
+                param.setDefaultValue( "false" );
+                param.setExpression( "${detail}" );
+                descriptor.addParameter( param );
+            }
+            {
+                Parameter param = new Parameter();
+                param.setName( "lineLength" );
+                param.setType( "int" );
+                param.setDescription( "The maximum length of a display line." );
+                param.setDefaultValue( "80" );
+                param.setExpression( "${lineLength}" );
+                descriptor.addParameter( param );
+            }
+            {
+                Parameter param = new Parameter();
+                param.setName( "indentSize" );
+                param.setType( "int" );
+                param.setDescription( "The number of spaces per indentation level." );
+                param.setDefaultValue( "2" );
+                param.setExpression( "${indentSize}" );
+                descriptor.addParameter( param );
+            }
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Failed to setup parameters for help goal", e );
+        }
+        
         return descriptor;
     }
 
@@ -247,7 +282,7 @@ public class PluginHelpGenerator
         writer.write( "    extends AbstractMojo" + LS );
         writer.write( "{" + LS );
 
-        writeVariables( writer );
+        writeVariables( writer, helpDescriptor );
 
         writer.write( LS );
 
@@ -282,25 +317,33 @@ public class PluginHelpGenerator
         writer.write( " */" + LS );
     }
 
-    private static void writeVariables( Writer writer )
+    private static void writeVariables( Writer writer, MojoDescriptor helpDescriptor )
         throws IOException
     {
-        writer.write( "    /**" + LS );
-        writer.write( "     * The maximum length of a display line." + LS );
-        writer.write( "     */" + LS );
-        writer.write( "    private int lineLength = 80;" + LS );
-        writer.write( LS );
-        writer.write( "    /**" + LS );
-        writer.write( "     * The number of spaces per indentation level." + LS );
-        writer.write( "     */" + LS );
-        writer.write( "    private int indentSize = 2;" + LS );
-        writer.write( LS );
-        writer.write( "    /**" + LS );
-        writer.write( "     * If <code>true</code>, display all settable properties for each goal." + LS );
-        writer.write( "     * " + LS );
-        writer.write( "     * @parameter expression=\"${detail}\" default-value=\"false\"" + LS );
-        writer.write( "     */" + LS );
-        writer.write( "    private boolean detail;" + LS );
+        for ( Iterator it = helpDescriptor.getParameters().iterator(); it.hasNext(); )
+        {
+            Parameter param = (Parameter) it.next();
+            writer.write( "    /**" + LS );
+            writer.write( "     * " + StringUtils.escape( param.getDescription() ) + LS );
+            writer.write( "     * " + LS );
+            writer.write( "     * @parameter" );
+            if ( StringUtils.isNotEmpty( param.getExpression() ) )
+            {
+                writer.write( " expression=\"" );
+                writer.write( StringUtils.escape( param.getExpression() ) );
+                writer.write( "\"" );
+            }
+            if ( StringUtils.isNotEmpty( param.getDefaultValue() ) )
+            {
+                writer.write( " default-value=\"" );
+                writer.write( StringUtils.escape( param.getDefaultValue() ) );
+                writer.write( "\"" );
+            }
+            writer.write( LS );
+            writer.write( "     */" + LS );
+            writer.write( "    private " + param.getType() + " " + param.getName() + ";" + LS );
+            writer.write( LS );
+        }
     }
 
     private static void writeExecute( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor )
@@ -339,7 +382,7 @@ public class PluginHelpGenerator
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
 
-        writer.write( "        append( sb, \"" + pluginDescriptor.getId() + "\", 0 );" + LS );
+        writer.write( "        append( sb, \"" + StringUtils.escape( pluginDescriptor.getId() ) + "\", 0 );" + LS );
         writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
 
@@ -373,7 +416,7 @@ public class PluginHelpGenerator
     private static void writeGoal( Writer writer, MojoDescriptor descriptor )
         throws IOException
     {
-        writer.write( "        append( sb, \"" + descriptor.getFullGoalName() + "\", 0 );" + LS );
+        writer.write( "        append( sb, \"" + StringUtils.escape( descriptor.getFullGoalName() ) + "\", 0 );" + LS );
         writer.write( "        append( sb, \"" + toDescription( descriptor.getDescription() ) + "\", 1 );" + LS );
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
@@ -411,11 +454,11 @@ public class PluginHelpGenerator
 
         if ( expression == null || !expression.startsWith( "${component." ) )
         {
-            String parameterName = parameter.getName();
+            String parameterName = StringUtils.escape( parameter.getName() );
             String parameterDescription = toDescription( parameter.getDescription() );
             String parameterDefaultValue = parameterName
-                + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: '"
-                    + parameter.getDefaultValue() + "')" : "" );
+                + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: "
+                    + StringUtils.escape( parameter.getDefaultValue() ) + ")" : "" );
 
             writer.write( "            append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
             writer.write( "            append( sb, \"" + parameterDescription + "\", 3 );" + LS );
