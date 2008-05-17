@@ -121,7 +121,9 @@ public class PluginUtilsTest
 
     public void testMakeHtmlValid()
     {
-        String javadoc = "";
+        String javadoc = null;
+        assertEquals( "", PluginUtils.makeHtmlValid( javadoc ) );
+        javadoc = "";
         assertEquals( "", PluginUtils.makeHtmlValid( javadoc ) );
 
         // true HTML

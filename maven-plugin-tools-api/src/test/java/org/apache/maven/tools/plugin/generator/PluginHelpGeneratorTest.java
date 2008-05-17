@@ -29,7 +29,9 @@ public class PluginHelpGeneratorTest
     public void testToText()
         throws Exception
     {
-        String javadoc = "";
+        String javadoc = null;
+        assertEquals( "", PluginHelpGenerator.toText( javadoc ) );
+        javadoc = "";
         assertEquals( "", PluginHelpGenerator.toText( javadoc ) );
 
         // line breaks
