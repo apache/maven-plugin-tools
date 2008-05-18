@@ -141,8 +141,7 @@ public class PluginXdocGenerator
 
         w.startElement( "title" );
 
-        // TODO: need a friendly name for a plugin
-        w.writeText( mojoDescriptor.getPluginDescriptor().getArtifactId() + " - " + mojoDescriptor.getFullGoalName() );
+        w.writeText( mojoDescriptor.getFullGoalName() );
 
         w.endElement(); // title
 
