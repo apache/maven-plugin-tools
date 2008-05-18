@@ -21,7 +21,9 @@ package org.apache.maven.plugin.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -310,7 +312,10 @@ public class PluginReport
                 tableHeader( new String[] { goalColumnName, descriptionColumnName } );
             }
 
-            for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            List mojos = new ArrayList();
+            mojos.addAll( pluginDescriptor.getMojos() );
+            PluginUtils.sortMojos( mojos );
+            for ( Iterator i = mojos.iterator(); i.hasNext(); )
             {
                 MojoDescriptor mojo = (MojoDescriptor) i.next();
 

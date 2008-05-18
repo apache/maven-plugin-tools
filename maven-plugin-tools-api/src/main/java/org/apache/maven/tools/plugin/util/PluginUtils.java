@@ -27,6 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReport;
@@ -391,6 +394,29 @@ public final class PluginUtils
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Sorts the specified mojo descriptors by goal name.
+     * 
+     * @param mojoDescriptors The mojo descriptors to sort, may be <code>null</code>.
+     */
+    public static void sortMojos( List mojoDescriptors )
+    {
+        if ( mojoDescriptors != null )
+        {
+            Collections.sort( mojoDescriptors, new Comparator()
+            {
+
+                public int compare( Object arg0, Object arg1 )
+                {
+                    MojoDescriptor mojo0 = (MojoDescriptor) arg0;
+                    MojoDescriptor mojo1 = (MojoDescriptor) arg1;
+                    return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
+                }
+
+            } );
+        }
     }
 
 }

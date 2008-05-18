@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -372,17 +370,7 @@ public class PluginHelpGenerator
             }
         }
 
-        Collections.sort( mojoDescriptors, new Comparator()
-        {
-
-            public int compare( Object arg0, Object arg1 )
-            {
-                MojoDescriptor mojo0 = (MojoDescriptor) arg0;
-                MojoDescriptor mojo1 = (MojoDescriptor) arg1;
-                return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
-            }
-
-        } );
+        PluginUtils.sortMojos( mojoDescriptors );
 
         writer.write( "    /** {@inheritDoc} */" + LS );
         writer.write( "    public void execute()" + LS );
