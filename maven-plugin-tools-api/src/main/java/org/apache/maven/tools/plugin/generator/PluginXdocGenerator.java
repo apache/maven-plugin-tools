@@ -93,10 +93,13 @@ public class PluginXdocGenerator
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        if ( pluginDescriptor.getMojos() != null )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
-            processMojoDescriptor( descriptor, destinationDirectory );
+            for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+            {
+                MojoDescriptor descriptor = (MojoDescriptor) it.next();
+                processMojoDescriptor( descriptor, destinationDirectory );
+            }
         }
     }
 

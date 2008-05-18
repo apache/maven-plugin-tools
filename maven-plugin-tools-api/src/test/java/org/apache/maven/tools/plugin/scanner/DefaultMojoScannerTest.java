@@ -192,7 +192,7 @@ public class DefaultMojoScannerTest
                         remainingGoals.remove( desc.getGoal() ) );
         }
 
-        assertTrue( "Extpected goals missing from PluginDescriptor: " + remainingGoals, remainingGoals.size() == 0 );
+        assertTrue( "Expected goals missing from PluginDescriptor: " + remainingGoals, remainingGoals.size() == 0 );
     }
 
 }

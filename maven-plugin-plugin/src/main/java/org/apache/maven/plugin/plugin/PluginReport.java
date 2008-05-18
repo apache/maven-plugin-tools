@@ -277,7 +277,7 @@ public class PluginReport
 
             if ( !( pluginDescriptor.getMojos() != null && pluginDescriptor.getMojos().size() > 0 ) )
             {
-                paragraph( getBundle( locale ).getString( "report.plugin.nogoal" ) );
+                paragraph( getBundle( locale ).getString( "report.plugin.goals.nogoal" ) );
                 endSection();
                 return;
             }
