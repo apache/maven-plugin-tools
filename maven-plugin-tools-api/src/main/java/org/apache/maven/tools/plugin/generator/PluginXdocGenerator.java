@@ -168,20 +168,30 @@ public class PluginXdocGenerator
             + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
         w.endElement(); //p
 
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getDeprecated() ) )
+        {
+            w.startElement( "p" );
+            w.writeMarkup( "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.deprecated" )
+                + "</strong>:" );
+            w.endElement(); // p
+            w.startElement( "div" );
+            w.writeMarkup( PluginUtils.makeHtmlValid( mojoDescriptor.getDeprecated() ) );
+            w.endElement(); // div
+        }
+
         w.startElement( "p" );
         w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.description" ) + "</strong>:" );
         w.endElement(); //p
-
+        w.startElement( "div" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
             w.writeMarkup( PluginUtils.makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
         else
         {
-            w.startElement( "p" );
             w.writeText( getBundle( locale ).getString( "pluginxdoc.nodescription" ) );
-            w.endElement(); // p
         }
+        w.endElement(); // div
 
         writeGoalAttributes( mojoDescriptor, w );
 
@@ -214,13 +224,7 @@ public class PluginXdocGenerator
 
         w.startElement( "ul" );
 
-        String value = mojoDescriptor.getDeprecated();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            w.startElement( "li" );
-            w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.deprecated" ) + ": " + value + "." );
-            w.endElement(); //li
-        }
+        String value;
 
         if ( mojoDescriptor.isProjectRequired() )
         {
@@ -374,20 +378,27 @@ public class PluginXdocGenerator
             w.writeMarkup( "<strong><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a>:</strong>" );
             w.endElement(); //p
 
+            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
+            {
+                w.startElement( "div" );
+                w.writeMarkup( "<strong>"
+                    + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" ) + ".</strong> "
+                    + PluginUtils.makeHtmlValid( parameter.getDeprecated() ) );
+                w.endElement(); // div
+            }
+
+            w.startElement( "div" );
             if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
                 w.writeMarkup( PluginUtils.makeHtmlValid( parameter.getDescription() ) );
             }
             else
             {
-                w.startElement( "p" );
                 w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.nodescription" ) );
-                w.endElement(); // p
             }
+            w.endElement(); // div
 
             w.startElement( "ul" );
-
-            writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" ), parameter.getDeprecated(), w );
 
             writeDetail( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.type" ), parameter.getType(), w );
 
@@ -508,18 +519,20 @@ public class PluginXdocGenerator
             }
             w.endElement();//td
             w.startElement( "td" );
-            String description = parameter.getDescription();
-            if ( StringUtils.isEmpty( description ) )
+            String description;
+            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
+                description =
+                    "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" )
+                        + ".</strong> " + PluginUtils.makeHtmlValid( parameter.getDeprecated() );
+            }
+            else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
+            {
+                description = PluginUtils.makeHtmlValid( parameter.getDescription() );
             }
             else
             {
-                description = PluginUtils.makeHtmlValid( description );
-            }
-            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
-            {
-                description = "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.deprecated" ) + "</strong>. " + description;
+                description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
             }
             w.writeMarkup( description + " " );
 

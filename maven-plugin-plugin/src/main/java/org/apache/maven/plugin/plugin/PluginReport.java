@@ -322,20 +322,20 @@ public class PluginReport
                  */
                 String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
 
-                String description = mojo.getDescription();
-                if ( StringUtils.isEmpty( description ) )
+                String description;
+                if ( StringUtils.isNotEmpty( mojo.getDeprecated() ) )
                 {
-                    description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
+                    description =
+                        "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> "
+                            + PluginUtils.makeHtmlValid( mojo.getDeprecated() );
+                }
+                else if ( StringUtils.isNotEmpty( mojo.getDescription() ) )
+                {
+                    description = PluginUtils.makeHtmlValid( mojo.getDescription() );
                 }
                 else
                 {
-                    description = PluginUtils.makeHtmlValid( description );
-                }
-
-                String deprecated = mojo.getDeprecated();
-                if ( StringUtils.isNotEmpty( deprecated ) )
-                {
-                    description = "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> " + description;
+                    description = getBundle( locale ).getString( "report.plugin.goal.nodescription" );
                 }
 
                 sink.tableRow();
