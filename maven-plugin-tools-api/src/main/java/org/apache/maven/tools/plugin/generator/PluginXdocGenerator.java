@@ -172,17 +172,16 @@ public class PluginXdocGenerator
         w.writeMarkup( "<strong>"+ getBundle( locale ).getString( "pluginxdoc.description" ) + "</strong>:" );
         w.endElement(); //p
 
-        w.startElement( "p" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
             w.writeMarkup( PluginUtils.makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
         else
         {
+            w.startElement( "p" );
             w.writeText( getBundle( locale ).getString( "pluginxdoc.nodescription" ) );
+            w.endElement(); // p
         }
-
-        w.endElement(); // p
 
         writeGoalAttributes( mojoDescriptor, w );
 
@@ -375,18 +374,16 @@ public class PluginXdocGenerator
             w.writeMarkup( "<strong><a name=\"" + parameter.getName() + "\">" + parameter.getName() + "</a>:</strong>" );
             w.endElement(); //p
 
-            String description = parameter.getDescription();
-            if ( StringUtils.isEmpty( description ) )
+            if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
+                w.writeMarkup( PluginUtils.makeHtmlValid( parameter.getDescription() ) );
             }
             else
             {
-                description = PluginUtils.makeHtmlValid( description );
+                w.startElement( "p" );
+                w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.nodescription" ) );
+                w.endElement(); // p
             }
-            w.startElement( "p" );
-            w.writeMarkup( description );
-            w.endElement(); //p
 
             w.startElement( "ul" );
 
