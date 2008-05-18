@@ -158,7 +158,8 @@ public class PluginHelpGenerator
         }
 
         descriptor.setDescription( "Display help information on " + pluginDescriptor.getArtifactId()
-            + ". Call 'mvn " + descriptor.getFullGoalName() + " -Ddetail=true' to display parameter details." );
+            + ". Call <pre>  mvn " + descriptor.getFullGoalName()
+            + " -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details." );
 
         try
         {
@@ -169,6 +170,15 @@ public class PluginHelpGenerator
                 param.setDescription( "If <code>true</code>, display all settable properties for each goal." );
                 param.setDefaultValue( "false" );
                 param.setExpression( "${detail}" );
+                descriptor.addParameter( param );
+            }
+            {
+                Parameter param = new Parameter();
+                param.setName( "goal" );
+                param.setType( "java.lang.String" );
+                param.setDescription( "The name of the goal for which to show help."
+                    + " If unspecified, all goals will be displayed." );
+                param.setExpression( "${goal}" );
                 descriptor.addParameter( param );
             }
             {
@@ -393,9 +403,12 @@ public class PluginHelpGenerator
         writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
 
-        writer.write( "        append( sb, \"This plugin has " + mojoDescriptors.size() + " "
+        writer.write( "        if ( goal == null || goal.length() <= 0 )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            append( sb, \"This plugin has " + mojoDescriptors.size() + " "
             + ( mojoDescriptors.size() > 1 ? "goals" : "goal" ) + ":\", 0 );" + LS );
-        writer.write( "        append( sb, \"\", 0 );" + LS );
+        writer.write( "            append( sb, \"\", 0 );" + LS );
+        writer.write( "        }" + LS );
 
         writer.write( LS );
 
@@ -416,17 +429,21 @@ public class PluginHelpGenerator
     private static void writeGoal( Writer writer, MojoDescriptor descriptor )
         throws IOException
     {
-        writer.write( "        append( sb, \"" + StringUtils.escape( descriptor.getFullGoalName() ) + "\", 0 );" + LS );
-        writer.write( "        append( sb, \"" + toDescription( descriptor.getDescription() ) + "\", 1 );" + LS );
+        writer.write( "        if ( goal == null || goal.length() <= 0 || \""
+            + StringUtils.escape( descriptor.getGoal() ) + "\".equals( goal ) )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            append( sb, \"" + StringUtils.escape( descriptor.getFullGoalName() ) + "\", 0 );"
+            + LS );
+        writer.write( "            append( sb, \"" + toDescription( descriptor.getDescription() ) + "\", 1 );" + LS );
+        writer.write( "            append( sb, \"\", 0 );" + LS );
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
         {
-            writer.write( "        if ( detail )" + LS );
-            writer.write( "        {" + LS );
+            writer.write( "            if ( detail )" + LS );
+            writer.write( "            {" + LS );
 
-            writer.write( "            append( sb, \"\", 0 );" + LS );
-            writer.write( "            append( sb, \"Available parameters:\", 1 );" + LS );
-            writer.write( "            append( sb, \"\", 0 );" + LS );
+            writer.write( "                append( sb, \"Available parameters:\", 1 );" + LS );
+            writer.write( "                append( sb, \"\", 0 );" + LS );
 
             for ( Iterator it = descriptor.getParameters().iterator(); it.hasNext(); )
             {
@@ -439,11 +456,10 @@ public class PluginHelpGenerator
                 }
             }
 
-            writer.write( "        }" + LS );
+            writer.write( "            }" + LS );
         }
 
-        writer.write( LS );
-        writer.write( "        append( sb, \"\", 0 );" + LS );
+        writer.write( "        }" + LS );
         writer.write( LS );
     }
 
@@ -460,8 +476,9 @@ public class PluginHelpGenerator
                 + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: "
                     + StringUtils.escape( parameter.getDefaultValue() ) + ")" : "" );
 
-            writer.write( "            append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
-            writer.write( "            append( sb, \"" + parameterDescription + "\", 3 );" + LS );
+            writer.write( "                append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
+            writer.write( "                append( sb, \"" + parameterDescription + "\", 3 );" + LS );
+            writer.write( "                append( sb, \"\", 0 );" + LS );
         }
     }
 
