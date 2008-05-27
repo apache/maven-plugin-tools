@@ -438,11 +438,11 @@ public class PluginReport
             sb.append( "    <pluginManagement>" ).append( '\n' );
             sb.append( "      <plugins>" ).append( '\n' );
             sb.append( "        <plugin>" ).append( '\n' );
-            sb.append( "          <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+            sb.append( "          <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
                 .append( '\n' );
-            sb.append( "          <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+            sb.append( "          <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
                 .append( '\n' );
-            sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+            sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
                 .append( '\n' );
             sb.append( "        </plugin>" ).append( '\n' );
             sb.append( "        ..." ).append( '\n' );
@@ -451,11 +451,11 @@ public class PluginReport
             sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" ).append( '\n' );
             sb.append( "    <plugins>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
-            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
                 .append( '\n' );
-            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
                 .append( '\n' );
-            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
             .append( '\n' );
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
@@ -469,11 +469,11 @@ public class PluginReport
                 sb.append( "  <reporting>" ).append( '\n' );
                 sb.append( "    <plugins>" ).append( '\n' );
                 sb.append( "      <plugin>" ).append( '\n' );
-                sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "<groupId>" )
+                sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
                     .append( '\n' );
-                sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "<artifactId>" )
+                sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
                     .append( '\n' );
-                sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "<version>" )
+                sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
                     .append( '\n' );
                 sb.append( "      </plugin>" ).append( '\n' );
                 sb.append( "      ..." ).append( '\n' );
