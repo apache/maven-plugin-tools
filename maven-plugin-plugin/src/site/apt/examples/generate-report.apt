@@ -25,7 +25,7 @@
 
 Configuring Generation of Documentation Reports
 
- To configure the generation of the documentation reports, add the following to the project's pom:
+ To configure the generation of the documentation reports, add the following to the project's POM:
 
 +-----+
 <project>

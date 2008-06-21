@@ -25,7 +25,7 @@
 
 Configuring Generation of Help Mojo
 
- To configure the generation of an <<<Help>>> Mojo, add the following to the project's pom:
+ To configure the generation of a <<<Help>>> Mojo, add the following to the project's POM:
 
 +-----+
 <project>

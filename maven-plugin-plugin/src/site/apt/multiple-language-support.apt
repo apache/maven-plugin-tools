@@ -27,14 +27,14 @@
  
 *Abstract
 
-  The Plugin plugin needs to be refactored in order to support multiple mojo
+  The Plugin Plugin needs to be refactored in order to support multiple mojo
   implementation languages. This document will detail the steps needed to 
   add this functionality.
   
 *Current Status
 
-  The plugin plugin currently calls out to a set of generators in the 
-  maven-plugin-tools library, which in turn uses qdox to generate various things
+  The Plugin Plugin currently calls out to a set of generators in the
+  maven-plugin-tools library, which in turn uses QDox to generate various things
   based on annotations in the java source code.
   
 *Refactored Design
@@ -47,4 +47,4 @@
   centrally aggregated by the generator-manager. After all generators have run, 
   the generator-manager will call another class (depending on what it's meant to
   produce) to take all the aggregated mojo descriptors and produce a result 
-  (such as plugin.xml file for the project).
+  (such as <<<plugin.xml>>> file for the project).

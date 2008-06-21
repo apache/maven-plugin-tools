@@ -26,8 +26,8 @@
 
 Usage
 
-  The Plugin Plugin is generally used for Maven 2 plugins. Its mojos are bound to different phases in the build life cycle.
-  So when you execute a specific phase, the Plugin Plugin mojos bound to it are also executed. Aside from this, each goal can
+  The Plugin Plugin is generally used for Maven 2 plugins. Its goals are bound to different phases in the build life cycle.
+  So when you execute a specific phase, the Plugin Plugin goals bound to it are also executed. Aside from this, each goal can
   also be explicitly executed from the command line.
 
 * The <<<plugin:descriptor>>> Goal
@@ -41,7 +41,7 @@ Usage
 mvn package
 +-----+
 
-  You will see that the plugin.xml file is generated in the <<<target/classes/META-INF/maven>>> directory of your project. The file is
+  You will see that the <<<plugin.xml>>> file is generated in the <<<target/classes/META-INF/maven>>> directory of your project. The file is
   also bundled in the generated jar file.
 
   To explicitly execute the <<<plugin:descriptor>>> goal, type the following in the command line:
@@ -71,7 +71,7 @@ mvn plugin:xdoc
 mvn install
 +-----+
 
-  you will see that the version of the plugin in the plugin-registry.xml is changed to the same version of the plugin
+  you will see that the version of the plugin in the <<<plugin-registry.xml>>> is changed to the same version of the plugin
   that you have just installed.
 
   You can also explicitly execute the <<<plugin:updateRegistry>>> goal by executing
@@ -93,7 +93,7 @@ mvn package
 
 * The <<<plugin:helpmojo>>> Goal
 
-  To generate an <<<HelpMojo>>> for the mojos of your plugin, execute the following on the command line:
+  To generate a <<<HelpMojo>>> for the mojos of your plugin, execute the following on the command line:
 
 +-----+
 mvn plugin:helpmojo
