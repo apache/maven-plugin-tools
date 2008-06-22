@@ -391,19 +391,15 @@ public class PluginReport
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
             tableCell( ( StringUtils.isNotEmpty( requirements.getMemory() )
-                                                                           ? requirements.getMemory()
-                                                                           : getBundle( locale )
-                                                                               .getString(
-                                                                                           "report.plugin.systemrequirements.nominimum" ) ) );
+                ? requirements.getMemory()
+                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
             tableCell( ( StringUtils.isNotEmpty( requirements.getDiskSpace() )
-                                                                              ? requirements.getDiskSpace()
-                                                                              : getBundle( locale )
-                                                                                  .getString(
-                                                                                              "report.plugin.systemrequirements.nominimum" ) ) );
+                ? requirements.getDiskSpace()
+                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
             if ( requirements.getOthers() != null && requirements.getOthers().size() > 0 )
@@ -434,7 +430,8 @@ public class PluginReport
             sb.append( "<project>" ).append( '\n' );
             sb.append( "  ..." ).append( '\n' );
             sb.append( "  <build>" ).append( '\n' );
-            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" ).append( '\n' );
+            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" )
+                .append( '\n' );
             sb.append( "    <pluginManagement>" ).append( '\n' );
             sb.append( "      <plugins>" ).append( '\n' );
             sb.append( "        <plugin>" ).append( '\n' );
@@ -448,7 +445,8 @@ public class PluginReport
             sb.append( "        ..." ).append( '\n' );
             sb.append( "      </plugins>" ).append( '\n' );
             sb.append( "    </pluginManagement>" ).append( '\n' );
-            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" ).append( '\n' );
+            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" )
+                .append( '\n' );
             sb.append( "    <plugins>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
             sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
@@ -465,7 +463,8 @@ public class PluginReport
             if ( hasMavenReport )
             {
                 sb.append( "  ..." ).append( '\n' );
-                sb.append( "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" ).append( '\n' );
+                sb.append( "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" )
+                    .append( '\n' );
                 sb.append( "  <reporting>" ).append( '\n' );
                 sb.append( "    <plugins>" ).append( '\n' );
                 sb.append( "      <plugin>" ).append( '\n' );

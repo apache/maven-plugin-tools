@@ -130,8 +130,8 @@ public class UpdatePluginRegistryMojo
             if ( TrackableBase.GLOBAL_LEVEL.equals( plugin.getSourceLevel() ) )
             {
                 // do nothing. We don't rewrite the globals, under any circumstances.
-                getLog().warn( "Cannot update registered version for plugin {" + groupId + ":" + artifactId +
-                    "}; it is specified in the global registry." );
+                getLog().warn( "Cannot update registered version for plugin {" + groupId + ":" + artifactId
+                    + "}; it is specified in the global registry." );
             }
             else
             {
@@ -181,8 +181,8 @@ public class UpdatePluginRegistryMojo
             }
             catch ( IOException e )
             {
-                getLog().warn( "Cannot rewrite user-level plugin-registry.xml with new plugin version of plugin: \'" +
-                    groupId + ":" + artifactId + "\'.", e );
+                getLog().warn( "Cannot rewrite user-level plugin-registry.xml with new plugin version of plugin: \'"
+                    + groupId + ":" + artifactId + "\'.", e );
             }
             finally
             {
