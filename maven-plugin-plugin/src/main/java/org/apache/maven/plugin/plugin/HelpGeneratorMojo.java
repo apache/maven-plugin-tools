@@ -26,7 +26,7 @@ import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
 
 /**
- * Generates an <code>HelpMojo</code> class.
+ * Generates a <code>HelpMojo</code> class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$

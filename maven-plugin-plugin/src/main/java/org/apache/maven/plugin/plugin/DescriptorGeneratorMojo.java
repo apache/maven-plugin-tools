@@ -27,7 +27,7 @@ import java.io.File;
 /**
  * Generate a plugin descriptor.
  * <p/>
- * Note: Phase is after the "compilation" of any scripts
+ * <b>Note:</b> Phase is after the "compilation" of any scripts.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
@@ -40,7 +40,7 @@ public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {
     /**
-     * The directory where the generated plugin.xml file will be put.
+     * The directory where the generated <code>plugin.xml</code> file will be put.
      *
      * @parameter default-value="${project.build.outputDirectory}/META-INF/maven"
      */

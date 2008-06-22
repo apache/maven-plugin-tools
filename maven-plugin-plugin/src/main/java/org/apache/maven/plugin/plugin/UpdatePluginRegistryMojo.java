@@ -51,7 +51,7 @@ public class UpdatePluginRegistryMojo
     extends AbstractMojo
 {
     /**
-     * Indicates whether the plugin-registry.xml is used by Maven or not
+     * Indicates whether the <code>plugin-registry.xml</code> file is used by Maven or not
      * to manage plugin versions.
      *
      * @parameter default-value="${settings.usePluginRegistry}"

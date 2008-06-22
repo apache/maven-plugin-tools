@@ -25,7 +25,7 @@ import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import java.io.File;
 
 /**
- * Generate Xdoc files for the project mojos or goals
+ * Generate Xdoc files for the project mojos or goals.
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id$
