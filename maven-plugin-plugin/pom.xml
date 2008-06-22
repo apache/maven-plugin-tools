@@ -229,6 +229,22 @@
     </plugins>
   </build>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>l10n-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
+        <configuration>
+          <locales>
+            <locale>de</locale>
+            <locale>fr</locale>
+          </locales>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <properties>
     <doxiaVersion>1.0-alpha-10</doxiaVersion>
     <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
