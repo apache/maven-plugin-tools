@@ -420,6 +420,16 @@ public class PluginReport
 
             endSection();
 
+            renderUsageSection( hasMavenReport );
+        }
+
+        /**
+         * Render the section about the usage of the plugin.
+         * 
+         * @param hasMavenReport If the plugin has a report or not
+         */
+        private void renderUsageSection( boolean hasMavenReport )
+        {
             startSection( getBundle( locale ).getString( "report.plugin.usage" ) );
 
             // Configuration
