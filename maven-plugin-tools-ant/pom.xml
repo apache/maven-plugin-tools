@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.2</version>
   </parent>
 
   <artifactId>maven-plugin-tools-ant</artifactId>
@@ -55,8 +55,8 @@
   </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-ant/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.2/maven-plugin-tools-ant</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.2/maven-plugin-tools-ant</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/tags/maven-plugin-tools-2.4.2/maven-plugin-tools-ant</url>
   </scm>
 </project>
