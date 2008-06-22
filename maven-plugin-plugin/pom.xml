@@ -18,20 +18,19 @@
   ~ under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-plugins</artifactId>
     <version>11</version>
   </parent>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-plugin-plugin</artifactId>
-  <version>2.4.2-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-
   <name>Maven Plugin Plugin</name>
+  <version>2.4.2-SNAPSHOT</version>
+
   <description>
     The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree,
     to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the
@@ -42,8 +41,69 @@
     <maven>2.0.6</maven>
   </prerequisites>
 
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
+  </scm>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- pin to a previous version so it doesn't get reloaded during build -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>2.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generated-helpmojo</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <version>1.0-alpha-18</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/pluginRequirements.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
- <!-- doxia -->
+    <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
       <artifactId>doxia-sink-api</artifactId>
@@ -65,7 +125,7 @@
       </exclusions>
     </dependency>
 
-  <!-- maven -->
+    <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
@@ -140,6 +200,22 @@
     </dependency>
   </dependencies>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>l10n-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
+        <configuration>
+          <locales>
+            <locale>de</locale>
+            <locale>fr</locale>
+          </locales>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <!-- Copy from project up -->
   <dependencyManagement>
     <dependencies>
@@ -179,78 +255,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <!-- pin to a previous version so it doesn't get reloaded during build -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>2.4.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generated-helpmojo</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.modello</groupId>
-        <artifactId>modello-maven-plugin</artifactId>
-        <version>1.0-alpha-18</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <version>1.0.0</version>
-          <models>
-            <model>src/main/mdo/pluginRequirements.mdo</model>
-          </models>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>l10n-maven-plugin</artifactId>
-        <version>1.0-alpha-1</version>
-        <configuration>
-          <locales>
-            <locale>de</locale>
-            <locale>fr</locale>
-          </locales>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-
-  <properties>
-    <doxiaVersion>1.0-alpha-10</doxiaVersion>
-    <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.4.2-SNAPSHOT</pluginToolsVersion>
-  </properties>
-
   <distributionManagement>
     <site>
       <id>apache.website</id>
@@ -258,14 +262,9 @@
     </site>
   </distributionManagement>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
-  </scm>
-
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
-  </issueManagement>
+  <properties>
+    <doxiaVersion>1.0-alpha-10</doxiaVersion>
+    <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
+    <pluginToolsVersion>2.4.2-SNAPSHOT</pluginToolsVersion>
+  </properties>
 </project>
