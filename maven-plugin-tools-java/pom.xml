@@ -65,9 +65,9 @@
 
     <!-- misc -->
     <dependency>
-      <groupId>qdox</groupId>
+      <groupId>com.thoughtworks.qdox</groupId>
       <artifactId>qdox</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.3</version>
     </dependency>
   </dependencies>
 
