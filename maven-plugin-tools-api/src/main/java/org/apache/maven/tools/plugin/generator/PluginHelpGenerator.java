@@ -417,12 +417,27 @@ public class PluginHelpGenerator
     private static void writeGoal( Writer writer, MojoDescriptor descriptor )
         throws IOException
     {
+        String goalDescription = toDescription( descriptor.getDescription() );
+
         writer.write( "        if ( goal == null || goal.length() <= 0 || \""
             + StringUtils.escape( descriptor.getGoal() ) + "\".equals( goal ) )" + LS );
         writer.write( "        {" + LS );
         writer.write( "            append( sb, \"" + StringUtils.escape( descriptor.getFullGoalName() ) + "\", 0 );"
             + LS );
-        writer.write( "            append( sb, \"" + toDescription( descriptor.getDescription() ) + "\", 1 );" + LS );
+        if ( StringUtils.isNotEmpty( descriptor.getDeprecated() ) )
+        {
+            writer.write( "            append( sb, \"Deprecated. " + toDescription( descriptor.getDeprecated() )
+                + "\", 1 );" + LS );
+            writer.write( "            if ( detail )" + LS );
+            writer.write( "            {" + LS );
+            writer.write( "                append( sb, \"\", 0 );" + LS );
+            writer.write( "                append( sb, \"" + goalDescription + "\", 1 );" + LS );
+            writer.write( "            }" + LS );
+        }
+        else
+        {
+            writer.write( "            append( sb, \"" + goalDescription + "\", 1 );" + LS );
+        }
         writer.write( "            append( sb, \"\", 0 );" + LS );
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
@@ -465,6 +480,12 @@ public class PluginHelpGenerator
                     + StringUtils.escape( parameter.getDefaultValue() ) + ")" : "" );
 
             writer.write( "                append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
+            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
+            {
+                writer.write( "                append( sb, \"Deprecated. " + toDescription( parameter.getDeprecated() )
+                    + "\", 3 );" + LS );
+                writer.write( "                append( sb, \"\", 0 );" + LS );
+            }
             writer.write( "                append( sb, \"" + parameterDescription + "\", 3 );" + LS );
             writer.write( "                append( sb, \"\", 0 );" + LS );
         }
