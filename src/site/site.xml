@@ -61,6 +61,8 @@ under the License.
       <item name="Doxia" href="http://maven.apache.org/doxia"/>
     </links>
 
+    <menu ref="modules" />
+
     <menu ref="reports" inherit="bottom" />
   </body>
 </project>
