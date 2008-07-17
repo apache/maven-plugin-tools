@@ -64,7 +64,7 @@ public class PluginReport
      *
      * @parameter default-value="${project.build.directory}/generated-site/xdoc"
      */
-    private String outputDirectory;
+    private File outputDirectory;
 
     /**
      * Doxia Site Renderer.
@@ -128,7 +128,7 @@ public class PluginReport
     /** {@inheritDoc} */
     protected String getOutputDirectory()
     {
-        return outputDirectory;
+        return outputDirectory.getPath();
     }
 
     /** {@inheritDoc} */
