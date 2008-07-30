@@ -138,10 +138,16 @@ public class PluginReport
     }
 
     /** {@inheritDoc} */
+    public boolean canGenerateReport()
+    {
+        return "maven-plugin".equals( project.getPackaging() );
+    }
+
+    /** {@inheritDoc} */
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
-        if ( !project.getPackaging().equals( "maven-plugin" ) )
+        if ( !canGenerateReport() )
         {
             return;
         }
