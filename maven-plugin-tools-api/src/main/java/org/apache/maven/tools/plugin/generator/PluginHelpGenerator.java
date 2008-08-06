@@ -22,6 +22,7 @@ package org.apache.maven.tools.plugin.generator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -149,7 +151,7 @@ public class PluginHelpGenerator
         }
 
         descriptor.setDescription( "Display help information on " + pluginDescriptor.getArtifactId()
-            + ". Call <pre>  mvn " + descriptor.getFullGoalName()
+            + ".\n * <br/>\n * Call <pre>  mvn " + descriptor.getFullGoalName()
             + " -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details." );
 
         try
@@ -309,10 +311,32 @@ public class PluginHelpGenerator
                                           MojoDescriptor helpDescriptor )
         throws IOException
     {
+        StringBuffer author = new StringBuffer();
+        author.append( PluginHelpGenerator.class.getName() );
+
+        String resource = "META-INF/maven/org.apache.maven.plugin-tools/maven-plugin-tools-api/pom.properties";
+        InputStream resourceAsStream = PluginHelpGenerator.class.getClassLoader().getResourceAsStream( resource );
+
+        if ( resourceAsStream != null )
+        {
+            try
+            {
+                Properties properties = new Properties();
+                properties.load( resourceAsStream );
+
+                author.append( " (version " ).append( properties.getProperty( "version", "unknown" ) ).append( ")" );
+            }
+            catch ( IOException e )
+            {
+                // nope
+            }
+        }
+
         writer.write( "/**" + LS );
         writer.write( " * " + helpDescriptor.getDescription() + LS );
         writer.write( " *" + LS );
         writer.write( " * @version generated on " + new Date() + LS );
+        writer.write( " * @author " + author.toString() + LS );
         writer.write( " * @goal " + helpDescriptor.getGoal() + LS );
         writer.write( " * @requiresProject false" + LS );
         writer.write( " */" + LS );
