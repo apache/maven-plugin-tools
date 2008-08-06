@@ -265,6 +265,6 @@
   <properties>
     <doxiaVersion>1.0-alpha-10</doxiaVersion>
     <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.4.2</pluginToolsVersion>
+    <pluginToolsVersion>${pom.version}</pluginToolsVersion>
   </properties>
 </project>
