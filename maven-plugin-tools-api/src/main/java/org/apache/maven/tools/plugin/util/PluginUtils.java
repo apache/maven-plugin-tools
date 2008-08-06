@@ -22,6 +22,8 @@ package org.apache.maven.tools.plugin.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,8 +34,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Dependency;
@@ -237,7 +245,7 @@ public final class PluginUtils
 
     /**
      * Fixes some javadoc comment to become a valid XHTML snippet.
-     * 
+     *
      * @param description Javadoc description with HTML tags, may be <code>null</code>.
      * @return The description with valid XHTML tags, never <code>null</code>.
      */
@@ -398,7 +406,7 @@ public final class PluginUtils
 
     /**
      * Sorts the specified mojo descriptors by goal name.
-     * 
+     *
      * @param mojoDescriptors The mojo descriptors to sort, may be <code>null</code>.
      */
     public static void sortMojos( List mojoDescriptors )
@@ -419,4 +427,265 @@ public final class PluginUtils
         }
     }
 
+    /**
+     * Converts a HTML fragment as extracted from a javadoc comment to a plain text string. This method tries to retain
+     * as much of the text formatting as possible by means of the following transformations:
+     * <ul>
+     * <li>List items are converted to leading tabs (U+0009), followed by the item number/bullet, another tab and
+     * finally the item contents. Each tab denotes an increase of indentation.</li>
+     * <li>Flow breaking elements as well as literal line terminators in preformatted text are converted to a newline
+     * (U+000A) to denote a mandatory line break.</li>
+     * <li>Consecutive spaces and line terminators from character data outside of preformatted text will be normalized
+     * to a single space. The resulting space denotes a possible point for line wrapping.</li>
+     * <li>Each space in preformatted text will be converted to a non-breaking space (U+00A0).</li>
+     * </ul>
+     *
+     * @param html The HTML fragment to convert to plain text, may be <code>null</code>.
+     * @return A string with HTML tags converted into pure text, never <code>null</code>.
+     * @since 2.4.3
+     */
+    public static String toText( String html )
+    {
+        if ( StringUtils.isEmpty( html ) )
+        {
+            return "";
+        }
+
+        final StringBuffer sb = new StringBuffer();
+
+        HTMLEditorKit.Parser parser = new ParserDelegator();
+        HTMLEditorKit.ParserCallback htmlCallback = new HTMLEditorKit.ParserCallback()
+        {
+            /**
+             * Holds the index of the current item in a numbered list.
+             */
+            class Counter
+            {
+                public int value;
+            }
+
+            /**
+             * A flag whether the parser is currently in the body element.
+             */
+            private boolean body;
+
+            /**
+             * A flag whether the parser is currently processing preformatted text, actually a counter to track nesting.
+             */
+            private int preformatted;
+
+            /**
+             * The current indentation depth for the output.
+             */
+            private int depth;
+
+            /**
+             * A stack of {@link Counter} objects corresponding to the nesting of (un-)ordered lists. A
+             * <code>null</code> element denotes an unordered list.
+             */
+            private Stack numbering = new Stack();
+
+            /**
+             * A flag whether an implicit line break is pending in the output buffer. This flag is used to postpone the
+             * output of implicit line breaks until we are sure that are not to be merged with other implicit line
+             * breaks.
+             */
+            private boolean pendingNewline;
+
+            /**
+             * A flag whether we have just parsed a simple tag.
+             */
+            private boolean simpleTag;
+
+            /** {@inheritDoc} */
+            public void handleSimpleTag( HTML.Tag t, MutableAttributeSet a, int pos )
+            {
+                simpleTag = true;
+                if ( body && HTML.Tag.BR.equals( t ) )
+                {
+                    newline( false );
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void handleStartTag( HTML.Tag t, MutableAttributeSet a, int pos )
+            {
+                simpleTag = false;
+                if ( body && ( t.breaksFlow() || t.isBlock() ) )
+                {
+                    newline( true );
+                }
+                if ( HTML.Tag.OL.equals( t ) )
+                {
+                    numbering.push( new Counter() );
+                }
+                else if ( HTML.Tag.UL.equals( t ) )
+                {
+                    numbering.push( null );
+                }
+                else if ( HTML.Tag.LI.equals( t ) )
+                {
+                    Counter counter = (Counter) numbering.peek();
+                    if ( counter == null )
+                    {
+                        text( "-\t" );
+                    }
+                    else
+                    {
+                        text( ++counter.value + ".\t" );
+                    }
+                    depth++;
+                }
+                else if ( HTML.Tag.DD.equals( t ) )
+                {
+                    depth++;
+                }
+                else if ( t.isPreformatted() )
+                {
+                    preformatted++;
+                }
+                else if ( HTML.Tag.BODY.equals( t ) )
+                {
+                    body = true;
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void handleEndTag( HTML.Tag t, int pos )
+            {
+                if ( HTML.Tag.OL.equals( t ) || HTML.Tag.UL.equals( t ) )
+                {
+                    numbering.pop();
+                }
+                else if ( HTML.Tag.LI.equals( t ) || HTML.Tag.DD.equals( t ) )
+                {
+                    depth--;
+                }
+                else if ( t.isPreformatted() )
+                {
+                    preformatted--;
+                }
+                else if ( HTML.Tag.BODY.equals( t ) )
+                {
+                    body = false;
+                }
+                if ( body && ( t.breaksFlow() || t.isBlock() ) && !HTML.Tag.LI.equals( t ) )
+                {
+                    if ( ( HTML.Tag.P.equals( t ) || HTML.Tag.PRE.equals( t ) || HTML.Tag.OL.equals( t )
+                        || HTML.Tag.UL.equals( t ) || HTML.Tag.DL.equals( t ) )
+                        && numbering.isEmpty() )
+                    {
+                        newline( pendingNewline = false );
+                    }
+                    else
+                    {
+                        newline( true );
+                    }
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void handleText( char[] data, int pos )
+            {
+                /*
+                 * NOTE: Parsers before JRE 1.6 will parse XML-conform simple tags like <br/> as "<br>" followed by
+                 * the text event ">..." so we need to watch out for the closing angle bracket.
+                 */
+                int offset = 0;
+                if ( simpleTag && data[0] == '>' )
+                {
+                    simpleTag = false;
+                    for ( ++offset; offset < data.length && data[offset] <= ' '; )
+                    {
+                        offset++;
+                    }
+                }
+                if ( offset < data.length )
+                {
+                    String text = new String( data, offset, data.length - offset );
+                    text( text );
+                }
+            }
+
+            /** {@inheritDoc} */
+            public void flush()
+            {
+                flushPendingNewline();
+            }
+
+            /**
+             * Writes a line break to the plain text output.
+             *
+             * @param implicit A flag whether this is an explicit or implicit line break. Explicit line breaks are
+             *            always written to the output whereas consecutive implicit line breaks are merged into a single
+             *            line break.
+             */
+            private void newline( boolean implicit )
+            {
+                if ( implicit )
+                {
+                    pendingNewline = true;
+                }
+                else
+                {
+                    flushPendingNewline();
+                    sb.append( '\n' );
+                }
+            }
+
+            /**
+             * Flushes a pending newline (if any).
+             */
+            private void flushPendingNewline()
+            {
+                if ( pendingNewline )
+                {
+                    pendingNewline = false;
+                    if ( sb.length() > 0 )
+                    {
+                        sb.append( '\n' );
+                    }
+                }
+            }
+
+            /**
+             * Writes the specified character data to the plain text output. If the last output was a line break, the
+             * character data will automatically be prefixed with the current indent.
+             *
+             * @param data The character data, must not be <code>null</code>.
+             */
+            private void text( String data )
+            {
+                flushPendingNewline();
+                if ( sb.length() <= 0 || sb.charAt( sb.length() - 1 ) == '\n' )
+                {
+                    for ( int i = 0; i < depth; i++ )
+                    {
+                        sb.append( '\t' );
+                    }
+                }
+                String text;
+                if ( preformatted > 0 )
+                {
+                    text = data.replace( ' ', '\u00A0' );
+                }
+                else
+                {
+                    text = data.replace( '\n', ' ' );
+                }
+                sb.append( text );
+            }
+        };
+
+        try
+        {
+            parser.parse( new StringReader( makeHtmlValid( html ) ), htmlCallback, true );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+
+        return sb.toString().replace( '\"', '\'' ); // for CDATA
+    }
 }
