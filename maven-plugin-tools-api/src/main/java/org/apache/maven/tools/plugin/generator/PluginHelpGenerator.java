@@ -151,7 +151,7 @@ public class PluginHelpGenerator
         }
 
         descriptor.setDescription( "Display help information on " + pluginDescriptor.getArtifactId()
-            + ".\n * <br/>\n * Call <pre>  mvn " + descriptor.getFullGoalName()
+            + ".<br/> Call <pre>  mvn " + descriptor.getFullGoalName()
             + " -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details." );
 
         try
@@ -178,7 +178,7 @@ public class PluginHelpGenerator
                 Parameter param = new Parameter();
                 param.setName( "lineLength" );
                 param.setType( "int" );
-                param.setDescription( "The maximum length of a display line." );
+                param.setDescription( "The maximum length of a display line, should be positive." );
                 param.setDefaultValue( "80" );
                 param.setExpression( "${lineLength}" );
                 descriptor.addParameter( param );
@@ -187,7 +187,7 @@ public class PluginHelpGenerator
                 Parameter param = new Parameter();
                 param.setName( "indentSize" );
                 param.setType( "int" );
-                param.setDescription( "The number of spaces per indentation level." );
+                param.setDescription( "The number of spaces per indentation level, should be positive." );
                 param.setDefaultValue( "2" );
                 param.setExpression( "${indentSize}" );
                 descriptor.addParameter( param );
@@ -394,6 +394,18 @@ public class PluginHelpGenerator
         writer.write( "        throws MojoExecutionException" + LS );
         writer.write( "    {" + LS );
 
+        writer.write( "        if ( lineLength <= 0 )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            getLog().warn( \"The parameter 'lineLength' should be positive, using '80' as default.\" );" + LS );
+        writer.write( "            lineLength = 80;" + LS );
+        writer.write( "        }" + LS );
+        writer.write( "        if ( indentSize <= 0 )" + LS );
+        writer.write( "        {" + LS );
+        writer.write( "            getLog().warn( \"The parameter 'indentSize' should be positive, using '2' as default.\" );" + LS );
+        writer.write( "            indentSize = 2;" + LS );
+        writer.write( "        }" + LS );
+        writer.write( LS );
+
         writer.write( "        StringBuffer sb = new StringBuffer();" + LS );
         writer.write( LS );
 
@@ -533,9 +545,17 @@ public class PluginHelpGenerator
         writer.write( "    }" + LS );
 
         writer.write( LS );
+        writer.write( "    /** " + LS );
+        writer.write( "     * Append a description to the buffer by respecting the indentSize and lineLength parameters." + LS );
+        writer.write( "     * <b>Note</b>: The last character is always a new line." + LS );
+        writer.write( "     * " + LS );
+        writer.write( "     * @param sb The buffer to append the description, not <code>null</code>." + LS );
+        writer.write( "     * @param description The description, not <code>null</code>." + LS );
+        writer.write( "     * @param indent The base indentation level of each line, must not be negative." + LS );
+        writer.write( "     */" + LS );
         writer.write( "    private void append( StringBuffer sb, String description, int indent )" + LS );
         writer.write( "    {" + LS );
-        writer.write( "        for ( Iterator it = toLines( description, indent ).iterator(); it.hasNext(); )" + LS );
+        writer.write( "        for ( Iterator it = toLines( description, indent, indentSize, lineLength ).iterator(); it.hasNext(); )" + LS );
         writer.write( "        {" + LS );
         writer.write( "            sb.append( it.next().toString() ).append( '\\n' );" + LS );
         writer.write( "        }" + LS );
@@ -547,9 +567,12 @@ public class PluginHelpGenerator
         writer.write( "     * " + LS );
         writer.write( "     * @param text The text to split into lines, must not be <code>null</code>." + LS );
         writer.write( "     * @param indent The base indentation level of each line, must not be negative." + LS );
+        writer.write( "     * @param indentSize The size of each indentation, must not be negative." + LS );
+        writer.write( "     * @param lineLength The length of the line, must not be negative." + LS );
         writer.write( "     * @return The sequence of display lines, never <code>null</code>." + LS );
+        writer.write( "     * @throws NegativeArraySizeException if <code>indent < 0</code>" + LS );
         writer.write( "     */" + LS );
-        writer.write( "    private List toLines( String text, int indent )" + LS );
+        writer.write( "    public static List toLines( String text, int indent, int indentSize, int lineLength )" + LS );
         writer.write( "    {" + LS );
         writer.write( "        List lines = new ArrayList();" + LS );
         writer.write( LS );
@@ -557,7 +580,7 @@ public class PluginHelpGenerator
         writer.write( "        String[] plainLines = text.split( \"(\\r\\n)|(\\r)|(\\n)\" );" + LS );
         writer.write( "        for ( int i = 0; i < plainLines.length; i++ )" + LS );
         writer.write( "        {" + LS );
-        writer.write( "            toLines( lines, ind + plainLines[i] );" + LS );
+        writer.write( "            toLines( lines, ind + plainLines[i], indentSize, lineLength );" + LS );
         writer.write( "        }" + LS );
         writer.write( LS );
         writer.write( "        return lines;" + LS );
@@ -569,8 +592,10 @@ public class PluginHelpGenerator
         writer.write( "     * " + LS );
         writer.write( "     * @param lines The sequence of display lines, must not be <code>null</code>." + LS );
         writer.write( "     * @param line The line to add, must not be <code>null</code>." + LS );
+        writer.write( "     * @param indentSize The size of each indentation, must not be negative." + LS );
+        writer.write( "     * @param lineLength The length of the line, must not be negative." + LS );
         writer.write( "     */" + LS );
-        writer.write( "    private void toLines( List lines, String line )" + LS );
+        writer.write( "    private static void toLines( List lines, String line, int indentSize, int lineLength )" + LS );
         writer.write( "    {" + LS );
         writer.write( "        int lineIndent = getIndentLevel( line );" + LS );
         writer.write( "        StringBuffer buf = new StringBuffer( 256 );" + LS );
@@ -649,10 +674,8 @@ public class PluginHelpGenerator
         {
             return StringUtils.escape( PluginUtils.toText( description ) );
         }
-        else
-        {
-            return "(no description available)";
-        }
+
+        return "(no description available)";
     }
 
     /**
