@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
@@ -37,7 +37,7 @@
       <plugin>
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
-        <version>1.0-alpha-18</version>
+          <version>1.0-alpha-20</version>
         <configuration>
           <models>
             <model>src/main/mdo/plugin-metadata.mdo</model>
@@ -46,10 +46,28 @@
         </configuration>
         <executions>
           <execution>
+            <id>site-docs</id>
+            <phase>pre-site</phase>
             <goals>
+              <goal>xsd</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>xsd</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>xsd</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>standard</id>
+            <goals>
+              <goal>java</goal>
               <goal>xpp3-reader</goal>
               <goal>xpp3-writer</goal>
-              <goal>java</goal>
             </goals>
           </execution>
         </executions>

@@ -29,3 +29,13 @@
 Introduction
 
  The Maven Plugin Tool Model is model to extract descriptors information from plugins.
+
+ The following are generated from this model:
+
+  * {{{./apidocs/index.html}Java sources}} with Reader and Writers for the Xpp3 XML parser
+
+  * A {{{plugin-metadata.html}Descriptor Reference}}
+
+  * An {{{./plugin-metadata-1.0.0.xsd}XSD}}.
+
+  []
