@@ -572,7 +572,7 @@ public class PluginHelpGenerator
         writer.write( "     * @return The sequence of display lines, never <code>null</code>." + LS );
         writer.write( "     * @throws NegativeArraySizeException if <code>indent < 0</code>" + LS );
         writer.write( "     */" + LS );
-        writer.write( "    public static List toLines( String text, int indent, int indentSize, int lineLength )" + LS );
+        writer.write( "    private static List toLines( String text, int indent, int indentSize, int lineLength )" + LS );
         writer.write( "    {" + LS );
         writer.write( "        List lines = new ArrayList();" + LS );
         writer.write( LS );
