@@ -534,11 +534,11 @@ public class PluginXdocGenerator
             {
                 description = getBundle( locale ).getString( "pluginxdoc.nodescription" );
             }
-            w.writeMarkup( description + " " );
+            w.writeMarkup( description + "<br/>" );
 
             if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
             {
-                w.writeMarkup( getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.defaultValue" ) + ": <code>" );
+                w.writeMarkup( "<strong>" + getBundle( locale ).getString( "pluginxdoc.mojodescriptor.parameter.defaultValue" ) + "</strong>: <code>" );
                 w.writeText( parameter.getDefaultValue() );
                 w.writeMarkup( "</code>." );
             }
