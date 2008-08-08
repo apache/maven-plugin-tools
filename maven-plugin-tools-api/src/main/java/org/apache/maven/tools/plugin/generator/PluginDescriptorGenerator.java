@@ -281,6 +281,26 @@ public class PluginDescriptorGenerator
         w.endElement();
 
         // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        if ( mojoDescriptor.getDeprecated() != null )
+        {
+            w.startElement( "deprecated" );
+
+            if ( StringUtils.isEmpty( mojoDescriptor.getDeprecated() ) )
+            {
+                w.writeText( "No reason given" );
+            }
+            else
+            {
+                w.writeText( mojoDescriptor.getDeprecated() );
+            }
+
+            w.endElement();
+        }
+
+        // ----------------------------------------------------------------------
         // Parameters
         // ----------------------------------------------------------------------
 
