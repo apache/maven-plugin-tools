@@ -99,7 +99,7 @@
   <properties>
     <doxiaVersion>1.0-alpha-10</doxiaVersion>
     <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
-    <pluginToolsVersion>${pom.version}</pluginToolsVersion>
+    <pluginToolsVersion>2.4.3-SNAPSHOT</pluginToolsVersion>
   </properties>
 
   <dependencies>

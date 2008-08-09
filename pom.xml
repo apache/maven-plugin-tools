@@ -236,7 +236,7 @@
   </dependencies>
 
   <properties>
-    <pluginToolsVersion>${pom.version}</pluginToolsVersion>
+    <pluginToolsVersion>2.4.3-SNAPSHOT</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
   </properties>
 </project>
