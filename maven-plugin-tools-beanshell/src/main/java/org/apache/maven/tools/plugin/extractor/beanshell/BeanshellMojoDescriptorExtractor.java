@@ -47,35 +47,6 @@ import java.util.Set;
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
 {
-    private MojoDescriptor createMojoDescriptor( String basedir, String resource, PluginDescriptor pluginDescriptor )
-        throws InvalidPluginDescriptorException
-    {
-        MojoDescriptor mojoDescriptor = new MojoDescriptor();
-        mojoDescriptor.setPluginDescriptor( pluginDescriptor );
-
-        mojoDescriptor.setLanguage( "bsh" );
-        mojoDescriptor.setComponentConfigurator( "bsh" );
-
-        mojoDescriptor.setImplementation( resource );
-
-        Interpreter interpreter = new Interpreter();
-
-        try
-        {
-            interpreter.set( "file", new File( basedir, resource ) );
-
-            interpreter.set( "mojoDescriptor", mojoDescriptor );
-
-            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ) ) );
-        }
-        catch ( EvalError evalError )
-        {
-            throw new InvalidPluginDescriptorException( "Error scanning beanshell script", evalError );
-        }
-
-        return mojoDescriptor;
-    }
-
     /** {@inheritDoc} */
     protected String getScriptFileExtension()
     {
@@ -116,5 +87,41 @@ public class BeanshellMojoDescriptorExtractor
         }
 
         return descriptors;
+    }
+
+    /**
+     * @param basedir not null
+     * @param resource not null
+     * @param pluginDescriptor not null
+     * @return a new Mojo descriptor instance
+     * @throws InvalidPluginDescriptorException if any
+     */
+    private MojoDescriptor createMojoDescriptor( String basedir, String resource, PluginDescriptor pluginDescriptor )
+        throws InvalidPluginDescriptorException
+    {
+        MojoDescriptor mojoDescriptor = new MojoDescriptor();
+        mojoDescriptor.setPluginDescriptor( pluginDescriptor );
+
+        mojoDescriptor.setLanguage( "bsh" );
+        mojoDescriptor.setComponentConfigurator( "bsh" );
+
+        mojoDescriptor.setImplementation( resource );
+
+        Interpreter interpreter = new Interpreter();
+
+        try
+        {
+            interpreter.set( "file", new File( basedir, resource ) );
+
+            interpreter.set( "mojoDescriptor", mojoDescriptor );
+
+            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ) ) );
+        }
+        catch ( EvalError evalError )
+        {
+            throw new InvalidPluginDescriptorException( "Error scanning beanshell script", evalError );
+        }
+
+        return mojoDescriptor;
     }
 }
