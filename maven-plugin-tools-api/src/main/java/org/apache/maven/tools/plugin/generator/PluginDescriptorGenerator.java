@@ -73,19 +73,19 @@ public class PluginDescriptorGenerator
 
             w.startElement( "plugin" );
 
-            element( w, "description", pluginDescriptor.getDescription() );
+            PluginUtils.element( w, "description", pluginDescriptor.getDescription() );
 
-            element( w, "groupId", pluginDescriptor.getGroupId() );
+            PluginUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
 
-            element( w, "artifactId", pluginDescriptor.getArtifactId() );
+            PluginUtils.element( w, "artifactId", pluginDescriptor.getArtifactId() );
 
-            element( w, "version", pluginDescriptor.getVersion() );
+            PluginUtils.element( w, "version", pluginDescriptor.getVersion() );
 
-            element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
+            PluginUtils.element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
-            element( w, "isolatedRealm", "" + pluginDescriptor.isIsolatedRealm() );
+            PluginUtils.element( w, "isolatedRealm", "" + pluginDescriptor.isIsolatedRealm() );
 
-            element( w, "inheritedByDefault", "" + pluginDescriptor.isInheritedByDefault() );
+            PluginUtils.element( w, "inheritedByDefault", "" + pluginDescriptor.isInheritedByDefault() );
 
             w.startElement( "mojos" );
 
@@ -112,6 +112,10 @@ public class PluginDescriptorGenerator
         }
     }
 
+    /**
+     * @param mojoDescriptor not null
+     * @param w not null
+     */
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
         w.startElement( "mojo" );
@@ -121,9 +125,7 @@ public class PluginDescriptorGenerator
         // ----------------------------------------------------------------------
 
         w.startElement( "goal" );
-
         w.writeText( mojoDescriptor.getGoal() );
-
         w.endElement();
 
         // ----------------------------------------------------------------------
@@ -135,9 +137,7 @@ public class PluginDescriptorGenerator
         if ( description != null )
         {
             w.startElement( "description" );
-
             w.writeText( mojoDescriptor.getDescription() );
-
             w.endElement();
         }
 
@@ -147,44 +147,44 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.isDependencyResolutionRequired() != null )
         {
-            element( w, "requiresDependencyResolution", mojoDescriptor.isDependencyResolutionRequired() );
+            PluginUtils.element( w, "requiresDependencyResolution", mojoDescriptor.isDependencyResolutionRequired() );
         }
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "requiresDirectInvocation", "" + mojoDescriptor.isDirectInvocationOnly() );
+        PluginUtils.element( w, "requiresDirectInvocation", "" + mojoDescriptor.isDirectInvocationOnly() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "requiresProject", "" + mojoDescriptor.isProjectRequired() );
+        PluginUtils.element( w, "requiresProject", "" + mojoDescriptor.isProjectRequired() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "requiresReports", "" + mojoDescriptor.isRequiresReports() );
+        PluginUtils.element( w, "requiresReports", "" + mojoDescriptor.isRequiresReports() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "aggregator", "" + mojoDescriptor.isAggregator() );
+        PluginUtils.element( w, "aggregator", "" + mojoDescriptor.isAggregator() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "requiresOnline", "" + mojoDescriptor.isOnlineRequired() );
+        PluginUtils.element( w, "requiresOnline", "" + mojoDescriptor.isOnlineRequired() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        element( w, "inheritedByDefault", "" + mojoDescriptor.isInheritedByDefault() );
+        PluginUtils.element( w, "inheritedByDefault", "" + mojoDescriptor.isInheritedByDefault() );
 
         // ----------------------------------------------------------------------
         //
@@ -192,7 +192,7 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.getPhase() != null )
         {
-            element( w, "phase", mojoDescriptor.getPhase() );
+            PluginUtils.element( w, "phase", mojoDescriptor.getPhase() );
         }
 
         // ----------------------------------------------------------------------
@@ -201,17 +201,17 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.getExecutePhase() != null )
         {
-            element( w, "executePhase", mojoDescriptor.getExecutePhase() );
+            PluginUtils.element( w, "executePhase", mojoDescriptor.getExecutePhase() );
         }
 
         if ( mojoDescriptor.getExecuteGoal() != null )
         {
-            element( w, "executeGoal", mojoDescriptor.getExecuteGoal() );
+            PluginUtils.element( w, "executeGoal", mojoDescriptor.getExecuteGoal() );
         }
 
         if ( mojoDescriptor.getExecuteLifecycle() != null )
         {
-            element( w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle() );
+            PluginUtils.element( w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle() );
         }
 
         // ----------------------------------------------------------------------
@@ -219,9 +219,7 @@ public class PluginDescriptorGenerator
         // ----------------------------------------------------------------------
 
         w.startElement( "implementation" );
-
         w.writeText( mojoDescriptor.getImplementation() );
-
         w.endElement();
 
         // ----------------------------------------------------------------------
@@ -229,9 +227,7 @@ public class PluginDescriptorGenerator
         // ----------------------------------------------------------------------
 
         w.startElement( "language" );
-
         w.writeText( mojoDescriptor.getLanguage() );
-
         w.endElement();
 
         // ----------------------------------------------------------------------
@@ -241,9 +237,7 @@ public class PluginDescriptorGenerator
         if ( mojoDescriptor.getComponentConfigurator() != null )
         {
             w.startElement( "configurator" );
-
             w.writeText( mojoDescriptor.getComponentConfigurator() );
-
             w.endElement();
         }
 
@@ -254,9 +248,7 @@ public class PluginDescriptorGenerator
         if ( mojoDescriptor.getComponentComposer() != null )
         {
             w.startElement( "composer" );
-
             w.writeText( mojoDescriptor.getComponentComposer() );
-
             w.endElement();
         }
 
@@ -265,9 +257,7 @@ public class PluginDescriptorGenerator
         // ----------------------------------------------------------------------
 
         w.startElement( "instantiationStrategy" );
-
         w.writeText( mojoDescriptor.getInstantiationStrategy() );
-
         w.endElement();
 
         // ----------------------------------------------------------------------
@@ -275,9 +265,7 @@ public class PluginDescriptorGenerator
         // the calculated (decorated, resolved) execution stack
         // ----------------------------------------------------------------------
         w.startElement( "executionStrategy" );
-
         w.writeText( mojoDescriptor.getExecutionStrategy() );
-
         w.endElement();
 
         // ----------------------------------------------------------------------
@@ -329,9 +317,8 @@ public class PluginDescriptorGenerator
 
                     String roleHint = null;
 
-                    int posRoleHintSeparator;
-
-                    if ( ( posRoleHintSeparator = role.indexOf( "#" ) ) > 0 )
+                    int posRoleHintSeparator = role.indexOf( "#" );
+                    if ( posRoleHintSeparator > 0 )
                     {
                         roleHint = role.substring( posRoleHintSeparator + 1 );
 
@@ -351,33 +338,33 @@ public class PluginDescriptorGenerator
 
                     w.startElement( "parameter" );
 
-                    element( w, "name", parameter.getName() );
+                    PluginUtils.element( w, "name", parameter.getName() );
 
                     if ( parameter.getAlias() != null )
                     {
-                        element( w, "alias", parameter.getAlias() );
+                        PluginUtils.element( w, "alias", parameter.getAlias() );
                     }
 
-                    element( w, "type", parameter.getType() );
+                    PluginUtils.element( w, "type", parameter.getType() );
 
                     if ( parameter.getDeprecated() != null )
                     {
-                        element( w, "deprecated", parameter.getDeprecated() );
+                        PluginUtils.element( w, "deprecated", parameter.getDeprecated() );
                     }
 
                     if ( parameter.getImplementation() != null )
                     {
-                        element( w, "implementation", parameter.getImplementation() );
+                        PluginUtils.element( w, "implementation", parameter.getImplementation() );
                     }
 
-                    element( w, "required", Boolean.toString( parameter.isRequired() ) );
+                    PluginUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
 
-                    element( w, "editable", Boolean.toString( parameter.isEditable() ) );
+                    PluginUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
 
-                    element( w, "description", parameter.getDescription() );
+                    PluginUtils.element( w, "description", parameter.getDescription() );
 
-                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ||
-                        StringUtils.isNotEmpty( parameter.getExpression() ) )
+                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() )
+                        || StringUtils.isNotEmpty( parameter.getExpression() ) )
                     {
                         configuration.add( parameter );
                     }
@@ -391,7 +378,7 @@ public class PluginDescriptorGenerator
         w.endElement();
 
         // ----------------------------------------------------------------------
-        // Coinfiguration
+        // Configuration
         // ----------------------------------------------------------------------
 
         if ( !configuration.isEmpty() )
@@ -441,14 +428,14 @@ public class PluginDescriptorGenerator
 
                 w.startElement( "requirement" );
 
-                element( w, "role", requirement.getRole() );
+                PluginUtils.element( w, "role", requirement.getRole() );
 
                 if ( requirement.getRoleHint() != null )
                 {
-                    element( w, "role-hint", requirement.getRoleHint() );
+                    PluginUtils.element( w, "role-hint", requirement.getRoleHint() );
                 }
 
-                element( w, "field-name", key );
+                PluginUtils.element( w, "field-name", key );
 
                 w.endElement();
             }
@@ -456,15 +443,6 @@ public class PluginDescriptorGenerator
             w.endElement();
         }
 
-        // ----------------------------------------------------------------------
-        //
-        // ----------------------------------------------------------------------
-
         w.endElement();
-    }
-
-    private void element( XMLWriter w, String name, String value )
-    {
-        PluginUtils.element( w, name, value );
     }
 }

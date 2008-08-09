@@ -72,6 +72,11 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         return mojoDescriptors;
     }
 
+    /**
+     * @param scriptFilesKeyedByBasedir not null
+     * @param outputDirectory not null
+     * @throws ExtractionException if any
+     */
     protected void copyScriptsToOutputDirectory( Map scriptFilesKeyedByBasedir, String outputDirectory )
         throws ExtractionException
     {
@@ -121,6 +126,12 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         }
     }
 
+    /**
+     * @param basedir not null
+     * @param directories not null
+     * @param scriptFileExtension not null
+     * @return map with subdirs paths as key
+     */
     protected Map gatherFilesByBasedir( File basedir, List directories, String scriptFileExtension )
     {
         Map sourcesByBasedir = new TreeMap();
@@ -164,6 +175,15 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         return sourcesByBasedir;
     }
 
+    /**
+     * Should be implemented in the sub classes.
+     *
+     * @param metadataFilesKeyedByBasedir could be null
+     * @param pluginDescriptor could be null
+     * @return always null
+     * @throws ExtractionException if any
+     * @throws InvalidPluginDescriptorException if any
+     */
     protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
                                                        PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
@@ -171,17 +191,34 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         return null;
     }
 
+    /**
+     * Should be implemented in the sub classes.
+     *
+     * @return always null
+     */
     protected String getMetadataFileExtension()
     {
         return null;
     }
 
+    /**
+     * Should be implemented in the sub classes.
+     *
+     * @param scriptFilesKeyedByBasedir could be null
+     * @param pluginDescriptor could be null
+     * @return always null
+     * @throws ExtractionException if any
+     * @throws InvalidPluginDescriptorException if any
+     */
     protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return null;
     }
 
+    /**
+     * @return the file extension like <code>.bsh</code> for BeanShell.
+     */
     protected abstract String getScriptFileExtension();
 
 }

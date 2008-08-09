@@ -50,6 +50,11 @@ public class DefaultMojoScanner
      */
     private Set/* <String> */activeExtractors;
 
+    /**
+     * Default constructor
+     *
+     * @param extractors not null
+     */
     public DefaultMojoScanner( Map extractors )
     {
         this.mojoDescriptorExtractors = extractors;
@@ -57,8 +62,12 @@ public class DefaultMojoScanner
         this.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "standalone-scanner-logger" ) );
     }
 
+    /**
+     * Empty constructor
+     */
     public DefaultMojoScanner()
     {
+        // nop
     }
 
     /** {@inheritDoc} */
@@ -66,13 +75,13 @@ public class DefaultMojoScanner
         throws ExtractionException, InvalidPluginDescriptorException
     {
         Logger logger = getLogger();
-        Set activeExtractors = getActiveExtractors();
+        Set activeExtractorsInternal = getActiveExtractors();
 
-        logger.info( "Using " + activeExtractors.size() + " extractors." );
+        logger.info( "Using " + activeExtractorsInternal.size() + " extractors." );
 
         int numMojoDescriptors = 0;
 
-        for ( Iterator it = activeExtractors.iterator(); it.hasNext(); )
+        for ( Iterator it = activeExtractorsInternal.iterator(); it.hasNext(); )
         {
             String language = (String) it.next();
             MojoDescriptorExtractor extractor = (MojoDescriptorExtractor) mojoDescriptorExtractors.get( language );
@@ -86,8 +95,8 @@ public class DefaultMojoScanner
 
             List extractorDescriptors = extractor.execute( project, pluginDescriptor );
 
-            logger.info( "Extractor for language: " + language + " found " + extractorDescriptors.size() +
-                " mojo descriptors." );
+            logger.info( "Extractor for language: " + language + " found " + extractorDescriptors.size()
+                + " mojo descriptors." );
             numMojoDescriptors += extractorDescriptors.size();
 
             for ( Iterator descriptorIt = extractorDescriptors.iterator(); descriptorIt.hasNext(); )
@@ -104,21 +113,25 @@ public class DefaultMojoScanner
 
         if ( numMojoDescriptors == 0 )
         {
-            //MPLUGIN-102. Restore the old functionality and allow a deprecation period
-            //throw new InvalidPluginDescriptorException( "No mojo descriptors were found in this project." );
-            for (int i= 0; i < 10; i++)
+            // MPLUGIN-102. Restore the old functionality and allow a deprecation period
+            // throw new InvalidPluginDescriptorException( "No mojo descriptors were found in this project." );
+            for ( int i = 0; i < 10; i++ )
             {
-                logger.warn("");
+                logger.warn( "" );
             }
-            logger.warn("*******************************************************");
-            logger.warn("Deprecation Alert:");
-            logger.warn("No mojo descriptors were found in this project which has a packaging type of maven-plugin.");
-            logger.warn("In future versions of the plugin tools, this will fail the build.");
-            logger.warn("If this project is an archetype, change the packaging type from maven-plugin to maven-archetype.");
-            logger.warn("********************************************************");
-            for (int i= 0; i < 10; i++)
+
+            logger.warn( "*******************************************************" );
+            logger.warn( "Deprecation Alert:" );
+            logger.warn( "No mojo descriptors were found in this project which has a packaging type of "
+                + "maven-plugin." );
+            logger.warn( "In future versions of the plugin tools, this will fail the build." );
+            logger.warn( "If this project is an archetype, change the packaging type from maven-plugin to "
+                + "maven-archetype." );
+            logger.warn( "********************************************************" );
+
+            for ( int i = 0; i < 10; i++ )
             {
-                logger.warn("");
+                logger.warn( "" );
             }
         }
     }
@@ -140,9 +153,7 @@ public class DefaultMojoScanner
         return result;
     }
 
-    /**
-     * @see org.apache.maven.tools.plugin.scanner.MojoScanner#setActiveExtractors(java.util.Set)
-     */
+    /** {@inheritDoc} */
     public void setActiveExtractors( Set/* <String> */extractors )
     {
         if ( extractors == null )

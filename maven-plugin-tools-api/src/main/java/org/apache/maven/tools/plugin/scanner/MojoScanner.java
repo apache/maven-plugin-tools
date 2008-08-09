@@ -36,11 +36,10 @@ public interface MojoScanner
     String ROLE = MojoScanner.class.getName();
 
     /**
-     *
-     * @param project
-     * @param pluginDescriptor
-     * @throws ExtractionException
-     * @throws InvalidPluginDescriptorException
+     * @param project not null
+     * @param pluginDescriptor not null
+     * @throws ExtractionException if any
+     * @throws InvalidPluginDescriptorException if any
      */
     void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException;
@@ -52,8 +51,8 @@ public interface MojoScanner
      * Only the specified extractors will be used, all others will be skipped.
      *
      * @param extractors The names of the sctive extractors. If this parameter is <code>null</code>,
-     *                   all the scanner's extractors are considered active. Set entries that are
-     *                   <code>null</code> or empty ("") will be ignored.
+     * all the scanner's extractors are considered active. Set entries that are <code>null</code> or
+     * empty ("") will be ignored.
      */
     void setActiveExtractors( Set/* <String> */extractors );
 
