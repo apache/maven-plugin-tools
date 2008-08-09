@@ -44,6 +44,8 @@ import java.util.Set;
  */
 public class PluginMetadataParser
 {
+    /** Default implementation path which will be replaced in
+     * AbstractScriptedMojoDescriptorExtractor#extractMojoDescriptorsFromMetadata(Map, PluginDescriptor) */
     public static final String IMPL_BASE_PLACEHOLDER = "<REPLACE-WITH-MOJO-PATH>";
 
     /**
@@ -96,6 +98,12 @@ public class PluginMetadataParser
         return descriptors;
     }
 
+    /**
+     * @param metadataFile not null
+     * @param mojo not null
+     * @return a mojo descriptor instance
+     * @throws PluginMetadataParseException if any
+     */
     private MojoDescriptor asDescriptor( File metadataFile, Mojo mojo )
         throws PluginMetadataParseException
     {
@@ -151,8 +159,8 @@ public class PluginMetadataParser
 
                 if ( StringUtils.isEmpty( dParam.getName() ) )
                 {
-                    throw new PluginMetadataParseException( metadataFile, "Mojo: \'" + mojo.getGoal() +
-                        "\' has a parameter without either property or name attributes. Please specify one." );
+                    throw new PluginMetadataParseException( metadataFile, "Mojo: \'" + mojo.getGoal()
+                        + "\' has a parameter without either property or name attributes. Please specify one." );
                 }
 
                 dParam.setRequired( param.isRequired() );
@@ -165,8 +173,8 @@ public class PluginMetadataParser
                 catch ( DuplicateParameterException e )
                 {
                     throw new PluginMetadataParseException( metadataFile,
-                                                            "Duplicate parameters detected for mojo: " + mojo.getGoal(),
-                                                            e );
+                                                            "Duplicate parameters detected for mojo: "
+                                                                + mojo.getGoal(), e );
                 }
             }
         }

@@ -37,9 +37,9 @@ public class PluginMetadataParseException
     private final String originalMessage;
 
     /**
-     * @param metadataFile
-     * @param message
-     * @param cause
+     * @param metadataFile could be null
+     * @param message could be null
+     * @param cause could be null
      */
     public PluginMetadataParseException( File metadataFile, String message, Throwable cause )
     {
@@ -50,8 +50,8 @@ public class PluginMetadataParseException
     }
 
     /**
-     * @param metadataFile
-     * @param message
+     * @param metadataFile could be null
+     * @param message could be null
      */
     public PluginMetadataParseException( File metadataFile, String message )
     {
