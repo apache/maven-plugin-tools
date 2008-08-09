@@ -172,7 +172,8 @@ public interface JavaMojoAnnotation
 
     /**
      * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be resolved
-     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>, and <code>test</code> scopes.
+     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>, and
+     * <code>test</code> scopes.
      * <br/>
      * Refer to <code>&#64;requiresDependencyResolution &lt;requiredScope&gt;</code>.
      * <br/>

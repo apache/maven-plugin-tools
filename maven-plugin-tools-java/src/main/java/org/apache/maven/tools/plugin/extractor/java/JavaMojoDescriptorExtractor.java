@@ -49,7 +49,8 @@ import java.util.TreeMap;
  * Extracts Mojo descriptors from <a href="http://java.sun.com/">Java</a> sources.
  * <br/>
  * For more information about the usage tag, have a look to:
- * <a href="http://maven.apache.org/developers/mojo-api-specification.html">http://maven.apache.org/developers/mojo-api-specification.html</a>
+ * <a href="http://maven.apache.org/developers/mojo-api-specification.html">
+ * http://maven.apache.org/developers/mojo-api-specification.html</a>
  *
  * @todo need to add validation directives so that systems embedding maven2 can
  * get validation directives to help users in IDEs.
@@ -152,7 +153,7 @@ public class JavaMojoDescriptorExtractor
 
     /**
      * @param parameter not null
-     * @param i
+     * @param i positive number
      * @throws InvalidParameterException if any
      */
     protected void validateParameter( Parameter parameter, int i )
@@ -196,22 +197,17 @@ public class JavaMojoDescriptorExtractor
         throws InvalidPluginDescriptorException
     {
         MojoDescriptor mojoDescriptor = new MojoDescriptor();
-
         mojoDescriptor.setLanguage( "java" );
-
         mojoDescriptor.setImplementation( javaClass.getFullyQualifiedName() );
-
         mojoDescriptor.setDescription( javaClass.getComment() );
 
+        // instantiationStrategy
         DocletTag tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.INSTANTIATION_STRATEGY );
-
         if ( tag != null )
         {
             mojoDescriptor.setInstantiationStrategy( tag.getValue() );
         }
-
         tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY );
-
         if ( tag != null )
         {
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
@@ -221,67 +217,43 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY );
         }
 
-        // ----------------------------------------------------------------------
         // Configurator hint
-        // ----------------------------------------------------------------------
-
         DocletTag configurator = findInClassHierarchy( javaClass, JavaMojoAnnotation.CONFIGURATOR );
-
         if ( configurator != null )
         {
             mojoDescriptor.setComponentConfigurator( configurator.getValue() );
         }
 
-        // ----------------------------------------------------------------------
         // Goal name
-        // ----------------------------------------------------------------------
-
         DocletTag goal = findInClassHierarchy( javaClass, JavaMojoAnnotation.GOAL );
-
         if ( goal != null )
         {
             mojoDescriptor.setGoal( goal.getValue() );
         }
 
-        // ----------------------------------------------------------------------
         // What version it was introduced in
-        // ----------------------------------------------------------------------
-
         DocletTag since = findInClassHierarchy( javaClass, JavaMojoAnnotation.SINCE );
-
         if ( since != null )
         {
             mojoDescriptor.setSince( since.getValue() );
         }
 
-        // ----------------------------------------------------------------------
         // Deprecation hint
-        // ----------------------------------------------------------------------
-
         DocletTag deprecated = javaClass.getTagByName( JavaMojoAnnotation.DEPRECATED );
-
         if ( deprecated != null )
         {
             mojoDescriptor.setDeprecated( deprecated.getValue() );
         }
 
-        // ----------------------------------------------------------------------
         // Phase name
-        // ----------------------------------------------------------------------
-
         DocletTag phase = findInClassHierarchy( javaClass, JavaMojoAnnotation.PHASE );
-
         if ( phase != null )
         {
             mojoDescriptor.setPhase( phase.getValue() );
         }
 
-        // ----------------------------------------------------------------------
         // Additional phase to execute first
-        // ----------------------------------------------------------------------
-
         DocletTag execute = findInClassHierarchy( javaClass, JavaMojoAnnotation.EXECUTE );
-
         if ( execute != null )
         {
             String executePhase = execute.getNamedParameter( JavaMojoAnnotation.EXECUTE_PHASE );
@@ -300,7 +272,6 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setExecuteGoal( executeGoal );
 
             String lifecycle = execute.getNamedParameter( JavaMojoAnnotation.EXECUTE_LIFECYCLE );
-
             if ( lifecycle != null )
             {
                 mojoDescriptor.setExecuteLifecycle( lifecycle );
@@ -312,12 +283,9 @@ public class JavaMojoDescriptorExtractor
             }
         }
 
-        // ----------------------------------------------------------------------
         // Dependency resolution flag
-        // ----------------------------------------------------------------------
-
-        DocletTag requiresDependencyResolution = findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION );
-
+        DocletTag requiresDependencyResolution =
+            findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION );
         if ( requiresDependencyResolution != null )
         {
             String value = requiresDependencyResolution.getValue();
@@ -330,44 +298,33 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setDependencyResolutionRequired( value );
         }
 
-        // ----------------------------------------------------------------------
         // Project flag
-        // ----------------------------------------------------------------------
-
-        boolean value = getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
+        boolean value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
         mojoDescriptor.setProjectRequired( value );
 
-        // ----------------------------------------------------------------------
         // Aggregator flag
-        // ----------------------------------------------------------------------
-
         DocletTag aggregator = findInClassHierarchy( javaClass, JavaMojoAnnotation.AGGREGATOR );
-
         if ( aggregator != null )
         {
             mojoDescriptor.setAggregator( true );
         }
 
-        // ----------------------------------------------------------------------
         // requiresDirectInvocation flag
-        // ----------------------------------------------------------------------
-
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_DIRECT_INVOCATION, mojoDescriptor.isDirectInvocationOnly() );
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_DIRECT_INVOCATION,
+                                mojoDescriptor.isDirectInvocationOnly() );
         mojoDescriptor.setDirectInvocationOnly( value );
 
-        // ----------------------------------------------------------------------
         // Online flag
-        // ----------------------------------------------------------------------
-
-        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_ONLINE, mojoDescriptor.isOnlineRequired() );
+        value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_ONLINE, mojoDescriptor.isOnlineRequired() );
         mojoDescriptor.setOnlineRequired( value );
 
-        // ----------------------------------------------------------------------
         // inheritByDefault flag
-        // ----------------------------------------------------------------------
-
-        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.INHERIT_BY_DEFAULT, mojoDescriptor.isInheritedByDefault() );
+        value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.INHERIT_BY_DEFAULT,
+                                mojoDescriptor.isInheritedByDefault() );
         mojoDescriptor.setInheritedByDefault( value );
 
         extractParameters( mojoDescriptor, javaClass );
@@ -375,6 +332,13 @@ public class JavaMojoDescriptorExtractor
         return mojoDescriptor;
     }
 
+    /**
+     * @param javaClass not null
+     * @param tagName not null
+     * @param defaultValue the wanted default value
+     * @return the boolean value of the given tagName
+     * @see #findInClassHierarchy(JavaClass, String)
+     */
     private static boolean getBooleanTagValue( JavaClass javaClass, String tagName, boolean defaultValue )
     {
         DocletTag requiresProject = findInClassHierarchy( javaClass, tagName );
@@ -391,6 +355,11 @@ public class JavaMojoDescriptorExtractor
         return defaultValue;
     }
 
+    /**
+     * @param javaClass not null
+     * @param tagName not null
+     * @return docletTag instance
+     */
     private static DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
     {
         DocletTag tag = javaClass.getTagByName( tagName );
@@ -408,6 +377,11 @@ public class JavaMojoDescriptorExtractor
         return tag;
     }
 
+    /**
+     * @param mojoDescriptor not null
+     * @param javaClass not null
+     * @throws InvalidPluginDescriptorException if any
+     */
     private void extractParameters( MojoDescriptor mojoDescriptor, JavaClass javaClass )
         throws InvalidPluginDescriptorException
     {
@@ -540,6 +514,10 @@ public class JavaMojoDescriptorExtractor
         }
     }
 
+    /**
+     * @param javaClass not null
+     * @return map with Mojo parameters names as keys
+     */
     private Map extractFieldParameterTags( JavaClass javaClass )
     {
         Map rawParams;
@@ -565,7 +543,8 @@ public class JavaMojoDescriptorExtractor
             {
                 JavaField field = classFields[i];
 
-                if ( field.getTagByName( JavaMojoAnnotation.PARAMETER ) != null || field.getTagByName( JavaMojoAnnotation.COMPONENT ) != null )
+                if ( field.getTagByName( JavaMojoAnnotation.PARAMETER ) != null
+                    || field.getTagByName( JavaMojoAnnotation.COMPONENT ) != null )
                 {
                     rawParams.put( field.getName(), field );
                 }
