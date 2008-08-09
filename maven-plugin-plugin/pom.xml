@@ -41,66 +41,66 @@
     <maven>2.0.6</maven>
   </prerequisites>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
-  </issueManagement>
-
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
   </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
+    </site>
+  </distributionManagement>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <!-- pin to a previous version so it doesn't get reloaded during build -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>2.4.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generated-helpmojo</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.modello</groupId>
-        <artifactId>modello-maven-plugin</artifactId>
-        <version>1.0-alpha-18</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <version>1.0.0</version>
-          <models>
-            <model>src/main/mdo/pluginRequirements.mdo</model>
-          </models>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <!-- Copy from project up -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- maven -->
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-model</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-java</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-beanshell</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-descriptor</artifactId>
+        <version>2.0.5</version>
+      </dependency>
+
+      <!-- plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <properties>
+    <doxiaVersion>1.0-alpha-10</doxiaVersion>
+    <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
+    <pluginToolsVersion>${pom.version}</pluginToolsVersion>
+  </properties>
 
   <dependencies>
     <!-- doxia -->
@@ -157,7 +157,7 @@
       <version>2.0</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-api</artifactId>
     </dependency>
     <dependency>
@@ -200,57 +200,55 @@
     </dependency>
   </dependencies>
 
-  <!-- Copy from project up -->
-  <dependencyManagement>
-    <dependencies>
-      <!-- maven -->
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-api</artifactId>
-        <version>${pluginToolsVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-model</artifactId>
-        <version>${pluginToolsVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-java</artifactId>
-        <version>${pluginToolsVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-beanshell</artifactId>
-        <version>${pluginToolsVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-descriptor</artifactId>
-        <version>2.0.5</version>
-      </dependency>
-
-      <!-- plexus -->
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>1.5.1</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <distributionManagement>
-    <site>
-      <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
-    </site>
-  </distributionManagement>
-
-  <properties>
-    <doxiaVersion>1.0-alpha-10</doxiaVersion>
-    <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
-    <pluginToolsVersion>${pom.version}</pluginToolsVersion>
-  </properties>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- pin to a previous version so it doesn't get reloaded during build -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>2.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generated-helpmojo</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <version>1.0-alpha-18</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/pluginRequirements.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <reporting>
     <plugins>
