@@ -107,4 +107,25 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-api/</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/maven/plugin-tools/trunk/maven-plugin-tools-api/</url>
   </scm>
+
+  <profiles>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>l10n-maven-plugin</artifactId>
+            <version>1.0-alpha-1</version>
+            <configuration>
+              <locales>
+                <locale>de</locale>
+                <locale>fr</locale>
+              </locales>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
 </project>
