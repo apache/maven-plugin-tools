@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
  * and deployment. The first use-case for this is to add the LATEST metadata (which is plugin-specific)
  * for shipping alongside the plugin's artifact.
  *
+ * @version $Id$
  * @since 2.0
  * @phase package
  * @goal addPluginArtifactMetadata
@@ -40,7 +41,6 @@ import org.apache.maven.project.MavenProject;
 public class AddPluginArtifactMetadataMojo
     extends AbstractMojo
 {
-
     /**
      * The project artifact, which should have the LATEST metadata added to it.
      *
@@ -57,6 +57,7 @@ public class AddPluginArtifactMetadataMojo
      */
     private String goalPrefix;
 
+    /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException
     {
@@ -74,6 +75,9 @@ public class AddPluginArtifactMetadataMojo
         projectArtifact.addMetadata( groupMetadata );
     }
 
+    /**
+     * @return the goal prefix parameter or the goal prefix from the Plugin artifactId.
+     */
     private String getGoalPrefix()
     {
         if ( goalPrefix == null )

@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
+ * Abstract class for this Plugin.
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
@@ -89,8 +91,14 @@ public abstract class AbstractGeneratorMojo
      */
     protected Set/* <String> */extractors;
 
+    /**
+     * @return the output directory where files will be generated.
+     */
     protected abstract File getOutputDirectory();
 
+    /**
+     * @return the wanted <code>Generator</code> implementation.
+     */
     protected abstract Generator createGenerator();
 
     /** {@inheritDoc} */

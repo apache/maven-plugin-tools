@@ -220,6 +220,11 @@ public class PluginReport
         return "plugin-info";
     }
 
+    /**
+     * @param pluginDescriptor not null
+     * @param locale not null
+     * @throws MavenReportException if any
+     */
     private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Locale locale )
         throws MavenReportException
     {
@@ -238,6 +243,10 @@ public class PluginReport
 
     }
 
+    /**
+     * @param locale not null
+     * @return the bundle for this report
+     */
     protected static ResourceBundle getBundle( Locale locale )
     {
         return ResourceBundle.getBundle( "plugin-report", locale, PluginReport.class.getClassLoader() );
@@ -258,6 +267,13 @@ public class PluginReport
 
         private final Locale locale;
 
+        /**
+         * @param project not null
+         * @param requirements not null
+         * @param sink not null
+         * @param pluginDescriptor not null
+         * @param locale not null
+         */
         public PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
                                        PluginDescriptor pluginDescriptor, Locale locale )
         {
@@ -431,7 +447,7 @@ public class PluginReport
 
         /**
          * Render the section about the usage of the plugin.
-         * 
+         *
          * @param hasMavenReport If the plugin has a report or not
          */
         private void renderUsageSection( boolean hasMavenReport )
@@ -512,8 +528,8 @@ public class PluginReport
          * Try to lookup on the Maven prerequisites property.
          * If not specified, uses the value defined by the user.
          *
-         * @param project
-         * @param requirements
+         * @param project not null
+         * @param requirements not null
          * @return the Maven version
          */
         private static String discoverMavenRequirement( MavenProject project, Requirements requirements )
@@ -537,8 +553,8 @@ public class PluginReport
          * If not specified, uses the value defined by the user.
          * If not specified, uses the value of the system property <code>java.specification.version</code>.
          *
-         * @param project
-         * @param requirements
+         * @param project not null
+         * @param requirements not null
          * @return the JDK version
          */
         private static String discoverJdkRequirement( MavenProject project, Requirements requirements )
@@ -565,7 +581,7 @@ public class PluginReport
         }
 
         /**
-         * @param pluginsAsMap
+         * @param pluginsAsMap could be null
          * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
          */
         private static String discoverJdkRequirementFromPlugins( Map pluginsAsMap )

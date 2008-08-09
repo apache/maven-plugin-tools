@@ -42,10 +42,10 @@ import java.util.Date;
 /**
  * Update the user plugin registry (if it's in use) to reflect the version we're installing.
  *
+ * @version $Id$
  * @since 2.0
  * @goal updateRegistry
  * @phase install
- * @version $Id$
  */
 public class UpdatePluginRegistryMojo
     extends AbstractMojo
@@ -104,13 +104,19 @@ public class UpdatePluginRegistryMojo
         }
     }
 
-    private void updatePluginVersionInRegistry( String groupId, String artifactId, String version )
+    /**
+     * @param aGroupId not null
+     * @param anArtifactId not null
+     * @param aVersion not null
+     * @throws MojoExecutionException if any
+     */
+    private void updatePluginVersionInRegistry( String aGroupId, String anArtifactId, String aVersion )
         throws MojoExecutionException
     {
         PluginRegistry pluginRegistry;
         try
         {
-            pluginRegistry = getPluginRegistry( groupId, artifactId );
+            pluginRegistry = getPluginRegistry( aGroupId, anArtifactId );
         }
         catch ( IOException e )
         {
@@ -121,7 +127,7 @@ public class UpdatePluginRegistryMojo
             throw new MojoExecutionException( "Failed to parse plugin registry.", e );
         }
 
-        String pluginKey = ArtifactUtils.versionlessKey( groupId, artifactId );
+        String pluginKey = ArtifactUtils.versionlessKey( aGroupId, anArtifactId );
         Plugin plugin = (Plugin) pluginRegistry.getPluginsByKey().get( pluginKey );
 
         // if we can find the plugin, but we've gotten here, the useVersion must be missing; fill it in.
@@ -130,12 +136,12 @@ public class UpdatePluginRegistryMojo
             if ( TrackableBase.GLOBAL_LEVEL.equals( plugin.getSourceLevel() ) )
             {
                 // do nothing. We don't rewrite the globals, under any circumstances.
-                getLog().warn( "Cannot update registered version for plugin {" + groupId + ":" + artifactId
+                getLog().warn( "Cannot update registered version for plugin {" + aGroupId + ":" + anArtifactId
                     + "}; it is specified in the global registry." );
             }
             else
             {
-                plugin.setUseVersion( version );
+                plugin.setUseVersion( aVersion );
 
                 SimpleDateFormat format =
                     new SimpleDateFormat( org.apache.maven.plugin.registry.Plugin.LAST_CHECKED_DATE_FORMAT );
@@ -147,19 +153,24 @@ public class UpdatePluginRegistryMojo
         {
             plugin = new org.apache.maven.plugin.registry.Plugin();
 
-            plugin.setGroupId( groupId );
-            plugin.setArtifactId( artifactId );
-            plugin.setUseVersion( version );
+            plugin.setGroupId( aGroupId );
+            plugin.setArtifactId( anArtifactId );
+            plugin.setUseVersion( aVersion );
 
             pluginRegistry.addPlugin( plugin );
 
             pluginRegistry.flushPluginsByKey();
         }
 
-        writeUserRegistry( groupId, artifactId, pluginRegistry );
+        writeUserRegistry( aGroupId, anArtifactId, pluginRegistry );
     }
 
-    private void writeUserRegistry( String groupId, String artifactId, PluginRegistry pluginRegistry )
+    /**
+     * @param aGroupId not null
+     * @param anArtifactId not null
+     * @param pluginRegistry not null
+     */
+    private void writeUserRegistry( String aGroupId, String anArtifactId, PluginRegistry pluginRegistry )
     {
         File pluginRegistryFile = pluginRegistry.getRuntimeInfo().getFile();
 
@@ -182,7 +193,7 @@ public class UpdatePluginRegistryMojo
             catch ( IOException e )
             {
                 getLog().warn( "Cannot rewrite user-level plugin-registry.xml with new plugin version of plugin: \'"
-                    + groupId + ":" + artifactId + "\'.", e );
+                    + aGroupId + ":" + anArtifactId + "\'.", e );
             }
             finally
             {
@@ -191,7 +202,14 @@ public class UpdatePluginRegistryMojo
         }
     }
 
-    private PluginRegistry getPluginRegistry( String groupId, String artifactId )
+    /**
+     * @param aGroupId not null
+     * @param anArtifactId not null
+     * @return the plugin registry instance
+     * @throws IOException if any
+     * @throws XmlPullParserException if any
+     */
+    private PluginRegistry getPluginRegistry( String aGroupId, String anArtifactId )
         throws IOException, XmlPullParserException
     {
         PluginRegistry pluginRegistry = null;
@@ -205,5 +223,4 @@ public class UpdatePluginRegistryMojo
 
         return pluginRegistry;
     }
-
 }
