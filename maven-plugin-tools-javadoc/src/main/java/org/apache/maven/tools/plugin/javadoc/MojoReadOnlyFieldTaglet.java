@@ -59,8 +59,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoReadOnlyFieldTaglet
     extends AbstractMojoFieldTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.READONLY;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is readonly.";
 
     /**

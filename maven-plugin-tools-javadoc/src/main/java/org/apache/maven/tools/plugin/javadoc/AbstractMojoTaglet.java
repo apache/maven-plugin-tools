@@ -213,10 +213,10 @@ public abstract class AbstractMojoTaglet
     /**
      * Append a tag
      *
-     * @param sb
-     * @param tag
-     * @param tagAttributes
-     * @param tagValue
+     * @param sb not null
+     * @param tag not null
+     * @param tagAttributes not null
+     * @param tagValue not null
      */
     private void appendTag( StringBuffer sb, Tag tag, MutableAttributeSet tagAttributes, String tagValue )
     {
@@ -380,7 +380,8 @@ public abstract class AbstractMojoTaglet
      * Splits the provided text into a array, using pipe as the separator.
      *
      * @param text not null
-     * @return a list of parsed Strings or <code>Collections.EMPTY_LIST</code>. By convention, the default value is the first element.
+     * @return a list of parsed Strings or <code>Collections.EMPTY_LIST</code>.
+     * By convention, the default value is the first element.
      */
     private static List getOnlyValues( String text )
     {

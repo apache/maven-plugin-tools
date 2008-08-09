@@ -55,8 +55,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoGoalTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.GOAL;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is defined by the goal name";
 
     /**

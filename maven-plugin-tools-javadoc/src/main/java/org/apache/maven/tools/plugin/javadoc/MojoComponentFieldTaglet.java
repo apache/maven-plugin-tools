@@ -54,12 +54,14 @@ import com.sun.tools.doclets.Taglet;
 public class MojoComponentFieldTaglet
     extends AbstractMojoFieldTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.COMPONENT;
 
     private static final String[] COMPONENTS_NAME = {
         JavaMojoAnnotation.COMPONENT_ROLE,
         JavaMojoAnnotation.COMPONENT_ROLEHINT };
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is a Plexus component defined by";
 
     /**

@@ -55,8 +55,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoExecutionStrategyTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.EXECUTION_STATEGY;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is executed with the strategy";
 
     /**

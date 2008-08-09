@@ -56,8 +56,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoRequiresOnLineTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.REQUIRES_ONLINE;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Requires to be online to run";
 
     /**

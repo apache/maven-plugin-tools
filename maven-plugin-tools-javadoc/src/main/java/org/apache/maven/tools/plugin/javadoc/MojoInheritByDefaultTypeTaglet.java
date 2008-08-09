@@ -56,8 +56,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoInheritByDefaultTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.INHERIT_BY_DEFAULT;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is this Mojo inherited";
 
     /**

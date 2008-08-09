@@ -55,8 +55,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoPhaseTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.PHASE;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is bound to the specified phase of the standard build lifecycle";
 
     /**

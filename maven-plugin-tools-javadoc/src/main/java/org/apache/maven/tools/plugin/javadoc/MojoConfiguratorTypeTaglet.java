@@ -55,8 +55,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoConfiguratorTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.CONFIGURATOR;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is configured to the role hint";
 
     /**

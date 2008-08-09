@@ -59,8 +59,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoRequiredFieldTaglet
     extends AbstractMojoFieldTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.REQUIRED;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is required.";
 
     /**

@@ -56,8 +56,10 @@ import com.sun.tools.doclets.Taglet;
 public class MojoRequiresReportsTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.REQUIRES_REPORTS;
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Requires Maven reports to run";
 
     /**

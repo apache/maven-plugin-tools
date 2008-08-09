@@ -55,6 +55,7 @@ import com.sun.tools.doclets.Taglet;
 public class MojoExecuteTypeTaglet
     extends AbstractMojoTypeTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.EXECUTE;
 
     private static final String[] PARAMETERS_NAME = {
@@ -62,6 +63,7 @@ public class MojoExecuteTypeTaglet
         JavaMojoAnnotation.EXECUTE_LIFECYCLE,
         JavaMojoAnnotation.EXECUTE_GOAL };
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is defined to be executed in";
 
     /**

@@ -55,6 +55,7 @@ import com.sun.tools.doclets.Taglet;
 public class MojoParameterFieldTaglet
     extends AbstractMojoFieldTaglet
 {
+    /** The Javadoc annotation */
     private static final String NAME = JavaMojoAnnotation.PARAMETER;
 
     private static final String[] PARAMETERS_NAME = {
@@ -64,6 +65,7 @@ public class MojoParameterFieldTaglet
         JavaMojoAnnotation.PARAMETER_IMPLEMENTATION,
         JavaMojoAnnotation.PARAMETER_PROPERTY };
 
+    /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is defined by";
 
     /**
