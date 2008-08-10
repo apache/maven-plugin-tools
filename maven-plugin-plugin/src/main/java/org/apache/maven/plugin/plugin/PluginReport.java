@@ -457,6 +457,7 @@ public class PluginReport
             // Configuration
             sink.paragraph();
             text( getBundle( locale ).getString( "report.plugin.usage.intro" ) );
+            sink.paragraph_();
 
             StringBuffer sb = new StringBuffer();
             sb.append( "<project>" ).append( '\n' );
@@ -517,8 +518,8 @@ public class PluginReport
 
             verbatimText( sb.toString() );
 
+            sink.paragraph();
             linkPatternedText( getBundle( locale ).getString( "report.plugin.configuration.end" ) );
-
             sink.paragraph_();
 
             endSection();
