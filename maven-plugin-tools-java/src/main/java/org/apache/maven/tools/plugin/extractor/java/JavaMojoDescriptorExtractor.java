@@ -303,6 +303,11 @@ public class JavaMojoDescriptorExtractor
             getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
         mojoDescriptor.setProjectRequired( value );
 
+        // requiresReports flag
+        value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
+        mojoDescriptor.setRequiresReports( value );
+
         // Aggregator flag
         DocletTag aggregator = findInClassHierarchy( javaClass, JavaMojoAnnotation.AGGREGATOR );
         if ( aggregator != null )
@@ -341,15 +346,15 @@ public class JavaMojoDescriptorExtractor
      */
     private static boolean getBooleanTagValue( JavaClass javaClass, String tagName, boolean defaultValue )
     {
-        DocletTag requiresProject = findInClassHierarchy( javaClass, tagName );
+        DocletTag tag = findInClassHierarchy( javaClass, tagName );
 
-        if ( requiresProject != null )
+        if ( tag != null )
         {
-            String requiresProjectValue = requiresProject.getValue();
+            String value = tag.getValue();
 
-            if ( requiresProjectValue != null && requiresProjectValue.length() > 0 )
+            if ( StringUtils.isNotEmpty( value ) )
             {
-                defaultValue = Boolean.valueOf( requiresProjectValue ).booleanValue();
+                defaultValue = Boolean.valueOf( value ).booleanValue();
             }
         }
         return defaultValue;
