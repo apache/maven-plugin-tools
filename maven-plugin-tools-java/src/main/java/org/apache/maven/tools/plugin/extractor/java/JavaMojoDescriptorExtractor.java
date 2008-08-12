@@ -201,20 +201,15 @@ public class JavaMojoDescriptorExtractor
         mojoDescriptor.setImplementation( javaClass.getFullyQualifiedName() );
         mojoDescriptor.setDescription( javaClass.getComment() );
 
-        // instantiationStrategy
-        DocletTag tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.INSTANTIATION_STRATEGY );
-        if ( tag != null )
+        // ----------------------------------------------------------------------
+        // Mojo annotations in alphabetical order
+        // ----------------------------------------------------------------------
+
+        // Aggregator flag
+        DocletTag aggregator = findInClassHierarchy( javaClass, JavaMojoAnnotation.AGGREGATOR );
+        if ( aggregator != null )
         {
-            mojoDescriptor.setInstantiationStrategy( tag.getValue() );
-        }
-        tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY );
-        if ( tag != null )
-        {
-            mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
-        }
-        else
-        {
-            mojoDescriptor.setExecutionStrategy( MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY );
+            mojoDescriptor.setAggregator( true );
         }
 
         // Configurator hint
@@ -222,34 +217,6 @@ public class JavaMojoDescriptorExtractor
         if ( configurator != null )
         {
             mojoDescriptor.setComponentConfigurator( configurator.getValue() );
-        }
-
-        // Goal name
-        DocletTag goal = findInClassHierarchy( javaClass, JavaMojoAnnotation.GOAL );
-        if ( goal != null )
-        {
-            mojoDescriptor.setGoal( goal.getValue() );
-        }
-
-        // What version it was introduced in
-        DocletTag since = findInClassHierarchy( javaClass, JavaMojoAnnotation.SINCE );
-        if ( since != null )
-        {
-            mojoDescriptor.setSince( since.getValue() );
-        }
-
-        // Deprecation hint
-        DocletTag deprecated = javaClass.getTagByName( JavaMojoAnnotation.DEPRECATED );
-        if ( deprecated != null )
-        {
-            mojoDescriptor.setDeprecated( deprecated.getValue() );
-        }
-
-        // Phase name
-        DocletTag phase = findInClassHierarchy( javaClass, JavaMojoAnnotation.PHASE );
-        if ( phase != null )
-        {
-            mojoDescriptor.setPhase( phase.getValue() );
         }
 
         // Additional phase to execute first
@@ -283,36 +250,55 @@ public class JavaMojoDescriptorExtractor
             }
         }
 
+        // Goal name
+        DocletTag goal = findInClassHierarchy( javaClass, JavaMojoAnnotation.GOAL );
+        if ( goal != null )
+        {
+            mojoDescriptor.setGoal( goal.getValue() );
+        }
+
+        // inheritByDefault flag
+        boolean value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.INHERIT_BY_DEFAULT,
+                                mojoDescriptor.isInheritedByDefault() );
+        mojoDescriptor.setInheritedByDefault( value );
+
+        // instantiationStrategy
+        DocletTag tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.INSTANTIATION_STRATEGY );
+        if ( tag != null )
+        {
+            mojoDescriptor.setInstantiationStrategy( tag.getValue() );
+        }
+        tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY );
+        if ( tag != null )
+        {
+            mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
+        }
+        else
+        {
+            mojoDescriptor.setExecutionStrategy( MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY );
+        }
+
+        // Phase name
+        DocletTag phase = findInClassHierarchy( javaClass, JavaMojoAnnotation.PHASE );
+        if ( phase != null )
+        {
+            mojoDescriptor.setPhase( phase.getValue() );
+        }
+
         // Dependency resolution flag
         DocletTag requiresDependencyResolution =
             findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION );
         if ( requiresDependencyResolution != null )
         {
-            String value = requiresDependencyResolution.getValue();
+            String v = requiresDependencyResolution.getValue();
 
-            if ( value == null || value.length() == 0 )
+            if ( StringUtils.isEmpty( v ) )
             {
-                value = "runtime";
+                v = "runtime";
             }
 
-            mojoDescriptor.setDependencyResolutionRequired( value );
-        }
-
-        // Project flag
-        boolean value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
-        mojoDescriptor.setProjectRequired( value );
-
-        // requiresReports flag
-        value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
-        mojoDescriptor.setRequiresReports( value );
-
-        // Aggregator flag
-        DocletTag aggregator = findInClassHierarchy( javaClass, JavaMojoAnnotation.AGGREGATOR );
-        if ( aggregator != null )
-        {
-            mojoDescriptor.setAggregator( true );
+            mojoDescriptor.setDependencyResolutionRequired( v );
         }
 
         // requiresDirectInvocation flag
@@ -326,11 +312,33 @@ public class JavaMojoDescriptorExtractor
             getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_ONLINE, mojoDescriptor.isOnlineRequired() );
         mojoDescriptor.setOnlineRequired( value );
 
-        // inheritByDefault flag
+        // Project flag
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.INHERIT_BY_DEFAULT,
-                                mojoDescriptor.isInheritedByDefault() );
-        mojoDescriptor.setInheritedByDefault( value );
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
+        mojoDescriptor.setProjectRequired( value );
+
+        // requiresReports flag
+        value =
+            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
+        mojoDescriptor.setRequiresReports( value );
+
+        // ----------------------------------------------------------------------
+        // Javadoc annotations in alphabetical order
+        // ----------------------------------------------------------------------
+
+        // Deprecation hint
+        DocletTag deprecated = javaClass.getTagByName( JavaMojoAnnotation.DEPRECATED );
+        if ( deprecated != null )
+        {
+            mojoDescriptor.setDeprecated( deprecated.getValue() );
+        }
+
+        // What version it was introduced in
+        DocletTag since = findInClassHierarchy( javaClass, JavaMojoAnnotation.SINCE );
+        if ( since != null )
+        {
+            mojoDescriptor.setSince( since.getValue() );
+        }
 
         extractParameters( mojoDescriptor, javaClass );
 
@@ -427,7 +435,6 @@ public class JavaMojoDescriptorExtractor
             pd.setDescription( field.getComment() );
 
             DocletTag componentTag = field.getTagByName( JavaMojoAnnotation.COMPONENT );
-
             if ( componentTag != null )
             {
                 String role = componentTag.getNamedParameter( JavaMojoAnnotation.COMPONENT_ROLE );
