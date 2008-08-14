@@ -29,8 +29,15 @@
   </parent>
 
   <artifactId>maven-plugin-tools-java</artifactId>
+
   <name>Maven Plugin Tool for Java</name>
   <description>Descriptor extractor for plugins written in Java.</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-java/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-java/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-java/</url>
+  </scm>
 
   <dependencies>
     <!-- maven -->
@@ -70,10 +77,4 @@
       <version>1.6.3</version>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-java/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-java/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-java/</url>
-  </scm>
 </project>

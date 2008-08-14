@@ -29,8 +29,33 @@
   </parent>
 
   <artifactId>maven-plugin-tools-model</artifactId>
+
   <name>Maven Plugin Metadata Model</name>
-  <description>The Maven Plugin Metadata Model provides an API to play with the Metadat model.</description>
+  <description>The Maven Plugin Metadata Model provides an API to play with the Metadata model.</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-model/</url>
+  </scm>
+
+  <dependencies>
+    <!-- maven -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-descriptor</artifactId>
+    </dependency>
+
+    <!-- plexus -->
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -49,7 +74,7 @@
             <id>site-docs</id>
             <phase>pre-site</phase>
             <goals>
-              <goal>xsd</goal>
+              <goal>xdoc</goal>
             </goals>
           </execution>
           <execution>
@@ -74,28 +99,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <!-- maven -->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-descriptor</artifactId>
-    </dependency>
-
-    <!-- plexus -->
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
-    </dependency>
-  </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-model/</url>
-  </scm>
 </project>

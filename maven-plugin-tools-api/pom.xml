@@ -29,8 +29,15 @@
   </parent>
 
   <artifactId>maven-plugin-tools-api</artifactId>
+
   <name>Maven Plugin Tools APIs</name>
   <description>The Maven Plugin Tools API provides an API to extract information from and generate documentation for Maven Plugins.</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-api/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-api/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-api/</url>
+  </scm>
 
   <dependencies>
     <!-- maven -->
@@ -101,12 +108,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-api/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-api/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-api/</url>
-  </scm>
 
   <profiles>
     <profile>

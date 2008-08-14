@@ -29,8 +29,15 @@
   </parent>
 
   <artifactId>maven-plugin-tools-beanshell</artifactId>
+
   <name>Maven Plugin Tool for Beanshell</name>
   <description>Descriptor extractor for plugins written in Beanshell.</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</url>
+  </scm>
 
   <dependencies>
     <!-- maven -->
@@ -50,10 +57,4 @@
       <version>1.3.0</version>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-beanshell/</url>
-  </scm>
 </project>
