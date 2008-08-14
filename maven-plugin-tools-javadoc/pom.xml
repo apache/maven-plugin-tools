@@ -67,13 +67,7 @@
      </dependencies>
    </profile>
     <profile>
-      <id>integration-tests</id>
-      <activation>
-        <property>
-          <name>maven.test.skip</name>
-          <value>!true</value>
-        </property>
-      </activation>
+      <id>run-its</id>
 
       <dependencies>
         <dependency>
