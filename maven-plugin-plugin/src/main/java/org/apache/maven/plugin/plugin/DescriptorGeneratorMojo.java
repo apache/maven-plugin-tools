@@ -26,7 +26,7 @@ import java.io.File;
 
 /**
  * Generate a plugin descriptor.
- * <p/>
+ * <br/>
  * <b>Note:</b> Phase is after the "compilation" of any scripts.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

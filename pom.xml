@@ -31,28 +31,13 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>2.4.3-SNAPSHOT</version>
+  <version>2.4.3</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
   <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in a variety of languages.</description>
   <url>http://maven.apache.org/plugin-tools/</url>
   <inceptionYear>2004</inceptionYear>
-
-  <prerequisites>
-    <maven>2.0.6</maven>
-  </prerequisites>
-
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk</url>
-  </scm>
 
   <mailingLists>
     <mailingList>
@@ -128,42 +113,9 @@
     </mailingList>
   </mailingLists>
 
-  <distributionManagement>
-    <site>
-      <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugin-tools/</url>
-    </site>
-  </distributionManagement>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.4.3</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-7</version>
-          <configuration>
-            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools/${project.artifactId}-${project.version}</stagingSiteURL>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <configuration>
-            <tagBase>https://svn.apache.org/repos/asf/maven/plugin-tools/tags</tagBase>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+  <prerequisites>
+    <maven>2.0.6</maven>
+  </prerequisites>
 
   <modules>
     <module>maven-plugin-tools-api</module>
@@ -174,6 +126,27 @@
     <module>maven-plugin-tools-model</module>
     <module>maven-plugin-tools-javadoc</module>
   </modules>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/tags/maven-plugin-tools-2.4.3</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/plugin-tools/</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <pluginToolsVersion>2.4.3</pluginToolsVersion>
+    <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -235,8 +208,33 @@
     </dependency>
   </dependencies>
 
-  <properties>
-    <pluginToolsVersion>2.4.3-SNAPSHOT</pluginToolsVersion>
-    <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
-  </properties>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.4.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0-beta-7</version>
+          <configuration>
+            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools/${project.artifactId}-${project.version}</stagingSiteURL>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/plugin-tools/tags</tagBase>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>

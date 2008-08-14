@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
@@ -17,7 +17,7 @@
   ~ KIND, either express or implied.  See the License for the
   ~ specific language governing permissions and limitations
   ~ under the License.
-  -->
+-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -25,19 +25,44 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>2.4.3-SNAPSHOT</version>
+    <version>2.4.3</version>
   </parent>
 
   <artifactId>maven-plugin-tools-model</artifactId>
+
   <name>Maven Plugin Metadata Model</name>
-  <description>The Maven Plugin Metadata Model provides an API to play with the Metadat model.</description>
+  <description>The Maven Plugin Metadata Model provides an API to play with the Metadata model.</description>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-model</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-model</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-model</url>
+  </scm>
+
+  <dependencies>
+    <!-- maven -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-descriptor</artifactId>
+    </dependency>
+
+    <!-- plexus -->
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
-          <version>1.0-alpha-21</version>
+        <version>1.0-alpha-21</version>
         <configuration>
           <models>
             <model>src/main/mdo/plugin-metadata.mdo</model>
@@ -49,7 +74,7 @@
             <id>site-docs</id>
             <phase>pre-site</phase>
             <goals>
-              <goal>xsd</goal>
+              <goal>xdoc</goal>
             </goals>
           </execution>
           <execution>
@@ -74,28 +99,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <!-- maven -->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-descriptor</artifactId>
-    </dependency>
-
-    <!-- plexus -->
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
-    </dependency>
-  </dependencies>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-model/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-model/</url>
-  </scm>
 </project>

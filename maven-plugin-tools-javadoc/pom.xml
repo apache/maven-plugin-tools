@@ -25,12 +25,20 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>2.4.3-SNAPSHOT</version>
+    <version>2.4.3</version>
   </parent>
 
   <artifactId>maven-plugin-tools-javadoc</artifactId>
+
   <name>Maven Plugin Tools Javadoc</name>
+  <description>The Maven Plugin Tools Javadoc provides several Javadoc taglets to be used when generating Javadoc.</description>
   <inceptionYear>2008</inceptionYear>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-javadoc</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-javadoc</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/tags/maven-plugin-tools-2.4.3/maven-plugin-tools-javadoc</url>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -38,17 +46,6 @@
       <artifactId>maven-plugin-tools-java</artifactId>
     </dependency>
   </dependencies>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>
@@ -70,7 +67,7 @@
      </dependencies>
    </profile>
     <profile>
-      <id>integration-tests</id>
+      <id>unit-tests</id>
       <activation>
         <property>
           <name>maven.test.skip</name>
@@ -168,10 +165,4 @@
       </build>
    </profile>
  </profiles>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</url>
-  </scm>
 </project>

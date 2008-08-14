@@ -3,9 +3,9 @@
  ---
  John Casey
  ---
- 09-Feb-2005
+ 2005-02-09
  ---
- 
+
 ~~ Licensed to the Apache Software Foundation (ASF) under one
 ~~ or more contributor license agreements.  See the NOTICE file
 ~~ distributed with this work for additional information
@@ -23,28 +23,31 @@
 ~~ specific language governing permissions and limitations
 ~~ under the License.
 
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
 <<THIS NEEDS REVISION AND CLEANING UP>>
- 
+
 *Abstract
 
   The Plugin Plugin needs to be refactored in order to support multiple mojo
-  implementation languages. This document will detail the steps needed to 
+  implementation languages. This document will detail the steps needed to
   add this functionality.
-  
+
 *Current Status
 
   The Plugin Plugin currently calls out to a set of generators in the
   maven-plugin-tools library, which in turn uses QDox to generate various things
   based on annotations in the java source code.
-  
+
 *Refactored Design
 
   The new design will have a generator-manager which is a component that the
-  plugin mojos will lookup. This component will have access to a mapping of all 
+  plugin mojos will lookup. This component will have access to a mapping of all
   generators and the language they're registered for. It'll iterate through the
   mappings, and extract mojo descriptors from all relevant scripts/sources using
   each language's registered generator. Results from each generator will be
-  centrally aggregated by the generator-manager. After all generators have run, 
+  centrally aggregated by the generator-manager. After all generators have run,
   the generator-manager will call another class (depending on what it's meant to
-  produce) to take all the aggregated mojo descriptors and produce a result 
+  produce) to take all the aggregated mojo descriptors and produce a result
   (such as <<<plugin.xml>>> file for the project).
