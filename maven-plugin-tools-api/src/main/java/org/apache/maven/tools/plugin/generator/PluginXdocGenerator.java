@@ -575,8 +575,8 @@ public class PluginXdocGenerator
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 description =
-                    "<strong>" + getString( "pluginxdoc.mojodescriptor.parameter.deprecated" )
-                        + ".</strong> " + PluginUtils.makeHtmlValid( parameter.getDeprecated() );
+                    format( "pluginxdoc.mojodescriptor.parameter.deprecated",
+                            PluginUtils.makeHtmlValid( parameter.getDeprecated() ) );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
