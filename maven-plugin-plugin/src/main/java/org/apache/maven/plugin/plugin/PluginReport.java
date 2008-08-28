@@ -388,8 +388,6 @@ public class PluginReport
 
             endTable();
 
-            endSection();
-
             startSection( getBundle( locale ).getString( "report.plugin.systemrequirements" ) );
 
             paragraph( getBundle( locale ).getString( "report.plugin.systemrequirements.intro" ) );
@@ -443,6 +441,8 @@ public class PluginReport
             endSection();
 
             renderUsageSection( hasMavenReport );
+
+            endSection();
         }
 
         /**
