@@ -144,7 +144,7 @@
   </distributionManagement>
 
   <properties>
-    <pluginToolsVersion>2.4.3</pluginToolsVersion>
+    <pluginToolsVersion>2.4.4-SNAPSHOT</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
   </properties>
 
