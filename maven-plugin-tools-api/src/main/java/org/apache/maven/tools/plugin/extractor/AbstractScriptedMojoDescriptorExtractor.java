@@ -48,6 +48,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
+        getLogger().info( "Running: " + getClass().getName() );
         String metadataExtension = getMetadataFileExtension();
         String scriptExtension = getScriptFileExtension();
 
@@ -142,7 +143,12 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
 
             String resourceDir = (String) it.next();
 
-            File dir = new File( basedir, resourceDir ).getAbsoluteFile();
+            getLogger().info( "Scanning script dir: " + resourceDir + " with extractor: " + getClass().getName() );
+            File dir = new File( resourceDir );
+            if ( !dir.isAbsolute() )
+            {
+                dir = new File( basedir, resourceDir ).getAbsoluteFile();
+            }
 
             resourceDir = dir.getPath();
 
