@@ -434,9 +434,18 @@ public class PluginHelpGenerator
         writer.write( "        append( sb, \"\", 0 );" + LS );
         writer.write( LS );
 
-        writer.write( "        append( sb, \""
-            + StringUtils.escape( pluginDescriptor.getName() + " " + pluginDescriptor.getVersion() )
-            + "\", 0 );" + LS );
+        if ( StringUtils.isNotEmpty( pluginDescriptor.getName() )
+            && ( pluginDescriptor.getName().indexOf( pluginDescriptor.getId() ) != -1 ) )
+        {
+            writer.write( "        append( sb, \""
+                + StringUtils.escape( pluginDescriptor.getName() + " " + pluginDescriptor.getVersion() )
+                + "\", 0 );" + LS );
+        }
+        else
+        {
+            writer.write( "        append( sb, \"" + StringUtils.escape( pluginDescriptor.getName() ) + "\", 0 );"
+                + LS );
+        }
         writer.write( "        append( sb, \"" + toDescription( pluginDescriptor.getDescription() ) + "\", 1 );"
             + LS );
         writer.write( "        append( sb, \"\", 0 );" + LS );
