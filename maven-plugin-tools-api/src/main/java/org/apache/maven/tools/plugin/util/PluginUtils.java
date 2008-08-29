@@ -46,6 +46,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.MavenReport;
@@ -413,6 +414,7 @@ public final class PluginUtils
      * Sorts the specified mojo descriptors by goal name.
      *
      * @param mojoDescriptors The mojo descriptors to sort, may be <code>null</code>.
+     * @see MojoDescriptor#getGoal()
      */
     public static void sortMojos( List mojoDescriptors )
     {
@@ -425,9 +427,34 @@ public final class PluginUtils
                 {
                     MojoDescriptor mojo0 = (MojoDescriptor) arg0;
                     MojoDescriptor mojo1 = (MojoDescriptor) arg1;
+
                     return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
                 }
+            } );
+        }
+    }
 
+    /**
+     * Sorts the specified mojo parameters by name.
+     *
+     * @param parameters The mojo parameters to sort, may be <code>null</code>.
+     * @see Parameter#getName()
+     * @since 2.4.4
+     */
+    public static void sortMojoParameters( List parameters )
+    {
+        if ( parameters != null )
+        {
+            Collections.sort( parameters, new Comparator()
+            {
+                /** {@inheritDoc} */
+                public int compare( Object arg0, Object arg1 )
+                {
+                    Parameter parameter1 = (Parameter) arg0;
+                    Parameter parameter2 = (Parameter) arg1;
+
+                    return parameter1.getName().compareToIgnoreCase( parameter2.getName() );
+                }
             } );
         }
     }
