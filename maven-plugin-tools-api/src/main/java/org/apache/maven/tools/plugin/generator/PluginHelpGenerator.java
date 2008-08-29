@@ -443,8 +443,16 @@ public class PluginHelpGenerator
         }
         else
         {
-            writer.write( "        append( sb, \"" + StringUtils.escape( pluginDescriptor.getName() ) + "\", 0 );"
-                + LS );
+            if ( StringUtils.isNotEmpty( pluginDescriptor.getName() ) )
+            {
+                writer.write( "        append( sb, \"" + StringUtils.escape( pluginDescriptor.getName() )
+                    + "\", 0 );" + LS );
+            }
+            else
+            {
+                writer.write( "        append( sb, \"" + StringUtils.escape( pluginDescriptor.getId() )
+                    + "\", 0 );" + LS );
+            }
         }
         writer.write( "        append( sb, \"" + toDescription( pluginDescriptor.getDescription() ) + "\", 1 );"
             + LS );
