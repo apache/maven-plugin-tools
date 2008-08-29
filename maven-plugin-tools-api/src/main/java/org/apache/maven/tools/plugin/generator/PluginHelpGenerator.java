@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -451,6 +453,18 @@ public class PluginHelpGenerator
 
         writer.write( LS );
 
+        Collections.sort( mojoDescriptors, new Comparator()
+        {
+            /** {@inheritDoc} */
+            public int compare( Object o1, Object o2 )
+            {
+                MojoDescriptor md1 = (MojoDescriptor) o1;
+                MojoDescriptor md2 = (MojoDescriptor) o2;
+
+                return md1.getId().compareTo( md2.getId() );
+            }
+        } );
+
         for ( Iterator it = mojoDescriptors.iterator(); it.hasNext(); )
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
@@ -498,13 +512,27 @@ public class PluginHelpGenerator
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
         {
+            List params = descriptor.getParameters();
+
+            Collections.sort( params, new Comparator()
+            {
+                /** {@inheritDoc} */
+                public int compare( Object o1, Object o2 )
+                {
+                    Parameter parameter1 = (Parameter) o1;
+                    Parameter parameter2 = (Parameter) o2;
+
+                    return parameter1.getName().compareTo( parameter2.getName() );
+                }
+            } );
+
             writer.write( "            if ( detail )" + LS );
             writer.write( "            {" + LS );
 
             writer.write( "                append( sb, \"Available parameters:\", 1 );" + LS );
             writer.write( "                append( sb, \"\", 0 );" + LS );
 
-            for ( Iterator it = descriptor.getParameters().iterator(); it.hasNext(); )
+            for ( Iterator it = params.iterator(); it.hasNext(); )
             {
                 Parameter parameter = (Parameter) it.next();
 
