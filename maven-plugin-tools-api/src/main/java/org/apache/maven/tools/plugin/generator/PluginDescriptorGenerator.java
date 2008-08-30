@@ -351,7 +351,14 @@ public class PluginDescriptorGenerator
 
                     if ( parameter.getDeprecated() != null )
                     {
-                        PluginUtils.element( w, "deprecated", parameter.getDeprecated() );
+                        if ( StringUtils.isEmpty( parameter.getDeprecated() ) )
+                        {
+                            PluginUtils.element( w, "deprecated", "No reason given" );
+                        }
+                        else
+                        {
+                            PluginUtils.element( w, "deprecated", parameter.getDeprecated() );
+                        }
                     }
 
                     if ( parameter.getImplementation() != null )
