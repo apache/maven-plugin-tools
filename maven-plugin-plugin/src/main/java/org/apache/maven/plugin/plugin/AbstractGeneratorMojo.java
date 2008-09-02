@@ -115,7 +115,7 @@ public abstract class AbstractGeneratorMojo
         {
             goalPrefix = defaultGoalPrefix;
         }
-        else
+        else if ( !goalPrefix.equals( defaultGoalPrefix ) )
         {
             getLog().warn(
                            "\n\nGoal prefix is specified as: '" + goalPrefix + "'. "
