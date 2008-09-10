@@ -77,7 +77,7 @@ public class DefaultMojoScanner
         Logger logger = getLogger();
         Set activeExtractorsInternal = getActiveExtractors();
 
-        logger.info( "Using " + activeExtractorsInternal.size() + " extractors." );
+        logger.debug( "Using " + activeExtractorsInternal.size() + " mojo extractors." );
 
         int numMojoDescriptors = 0;
 
@@ -88,14 +88,14 @@ public class DefaultMojoScanner
 
             if ( extractor == null )
             {
-                throw new ExtractionException( "No extractor for language: " + language );
+                throw new ExtractionException( "No mojo extractor for language: " + language );
             }
 
-            logger.info( "Applying extractor for language: " + language );
+            logger.info( "Applying mojo extractor for language: " + language );
 
             List extractorDescriptors = extractor.execute( project, pluginDescriptor );
 
-            logger.info( "Extractor for language: " + language + " found " + extractorDescriptors.size()
+            logger.info( "Mojo extractor for language: " + language + " found " + extractorDescriptors.size()
                 + " mojo descriptors." );
             numMojoDescriptors += extractorDescriptors.size();
 
