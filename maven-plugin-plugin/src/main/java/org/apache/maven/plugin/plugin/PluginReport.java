@@ -93,17 +93,17 @@ public class PluginReport
      * Specify some requirements to execute this plugin.
      * Example:
      * <pre>
-     * &lt;requirements&gt;<br/>
-     *   &lt;maven&gt;2.0&lt;/maven&gt;<br/>
-     *   &lt;jdk&gt;1.4&lt;/jdk&gt;<br/>
-     *   &lt;memory&gt;256m&lt;/memory&gt;<br/>
-     *   &lt;diskSpace&gt;1m&lt;/diskSpace&gt;<br/>
-     *   &lt;others&gt;<br/>
-     *     &lt;property&gt;<br/>
-     *       &lt;name&gt;SVN&lt;/name&gt;<br/>
-     *       &lt;value&gt;1.4.6&lt;/value&gt;<br/>
-     *     &lt;/property&gt;<br/>
-     *   &lt;/others&gt;<br/>
+     * &lt;requirements&gt;
+     *   &lt;maven&gt;2.0&lt;/maven&gt;
+     *   &lt;jdk&gt;1.4&lt;/jdk&gt;
+     *   &lt;memory&gt;256m&lt;/memory&gt;
+     *   &lt;diskSpace&gt;1m&lt;/diskSpace&gt;
+     *   &lt;others&gt;
+     *     &lt;property&gt;
+     *       &lt;name&gt;SVN&lt;/name&gt;
+     *       &lt;value&gt;1.4.6&lt;/value&gt;
+     *     &lt;/property&gt;
+     *   &lt;/others&gt;
      * &lt;/requirements&gt;
      * </pre>
      *

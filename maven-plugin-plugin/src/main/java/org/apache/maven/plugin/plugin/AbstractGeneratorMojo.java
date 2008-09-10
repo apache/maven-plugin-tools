@@ -67,21 +67,23 @@ public abstract class AbstractGeneratorMojo
     protected String goalPrefix;
 
     /**
-     * The names of extractors to use.
+     * The role names of mojo extractors to use.
      * <p/>
-     * If not set, all extractors will be used. If set to an empty extractor name, no extractors
+     * If not set, all mojo extractors will be used. If set to an empty extractor name, no mojo extractors
      * will be used.
      * <p/>
      * Example:
      * <p/>
      * <pre>
-     *  &lt;!-- Use all extractors --&gt;
+     *  &lt;!-- Use all mojo extractors --&gt;
      *  &lt;extractors/&gt;
-     *  &lt;!-- Use no extractors --&gt;
+     *  
+     *  &lt;!-- Use no mojo extractors --&gt;
      *  &lt;extractors&gt;
      *      &lt;extractor/&gt;
      *  &lt;/extractors&gt;
-     *  &lt;!-- Use only bsh extractor --&gt;
+     *  
+     *  &lt;!-- Use only bsh mojo extractor --&gt;
      *  &lt;extractors&gt;
      *      &lt;extractor&gt;bsh&lt;/extractor&gt;
      *  &lt;/extractors&gt;
