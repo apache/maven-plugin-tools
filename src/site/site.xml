@@ -27,6 +27,10 @@ under the License.
       <item name="Plugin Tools" href="http://maven.apache.org/plugin-tools/index.html" />
     </breadcrumbs>
 
+    <menu name="Overview">
+      <item name="Introduction" href="index.html"/>
+    </menu>
+
     <menu ref="modules" />
   </body>
 </project>

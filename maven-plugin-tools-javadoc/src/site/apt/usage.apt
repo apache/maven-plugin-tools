@@ -29,7 +29,7 @@
 
 Usage
 
- The taglets could be use directly in the {{{http://maven.apache.org/plugins/maven-javadoc-plugin/}maven-javadoc-plugin}}.
+ The taglets could be use directly in the {{{http://maven.apache.org/plugins/maven-javadoc-plugin/}Maven Javadoc Plugin}}.
 
 +-----+
 <project>
@@ -39,26 +39,19 @@ Usage
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
 
           <!-- To allow Javadoc Tool to generate annotation for Mojo fields -->
           <show>private</show>
 
-          <taglets>
-            <taglet>
-              <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoAggregatorTypeTaglet</tagletClass>
-            </taglet>
-            ...
-            <taglet>
-              <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresReportsTypeTaglet</tagletClass>
-            </taglet>
-          </taglets>
-
-          <tagletArtifact>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-tools-javadoc</artifactId>
-            <version>2.4.1</version>
-          </tagletArtifact>
+          <tagletArtifacts>
+            <tagletArtifact>
+              <groupId>org.apache.maven.plugin-tools</groupId>
+              <artifactId>maven-plugin-tools-javadoc</artifactId>
+              <version>2.4.3</version>
+            </tagletArtifact>
+          </tagletArtifacts>
           ...
         </configuration>
       </plugin>
