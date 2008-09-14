@@ -26,6 +26,6 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Introduction
+Maven Plugin Tool API
 
  The Maven Plugin Tool API is the API to extract descriptors for all supported Maven plugins.

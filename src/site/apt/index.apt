@@ -26,7 +26,7 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Introduction
+Maven Plugin Tools
 
  The Maven Plugin Tools contains the necessary tools to play with Maven Plugins.
 
