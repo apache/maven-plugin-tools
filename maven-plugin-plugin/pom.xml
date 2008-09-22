@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>11</version>
+    <version>12</version>
   </parent>
 
   <groupId>org.apache.maven.plugins</groupId>
@@ -202,34 +202,7 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <!-- pin to a previous version so it doesn't get reloaded during build -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>2.4.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generated-helpmojo</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
@@ -250,15 +223,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.1</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>
@@ -295,181 +259,6 @@
                 </reports>
               </reportSet>
             </reportSets>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-plugin-plugin</artifactId>
-            <version>2.4.2</version>
-          </plugin>
-          <!-- TODO: remove when maven-plugins parent pom 12 is released -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <taglets>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoAggregatorTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoComponentFieldTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoConfiguratorTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoExecuteTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoExecutionStrategyTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoGoalTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoInheritByDefaultTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoInstantiationStrategyTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoParameterFieldTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoPhaseTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoReadOnlyFieldTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiredFieldTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresDependencyResolutionTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresDirectInvocationTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresOnLineTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresProjectTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresReportsTypeTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.apache.maven.plugin-tools</groupId>
-                    <artifactId>maven-plugin-tools-javadoc</artifactId>
-                    <version>2.4.2</version>
-                  </tagletArtifact>
-                </taglet>
-
-                <taglet>
-                  <tagletClass>org.codehaus.plexus.javadoc.PlexusComponentTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-javadoc</artifactId>
-                    <version>1.0</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.codehaus.plexus.javadoc.PlexusConfigurationTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-javadoc</artifactId>
-                    <version>1.0</version>
-                  </tagletArtifact>
-                </taglet>
-                <taglet>
-                  <tagletClass>org.codehaus.plexus.javadoc.PlexusRequirementTaglet</tagletClass>
-                  <tagletArtifact>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-javadoc</artifactId>
-                    <version>1.0</version>
-                  </tagletArtifact>
-                </taglet>
-              </taglets>
-            </configuration>
           </plugin>
         </plugins>
       </reporting>
