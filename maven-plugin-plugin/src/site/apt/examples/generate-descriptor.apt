@@ -38,6 +38,7 @@ Configuring Generation of Plugin Descriptor
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.4.3</version>
         <configuration>
           <goalPrefix>plugin</goalPrefix>
           <outputDirectory>${basedir}/target/dir</outputDirectory>
