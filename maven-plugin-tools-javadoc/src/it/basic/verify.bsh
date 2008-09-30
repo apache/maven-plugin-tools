@@ -1,0 +1,66 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+import org.apache.maven.tools.plugin.javadoc.*;
+
+import org.codehaus.plexus.util.*;
+
+setAccessibility( true );
+
+File docsDir = new File( basedir, "target/site/apidocs" );
+System.out.println( "Checking for existence of: " + docsDir );
+if ( !docsDir.exists() )
+{
+    throw new FileNotFoundException( docsDir + " was not created" );
+}
+
+File docFile = new File( docsDir, "org/apache/maven/plugin/my/MyMojo.html" );
+System.out.println( "Checking for existence of: " + docFile );
+if ( !docFile.isFile() )
+{
+    throw new FileNotFoundException( docFile + " was not created" );
+}
+
+String html = FileUtils.fileRead( docFile, "ISO-8859-1").replaceAll( "(\r\n)|(\r)|(\n)", "" );
+
+System.out.println( "Checking for documentation of mojo type" );
+String mojoType = "<dl><dt><b>" + MojoAggregatorTypeTaglet.HEADER + "</b></dt><dd></dd><dt><b>"
+    + MojoConfiguratorTypeTaglet.HEADER + ":</b></dt><dd>roleHint</dd><dt><b>" + MojoExecuteTypeTaglet.HEADER
+    + ":</b></dt><dd><dl><dt><b>phase:</b></dt><dd>validate</dd>"
+    + "<dt><b>lifecycle:</b></dt><dd>default</dd></dl></dd><dt><b>" + MojoExecutionStrategyTypeTaglet.HEADER
+    + ":</b></dt><dd>always</dd>" + "<dt><b>" + MojoGoalTypeTaglet.HEADER + ":</b></dt><dd>touch</dd>"
+    + "<dt><b>" + MojoInheritByDefaultTypeTaglet.HEADER + ":</b></dt><dd>true</dd><dt><b>"
+    + MojoInstantiationStrategyTypeTaglet.HEADER + ":</b></dt><dd>per-lookup</dd><dt><b>"
+    + MojoPhaseTypeTaglet.HEADER + ":</b></dt><dd>phaseName</dd><dt><b>"
+    + MojoRequiresDependencyResolutionTypeTaglet.HEADER + ":</b></dt><dd>compile</dd><dt><b>"
+    + MojoRequiresDirectInvocationTypeTaglet.HEADER + ":</b></dt><dd>false</dd><dt><b>"
+    + MojoRequiresOnLineTypeTaglet.HEADER + ":</b></dt><dd>true</dd><dt><b>"
+    + MojoRequiresProjectTypeTaglet.HEADER + ":</b></dt><dd>true</dd><dt><b>"
+    + MojoRequiresReportsTypeTaglet.HEADER + ":</b></dt><dd>false</dd></dl>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( mojoType ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Mojo type doc wrong" );
+}
+
+System.out.println( "Checking for documentation of mojo fields" );
+String mojoField = "<dl><dt><b>" + MojoParameterFieldTaglet.HEADER
+    + ":</b></dt><dd><dl><dt><b>default-value:</b></dt>"
+    + "<dd>value</dd><dt><b>expression:</b></dt><dd>${project.build.directory}</dd><dt><b>alias:</b>"
+    + "</dt><dd>myAlias</dd></dl></dd><dt><b>" + MojoReadOnlyFieldTaglet.HEADER + "</b></dt><dd></dd><dt><b>"
+    + MojoRequiredFieldTaglet.HEADER + "</b></dt><dd>" + "</dd></dl>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( mojoField ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Mojo field doc wrong" );
+}
+
+mojoField = "<dl><dt><b>" + MojoComponentFieldTaglet.HEADER + ":</b></dt><dd><dl><dt><b>role:</b>"
+    + "</dt><dd>org.apacha.maven.MyComponent</dd><dt><b>roleHint:</b></dt><dd>default</dd></dl></dd>"
+    + "<dt><b>" + MojoReadOnlyFieldTaglet.HEADER + "</b></dt><dd></dd><dt><b>" + MojoRequiredFieldTaglet.HEADER
+    + "</b></dt><dd>" + "</dd></dl>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( mojoField ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Mojo field doc wrong" );
+}
+
+return true;

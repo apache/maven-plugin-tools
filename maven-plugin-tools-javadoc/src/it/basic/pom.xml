@@ -9,7 +9,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -24,8 +24,9 @@ under the License.
 
   <groupId>org.apache.maven.tools.plugin.javadoc</groupId>
   <artifactId>test</artifactId>
-  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
   <inceptionYear>2008</inceptionYear>
   <name>Test Mojo Tags</name>
 
@@ -34,12 +35,6 @@ under the License.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -50,9 +45,7 @@ under the License.
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.3</version>
         <configuration>
-          <project implementation="org.apache.maven.tools.plugin.javadoc.stubs.DefaultMavenProjectStub"/>
-          <localRepository>${localRepository}</localRepository>
-          <outputDirectory>${basedir}/target/test/unit/javadoc/target/site/apidocs</outputDirectory>
+          <outputDirectory>${basedir}/target/site/apidocs</outputDirectory>
 
           <debug>true</debug>
           <show>private</show>

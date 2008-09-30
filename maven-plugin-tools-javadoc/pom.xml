@@ -54,8 +54,8 @@
         <property>
           <name>java.vendor</name>
           <value>Sun Microsystems Inc.</value>
-       </property>
-     </activation>
+        </property>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>com.sun</groupId>
@@ -63,106 +63,41 @@
           <version>1.4.2</version>
           <scope>system</scope>
           <systemPath>${java.home}/../lib/tools.jar</systemPath>
-       </dependency>
-     </dependencies>
-   </profile>
-    <profile>
-      <id>unit-tests</id>
-      <activation>
-        <property>
-          <name>maven.test.skip</name>
-          <value>!true</value>
-        </property>
-      </activation>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.3</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.maven.plugin-testing</groupId>
-          <artifactId>maven-plugin-testing-harness</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-container-default</artifactId>
-          <scope>test</scope>
         </dependency>
       </dependencies>
-
+    </profile>
+    <profile>
+      <id>run-its</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-               <execution>
-                  <id>it-test</id>
-                  <phase>process-test-resources</phase>
-                  <goals>
-                     <goal>run</goal>
-                  </goals>
-                  <configuration>
-                    <tasks>
-                      <copy todir="${project.build.testOutputDirectory}/unit" encoding="UTF-8" overwrite="true">
-                        <fileset dir="${basedir}/src/test/resources/unit" includes="**/*.xml" />
-                        <filterset>
-                          <filter token="project.version" value="${project.version}" />
-                        </filterset>
-                      </copy>
-                    </tasks>
-                  </configuration>
-               </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>it-test</id>
-                  <phase>process-test-classes</phase>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-                  <configuration>
-                    <finalName>${project.build.finalName}-it</finalName>
-                  </configuration>
-               </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>2.2</version>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>1.3</version>
+            <configuration>
+              <debug>true</debug>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <preBuildHookScript>setup.bsh</preBuildHookScript>
+              <postBuildHookScript>verify.bsh</postBuildHookScript>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+              <settingsFile>src/it/settings.xml</settingsFile>
+              <addTestClassPath>true</addTestClassPath>
+              <goals>
+                <goal>clean</goal>
+                <goal>javadoc:javadoc</goal>
+              </goals>
+            </configuration>
             <executions>
               <execution>
-                <id>it-test</id>
-                <phase>process-test-classes</phase>
+                <id>integration-test</id>
                 <goals>
-                  <goal>install-file</goal>
+                  <goal>install</goal>
+                  <goal>run</goal>
                 </goals>
-                <configuration>
-                  <file>${project.build.directory}/${project.build.finalName}-it.jar</file>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                  <packaging>${project.packaging}</packaging>
-                  <pomFile>${basedir}/pom.xml</pomFile>
-                  <createChecksum>true</createChecksum>
-                  <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-                  <localRepositoryId>it-local-repo</localRepositoryId>
-                </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-   </profile>
+    </profile>
  </profiles>
 </project>
