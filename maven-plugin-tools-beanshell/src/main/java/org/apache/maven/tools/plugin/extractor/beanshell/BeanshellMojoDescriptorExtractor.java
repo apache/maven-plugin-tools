@@ -29,6 +29,7 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -115,11 +116,16 @@ public class BeanshellMojoDescriptorExtractor
 
             interpreter.set( "mojoDescriptor", mojoDescriptor );
 
-            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ) ) );
+            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), "UTF-8" ) );
         }
         catch ( EvalError evalError )
         {
             throw new InvalidPluginDescriptorException( "Error scanning beanshell script", evalError );
+        }
+        catch ( UnsupportedEncodingException uee )
+        {
+            // should not occur...
+            throw new InvalidPluginDescriptorException( "Unsupported encoding while reading beanshell script", uee );
         }
 
         return mojoDescriptor;
