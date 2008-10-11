@@ -219,16 +219,16 @@ public class PluginHelpGenerator
                 if ( packageNames.get( name ) != null )
                 {
                     int next = ( (Integer) packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name, Integer.valueOf( "" + next ) );
+                    packageNames.put( name, new Integer( next ) );
                 }
                 else
                 {
-                    packageNames.put( name, Integer.valueOf( "" + 1 ) );
+                    packageNames.put( name, new Integer( 1 ) );
                 }
             }
             else
             {
-                packageNames.put( "", Integer.valueOf( "" + 1 ) );
+                packageNames.put( "", new Integer( 1 ) );
             }
         }
 
