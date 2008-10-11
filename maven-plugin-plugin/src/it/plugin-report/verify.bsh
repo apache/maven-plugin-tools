@@ -1,0 +1,36 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+try
+{
+    File siteDir = new File( basedir, "target/site" );
+    System.out.println( "Checking for existence of site directory: " + siteDir );
+    if ( !siteDir.isDirectory() )
+    {
+        System.out.println( "FAILED!" );
+        return false;
+    }
+
+    String[] expectedFiles = {
+        "noop-mojo.html",
+        "plugin-info.html",
+    };
+    for ( String path : expectedFiles )
+    {
+        File file = new File( siteDir, path );
+        System.out.println( "Checking for existence of doc file: " + file );
+        if ( !file.isFile() )
+        {
+            System.out.println( "FAILED!" );
+            return false;
+        }
+    }
+}
+catch( Throwable t )
+{
+    t.printStackTrace();
+    return false;
+}
+
+return true;

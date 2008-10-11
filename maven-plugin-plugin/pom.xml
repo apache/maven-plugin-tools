@@ -273,10 +273,6 @@
             <configuration>
               <debug>true</debug>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-              <pomExcludes>
-                <!-- TODO: Investigate whether this is a core IT or a plugin IT. In the latter case, migrate it into the automated build -->
-                <pomExclude>plugin-report-failure-it/*</pomExclude>
-              </pomExcludes>
               <preBuildHookScript>setup.bsh</preBuildHookScript>
               <postBuildHookScript>verify.bsh</postBuildHookScript>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
