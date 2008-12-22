@@ -66,11 +66,12 @@
     </mojos>
   </pluginMetadata>
     -->
-<model>
+<model xsd.namespace="http://maven.apache.org/PLUGIN-METADATA/1.0.0"
+       xsd.target-namespace="http://maven.apache.org/PLUGIN-METADATA/1.0.0">
   <id>plugin-metadata</id>
   <name>PluginMetadata</name>
   <description><![CDATA[
-  	Plugin descriptor metadata for using with script-based mojos.
+    Plugin descriptor metadata for using with script-based mojos.
   ]]></description>
   <defaults>
     <default>
@@ -209,7 +210,7 @@
       <name>LifecycleExecution</name>
       <version>1.0.0</version>
       <description><![CDATA[
-      	A sub-process execution of a lifecycle to satisfy the needs of a mojo.
+        A sub-process execution of a lifecycle to satisfy the needs of a mojo.
       ]]></description>
       <fields>
         <field>
@@ -239,7 +240,7 @@
       <name>Component</name>
       <version>1.0.0</version>
       <description><![CDATA[
-      	A reference to a plexus component, assumed to be available to the plugin container.
+        A reference to a plexus component, assumed to be available to the plugin container.
       ]]></description>
       <fields>
         <field>
@@ -261,7 +262,7 @@
       <name>Parameter</name>
       <version>1.0.0</version>
       <description><![CDATA[
-      	A parameter used by a mojo, and configurable from the command line or POM configuration sections.
+        A parameter used by a mojo, and configurable from the command line or POM configuration sections.
       ]]></description>
       <fields>
         <field>
@@ -311,7 +312,7 @@
           <type>String</type>
           <description><![CDATA[
             An expression in the form ${instance.property} for extracting a value for this parameter, especially from
-            a runtime instance within the build system. (eg. ${project.build.directory} references 
+            a runtime instance within the build system. (eg. ${project.build.directory} references
             project.getBuild().getDirectory())
           ]]></description>
         </field>
