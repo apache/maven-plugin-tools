@@ -510,7 +510,18 @@ public class JavaMojoDescriptorExtractor
                     pd.setAlias( alias );
                 }
 
-                pd.setExpression( parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_EXPRESSION ) );
+                String expression = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_EXPRESSION );
+                pd.setExpression( expression );
+
+                if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${component." ) )
+                {
+                    getLogger().warn( javaClass.getFullyQualifiedName() + "#" + field.getName() + ":" );
+                    getLogger().warn( "  The syntax" );
+                    getLogger().warn( "    @parameter expression=\"${component.<role>#<roleHint>}\"" );
+                    getLogger().warn( "  is deprecated, please use" );
+                    getLogger().warn( "    @component role=\"<role>\" roleHint=\"<roleHint>\"" );
+                    getLogger().warn( "  instead." );
+                }
 
                 if ( "${reports}".equals( pd.getExpression() ) )
                 {
