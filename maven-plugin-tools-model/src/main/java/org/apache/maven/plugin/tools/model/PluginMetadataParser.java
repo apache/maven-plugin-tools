@@ -109,7 +109,14 @@ public class PluginMetadataParser
     {
         MojoDescriptor descriptor = new MojoDescriptor();
 
-        descriptor.setImplementation( IMPL_BASE_PLACEHOLDER + ":" + mojo.getCall() );
+        if ( mojo.getCall() != null )
+        {
+            descriptor.setImplementation( IMPL_BASE_PLACEHOLDER + ":" + mojo.getCall() );
+        }
+        else
+        {
+            descriptor.setImplementation( IMPL_BASE_PLACEHOLDER );
+        }
 
         descriptor.setGoal( mojo.getGoal() );
         descriptor.setPhase( mojo.getPhase() );

@@ -1,0 +1,9 @@
+<project default="test">
+  <target name="test">
+    <echo>${testDir}</echo>
+  </target>
+  
+  <target name="test2" depends="test">
+    <echo>Another test target</echo>
+  </target>
+</project>

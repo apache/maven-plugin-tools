@@ -1,0 +1,18 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>test2</goal>
+			<call>test2</call>
+			<parameters>
+				<parameter>
+					<name>testDir</name>
+					<property>testDir</property>
+					<required>true</required>
+					<type>java.lang.String</type>
+					<description>Test directory location.</description>
+				</parameter>
+			</parameters>
+			<description>Runs the default ("test2") goal of the build script.</description>
+		</mojo>
+	</mojos>
+</pluginMetadata>

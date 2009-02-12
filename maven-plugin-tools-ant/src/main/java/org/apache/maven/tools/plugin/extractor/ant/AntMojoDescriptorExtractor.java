@@ -25,12 +25,16 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.tools.model.PluginMetadataParseException;
 import org.apache.maven.plugin.tools.model.PluginMetadataParser;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +48,12 @@ import java.util.Set;
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
 {
-    /** Default metada file extension */
+    /** Default metadata file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
 
     /** Default Ant build file extension */
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
-
+    
     /** {@inheritDoc} */
     protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
                                                        PluginDescriptor pluginDescriptor )
@@ -83,14 +87,13 @@ public class AntMojoDescriptorExtractor
 
                 String relativePath = null;
 
-                if ( basedir.endsWith( "/" ) )
-                {
-                    basedir = basedir.substring( 0, basedir.length() - 2 );
-                }
-
                 relativePath = scriptFile.getPath().substring( basedir.length() );
-
                 relativePath = relativePath.replace( '\\', '/' );
+                
+                if ( relativePath.startsWith( "/" ) )
+                {
+                    relativePath = relativePath.substring( 1 );
+                }
 
                 try
                 {
@@ -132,14 +135,81 @@ public class AntMojoDescriptorExtractor
 
                             descriptor.addParameter( param );
                         }
+                        
+                        if ( !paramMap.containsKey( "project" ) )
+                        {
+                            Parameter param = new Parameter();
+                            param.setName( "project" );
+                            param.setDefaultValue( "${project}" );
+                            param.setType( MavenProject.class.getName() );
+                            param.setDescription( "The current MavenProject instance, which contains classpath elements." );
+                            param.setEditable( false );
+                            param.setRequired( true );
+
+                            descriptor.addParameter( param );
+                        }
+
+                        if ( !paramMap.containsKey( "session" ) )
+                        {
+                            Parameter param = new Parameter();
+                            param.setName( "session" );
+                            param.setDefaultValue( "${session}" );
+                            param.setType( "org.apache.maven.execution.MavenSession" );
+                            param.setDescription( "The current MavenSession instance, which is used for plugin-style expression resolution." );
+                            param.setEditable( false );
+                            param.setRequired( true );
+
+                            descriptor.addParameter( param );
+                        }
+
+                        if ( !paramMap.containsKey( "mojoExecution" ) )
+                        {
+                            Parameter param = new Parameter();
+                            param.setName( "mojoExecution" );
+                            param.setDefaultValue( "${mojoExecution}" );
+                            param.setType( "org.apache.maven.plugin.MojoExecution" );
+                            param.setDescription( "The current Maven MojoExecution instance, which contains information about the mojo currently executing." );
+                            param.setEditable( false );
+                            param.setRequired( true );
+
+                            descriptor.addParameter( param );
+                        }
+                        
+                        List requirements = descriptor.getRequirements();
+                        Map reqMap = new HashMap();
+
+                        if ( requirements != null )
+                        {
+                            for ( Iterator reqIterator = requirements.iterator(); reqIterator.hasNext(); )
+                            {
+                                ComponentRequirement req = (ComponentRequirement) reqIterator.next();
+
+                                reqMap.put( req.getRole(), req );
+                            }
+                        }
+                        
+                        if ( !reqMap.containsKey( PathTranslator.class.getName() ) )
+                        {
+                            ComponentRequirement req = new ComponentRequirement();
+                            req.setRole( PathTranslator.class.getName() );
+                            
+                            descriptor.addRequirement( req );
+                        }
 
                         String implementation = relativePath;
 
                         String dImpl = descriptor.getImplementation();
                         if ( StringUtils.isNotEmpty( dImpl ) )
                         {
-                            implementation =
-                                relativePath + dImpl.substring( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length() );
+                            if ( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.equals( dImpl ) )
+                            {
+                                implementation = relativePath;
+                            }
+                            else
+                            {
+                                implementation =
+                                    relativePath + dImpl.substring( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length() );
+                            }
                         }
 
                         descriptor.setImplementation( implementation );

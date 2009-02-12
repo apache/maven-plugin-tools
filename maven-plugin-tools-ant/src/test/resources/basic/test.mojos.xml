@@ -1,0 +1,54 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>test</goal>
+			<parameters>
+				<parameter>
+					<name>testDir</name>
+					<property>testDir</property>
+					<required>true</required>
+					<type>java.lang.String</type>
+					<description>Test directory location.</description>
+				</parameter>
+			</parameters>
+			<description>Runs the default ("test") goal of the build script.</description>
+		</mojo>
+		<mojo>
+			<goal>test2</goal>
+			<call>test2</call>
+			<components>
+			  <component>
+			    <role>org.apache.maven.project.path.PathTranslator</role>
+			  </component>
+			</components>
+			<parameters>
+				<parameter>
+					<name>testDir</name>
+					<property>testDir</property>
+					<required>true</required>
+					<type>java.lang.String</type>
+					<description>Test directory location.</description>
+				</parameter>
+				<parameter>
+					<name>project</name>
+					<property>project</property>
+					<required>true</required>
+					<type>org.apache.maven.project.MavenProject</type>
+				</parameter>
+				<parameter>
+					<name>session</name>
+					<property>session</property>
+					<required>true</required>
+					<type>org.apache.maven.execution.MavenSession</type>
+				</parameter>
+				<parameter>
+					<name>mojoExecution</name>
+					<property>mojoExecution</property>
+					<required>true</required>
+					<type>org.apache.maven.plugin.MojoExecution</type>
+				</parameter>
+			</parameters>
+			<description>Runs the default ("test2") goal of the build script.</description>
+		</mojo>
+	</mojos>
+</pluginMetadata>
