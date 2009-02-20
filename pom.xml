@@ -144,7 +144,7 @@
   </distributionManagement>
 
   <properties>
-    <pluginToolsVersion>2.5-SNAPSHOT</pluginToolsVersion>
+    <pluginToolsVersion>[2.5-SNAPSHOT,)</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
   </properties>
 
@@ -154,7 +154,7 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-api</artifactId>
-        <version>[${pluginToolsVersion},)</version>
+        <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
