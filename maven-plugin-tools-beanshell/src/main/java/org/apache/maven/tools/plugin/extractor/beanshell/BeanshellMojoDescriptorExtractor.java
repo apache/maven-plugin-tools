@@ -117,7 +117,7 @@ public class BeanshellMojoDescriptorExtractor
 
             interpreter.set( "mojoDescriptor", mojoDescriptor );
 
-            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), request.getEncoding() ) );
+            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), "UTF-8" ) );
         }
         catch ( EvalError evalError )
         {

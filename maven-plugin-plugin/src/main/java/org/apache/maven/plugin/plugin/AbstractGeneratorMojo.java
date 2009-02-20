@@ -161,7 +161,7 @@ public abstract class AbstractGeneratorMojo
 
             getOutputDirectory().mkdirs();
 
-            createGenerator().execute( getOutputDirectory(), pluginDescriptor );
+            createGenerator().execute( getOutputDirectory(), request );
         }
         catch ( IOException e )
         {

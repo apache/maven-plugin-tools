@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,21 @@ public interface Generator
      * @param destinationDirectory required
      * @param pluginDescriptor required
      * @throws IOException if any
+     * 
+     * @deprecated Use {@link Generator#execute(File, PluginToolsRequest)} instead.
      */
     void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
+        throws IOException;
+    
+    /**
+     * Execute the generation for a given plugin descriptor.
+     *
+     * @param destinationDirectory required
+     * @param pluginDescriptor required
+     * @throws IOException if any
+     * 
+     * @since 2.5
+     */
+    void execute( File destinationDirectory, PluginToolsRequest request )
         throws IOException;
 }

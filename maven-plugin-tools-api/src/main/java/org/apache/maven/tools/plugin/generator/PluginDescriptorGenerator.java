@@ -23,6 +23,8 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -55,6 +57,15 @@ public class PluginDescriptorGenerator
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {
+        execute( destinationDirectory, new DefaultPluginToolsRequest( null, pluginDescriptor ) );
+    }
+    
+    /** {@inheritDoc} */
+    public void execute( File destinationDirectory, PluginToolsRequest request )
+        throws IOException
+    {
+        PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
+        
         String encoding = "UTF-8";
 
         File f = new File( destinationDirectory, "plugin.xml" );

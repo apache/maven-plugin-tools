@@ -36,6 +36,8 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -97,9 +99,16 @@ public class PluginXdocGenerator
     public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
         throws IOException
     {
-        if ( pluginDescriptor.getMojos() != null )
+        execute( destinationDirectory, new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
+    
+    /** {@inheritDoc} */
+    public void execute( File destinationDirectory, PluginToolsRequest request )
+        throws IOException
+    {
+        if ( request.getPluginDescriptor().getMojos() != null )
         {
-            for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+            for ( Iterator it = request.getPluginDescriptor().getMojos().iterator(); it.hasNext(); )
             {
                 MojoDescriptor descriptor = (MojoDescriptor) it.next();
 

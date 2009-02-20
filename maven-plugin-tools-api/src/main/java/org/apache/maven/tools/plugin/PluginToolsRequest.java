@@ -9,6 +9,7 @@ import org.apache.maven.project.MavenProject;
  * instances from metadata for a certain type of mojo.
  * 
  * @author jdcasey
+ * @since 2.5
  */
 public interface PluginToolsRequest
 {
@@ -19,21 +20,31 @@ public interface PluginToolsRequest
     MavenProject getProject();
     
     /**
+     * @see PluginToolsRequest#getProject()
+     */
+    PluginToolsRequest setProject( MavenProject project );
+    
+    /**
      * Return the {@link PluginDescriptor} currently being populated as part of the build of the
      * current plugin project.
      */
     PluginDescriptor getPluginDescriptor();
 
     /**
+     * @see PluginToolsRequest#getPluginDescriptor()
+     */
+    PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor );
+    
+    /**
      * Gets the file encoding of the source files.
      * 
      * @return The file encoding of the source files, never <code>null</code>.
      */
-    public String getEncoding();
+    String getEncoding();
 
     /**
      * @see PluginToolsRequest#getEncoding()
      */
-    public PluginToolsRequest setEncoding( String encoding );
+    PluginToolsRequest setEncoding( String encoding );
 
 }
