@@ -196,7 +196,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * Should be implemented in the sub classes.
      *
      * @param metadataFilesKeyedByBasedir could be null
-     * @param pluginDescriptor could be null
+     * @param request The plugin request, never <code>null</code>.
      * @return always null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
@@ -222,7 +222,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * Should be implemented in the sub classes.
      *
      * @param scriptFilesKeyedByBasedir could be null
-     * @param pluginDescriptor could be null
+     * @param request The plugin request, never <code>null</code>.
      * @return always null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any

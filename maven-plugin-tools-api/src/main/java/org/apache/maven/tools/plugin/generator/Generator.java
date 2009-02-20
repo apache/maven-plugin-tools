@@ -49,7 +49,7 @@ public interface Generator
      * Execute the generation for a given plugin descriptor.
      *
      * @param destinationDirectory required
-     * @param pluginDescriptor required
+     * @param request required
      * @throws IOException if any
      * 
      * @since 2.5

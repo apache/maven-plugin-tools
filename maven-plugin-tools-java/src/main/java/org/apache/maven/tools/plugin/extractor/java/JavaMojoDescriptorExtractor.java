@@ -613,8 +613,7 @@ public class JavaMojoDescriptorExtractor
     }
 
     /**
-     * @param project not null
-     * @param encoding The file encoding of the source files, must not be <code>null</code>.
+     * @param request The plugin request.
      * @return an array of java class
      */
     protected JavaClass[] discoverClasses( final PluginToolsRequest request )

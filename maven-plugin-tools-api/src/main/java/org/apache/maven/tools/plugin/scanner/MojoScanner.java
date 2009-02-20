@@ -49,8 +49,7 @@ public interface MojoScanner
         throws ExtractionException, InvalidPluginDescriptorException;
 
     /**
-     * @param project not null
-     * @param pluginDescriptor not null
+     * @param request not null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      * @since 2.5

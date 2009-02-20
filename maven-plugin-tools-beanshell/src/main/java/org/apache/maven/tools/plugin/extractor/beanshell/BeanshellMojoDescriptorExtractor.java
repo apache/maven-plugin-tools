@@ -94,7 +94,7 @@ public class BeanshellMojoDescriptorExtractor
     /**
      * @param basedir not null
      * @param resource not null
-     * @param pluginDescriptor not null
+     * @param request not null
      * @return a new Mojo descriptor instance
      * @throws InvalidPluginDescriptorException if any
      */
