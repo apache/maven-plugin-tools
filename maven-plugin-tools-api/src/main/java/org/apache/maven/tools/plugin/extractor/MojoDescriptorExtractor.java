@@ -56,6 +56,7 @@ public interface MojoDescriptorExtractor
      * @return a list of mojo descriptors.
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
+     * @since 2.5
      */
     List execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException;

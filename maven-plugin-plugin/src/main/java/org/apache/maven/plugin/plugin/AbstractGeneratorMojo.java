@@ -62,6 +62,14 @@ public abstract class AbstractGeneratorMojo
     protected MojoScanner mojoScanner;
 
     /**
+     * The file encoding of the source files.
+     * 
+     * @parameter expression="${encoding}" default-value="ISO-8859-1"
+     * @since 2.5
+     */
+    protected String encoding;
+
+    /**
      * The goal prefix that will appear before the ":".
      *
      * @parameter
@@ -147,7 +155,7 @@ public abstract class AbstractGeneratorMojo
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
             
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( encoding );
 
             mojoScanner.populatePluginDescriptor( request );
 

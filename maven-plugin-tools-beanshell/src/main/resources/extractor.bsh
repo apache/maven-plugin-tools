@@ -1,6 +1,7 @@
 import bsh.*;
 import java.util.regex.Pattern;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import org.codehaus.plexus.util.StringUtils;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -120,9 +121,9 @@ getDescription( text )
     }
 }
 
-extract( file, mojoDescriptor )
+extract( file, encoding, mojoDescriptor )
 {
-    this.parser = new Parser( new FileReader( file ) );
+    this.parser = new Parser( new InputStreamReader( new FileInputStream( file ), encoding ) );
     parser.setRetainComments( true );
 
     this.lastNode = null;
@@ -219,4 +220,4 @@ extract( file, mojoDescriptor )
     }
 }
 
-extract( file, mojoDescriptor );
+extract( file, encoding, mojoDescriptor );

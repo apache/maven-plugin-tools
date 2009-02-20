@@ -19,11 +19,8 @@ package org.apache.maven.tools.plugin.extractor.beanshell;
  * under the License.
  */
 
-import bsh.EvalError;
-import bsh.Interpreter;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -36,6 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import bsh.EvalError;
+import bsh.Interpreter;
 
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
@@ -83,7 +83,7 @@ public class BeanshellMojoDescriptorExtractor
 
                 relativePath = relativePath.replace( '\\', '/' );
 
-                MojoDescriptor mojoDescriptor = createMojoDescriptor( basedir, relativePath, request.getPluginDescriptor() );
+                MojoDescriptor mojoDescriptor = createMojoDescriptor( basedir, relativePath, request );
                 descriptors.add( mojoDescriptor );
             }
         }
@@ -98,11 +98,11 @@ public class BeanshellMojoDescriptorExtractor
      * @return a new Mojo descriptor instance
      * @throws InvalidPluginDescriptorException if any
      */
-    private MojoDescriptor createMojoDescriptor( String basedir, String resource, PluginDescriptor pluginDescriptor )
+    private MojoDescriptor createMojoDescriptor( String basedir, String resource, PluginToolsRequest request )
         throws InvalidPluginDescriptorException
     {
         MojoDescriptor mojoDescriptor = new MojoDescriptor();
-        mojoDescriptor.setPluginDescriptor( pluginDescriptor );
+        mojoDescriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
         mojoDescriptor.setLanguage( "bsh" );
         mojoDescriptor.setComponentConfigurator( "bsh" );
@@ -117,7 +117,7 @@ public class BeanshellMojoDescriptorExtractor
 
             interpreter.set( "mojoDescriptor", mojoDescriptor );
 
-            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), "UTF-8" ) );
+            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), request.getEncoding() ) );
         }
         catch ( EvalError evalError )
         {

@@ -53,6 +53,7 @@ public interface MojoScanner
      * @param pluginDescriptor not null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
+     * @since 2.5
      */
     void populatePluginDescriptor( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException;

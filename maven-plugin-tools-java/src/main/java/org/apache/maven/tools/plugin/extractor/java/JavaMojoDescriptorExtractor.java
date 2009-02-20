@@ -589,7 +589,7 @@ public class JavaMojoDescriptorExtractor
     public List execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        JavaClass[] javaClasses = discoverClasses( request.getProject() );
+        JavaClass[] javaClasses = discoverClasses( request );
 
         List descriptors = new ArrayList();
 
@@ -614,11 +614,15 @@ public class JavaMojoDescriptorExtractor
 
     /**
      * @param project not null
+     * @param encoding The file encoding of the source files, must not be <code>null</code>.
      * @return an array of java class
      */
-    protected JavaClass[] discoverClasses( final MavenProject project )
+    protected JavaClass[] discoverClasses( final PluginToolsRequest request )
     {
         JavaDocBuilder builder = new JavaDocBuilder();
+        builder.setEncoding( request.getEncoding() );
+        
+        MavenProject project = request.getProject();
 
         for ( Iterator i = project.getCompileSourceRoots().iterator(); i.hasNext(); )
         {

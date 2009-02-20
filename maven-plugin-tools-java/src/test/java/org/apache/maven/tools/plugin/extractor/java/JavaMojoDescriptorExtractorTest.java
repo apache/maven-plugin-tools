@@ -25,6 +25,8 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -59,7 +61,11 @@ public class JavaMojoDescriptorExtractorTest
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix( "test" );
-        List results = extractor.execute( project, pluginDescriptor );
+        
+        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+        
+        List results = extractor.execute( request );
+        
         assertEquals( "Extracted mojos", 2, results.size() );
 
         for ( int i = 0; i < 2; i++ )
@@ -92,7 +98,10 @@ public class JavaMojoDescriptorExtractorTest
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix( "test" );
-        List results = extractor.execute( project, pluginDescriptor );
+        
+        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+        
+        List results = extractor.execute( request );
         assertEquals( 1, results.size() );
 
         MojoDescriptor mojoDescriptor = (MojoDescriptor) results.get( 0 );
@@ -156,7 +165,10 @@ public class JavaMojoDescriptorExtractorTest
     
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix( "test" );
-        List results = extractor.execute( project, pluginDescriptor );
+        
+        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+        
+        List results = extractor.execute( request );
         assertEquals( 0, results.size() );
     
     }

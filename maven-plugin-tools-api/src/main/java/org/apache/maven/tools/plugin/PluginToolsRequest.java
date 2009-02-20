@@ -24,4 +24,16 @@ public interface PluginToolsRequest
      */
     PluginDescriptor getPluginDescriptor();
 
+    /**
+     * Gets the file encoding of the source files.
+     * 
+     * @return The file encoding of the source files, never <code>null</code>.
+     */
+    public String getEncoding();
+
+    /**
+     * @see PluginToolsRequest#getEncoding()
+     */
+    public PluginToolsRequest setEncoding( String encoding );
+
 }
