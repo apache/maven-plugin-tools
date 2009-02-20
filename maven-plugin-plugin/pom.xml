@@ -61,7 +61,7 @@
   <properties>
     <doxiaVersion>1.0-alpha-10</doxiaVersion>
     <doxia-sitetoolsVersion>1.0-alpha-10</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.4.4-SNAPSHOT</pluginToolsVersion>
+    <pluginToolsVersion>2.5-SNAPSHOT</pluginToolsVersion>
   </properties>
 
   <!-- Copy from project up -->
