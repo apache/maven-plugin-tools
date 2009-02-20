@@ -65,7 +65,7 @@ public abstract class AbstractGeneratorMojo
     /**
      * The file encoding of the source files.
      * 
-     * @parameter expression="${encoding}" default-value="ISO-8859-1"
+     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
      * @since 2.5
      */
     protected String encoding;

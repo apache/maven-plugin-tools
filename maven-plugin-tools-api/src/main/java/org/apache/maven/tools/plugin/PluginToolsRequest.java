@@ -43,7 +43,11 @@ public interface PluginToolsRequest
     String getEncoding();
 
     /**
-     * @see PluginToolsRequest#getEncoding()
+     * Sets the file encoding of the source files.
+     * 
+     * @param encoding The file encoding of the source files, may be empty or <code>null</code> to use the platform's
+     *            default encoding.
+     * @return This request.
      */
     PluginToolsRequest setEncoding( String encoding );
 

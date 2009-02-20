@@ -4,6 +4,7 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Default implementation of {@link PluginToolsRequest}, which is used to pass parameters to components used to extract
@@ -16,7 +17,7 @@ public class DefaultPluginToolsRequest
     implements PluginToolsRequest
 {
     
-    public static final String DEFAULT_ENCODING = ReaderFactory.FILE_ENCODING;
+    private static final String DEFAULT_ENCODING = ReaderFactory.FILE_ENCODING;
 
     private PluginDescriptor pluginDescriptor;
 
@@ -77,12 +78,15 @@ public class DefaultPluginToolsRequest
      */
     public PluginToolsRequest setEncoding( String encoding )
     {
-        if ( encoding == null )
+        if ( StringUtils.isNotEmpty( encoding ) )
         {
-            throw new IllegalArgumentException( "unspecified source file encoding" );
+            this.encoding = encoding;
         }
-        this.encoding = encoding;
-        
+        else
+        {
+            this.encoding = DEFAULT_ENCODING;
+        }
+
         return this;
     }
 
