@@ -22,6 +22,7 @@ package org.apache.maven.tools.plugin.scanner;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
 import java.util.Set;
@@ -40,10 +41,21 @@ public interface MojoScanner
      * @param pluginDescriptor not null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
+     * 
+     * @deprecated Use {@link MojoScanner#populatePluginDescriptor(PluginToolsRequest)} instead. 
+     *     Provided for backward compatibility with maven-plugin-plugin &lt; 2.5.
      */
     void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException;
 
+    /**
+     * @param project not null
+     * @param pluginDescriptor not null
+     * @throws ExtractionException if any
+     * @throws InvalidPluginDescriptorException if any
+     */
+    void populatePluginDescriptor( PluginToolsRequest request )
+        throws ExtractionException, InvalidPluginDescriptorException;
 
     /**
      * Sets the active extractors.

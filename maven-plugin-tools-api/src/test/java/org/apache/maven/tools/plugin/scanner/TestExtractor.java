@@ -22,6 +22,8 @@ package org.apache.maven.tools.plugin.scanner;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
 import java.util.Collections;
@@ -36,8 +38,13 @@ public class TestExtractor
 
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
     {
+        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
+    
+    public List execute( PluginToolsRequest request )
+    {
         MojoDescriptor desc = new MojoDescriptor();
-        desc.setPluginDescriptor( pluginDescriptor );
+        desc.setPluginDescriptor( request.getPluginDescriptor() );
         desc.setGoal( "testGoal" );
 
         return Collections.singletonList( desc );

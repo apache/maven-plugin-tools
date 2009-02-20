@@ -22,6 +22,8 @@ package org.apache.maven.tools.plugin.extractor;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
@@ -48,27 +50,36 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
+        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
+    
+    /** {@inheritDoc} */
+    public List execute( PluginToolsRequest request )
+        throws ExtractionException, InvalidPluginDescriptorException
+    {
         getLogger().debug( "Running: " + getClass().getName() );
-        String metadataExtension = getMetadataFileExtension();
-        String scriptExtension = getScriptFileExtension();
+        String metadataExtension = getMetadataFileExtension( request );
+        String scriptExtension = getScriptFileExtension( request );
+        
+        MavenProject project = request.getProject();
 
         Map scriptFilesKeyedByBasedir =
-            gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), scriptExtension );
+            gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), scriptExtension, request );
 
         List mojoDescriptors;
         if ( !StringUtils.isEmpty( metadataExtension ) )
         {
             Map metadataFilesKeyedByBasedir =
-                gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension );
+                gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension, request );
 
-            mojoDescriptors = extractMojoDescriptorsFromMetadata( metadataFilesKeyedByBasedir, pluginDescriptor );
+            mojoDescriptors = extractMojoDescriptorsFromMetadata( metadataFilesKeyedByBasedir, request );
         }
         else
         {
-            mojoDescriptors = extractMojoDescriptors( scriptFilesKeyedByBasedir, pluginDescriptor );
+            mojoDescriptors = extractMojoDescriptors( scriptFilesKeyedByBasedir, request );
         }
 
-        copyScriptsToOutputDirectory( scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory() );
+        copyScriptsToOutputDirectory( scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request );
 
         return mojoDescriptors;
     }
@@ -78,7 +89,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param outputDirectory not null
      * @throws ExtractionException if any
      */
-    protected void copyScriptsToOutputDirectory( Map scriptFilesKeyedByBasedir, String outputDirectory )
+    protected void copyScriptsToOutputDirectory( Map scriptFilesKeyedByBasedir, String outputDirectory, PluginToolsRequest request )
         throws ExtractionException
     {
         File outputDir = new File( outputDirectory );
@@ -133,7 +144,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param scriptFileExtension not null
      * @return map with subdirs paths as key
      */
-    protected Map gatherFilesByBasedir( File basedir, List directories, String scriptFileExtension )
+    protected Map gatherFilesByBasedir( File basedir, List directories, String scriptFileExtension, PluginToolsRequest request )
     {
         Map sourcesByBasedir = new TreeMap();
 
@@ -191,7 +202,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @throws InvalidPluginDescriptorException if any
      */
     protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
-                                                       PluginDescriptor pluginDescriptor )
+                                                       PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return null;
@@ -202,7 +213,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      *
      * @return always null
      */
-    protected String getMetadataFileExtension()
+    protected String getMetadataFileExtension( PluginToolsRequest request )
     {
         return null;
     }
@@ -216,7 +227,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      */
-    protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginDescriptor pluginDescriptor )
+    protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return null;
@@ -225,6 +236,6 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     /**
      * @return the file extension like <code>.bsh</code> for BeanShell.
      */
-    protected abstract String getScriptFileExtension();
+    protected abstract String getScriptFileExtension( PluginToolsRequest request );
 
 }

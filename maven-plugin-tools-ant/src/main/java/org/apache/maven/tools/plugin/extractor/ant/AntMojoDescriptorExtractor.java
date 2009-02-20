@@ -22,11 +22,11 @@ package org.apache.maven.tools.plugin.extractor.ant;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.tools.model.PluginMetadataParseException;
 import org.apache.maven.plugin.tools.model.PluginMetadataParser;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.path.PathTranslator;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
@@ -56,7 +56,7 @@ public class AntMojoDescriptorExtractor
     
     /** {@inheritDoc} */
     protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
-                                                       PluginDescriptor pluginDescriptor )
+                                                       PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         List descriptors = new ArrayList();
@@ -218,7 +218,7 @@ public class AntMojoDescriptorExtractor
                         descriptor.setComponentComposer( "map-oriented" );
                         descriptor.setComponentConfigurator( "map-oriented" );
 
-                        descriptor.setPluginDescriptor( pluginDescriptor );
+                        descriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
                         descriptors.add( descriptor );
                     }
@@ -234,13 +234,13 @@ public class AntMojoDescriptorExtractor
     }
 
     /** {@inheritDoc} */
-    protected String getScriptFileExtension()
+    protected String getScriptFileExtension( PluginToolsRequest request )
     {
         return SCRIPT_FILE_EXTENSION;
     }
 
     /** {@inheritDoc} */
-    protected String getMetadataFileExtension()
+    protected String getMetadataFileExtension( PluginToolsRequest request )
     {
         return METADATA_FILE_EXTENSION;
     }

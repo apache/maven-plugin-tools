@@ -23,6 +23,8 @@ import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -74,6 +76,13 @@ public class DefaultMojoScanner
     public void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
+        populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
+    
+    /** {@inheritDoc} */
+    public void populatePluginDescriptor( PluginToolsRequest request )
+        throws ExtractionException, InvalidPluginDescriptorException
+    {
         Logger logger = getLogger();
         Set activeExtractorsInternal = getActiveExtractors();
 
@@ -93,7 +102,7 @@ public class DefaultMojoScanner
 
             logger.info( "Applying mojo extractor for language: " + language );
 
-            List extractorDescriptors = extractor.execute( project, pluginDescriptor );
+            List extractorDescriptors = extractor.execute( request );
 
             logger.info( "Mojo extractor for language: " + language + " found " + extractorDescriptors.size()
                 + " mojo descriptors." );
@@ -105,9 +114,9 @@ public class DefaultMojoScanner
 
                 logger.debug( "Adding mojo: " + descriptor + " to plugin descriptor." );
 
-                descriptor.setPluginDescriptor( pluginDescriptor );
+                descriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
-                pluginDescriptor.addMojo( descriptor );
+                request.getPluginDescriptor().addMojo( descriptor );
             }
         }
 

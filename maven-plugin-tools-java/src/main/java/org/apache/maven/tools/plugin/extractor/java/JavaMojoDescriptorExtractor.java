@@ -32,6 +32,8 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
@@ -580,7 +582,14 @@ public class JavaMojoDescriptorExtractor
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        JavaClass[] javaClasses = discoverClasses( project );
+        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
+    
+    /** {@inheritDoc} */
+    public List execute( PluginToolsRequest request )
+        throws ExtractionException, InvalidPluginDescriptorException
+    {
+        JavaClass[] javaClasses = discoverClasses( request.getProject() );
 
         List descriptors = new ArrayList();
 
@@ -591,7 +600,7 @@ public class JavaMojoDescriptorExtractor
             if ( tag != null )
             {
                 MojoDescriptor mojoDescriptor = createMojoDescriptor( javaClasses[i] );
-                mojoDescriptor.setPluginDescriptor( pluginDescriptor );
+                mojoDescriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
                 // Validate the descriptor as best we can before allowing it to be processed.
                 validate( mojoDescriptor );

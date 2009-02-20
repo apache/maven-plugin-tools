@@ -19,9 +19,13 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
+import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
 import java.util.Collections;
@@ -41,12 +45,19 @@ public class ScannerTestExtractor
     }
 
     public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
+        throws InvalidPluginDescriptorException, ExtractionException
     {
-        MojoDescriptor desc = new MojoDescriptor();
-        desc.setPluginDescriptor( pluginDescriptor );
-        desc.setGoal( goal );
+        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    }
 
-        return Collections.singletonList( desc );
+    public List execute( PluginToolsRequest request )
+        throws ExtractionException, InvalidPluginDescriptorException
+    {
+            MojoDescriptor desc = new MojoDescriptor();
+            desc.setPluginDescriptor( request.getPluginDescriptor() );
+            desc.setGoal( goal );
+
+            return Collections.singletonList( desc );
     }
 
 }

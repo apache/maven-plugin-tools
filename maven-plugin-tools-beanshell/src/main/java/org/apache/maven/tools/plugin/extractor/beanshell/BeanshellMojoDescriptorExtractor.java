@@ -24,6 +24,7 @@ import bsh.Interpreter;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
@@ -49,13 +50,13 @@ public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
 {
     /** {@inheritDoc} */
-    protected String getScriptFileExtension()
+    protected String getScriptFileExtension( PluginToolsRequest request )
     {
         return ".bsh";
     }
 
     /** {@inheritDoc} */
-    protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginDescriptor pluginDescriptor )
+    protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         List descriptors = new ArrayList();
@@ -82,7 +83,7 @@ public class BeanshellMojoDescriptorExtractor
 
                 relativePath = relativePath.replace( '\\', '/' );
 
-                MojoDescriptor mojoDescriptor = createMojoDescriptor( basedir, relativePath, pluginDescriptor );
+                MojoDescriptor mojoDescriptor = createMojoDescriptor( basedir, relativePath, request.getPluginDescriptor() );
                 descriptors.add( mojoDescriptor );
             }
         }

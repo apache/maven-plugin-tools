@@ -4,7 +4,10 @@ import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.path.PathTranslator;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.StringUtils;
@@ -36,7 +39,9 @@ public class AntMojoDescriptorExtractorTest
         pd.setVersion( "1" );
         pd.setGoalPrefix( "mytest" );
         
-        List metadata = new AntMojoDescriptorExtractor().extractMojoDescriptorsFromMetadata( scriptMap, pd );
+        PluginToolsRequest request = new DefaultPluginToolsRequest( new MavenProject(), pd );
+        
+        List metadata = new AntMojoDescriptorExtractor().extractMojoDescriptorsFromMetadata( scriptMap, request );
         
         assertEquals( 2, metadata.size() );
         

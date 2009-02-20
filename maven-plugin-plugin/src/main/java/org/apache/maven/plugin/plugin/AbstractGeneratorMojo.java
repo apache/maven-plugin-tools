@@ -24,6 +24,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
@@ -144,8 +146,10 @@ public abstract class AbstractGeneratorMojo
         try
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
+            
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
 
-            mojoScanner.populatePluginDescriptor( project, pluginDescriptor );
+            mojoScanner.populatePluginDescriptor( request );
 
             getOutputDirectory().mkdirs();
 
