@@ -205,4 +205,35 @@ public class PluginUtilsTest
         assertEquals( "label", PluginUtils.decodeJavadocTags( javadoc ) );
     }
 
+    public void testToText()
+        throws Exception
+    {
+        String javadoc = null;
+        assertEquals( "", PluginUtils.toText( javadoc ) );
+        javadoc = "";
+        assertEquals( "", PluginUtils.toText( javadoc ) );
+
+        // line breaks
+        javadoc = "Line1\nLine2";
+        assertEquals( "Line1 Line2", PluginUtils.toText( javadoc ) );
+        javadoc = "Line1\rLine2";
+        assertEquals( "Line1 Line2", PluginUtils.toText( javadoc ) );
+        javadoc = "Line1\r\nLine2";
+        assertEquals( "Line1 Line2", PluginUtils.toText( javadoc ) );
+        javadoc = "Line1<br>Line2";
+        assertEquals( "Line1\nLine2", PluginUtils.toText( javadoc ) );
+
+        // true HTML
+        javadoc = "Generates <i>something</i> for the project.";
+        assertEquals( "Generates something for the project.", PluginUtils.toText( javadoc ) );
+
+        // wrong HTML
+        javadoc = "Generates <i>something</i> <b> for the project.";
+        assertEquals( "Generates something for the project.", PluginUtils.toText( javadoc ) );
+
+        // javadoc inline tags
+        javadoc = "Generates {@code something} for the project.";
+        assertEquals( "Generates something for the project.", PluginUtils.toText( javadoc ) );
+    }
+
 }

@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -91,7 +92,7 @@ public abstract class AbstractGeneratorTestCase
         FileUtils.deleteDirectory( destinationDirectory );
         destinationDirectory.mkdir();
 
-        generator.execute( destinationDirectory, pluginDescriptor );
+        generator.execute( destinationDirectory, new DefaultPluginToolsRequest( null, pluginDescriptor ) );
 
         validate( destinationDirectory );
 

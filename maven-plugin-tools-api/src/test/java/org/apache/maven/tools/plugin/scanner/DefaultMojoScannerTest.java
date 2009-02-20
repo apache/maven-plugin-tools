@@ -26,6 +26,7 @@ import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
 import java.io.File;
@@ -80,7 +81,7 @@ public class DefaultMojoScannerTest
     {
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
-        scanner.populatePluginDescriptor( project, pluginDescriptor );
+        scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
 
         checkResult( pluginDescriptor, extractors.keySet() );
     }
@@ -97,7 +98,7 @@ public class DefaultMojoScannerTest
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
         scanner.setActiveExtractors( activeExtractors );
-        scanner.populatePluginDescriptor( project, pluginDescriptor );
+        scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
 
         checkResult( pluginDescriptor, Arrays.asList( new String[]{"one", "three"} ) );
     }
@@ -108,7 +109,7 @@ public class DefaultMojoScannerTest
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
         scanner.setActiveExtractors( null );
-        scanner.populatePluginDescriptor( project, pluginDescriptor );
+        scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
 
         checkResult( pluginDescriptor, extractors.keySet() );
     }
@@ -121,7 +122,7 @@ public class DefaultMojoScannerTest
         scanner.setActiveExtractors( Collections.EMPTY_SET );
         try
         {
-            scanner.populatePluginDescriptor( project, pluginDescriptor );
+            scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
             fail( "Expected exception" );
         }
         catch (InvalidPluginDescriptorException e)
@@ -144,7 +145,7 @@ public class DefaultMojoScannerTest
 
         try
         {
-            scanner.populatePluginDescriptor( project, pluginDescriptor );
+            scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
             fail( "No error for unknown extractor" );
         }
         catch ( ExtractionException e )
