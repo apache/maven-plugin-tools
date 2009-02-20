@@ -122,8 +122,7 @@ public class DefaultMojoScannerTest
         try
         {
             scanner.populatePluginDescriptor( project, pluginDescriptor );
-            //MPLUGIN-102, revert this in the next version
-            //fail( "Expected exception" );
+            fail( "Expected exception" );
         }
         catch (InvalidPluginDescriptorException e)
         {
