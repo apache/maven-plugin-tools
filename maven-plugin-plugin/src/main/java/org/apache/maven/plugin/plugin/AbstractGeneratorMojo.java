@@ -30,6 +30,7 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -151,6 +152,16 @@ public abstract class AbstractGeneratorMojo
 
         pluginDescriptor.setDescription( project.getDescription() );
 
+        if ( encoding == null || encoding.length() < 1 )
+        {
+            getLog().warn( "Using platform encoding (" + ReaderFactory.FILE_ENCODING
+                                  + " actually) to read mojo metadata, i.e. build is platform dependent!" );
+        }
+        else
+        {
+            getLog().info( "Using '" + encoding + "' encoding to read mojo metadata." );
+        }
+        
         try
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
