@@ -188,5 +188,11 @@ public abstract class AbstractGeneratorMojo
             throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
         }
+        catch ( LinkageError e )
+        {
+            throw new MojoExecutionException( "The API of the mojo scanner is not compatible with this plugin version."
+                + " Please check the plugin dependencies configured in the POM and ensure the versions match.", e );
+        }
     }
+
 }
