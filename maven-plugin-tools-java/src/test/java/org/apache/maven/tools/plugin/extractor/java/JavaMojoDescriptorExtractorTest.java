@@ -27,11 +27,10 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -41,13 +40,26 @@ public class JavaMojoDescriptorExtractorTest
     extends TestCase
 {
 
-    public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
+    private File fileOf( String classpathResource )
+    {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URL resource = cl.getResource( classpathResource );
+
+        File result = null;
+        if ( resource != null )
+        {
+            result = FileUtils.toFile( resource );
+        }
+
+        return result;
+    }
+
+    public List extract( String directory )
         throws Exception
     {
         JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
 
         File sourceFile = fileOf( "dir-flag.txt" );
-        System.out.println( "found source file: " + sourceFile );
 
         File dir = sourceFile.getParentFile();
 
@@ -57,14 +69,20 @@ public class JavaMojoDescriptorExtractorTest
         MavenProject project = new MavenProject( model );
 
         project.setFile( new File( dir, "pom.xml" ) );
-        project.addCompileSourceRoot( new File( dir, "source" ).getPath() );
+        project.addCompileSourceRoot( new File( dir, directory ).getPath() );
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix( "test" );
-        
-        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-        
-        List results = extractor.execute( request );
+
+        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
+
+        return extractor.execute( request );
+    }
+
+    public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
+        throws Exception
+    {
+        List results = extract( "source" );
         
         assertEquals( "Extracted mojos", 2, results.size() );
 
@@ -81,27 +99,8 @@ public class JavaMojoDescriptorExtractorTest
     public void testShouldPropagateImplementationParameter()
         throws Exception
     {
-        JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
+        List results = extract( "source2" );
 
-        File sourceFile = fileOf( "dir-flag.txt" );
-        System.out.println( "found source file: " + sourceFile );
-
-        File dir = sourceFile.getParentFile();
-
-        Model model = new Model();
-        model.setArtifactId( "maven-unitTesting-plugin" );
-
-        MavenProject project = new MavenProject( model );
-
-        project.setFile( new File( dir, "pom.xml" ) );
-        project.addCompileSourceRoot( new File( dir, "source2" ).getPath() );
-
-        PluginDescriptor pluginDescriptor = new PluginDescriptor();
-        pluginDescriptor.setGoalPrefix( "test" );
-        
-        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-        
-        List results = extractor.execute( request );
         assertEquals( 1, results.size() );
 
         MojoDescriptor mojoDescriptor = (MojoDescriptor) results.get( 0 );
@@ -114,32 +113,6 @@ public class JavaMojoDescriptorExtractorTest
 
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
-
-    private File fileOf( String classpathResource )
-    {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL resource = cl.getResource( classpathResource );
-
-        File result = null;
-        if ( resource != null )
-        {
-            try
-            {
-                /*
-                 * FIXME: URL encoding and HTML form encoding are not the same. Use FileUtils.toFile(URL) from
-                 * plexus-utils once PLXUTILS-56 is released.
-                 */
-                // URLDecoder.decode necessary for JDK 1.5+, where spaces are escaped to %20
-                result = new File( URLDecoder.decode( resource.getPath(), "UTF-8" ) );
-            }
-            catch ( UnsupportedEncodingException e )
-            {
-                throw new Error( "Broken JVM, UTF-8 must be supported", e );
-            }
-        }
-
-        return result;
-    }
     
     /**
      * Check that the mojo descriptor extractor will ignore any annotations that are found.
@@ -149,29 +122,21 @@ public class JavaMojoDescriptorExtractorTest
     public void testAnnotationInPlugin()
         throws Exception
     {
-        JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
-    
-        File sourceFile = fileOf( "dir-flag.txt" );
-        
-        File dir = sourceFile.getParentFile();
-    
-        Model model = new Model();
-        model.setArtifactId( "maven-unitTesting-plugin" );
-    
-        MavenProject project = new MavenProject( model );
-    
-        project.setFile( new File( dir, "pom.xml" ) );
-        project.addCompileSourceRoot( new File( dir, "source3" ).getPath() );
-    
-        PluginDescriptor pluginDescriptor = new PluginDescriptor();
-        pluginDescriptor.setGoalPrefix( "test" );
-        
-        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-        
-        List results = extractor.execute( request );
-        assertEquals( 0, results.size() );
-    
-    }
+        List results = extract( "source3" );
 
+        assertEquals( 0, results.size() );
+    }
+    
+    /**
+     * Check that the mojo descriptor extractor will successfully parse sources with Java 1.5 language features like
+     * generics.
+     */
+    public void testJava15SyntaxParsing()
+        throws Exception
+    {
+        List results = extract( "java-1.5" );
+
+        assertEquals( 1, results.size() );
+    }
 
 }
