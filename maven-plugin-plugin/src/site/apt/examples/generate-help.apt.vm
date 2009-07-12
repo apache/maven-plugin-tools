@@ -38,7 +38,7 @@ Configuring Generation of Help Mojo
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>generated-helpmojo</id>

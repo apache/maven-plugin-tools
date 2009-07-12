@@ -38,10 +38,10 @@ Configuring Generation of Plugin Descriptor
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>${project.version}</version>
         <configuration>
           <goalPrefix>plugin</goalPrefix>
-          <outputDirectory>${basedir}/target/dir</outputDirectory>
+          <outputDirectory>target/dir</outputDirectory>
         </configuration>
       </plugin>
     </plugins>
@@ -102,7 +102,7 @@ mvn archetype:create \
         </parameter>
       </parameters>
       <configuration>
-        <outputDirectory implementation="java.io.File">${project.build.directory}</outputDirectory>
+        <outputDirectory implementation="java.io.File">\${project.build.directory}</outputDirectory>
       </configuration>
     </mojo>
   </mojos>
