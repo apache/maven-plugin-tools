@@ -36,9 +36,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -309,9 +309,9 @@ public class PluginDescriptorGenerator
 
         w.startElement( "parameters" );
 
-        Map requirements = new HashMap();
+        Map requirements = new LinkedHashMap();
 
-        Set configuration = new HashSet();
+        Set configuration = new LinkedHashSet();
 
         if ( parameters != null )
         {
