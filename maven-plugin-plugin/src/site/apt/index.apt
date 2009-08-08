@@ -37,51 +37,51 @@ Maven Plugin Plugin
 
    The Plugin Plugin has six goals:
 
-   * {{{descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor.
+   * {{{./descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor.
 
-   * {{{report-mojo.html}plugin:report}} generates the plugin documentation report.
+   * {{{./report-mojo.html}plugin:report}} generates the plugin documentation report.
 
-   * {{{updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
+   * {{{./updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
       reflect the version being installed.
 
-   * {{{xdoc-mojo.html}plugin:xdoc}} generates Xdoc files for the project mojos or goals.
+   * {{{./xdoc-mojo.html}plugin:xdoc}} generates Xdoc files for the project mojos or goals.
 
-   * {{{addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
+   * {{{./addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
       metadata to the project's artifact, for subsequent installation and deployment. The first use-case for this
       is to add the LATEST metadata (which is plugin-specific) for shipping alongside the plugin's artifact.
 
-   * {{{helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all project mojos.
+   * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all project mojos.
 
    []
 
 * Usage
 
-  General instructions on how to use the Plugin Plugin can be found on the {{{usage.html}usage page}}. Some more
+  General instructions on how to use the Plugin Plugin can be found on the {{{./usage.html}usage page}}. Some more
   specific use cases are described in the examples given below. Last but not least, users occasionally contribute
   additional examples, tips or errata to the
   {{{http://docs.codehaus.org/display/MAVENUSER/Plugin+Plugin}plugin's wiki page}}.
 
-  In case you still have questions regarding the plugin's usage, please have a look at the {{{faq.html}FAQ}} and feel
-  free to contact the {{{mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
+  In case you still have questions regarding the plugin's usage, please have a look at the {{{./faq.html}FAQ}} and feel
+  free to contact the {{{./mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
   already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
-  the {{{mail-lists.html}mail archive}}.
+  the {{{./mail-lists.html}mail archive}}.
 
   If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
-  {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
+  {{{./issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
   concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
   entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
   Of course, patches are welcome, too. Contributors can check out the project from our
-  {{{source-repository.html}source repository}} and will find supplementary information in the
+  {{{./source-repository.html}source repository}} and will find supplementary information in the
   {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
 
 * Examples
 
    The following examples shows how to use the Plugin Plugin in more advanced usecases:
 
-   * {{{examples/generate-descriptor.html}Configuring Generation of Plugin Descriptor}}
+   * {{{./examples/generate-descriptor.html}Configuring Generation of Plugin Descriptor}}
 
-   * {{{examples/generate-report.html}Configuring Generation of Documentation Reports}}
+   * {{{./examples/generate-report.html}Configuring Generation of Documentation Reports}}
 
-   * {{{examples/generate-help.html}Configuring Generation of Help Mojo}}
+   * {{{./examples/generate-help.html}Configuring Generation of Help Mojo}}
 
    []
