@@ -62,7 +62,6 @@
       <plugin>
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
-        <version>1.0-alpha-21</version>
         <configuration>
           <models>
             <model>src/main/mdo/plugin-metadata.mdo</model>
