@@ -771,9 +771,13 @@ public class PluginXdocGenerator
      */
     private String format( String key, Object[] args )
     {
+        String pattern = getString( key );
+        // we don't need quoting so spare us the confusion in the resource bundle to double them up in some keys
+        pattern = StringUtils.replace( pattern, "'", "''" );
+
         MessageFormat messageFormat = new MessageFormat( "" );
         messageFormat.setLocale( locale );
-        messageFormat.applyPattern( getBundle().getString( key ) );
+        messageFormat.applyPattern( pattern );
 
         return messageFormat.format( args );
     }
