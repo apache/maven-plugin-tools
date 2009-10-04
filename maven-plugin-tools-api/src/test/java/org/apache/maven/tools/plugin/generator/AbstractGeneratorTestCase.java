@@ -64,6 +64,7 @@ public abstract class AbstractGeneratorTestCase
 
         Parameter param = new Parameter();
         param.setExpression( "${project.build.directory}" );
+        param.setDefaultValue( "</markup-must-be-escaped>" );
         param.setName( "dir" );
         param.setRequired( true );
         param.setType( "java.lang.String" );

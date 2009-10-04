@@ -563,7 +563,8 @@ public class PluginXdocGenerator
                 w.startElement( "ul" );
                 addedUl = true;
             }
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ), parameter.getDefaultValue(), w );
+            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ),
+                         escapeXml( parameter.getDefaultValue() ), w );
 
             if ( addedUl )
             {
@@ -696,7 +697,7 @@ public class PluginXdocGenerator
             if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
             {
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.defaultValue",
-                                       parameter.getDefaultValue() ) );
+                                       escapeXml( parameter.getDefaultValue() ) ) );
             }
             w.endElement(); //td
             w.endElement(); //tr
@@ -781,4 +782,22 @@ public class PluginXdocGenerator
 
         return messageFormat.format( args );
     }
+
+    /**
+     * @param text the string to escape
+     * @return A string escaped with XML entities
+     */
+    private String escapeXml( String text )
+    {
+        if ( text != null )
+        {
+            text = text.replaceAll( "&", "&amp;" );
+            text = text.replaceAll( "<", "&lt;" );
+            text = text.replaceAll( ">", "&gt;" );
+            text = text.replaceAll( "\"", "&quot;" );
+            text = text.replaceAll( "\'", "&apos;" );
+        }
+        return text;
+    }
+
 }

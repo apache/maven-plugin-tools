@@ -19,6 +19,11 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import java.io.File;
+
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -27,5 +32,16 @@ package org.apache.maven.tools.plugin.generator;
 public class PluginXdocGeneratorTest
     extends AbstractGeneratorTestCase
 {
+
     // inherits tests from base class
+
+    protected void validate( File destinationDirectory )
+        throws Exception
+    {
+        File docFile = new File( destinationDirectory, "testGoal-mojo.xml" );
+
+        // sanity check: is the output well-formed?
+        Xpp3DomBuilder.build( ReaderFactory.newXmlReader( docFile ) );
+    }
+
 }

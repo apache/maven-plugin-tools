@@ -51,7 +51,7 @@ public class MyMojo
     /**
      * This is a test.
      * 
-     * @parameter expression="${string}" default-value="${project.version}"
+     * @parameter expression="${string}" default-value="${project.version}/</markup-must-be-escaped>"
      * @deprecated Just testing.
      * @since 1.1
      */

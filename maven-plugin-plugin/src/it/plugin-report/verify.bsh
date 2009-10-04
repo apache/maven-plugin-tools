@@ -20,7 +20,7 @@ try
     {
         File file = new File( siteDir, path );
         System.out.println( "Checking for existence of doc file: " + file );
-        if ( !file.isFile() )
+        if ( !file.isFile() || file.length() <= 0 )
         {
             System.out.println( "FAILED!" );
             return false;
