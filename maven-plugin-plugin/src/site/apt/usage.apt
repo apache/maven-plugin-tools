@@ -45,7 +45,7 @@ mvn package
 +-----+
 
   You will see that the <<<plugin.xml>>> file is generated in the <<<target/classes/META-INF/maven>>> directory of your project. The file is
-  also bundled in the generated jar file.
+  also bundled in the generated JAR file.
 
   To explicitly execute the <<<plugin:descriptor>>> goal, type the following in the command line:
 

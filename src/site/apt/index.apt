@@ -35,7 +35,7 @@ Maven Plugin Tools
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 || <<Maven Plugin Tools>>                                                     || <<Overview>>
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}          | Maven Plugin which generates Plugin report.
+| {{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}          | Maven Plugin which generates a Plugin report.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-ant/index.html}maven-plugin-tools-ant}}             | Descriptor extractor for plugins written in Ant.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+

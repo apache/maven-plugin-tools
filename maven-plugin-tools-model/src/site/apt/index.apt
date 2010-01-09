@@ -28,7 +28,7 @@
 
 Maven Plugin Tool Model
 
- The Maven Plugin Tool Model is model to extract descriptors information from plugins.
+ The Maven Plugin Tool Model is a model to extract descriptors information from plugins.
 
  The following are generated from this model:
 

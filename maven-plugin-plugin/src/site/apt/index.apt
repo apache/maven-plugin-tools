@@ -50,7 +50,7 @@ Maven Plugin Plugin
       metadata to the project's artifact, for subsequent installation and deployment. The first use-case for this
       is to add the LATEST metadata (which is plugin-specific) for shipping alongside the plugin's artifact.
 
-   * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all project mojos.
+   * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all mojos in a plugin.
 
    []
 
