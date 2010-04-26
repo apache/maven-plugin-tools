@@ -182,6 +182,18 @@ public interface JavaMojoAnnotation
     String REQUIRES_DEPENDENCY_RESOLUTION = "requiresDependencyResolution";
 
     /**
+     * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be collected
+     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>, and
+     * <code>test</code> scopes.
+     * <br/>
+     * Refer to <code>&#64;requiresDependencyCollection &lt;requiredScope&gt;</code>.
+     * <br/>
+     * <b>Note</b>: Should be defined in a Mojo Type.
+     */
+    String REQUIRES_DEPENDENCY_COLLECTION = "requiresDependencyCollection";
+
+
+    /**
      * Refer to <code>&#64;requiresDirectInvocation &lt;true|false&gt;</code>.
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Type.
@@ -338,4 +350,12 @@ public interface JavaMojoAnnotation
      * <b>Note</b>: Could be defined in a Mojo Type or a Mojo Field.
      */
     String DEPRECATED = "deprecated";
+
+    /**
+     * Indicates that this mojo is threadsafe and can be run in parallel
+     *
+     * <b>Note</b>: Should be defined in a Mojo Type.
+     */
+    String THREADSAFE = "threadSafe";
+
 }

@@ -33,6 +33,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -198,7 +199,7 @@ public class JavaMojoDescriptorExtractor
     protected MojoDescriptor createMojoDescriptor( JavaClass javaClass )
         throws InvalidPluginDescriptorException
     {
-        MojoDescriptor mojoDescriptor = new MojoDescriptor();
+        ExtendedMojoDescriptor mojoDescriptor = new ExtendedMojoDescriptor();
         mojoDescriptor.setLanguage( "java" );
         mojoDescriptor.setImplementation( javaClass.getFullyQualifiedName() );
         mojoDescriptor.setDescription( javaClass.getComment() );
@@ -303,6 +304,14 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setDependencyResolutionRequired( v );
         }
 
+        // What version it was introduced in
+        DocletTag requiresDependencyCollection =
+            findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION );
+        if ( requiresDependencyCollection != null )
+        {
+            mojoDescriptor.setRequiresDependencyCollection( requiresDependencyCollection.getValue() );
+        }
+
         // requiresDirectInvocation flag
         value =
             getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_DIRECT_INVOCATION,
@@ -324,7 +333,7 @@ public class JavaMojoDescriptorExtractor
             getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
         mojoDescriptor.setRequiresReports( value );
 
-        // ----------------------------------------------------------------------
+        // -------------------------------------------------------- --------------
         // Javadoc annotations in alphabetical order
         // ----------------------------------------------------------------------
 
@@ -341,6 +350,11 @@ public class JavaMojoDescriptorExtractor
         {
             mojoDescriptor.setSince( since.getValue() );
         }
+
+        // Threadsafe mojo 
+
+        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.THREADSAFE, true, mojoDescriptor.isThreadSafe() );
+        mojoDescriptor.setThreadSafe( value );
 
         extractParameters( mojoDescriptor, javaClass );
 
@@ -365,6 +379,35 @@ public class JavaMojoDescriptorExtractor
             if ( StringUtils.isNotEmpty( value ) )
             {
                 defaultValue = Boolean.valueOf( value ).booleanValue();
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @param javaClass     not null
+     * @param tagName       not null
+     * @param defaultForTag The wanted default value when only the tagname is present
+     * @param defaultValue  the wanted default value when the tag is not specified
+     * @return the boolean value of the given tagName
+     * @see #findInClassHierarchy(JavaClass, String)
+     */
+    private static boolean getBooleanTagValue( JavaClass javaClass, String tagName, boolean defaultForTag,
+                                               boolean defaultValue )
+    {
+        DocletTag tag = findInClassHierarchy( javaClass, tagName );
+
+        if ( tag != null )
+        {
+            String value = tag.getValue();
+
+            if ( StringUtils.isEmpty( value ) )
+            {
+                return defaultForTag;
+            }
+            else if ( StringUtils.isNotEmpty( value ) )
+            {
+                return Boolean.valueOf( value ).booleanValue();
             }
         }
         return defaultValue;

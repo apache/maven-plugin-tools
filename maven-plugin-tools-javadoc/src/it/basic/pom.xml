@@ -94,6 +94,9 @@ under the License.
               <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresDependencyResolutionTypeTaglet</tagletClass>
             </taglet>
             <taglet>
+              <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresDependencyCollectionTypeTaglet</tagletClass>
+            </taglet>
+            <taglet>
               <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresDirectInvocationTypeTaglet</tagletClass>
             </taglet>
             <taglet>
@@ -104,6 +107,9 @@ under the License.
             </taglet>
             <taglet>
               <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoRequiresReportsTypeTaglet</tagletClass>
+            </taglet>
+            <taglet>
+              <tagletClass>org.apache.maven.tools.plugin.javadoc.MojoThreadSafeTypeTaglet</tagletClass>
             </taglet>
           </taglets>
 

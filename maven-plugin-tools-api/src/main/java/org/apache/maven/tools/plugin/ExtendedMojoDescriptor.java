@@ -1,4 +1,4 @@
-package source2;
+package org.apache.maven.tools.plugin;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -9,7 +9,7 @@ package source2;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,35 +19,35 @@ package source2;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 
 /**
- * Tests the implementation argument of the parameter annotation.
- *
- * @goal ideaThree
- * @requiresDependencyResolution compile
- * @requiresDependencyCollection test
- * @threadSafe
- * 
+ * @author Kristian Rosenvold
  */
-public class JavaExtractorTestThree
-    extends AbstractMojo
+public class ExtendedMojoDescriptor
+    extends MojoDescriptor
 {
-    /**
-     * @parameter implementation=source2.sub.MyBla
-     * @required
-     */
-    private Bla bla;
+    private boolean threadSafe = false;
 
-    public JavaExtractorTestThree()
+    private String requiresDependencyCollection = null;
+
+    public boolean isThreadSafe()
     {
+        return threadSafe;
     }
 
-    public void execute()
+    public void setThreadSafe( boolean threadSafe )
     {
-        if ( getLog() != null )
-        {
-            getLog().info( "bla: " + bla );
-        }
+        this.threadSafe = threadSafe;
+    }
+
+    public String getRequiresDependencyCollection()
+    {
+        return requiresDependencyCollection;
+    }
+
+    public void setRequiresDependencyCollection( String requiresDependencyCollection )
+    {
+        this.requiresDependencyCollection = requiresDependencyCollection;
     }
 }

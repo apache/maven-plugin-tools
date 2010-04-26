@@ -24,6 +24,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -299,6 +300,23 @@ public class PluginDescriptorGenerator
             }
 
             w.endElement();
+        }
+
+        // ----------------------------------------------------------------------
+        // Extended (3.0) descriptor
+        // ----------------------------------------------------------------------
+
+        if ( mojoDescriptor instanceof ExtendedMojoDescriptor )
+        {
+            ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
+            if ( extendedMojoDescriptor.getRequiresDependencyCollection() != null )
+            {
+                PluginUtils.element( w, "requiresDependencyCollection",
+                                     extendedMojoDescriptor.getRequiresDependencyCollection() );
+            }
+
+            PluginUtils.element( w, "threadSafe", "" + ( (ExtendedMojoDescriptor) mojoDescriptor ).isThreadSafe() );
+
         }
 
         // ----------------------------------------------------------------------

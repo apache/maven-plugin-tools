@@ -37,6 +37,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -306,6 +307,37 @@ public class PluginXdocGenerator
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyResolutionRequired", value ) );
             w.endElement(); //li
+        }
+
+        if ( mojoDescriptor instanceof ExtendedMojoDescriptor )
+        {
+            ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
+
+            value = extendedMojoDescriptor.getRequiresDependencyCollection();
+            if ( StringUtils.isNotEmpty( value ) )
+            {
+                if ( !addedUl )
+                {
+                    w.startElement( "ul" );
+                    addedUl = true;
+                }
+                w.startElement( "li" );
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyCollectionRequired", value ) );
+                w.endElement(); //li
+            }
+
+            if ( extendedMojoDescriptor.isThreadSafe() )
+            {
+                if ( !addedUl )
+                {
+                    w.startElement( "ul" );
+                    addedUl = true;
+                }
+                w.startElement( "li" );
+                w.writeMarkup( getString( "pluginxdoc.mojodescriptor.threadSafe" ) );
+                w.endElement(); //li
+            }
+
         }
 
         value = mojoDescriptor.getSince();

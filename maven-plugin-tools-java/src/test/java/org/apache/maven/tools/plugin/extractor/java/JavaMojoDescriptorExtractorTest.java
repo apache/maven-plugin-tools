@@ -26,6 +26,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -113,7 +114,20 @@ public class JavaMojoDescriptorExtractorTest
 
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
-    
+
+    public void testMaven30Parameters()
+        throws Exception
+    {
+        List results = extract( "source2" );
+
+        assertEquals( 1, results.size() );
+
+        ExtendedMojoDescriptor mojoDescriptor = (ExtendedMojoDescriptor) results.get( 0 );
+        assertTrue( mojoDescriptor.isThreadSafe());
+        assertEquals( "test", mojoDescriptor.getRequiresDependencyCollection() );
+
+    }
+
     /**
      * Check that the mojo descriptor extractor will ignore any annotations that are found.
      * 
