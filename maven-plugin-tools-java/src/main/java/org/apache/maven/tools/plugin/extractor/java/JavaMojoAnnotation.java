@@ -352,10 +352,10 @@ public interface JavaMojoAnnotation
     String DEPRECATED = "deprecated";
 
     /**
-     * Indicates that this mojo is threadsafe and can be run in parallel
+     * Indicates that this mojo is thread-safe and can be run in parallel
      *
      * <b>Note</b>: Should be defined in a Mojo Type.
      */
-    String THREADSAFE = "threadSafe";
+    String THREAD_SAFE = "threadSafe";
 
 }

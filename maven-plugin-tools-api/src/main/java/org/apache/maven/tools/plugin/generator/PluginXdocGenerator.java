@@ -313,7 +313,7 @@ public class PluginXdocGenerator
         {
             ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
 
-            value = extendedMojoDescriptor.getRequiresDependencyCollection();
+            value = extendedMojoDescriptor.getDependencyCollectionRequired();
             if ( StringUtils.isNotEmpty( value ) )
             {
                 if ( !addedUl )

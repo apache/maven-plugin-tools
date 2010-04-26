@@ -25,7 +25,7 @@ import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
 import java.util.Map;
 
 /**
- * The <tt>@threadSafe</tt> tag is used to indicate that a mojo is threadsafe and can be run in parallel
+ * The <tt>@threadSafe</tt> tag is used to indicate that a mojo is thread-safe and can be run in parallel
  * <br/>
  * The following is a sample declaration:
  * <pre>
@@ -43,7 +43,7 @@ import java.util.Map;
  * </pre>
  * <b>Note</b>: This taglet is similar to call the <code>Javadoc</code> tool with the following:
  * <pre>
- * javadoc ... -tag 'threadSafe:t:Indicates the mojo is threadsafe'
+ * javadoc ... -tag 'threadSafe:t:Indicates the mojo is thread-safe'
  * </pre>
  *
  * @see <a href="package-summary.html#package_description">package-summary.html</a>
@@ -55,7 +55,7 @@ public class MojoThreadSafeTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.THREADSAFE;
+    private static final String NAME = JavaMojoAnnotation.THREAD_SAFE;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Mojo is thread safe";

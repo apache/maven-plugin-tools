@@ -123,9 +123,8 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( 1, results.size() );
 
         ExtendedMojoDescriptor mojoDescriptor = (ExtendedMojoDescriptor) results.get( 0 );
-        assertTrue( mojoDescriptor.isThreadSafe());
-        assertEquals( "test", mojoDescriptor.getRequiresDependencyCollection() );
-
+        assertTrue( mojoDescriptor.isThreadSafe() );
+        assertEquals( "test", mojoDescriptor.getDependencyCollectionRequired() );
     }
 
     /**

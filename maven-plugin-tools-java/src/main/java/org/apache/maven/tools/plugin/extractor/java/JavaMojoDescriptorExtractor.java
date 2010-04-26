@@ -304,12 +304,19 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setDependencyResolutionRequired( v );
         }
 
-        // What version it was introduced in
+        // Dependency collection flag
         DocletTag requiresDependencyCollection =
             findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION );
         if ( requiresDependencyCollection != null )
         {
-            mojoDescriptor.setRequiresDependencyCollection( requiresDependencyCollection.getValue() );
+            String v = requiresDependencyCollection.getValue();
+
+            if ( StringUtils.isEmpty( v ) )
+            {
+                v = "runtime";
+            }
+
+            mojoDescriptor.setDependencyCollectionRequired( v );
         }
 
         // requiresDirectInvocation flag
@@ -333,7 +340,7 @@ public class JavaMojoDescriptorExtractor
             getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
         mojoDescriptor.setRequiresReports( value );
 
-        // -------------------------------------------------------- --------------
+        // ----------------------------------------------------------------------
         // Javadoc annotations in alphabetical order
         // ----------------------------------------------------------------------
 
@@ -351,9 +358,9 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setSince( since.getValue() );
         }
 
-        // Threadsafe mojo 
+        // Thread-safe mojo 
 
-        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.THREADSAFE, true, mojoDescriptor.isThreadSafe() );
+        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.THREAD_SAFE, true, mojoDescriptor.isThreadSafe() );
         mojoDescriptor.setThreadSafe( value );
 
         extractParameters( mojoDescriptor, javaClass );
@@ -401,13 +408,13 @@ public class JavaMojoDescriptorExtractor
         {
             String value = tag.getValue();
 
-            if ( StringUtils.isEmpty( value ) )
-            {
-                return defaultForTag;
-            }
-            else if ( StringUtils.isNotEmpty( value ) )
+            if ( StringUtils.isNotEmpty( value ) )
             {
                 return Boolean.valueOf( value ).booleanValue();
+            }
+            else
+            {
+                return defaultForTag;
             }
         }
         return defaultValue;

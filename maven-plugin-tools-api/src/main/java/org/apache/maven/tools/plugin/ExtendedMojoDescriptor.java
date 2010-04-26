@@ -41,12 +41,12 @@ public class ExtendedMojoDescriptor
         this.threadSafe = threadSafe;
     }
 
-    public String getRequiresDependencyCollection()
+    public String getDependencyCollectionRequired()
     {
         return requiresDependencyCollection;
     }
 
-    public void setRequiresDependencyCollection( String requiresDependencyCollection )
+    public void setDependencyCollectionRequired( String requiresDependencyCollection )
     {
         this.requiresDependencyCollection = requiresDependencyCollection;
     }

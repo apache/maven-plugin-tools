@@ -309,14 +309,13 @@ public class PluginDescriptorGenerator
         if ( mojoDescriptor instanceof ExtendedMojoDescriptor )
         {
             ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
-            if ( extendedMojoDescriptor.getRequiresDependencyCollection() != null )
+            if ( extendedMojoDescriptor.getDependencyCollectionRequired() != null )
             {
                 PluginUtils.element( w, "requiresDependencyCollection",
-                                     extendedMojoDescriptor.getRequiresDependencyCollection() );
+                                     extendedMojoDescriptor.getDependencyCollectionRequired() );
             }
 
-            PluginUtils.element( w, "threadSafe", "" + ( (ExtendedMojoDescriptor) mojoDescriptor ).isThreadSafe() );
-
+            PluginUtils.element( w, "threadSafe", "" + extendedMojoDescriptor.isThreadSafe() );
         }
 
         // ----------------------------------------------------------------------
