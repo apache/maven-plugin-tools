@@ -44,7 +44,7 @@ public class AddPluginArtifactMetadataMojo
     /**
      * The project artifact, which should have the LATEST metadata added to it.
      *
-     * @parameter expression="${project}"
+     * @parameter default-value="${project}"
      * @required
      * @readonly
      */

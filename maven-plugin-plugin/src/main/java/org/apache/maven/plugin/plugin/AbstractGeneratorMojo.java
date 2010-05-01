@@ -48,7 +48,7 @@ public abstract class AbstractGeneratorMojo
     /**
      * The project currently being built.
      *
-     * @parameter expression="${project}"
+     * @parameter default-value="${project}"
      * @required
      * @readonly
      */
@@ -118,7 +118,7 @@ public abstract class AbstractGeneratorMojo
     public void execute()
         throws MojoExecutionException
     {
-        if ( !project.getPackaging().equals( "maven-plugin" ) )
+        if ( !"maven-plugin".equals( project.getPackaging() ) )
         {
             return;
         }
