@@ -19,6 +19,7 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 
@@ -46,6 +47,14 @@ public class DescriptorGeneratorMojo
      */
     protected File outputDirectory;
 
+    /**
+     * A flag to disable generation of the <code>plugin.xml</code> in favor of a hand authored plugin descriptor.
+     * 
+     * @parameter default-value="false"
+     * @since 2.6
+     */
+    private boolean skipDescriptor;
+
     /** {@inheritDoc} */
     protected File getOutputDirectory()
     {
@@ -57,4 +66,17 @@ public class DescriptorGeneratorMojo
     {
         return new PluginDescriptorGenerator();
     }
+
+    /** {@inheritDoc} */
+    public void execute()
+        throws MojoExecutionException
+    {
+        if ( skipDescriptor )
+        {
+            return;
+        }
+
+        super.execute();
+    }
+
 }
