@@ -14,10 +14,12 @@ assert mojo.language.text() == 'java'
 assert mojo.description.text() == 'Touches a test file.'
 assert mojo.deprecated.text() == "Don't use!"
 assert mojo.requiresDependencyResolution.text() == 'test'
+assert mojo.requiresDependencyCollection.text() == ''
 assert mojo.requiresProject.text() == 'true'
 assert mojo.requiresOnline.text() == 'false'
 assert mojo.requiresDirectInvocation.text() == 'false'
 assert mojo.aggregator.text() == 'false'
+assert mojo.threadSafe.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
 assert mojo.executePhase.text() == 'generate-sources'
 assert mojo.executeLifecycle.text() == 'cobertura'
@@ -61,5 +63,10 @@ assert mojo.parameters.parameter[2].deprecated.isEmpty()
 assert mojo.parameters.parameter[2].required.text() == 'true'
 assert mojo.parameters.parameter[2].editable.text() == 'true'
 assert mojo.parameters.parameter[2].description.text() == ''
+
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
+
+assert mojo.requiresDependencyCollection.text() == 'compile'
+assert mojo.threadSafe.text() == 'true'
 
 return true;
