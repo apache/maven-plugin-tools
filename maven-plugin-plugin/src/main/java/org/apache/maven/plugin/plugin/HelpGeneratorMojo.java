@@ -44,6 +44,15 @@ public class HelpGeneratorMojo
      */
     protected File outputDirectory;
 
+    /**
+     * The name of the package for the generated <code>HelpMojo</code>. By default, the package will be calculated based
+     * on the packages of the other plugin goals.
+     * 
+     * @parameter
+     * @since 2.6
+     */
+    private String helpPackageName;
+
     /** {@inheritDoc} */
     protected File getOutputDirectory()
     {
@@ -53,7 +62,7 @@ public class HelpGeneratorMojo
     /** {@inheritDoc} */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator();
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName );
     }
 
     /** {@inheritDoc} */

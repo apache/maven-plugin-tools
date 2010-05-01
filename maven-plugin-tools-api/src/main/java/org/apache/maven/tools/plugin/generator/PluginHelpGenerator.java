@@ -65,6 +65,8 @@ public class PluginHelpGenerator
     /** Default goal */
     private static final String HELP_GOAL = "help";
 
+    private String helpPackageName;
+
     /**
      * Default constructor
      */
@@ -134,6 +136,12 @@ public class PluginHelpGenerator
         }
     }
 
+    public PluginHelpGenerator setHelpPackageName( String helpPackageName )
+    {
+        this.helpPackageName = helpPackageName;
+        return this;
+    }
+
     // ----------------------------------------------------------------------
     // Private methods
     // ----------------------------------------------------------------------
@@ -145,7 +153,7 @@ public class PluginHelpGenerator
      *            <code>null</code>.
      * @return The mojo descriptor for the generated help goal, never <code>null</code>.
      */
-    private static MojoDescriptor makeHelpDescriptor( PluginDescriptor pluginDescriptor )
+    private MojoDescriptor makeHelpDescriptor( PluginDescriptor pluginDescriptor )
     {
         MojoDescriptor descriptor = new MojoDescriptor();
 
@@ -155,7 +163,11 @@ public class PluginHelpGenerator
 
         descriptor.setGoal( HELP_GOAL );
 
-        String packageName = discoverPackageName( pluginDescriptor );
+        String packageName = helpPackageName;
+        if ( StringUtils.isEmpty( packageName ) )
+        {
+            packageName = discoverPackageName( pluginDescriptor );
+        }
         if ( StringUtils.isNotEmpty( packageName ) )
         {
             descriptor.setImplementation( packageName + '.' + HELP_MOJO_CLASS_NAME );

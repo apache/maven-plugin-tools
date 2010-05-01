@@ -1,0 +1,7 @@
+import java.io.*;
+
+File helpMojo = new File( basedir, "target/classes/test/help/HelpMojo.class" );
+if ( !helpMojo.isFile() )
+{
+    throw new FileNotFoundException( "Missing/misplaced: " + helpMojo );
+}
