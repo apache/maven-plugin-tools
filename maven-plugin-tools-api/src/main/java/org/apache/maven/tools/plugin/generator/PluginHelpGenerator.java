@@ -371,6 +371,7 @@ public class PluginHelpGenerator
         writer.write( " * @author " + author.toString() + LS );
         writer.write( " * @goal " + helpDescriptor.getGoal() + LS );
         writer.write( " * @requiresProject false" + LS );
+        writer.write( " * @threadSafe" + LS );
         writer.write( " */" + LS );
     }
 
