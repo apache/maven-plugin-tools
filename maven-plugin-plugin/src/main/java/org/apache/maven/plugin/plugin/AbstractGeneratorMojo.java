@@ -166,7 +166,8 @@ public abstract class AbstractGeneratorMojo
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
             
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( encoding );
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            request.setEncoding( encoding );
 
             mojoScanner.populatePluginDescriptor( request );
 
