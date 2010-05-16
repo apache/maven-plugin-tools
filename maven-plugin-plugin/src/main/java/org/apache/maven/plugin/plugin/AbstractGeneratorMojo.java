@@ -41,6 +41,8 @@ import java.util.Set;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
+ * 
+ * @threadSafe
  */
 public abstract class AbstractGeneratorMojo
     extends AbstractMojo

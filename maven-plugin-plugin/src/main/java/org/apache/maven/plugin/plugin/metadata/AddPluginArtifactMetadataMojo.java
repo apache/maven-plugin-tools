@@ -37,6 +37,7 @@ import org.apache.maven.project.MavenProject;
  * @since 2.0
  * @phase package
  * @goal addPluginArtifactMetadata
+ * @threadSafe
  */
 public class AddPluginArtifactMetadataMojo
     extends AbstractMojo
