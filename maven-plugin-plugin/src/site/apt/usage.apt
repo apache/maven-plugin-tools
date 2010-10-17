@@ -29,7 +29,7 @@
 
 Usage
 
-  The Plugin Plugin is generally used for Maven 2 plugins. Its goals are bound to different phases in the build life cycle.
+  The Plugin Plugin is generally used for Maven plugins. Its goals are bound to different phases in the build life cycle.
   So when you execute a specific phase, the Plugin Plugin goals bound to it are also executed. Aside from this, each goal can
   also be explicitly executed from the command line.
 
