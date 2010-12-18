@@ -66,6 +66,9 @@ public class PluginHelpGenerator
     private static final String HELP_GOAL = "help";
 
     private String helpPackageName;
+    
+    /** Flag to indicate if the generated help mojo should use Java 5 features */
+    private boolean useJava5;
 
     /**
      * Default constructor
@@ -127,7 +130,7 @@ public class PluginHelpGenerator
         try
         {
             writer = new OutputStreamWriter( new FileOutputStream( helpClass ), request.getEncoding() );
-            writeClass( writer, pluginDescriptor, helpDescriptor );
+            writeClass( writer, pluginDescriptor, helpDescriptor, useJava5 );
             writer.flush();
         }
         finally
@@ -139,6 +142,12 @@ public class PluginHelpGenerator
     public PluginHelpGenerator setHelpPackageName( String helpPackageName )
     {
         this.helpPackageName = helpPackageName;
+        return this;
+    }
+
+    public PluginHelpGenerator setUseJava5( boolean useJava5 )
+    {
+        this.useJava5 = useJava5;
         return this;
     }
 
@@ -278,9 +287,10 @@ public class PluginHelpGenerator
      * @param writer not null
      * @param pluginDescriptor not null
      * @param helpDescriptor not null
+     * @param useJava5 If the generated code should use Java5 features
      * @throws IOException if any
      */
-    private static void writeClass( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor )
+    private static void writeClass( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor, boolean useJava5 )
         throws IOException
     {
         String packageName = "";
@@ -302,6 +312,11 @@ public class PluginHelpGenerator
         writer.write( LS );
 
         writeMojoJavadoc( writer, pluginDescriptor, helpDescriptor );
+
+        if ( useJava5 )
+        {
+            writer.write( "@SuppressWarnings( \"all\" )" + LS );
+        }
 
         writer.write( "public class " + simpleName + LS );
         writer.write( "    extends AbstractMojo" + LS );

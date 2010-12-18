@@ -53,6 +53,14 @@ public class HelpGeneratorMojo
      */
     private String helpPackageName;
 
+    /**
+     * Generate Java 5 sources.
+     *
+     * @parameter expression="${useJava5}" default-value="false"
+     * @since 2.7
+     */
+    private boolean useJava5;
+
     /** {@inheritDoc} */
     protected File getOutputDirectory()
     {
@@ -62,7 +70,7 @@ public class HelpGeneratorMojo
     /** {@inheritDoc} */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName );
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseJava5( useJava5 );
     }
 
     /** {@inheritDoc} */
