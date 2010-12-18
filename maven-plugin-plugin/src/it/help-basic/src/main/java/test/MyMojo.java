@@ -33,6 +33,7 @@ public class MyMojo
 
     /**
      * @parameter expression="${test.undocumented}"
+     * @required
      */
     private String undocumentedParam;
 

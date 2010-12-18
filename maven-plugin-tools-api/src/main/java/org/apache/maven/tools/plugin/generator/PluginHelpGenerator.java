@@ -582,11 +582,12 @@ public class PluginHelpGenerator
         {
             String parameterName = StringUtils.escape( parameter.getName() );
             String parameterDescription = toDescription( parameter.getDescription() );
-            String parameterDefaultValue = parameterName
-                + ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) ? " (Default: "
-                    + StringUtils.escape( parameter.getDefaultValue() ) + ")" : "" );
-
-            writer.write( "                append( sb, \"" + parameterDefaultValue + "\", 2 );" + LS );
+            String parameterDefaultValue = "";
+            if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
+            {
+                parameterDefaultValue = " (Default: " + StringUtils.escape( parameter.getDefaultValue() ) + ")";
+            }
+            writer.write( "                append( sb, \"" + parameterName + parameterDefaultValue + "\", 2 );" + LS );
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 writer.write( "                append( sb, \"Deprecated. " + toDescription( parameter.getDeprecated() )
@@ -594,6 +595,15 @@ public class PluginHelpGenerator
                 writer.write( "                append( sb, \"\", 0 );" + LS );
             }
             writer.write( "                append( sb, \"" + parameterDescription + "\", 3 );" + LS );
+            if ( parameter.isRequired() )
+            {
+                writer.write( "                append( sb, \"Required: Yes\", 3 );" + LS );
+            }
+            if ( StringUtils.isNotEmpty( parameter.getExpression() ) )
+            {
+                writer.write( "                append( sb, \"Expression: "
+                    + StringUtils.escape( parameter.getExpression() ) + "\", 3 );" + LS );
+            }
             writer.write( "                append( sb, \"\", 0 );" + LS );
         }
     }
