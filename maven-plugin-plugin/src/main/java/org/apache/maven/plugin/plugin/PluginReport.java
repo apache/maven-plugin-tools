@@ -91,6 +91,13 @@ public class PluginReport
      */
     protected MojoScanner mojoScanner;
 
+   /**
+    * @parameter expression="${outputEncoding}" default-value="${project.reporting.outputEncoding}"
+    * @since 2.7
+    */
+    private String outputEncoding;
+
+
     /**
      * Specify some requirements to execute this plugin.
      * Example:
@@ -183,6 +190,7 @@ public class PluginReport
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
             
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            request.setEncoding( outputEncoding );
 
             mojoScanner.populatePluginDescriptor( request );
 
