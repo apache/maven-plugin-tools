@@ -92,10 +92,13 @@ public class PluginReport
     protected MojoScanner mojoScanner;
 
    /**
-    * @parameter expression="${outputEncoding}" default-value="${project.reporting.outputEncoding}"
+    * The file encoding of the source files.
+    *
+    * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
+    *
     * @since 2.7
     */
-    private String outputEncoding;
+    private String encoding;
 
 
     /**
@@ -190,7 +193,7 @@ public class PluginReport
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
             
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( outputEncoding );
+            request.setEncoding( encoding );
 
             mojoScanner.populatePluginDescriptor( request );
 
