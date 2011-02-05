@@ -290,7 +290,8 @@ public class PluginHelpGenerator
      * @param useJava5 If the generated code should use Java5 features
      * @throws IOException if any
      */
-    private static void writeClass( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor, boolean useJava5 )
+    private static void writeClass( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor,
+                                    boolean useJava5 )
         throws IOException
     {
         String packageName = "";

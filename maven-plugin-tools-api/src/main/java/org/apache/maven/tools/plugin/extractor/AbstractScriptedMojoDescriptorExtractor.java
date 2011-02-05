@@ -70,7 +70,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         if ( !StringUtils.isEmpty( metadataExtension ) )
         {
             Map metadataFilesKeyedByBasedir =
-                gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension, request );
+                gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension,
+                                      request );
 
             mojoDescriptors = extractMojoDescriptorsFromMetadata( metadataFilesKeyedByBasedir, request );
         }
@@ -89,7 +90,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param outputDirectory not null
      * @throws ExtractionException if any
      */
-    protected void copyScriptsToOutputDirectory( Map scriptFilesKeyedByBasedir, String outputDirectory, PluginToolsRequest request )
+    protected void copyScriptsToOutputDirectory( Map scriptFilesKeyedByBasedir, String outputDirectory,
+                                                 PluginToolsRequest request )
         throws ExtractionException
     {
         File outputDir = new File( outputDirectory );
@@ -144,7 +146,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param scriptFileExtension not null
      * @return map with subdirs paths as key
      */
-    protected Map gatherFilesByBasedir( File basedir, List directories, String scriptFileExtension, PluginToolsRequest request )
+    protected Map gatherFilesByBasedir( File basedir, List directories, String scriptFileExtension,
+                                        PluginToolsRequest request )
     {
         Map sourcesByBasedir = new TreeMap();
 

@@ -163,7 +163,8 @@ public class PluginXdocGenerator
         w.startElement( "document" );
         w.addAttribute( "xmlns", "http://maven.apache.org/XDOC/2.0" );
         w.addAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        w.addAttribute( "xsi:schemaLocation", "http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd" );
+        w.addAttribute( "xsi:schemaLocation",
+                        "http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd" );
 
         // ----------------------------------------------------------------------
         //
