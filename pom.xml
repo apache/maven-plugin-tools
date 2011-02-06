@@ -220,7 +220,7 @@
           <artifactId>maven-site-plugin</artifactId>
           <version>2.2</version>
           <configuration>
-            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools/${project.artifactId}-${project.version}</stagingSiteURL>
+            <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}</stagingSiteURL>
           </configuration>
         </plugin>
         <plugin>
