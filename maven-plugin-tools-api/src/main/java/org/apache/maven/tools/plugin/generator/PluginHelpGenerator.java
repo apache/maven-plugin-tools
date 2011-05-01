@@ -330,7 +330,7 @@ public class PluginHelpGenerator
         writeExecute( writer, pluginDescriptor, helpDescriptor );
 
         writer.write( LS );
-        writeUtilities( writer );
+        writeUtilities( writer, useJava5 );
         writer.write( "}" + LS );
     }
 
@@ -626,9 +626,10 @@ public class PluginHelpGenerator
 
     /**
      * @param writer not null
+     * @param useJava5 If the generated code should use Java5 features
      * @throws IOException if any
      */
-    private static void writeUtilities( Writer writer )
+    private static void writeUtilities( Writer writer, boolean useJava5 )
         throws IOException
     {
         writer.write( "    /**" + LS );
@@ -685,7 +686,14 @@ public class PluginHelpGenerator
         writer.write( "    private static List toLines( String text, int indent, int indentSize, int lineLength )"
             + LS );
         writer.write( "    {" + LS );
-        writer.write( "        List lines = new ArrayList();" + LS );
+        if ( useJava5 )
+        {
+            writer.write( "        List<String> lines = new ArrayList<String>();" + LS );
+        }
+        else
+        {
+            writer.write( "        List lines = new ArrayList();" + LS );
+        }
         writer.write( LS );
         writer.write( "        String ind = repeat( \"\\t\", indent );" + LS );
         writer.write( "        String[] plainLines = text.split( \"(\\r\\n)|(\\r)|(\\n)\" );" + LS );
@@ -707,8 +715,16 @@ public class PluginHelpGenerator
         writer.write( "     * @param indentSize The size of each indentation, must not be negative." + LS );
         writer.write( "     * @param lineLength The length of the line, must not be negative." + LS );
         writer.write( "     */" + LS );
-        writer.write( "    private static void toLines( List lines, String line, int indentSize, int lineLength )"
-            + LS );
+        if ( useJava5 )
+        {
+            writer.write( "    private static void toLines( List<String> lines, String line, int indentSize, int lineLength )"
+                + LS );
+        }
+        else
+        {
+            writer.write( "    private static void toLines( List lines, String line, int indentSize, int lineLength )"
+                + LS );
+        }
         writer.write( "    {" + LS );
         writer.write( "        int lineIndent = getIndentLevel( line );" + LS );
         writer.write( "        StringBuffer buf = new StringBuffer( 256 );" + LS );
