@@ -127,7 +127,7 @@ public abstract class AbstractGeneratorMojo
 
         if ( project.getArtifactId().toLowerCase().startsWith( "maven-" ) 
             && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
-            && !"org.apache.maven.plugin".equals( project.getGroupId() ) )
+            && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
             getLog().error( "\n\nArtifact Ids of the format maven-___-plugin are reserved for \n" 
                                 + "plugins in the Group Id org.apache.maven.plugins\n"
