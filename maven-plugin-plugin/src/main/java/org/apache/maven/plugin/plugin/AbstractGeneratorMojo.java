@@ -125,6 +125,16 @@ public abstract class AbstractGeneratorMojo
             return;
         }
 
+        if ( project.getArtifactId().toLowerCase().startsWith( "maven-" ) 
+            && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
+            && !"org.apache.maven.plugin".equals( project.getGroupId() ) )
+        {
+            getLog().error( "\n\nArtifact Ids of the format maven-___-plugin are reserved for \n" 
+                                + "plugins in the Group Id org.apache.maven.plugins\n"
+                                + "Please change your artifactId to the format ___-maven-plugin\n"
+                                + "In the future this error will break the build.\n\n" );
+        }
+
         String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
         if ( goalPrefix == null )
         {
