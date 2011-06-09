@@ -38,6 +38,10 @@
     plugin registry, the artifact metadata and a generic help goal.
   </description>
 
+  <prerequisites>
+    <maven>2.0.6</maven>
+  </prerequisites>
+
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
@@ -53,10 +57,6 @@
       <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
     </site>
   </distributionManagement>
-
-  <prerequisites>
-    <maven>2.0.6</maven>
-  </prerequisites>
 
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
@@ -103,7 +103,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <!-- doxia -->
     <dependency>

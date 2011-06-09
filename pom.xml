@@ -38,7 +38,7 @@
   <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in a variety of languages.</description>
   <url>http://maven.apache.org/plugin-tools/</url>
   <inceptionYear>2004</inceptionYear>
-  
+
   <contributors>
     <contributor>
       <name>Robert Scholte</name>
@@ -213,7 +213,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <!-- misc -->
     <dependency>
@@ -257,4 +256,5 @@
       </plugins>
     </pluginManagement>
   </build>
+
 </project>

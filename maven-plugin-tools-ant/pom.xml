@@ -68,4 +68,5 @@
       <artifactId>plexus-container-default</artifactId>
     </dependency>
   </dependencies>
+
 </project>
