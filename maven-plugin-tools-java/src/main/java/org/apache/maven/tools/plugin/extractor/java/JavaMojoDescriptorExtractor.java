@@ -454,13 +454,11 @@ public class JavaMojoDescriptorExtractor
         // We're resolving class-level, ancestor-class-field, local-class-field order here.
         // ---------------------------------------------------------------------------------
 
-        Map rawParams = extractFieldParameterTags( javaClass );
+        Map<String, JavaField> rawParams = extractFieldParameterTags( javaClass );
 
-        for ( Iterator it = rawParams.entrySet().iterator(); it.hasNext(); )
+        for ( Map.Entry<String, JavaField> entry : rawParams.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) it.next();
-
-            JavaField field = (JavaField) entry.getValue();
+            JavaField field = entry.getValue();
 
             Type type = field.getType();
 
@@ -506,7 +504,7 @@ public class JavaMojoDescriptorExtractor
 
                 pd.setRequirement( new Requirement( role, roleHint ) );
 
-                pd.setName( (String) entry.getKey() );
+                pd.setName( entry.getKey() );
 
                 pd.setEditable( false );
                 /* TODO: or better like this? Need @component fields be editable for the user?
@@ -535,7 +533,7 @@ public class JavaMojoDescriptorExtractor
                 }
                 else
                 {
-                    pd.setName( (String) entry.getKey() );
+                    pd.setName( entry.getKey() );
                 }
 
                 pd.setRequired( field.getTagByName( JavaMojoAnnotation.REQUIRED ) != null );
@@ -593,9 +591,9 @@ public class JavaMojoDescriptorExtractor
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
-    private Map extractFieldParameterTags( JavaClass javaClass )
+    private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass )
     {
-        Map rawParams;
+        Map<String, JavaField> rawParams;
 
         // we have to add the parent fields first, so that they will be overwritten by the local fields if
         // that actually happens...
@@ -607,7 +605,7 @@ public class JavaMojoDescriptorExtractor
         }
         else
         {
-            rawParams = new TreeMap();
+            rawParams = new TreeMap<String, JavaField>();
         }
 
         JavaField[] classFields = javaClass.getFields();
@@ -629,19 +627,19 @@ public class JavaMojoDescriptorExtractor
     }
 
     /** {@inheritDoc} */
-    public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
     
     /** {@inheritDoc} */
-    public List execute( PluginToolsRequest request )
+    public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         JavaClass[] javaClasses = discoverClasses( request );
 
-        List descriptors = new ArrayList();
+        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
 
         for ( int i = 0; i < javaClasses.length; i++ )
         {
@@ -673,9 +671,10 @@ public class JavaMojoDescriptorExtractor
         
         MavenProject project = request.getProject();
 
-        for ( Iterator i = project.getCompileSourceRoots().iterator(); i.hasNext(); )
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<String> i = project.getCompileSourceRoots().iterator(); i.hasNext(); )
         {
-            builder.addSourceTree( new File( (String) i.next() ) );
+            builder.addSourceTree( new File( i.next() ) );
         }
 
         // TODO be more dynamic
@@ -695,13 +694,14 @@ public class JavaMojoDescriptorExtractor
     protected void validate( MojoDescriptor mojoDescriptor )
         throws InvalidParameterException
     {
-        List parameters = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" )
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         if ( parameters != null )
         {
             for ( int j = 0; j < parameters.size(); j++ )
             {
-                validateParameter( (Parameter) parameters.get( j ), j );
+                validateParameter( parameters.get( j ), j );
             }
         }
     }

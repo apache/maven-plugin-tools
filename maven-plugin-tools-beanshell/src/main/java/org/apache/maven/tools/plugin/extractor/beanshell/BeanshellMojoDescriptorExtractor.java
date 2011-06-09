@@ -19,20 +19,19 @@ package org.apache.maven.tools.plugin.extractor.beanshell;
  * under the License.
  */
 
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -56,22 +55,18 @@ public class BeanshellMojoDescriptorExtractor
     }
 
     /** {@inheritDoc} */
-    protected List extractMojoDescriptors( Map scriptFilesKeyedByBasedir, PluginToolsRequest request )
+    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir, PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List descriptors = new ArrayList();
+        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
 
-        for ( Iterator mapIterator = scriptFilesKeyedByBasedir.entrySet().iterator(); mapIterator.hasNext(); )
+        for ( Map.Entry<String, Set<File>> entry : scriptFilesKeyedByBasedir.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) mapIterator.next();
+            String basedir = entry.getKey();
+            Set<File> metadataFiles = entry.getValue();
 
-            String basedir = (String) entry.getKey();
-            Set metadataFiles = (Set) entry.getValue();
-
-            for ( Iterator it = metadataFiles.iterator(); it.hasNext(); )
+            for ( File scriptFile : metadataFiles )
             {
-                File scriptFile = (File) it.next();
-
                 String relativePath = null;
 
                 if ( basedir.endsWith( "/" ) )

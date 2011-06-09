@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.extractor;
  */
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -46,7 +47,7 @@ public interface MojoDescriptorExtractor
      * @deprecated Use {@link MojoDescriptorExtractor#execute(PluginToolsRequest)} instead. 
      *     Provided for backward compatibility with maven-plugin-plugin &lt; 2.5.
      */
-    List execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException;
     
     /**
@@ -58,6 +59,6 @@ public interface MojoDescriptorExtractor
      * @throws InvalidPluginDescriptorException if any
      * @since 2.5
      */
-    List execute( PluginToolsRequest request )
+    List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException;
 }

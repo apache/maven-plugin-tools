@@ -105,9 +105,10 @@ public class PluginDescriptorGenerator
 
             if ( pluginDescriptor.getMojos() != null )
             {
-                for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+                for ( @SuppressWarnings( "unchecked" )
+                Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
                 {
-                    MojoDescriptor descriptor = (MojoDescriptor) it.next();
+                    MojoDescriptor descriptor = it.next();
                     processMojoDescriptor( descriptor, w );
                 }
             }
@@ -322,20 +323,19 @@ public class PluginDescriptorGenerator
         // Parameters
         // ----------------------------------------------------------------------
 
-        List parameters = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" )
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         w.startElement( "parameters" );
 
-        Map requirements = new LinkedHashMap();
+        Map<String, Requirement> requirements = new LinkedHashMap<String, Requirement>();
 
-        Set configuration = new LinkedHashSet();
+        Set<Parameter> configuration = new LinkedHashSet<Parameter>();
 
         if ( parameters != null )
         {
-            for ( int j = 0; j < parameters.size(); j++ )
+            for ( Parameter parameter : parameters )
             {
-                Parameter parameter = (Parameter) parameters.get( j );
-
                 String expression = parameter.getExpression();
 
                 if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${component." ) )
@@ -422,10 +422,8 @@ public class PluginDescriptorGenerator
         {
             w.startElement( "configuration" );
 
-            for ( Iterator i = configuration.iterator(); i.hasNext(); )
+            for ( Parameter parameter : configuration )
             {
-                Parameter parameter = (Parameter) i.next();
-
                 w.startElement( parameter.getName() );
 
                 String type = parameter.getType();
@@ -458,10 +456,10 @@ public class PluginDescriptorGenerator
         {
             w.startElement( "requirements" );
 
-            for ( Iterator i = requirements.keySet().iterator(); i.hasNext(); )
+            for ( Map.Entry<String, Requirement> entry : requirements.entrySet() )
             {
-                String key = (String) i.next();
-                Requirement requirement = (Requirement) requirements.get( key );
+                String key = entry.getKey();
+                Requirement requirement = entry.getValue();
 
                 w.startElement( "requirement" );
 

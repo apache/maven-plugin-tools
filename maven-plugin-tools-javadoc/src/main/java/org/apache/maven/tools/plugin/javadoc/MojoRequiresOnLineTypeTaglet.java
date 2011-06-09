@@ -105,10 +105,10 @@ public class MojoRequiresOnLineTypeTaglet
      *
      * @param tagletMap the map to register this tag to.
      */
-    public static void register( Map tagletMap )
+    public static void register( Map<String, Taglet> tagletMap )
     {
         MojoRequiresOnLineTypeTaglet tag = new MojoRequiresOnLineTypeTaglet();
-        Taglet t = (Taglet) tagletMap.get( tag.getName() );
+        Taglet t = tagletMap.get( tag.getName() );
         if ( t != null )
         {
             tagletMap.remove( tag.getName() );

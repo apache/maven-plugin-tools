@@ -104,7 +104,7 @@ public abstract class AbstractGeneratorMojo
      *
      * @parameter
      */
-    protected Set/* <String> */extractors;
+    protected Set<String> extractors;
 
     /**
      * @return the output directory where files will be generated.

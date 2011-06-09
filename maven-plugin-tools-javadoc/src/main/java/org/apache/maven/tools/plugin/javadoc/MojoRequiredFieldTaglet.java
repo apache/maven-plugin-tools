@@ -108,10 +108,10 @@ public class MojoRequiredFieldTaglet
      *
      * @param tagletMap the map to register this tag to.
      */
-    public static void register( Map tagletMap )
+    public static void register( Map<String, Taglet> tagletMap )
     {
         MojoRequiredFieldTaglet tag = new MojoRequiredFieldTaglet();
-        Taglet t = (Taglet) tagletMap.get( tag.getName() );
+        Taglet t = tagletMap.get( tag.getName() );
         if ( t != null )
         {
             tagletMap.remove( tag.getName() );

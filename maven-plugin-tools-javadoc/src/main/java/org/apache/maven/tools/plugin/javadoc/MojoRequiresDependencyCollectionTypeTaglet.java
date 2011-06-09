@@ -104,10 +104,10 @@ public class MojoRequiresDependencyCollectionTypeTaglet
      *
      * @param tagletMap the map to register this tag to.
      */
-    public static void register( Map tagletMap )
+    public static void register( Map<String, Taglet> tagletMap )
     {
         MojoRequiresDependencyCollectionTypeTaglet tag = new MojoRequiresDependencyCollectionTypeTaglet();
-        Taglet t = (Taglet) tagletMap.get( tag.getName() );
+        Taglet t = tagletMap.get( tag.getName() );
         if ( t != null )
         {
             tagletMap.remove( tag.getName() );

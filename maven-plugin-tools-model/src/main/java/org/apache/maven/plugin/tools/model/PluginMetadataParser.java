@@ -19,6 +19,13 @@ package org.apache.maven.plugin.tools.model;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -28,14 +35,6 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Parser for plugin metadata.
@@ -53,10 +52,10 @@ public class PluginMetadataParser
      * @return a set of <code>MojoDescriptor</code>
      * @throws PluginMetadataParseException if any
      */
-    public Set parseMojoDescriptors( File metadataFile )
+    public Set<MojoDescriptor> parseMojoDescriptors( File metadataFile )
         throws PluginMetadataParseException
     {
-        Set descriptors = new HashSet();
+        Set<MojoDescriptor> descriptors = new HashSet<MojoDescriptor>();
 
         Reader reader = null;
 
@@ -68,14 +67,12 @@ public class PluginMetadataParser
 
             PluginMetadata pluginMetadata = metadataReader.read( reader );
 
-            List mojos = pluginMetadata.getMojos();
+            List<Mojo> mojos = pluginMetadata.getMojos();
 
             if ( mojos != null && !mojos.isEmpty() )
             {
-                for ( Iterator it = mojos.iterator(); it.hasNext(); )
+                for ( Mojo mojo :mojos )
                 {
-                    Mojo mojo = (Mojo) it.next();
-
                     MojoDescriptor descriptor = asDescriptor( metadataFile, mojo );
 
                     descriptors.add( descriptor );
@@ -137,15 +134,12 @@ public class PluginMetadataParser
             descriptor.setExecutePhase( le.getPhase() );
         }
 
-        List parameters = mojo.getParameters();
+        List<org.apache.maven.plugin.tools.model.Parameter> parameters = mojo.getParameters();
 
         if ( parameters != null && !parameters.isEmpty() )
         {
-            for ( Iterator it = parameters.iterator(); it.hasNext(); )
+            for ( org.apache.maven.plugin.tools.model.Parameter param : parameters )
             {
-                org.apache.maven.plugin.tools.model.Parameter param =
-                    (org.apache.maven.plugin.tools.model.Parameter) it.next();
-
                 Parameter dParam = new Parameter();
                 dParam.setAlias( param.getAlias() );
                 dParam.setDeprecated( param.getDeprecation() );
@@ -186,14 +180,12 @@ public class PluginMetadataParser
             }
         }
 
-        List components = mojo.getComponents();
+        List<Component> components = mojo.getComponents();
 
         if ( components != null && !components.isEmpty() )
         {
-            for ( Iterator it = components.iterator(); it.hasNext(); )
+            for ( Component component : components )
             {
-                Component component = (Component) it.next();
-
                 ComponentRequirement cr = new ComponentRequirement();
                 cr.setRole( component.getRole() );
                 cr.setRoleHint( component.getHint() );

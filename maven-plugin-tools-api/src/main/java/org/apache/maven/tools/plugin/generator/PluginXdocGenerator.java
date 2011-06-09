@@ -109,9 +109,10 @@ public class PluginXdocGenerator
     {
         if ( request.getPluginDescriptor().getMojos() != null )
         {
-            for ( Iterator it = request.getPluginDescriptor().getMojos().iterator(); it.hasNext(); )
+            for ( @SuppressWarnings( "unchecked" )
+            Iterator<MojoDescriptor> it = request.getPluginDescriptor().getMojos().iterator(); it.hasNext(); )
             {
-                MojoDescriptor descriptor = (MojoDescriptor) it.next();
+                MojoDescriptor descriptor = it.next();
 
                 processMojoDescriptor( descriptor, destinationDirectory );
             }
@@ -442,10 +443,11 @@ public class PluginXdocGenerator
      */
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        List parameterList = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" )
+        List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         //remove components and read-only parameters
-        List list = filterParameters( parameterList );
+        List<Parameter> list = filterParameters( parameterList );
 
         if ( list != null && list.size() > 0 )
         {
@@ -470,16 +472,14 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @return the parameters list without components.
      */
-    private List filterParameters( List parameterList )
+    private List<Parameter> filterParameters( List<Parameter> parameterList )
     {
-        List filtered = new ArrayList();
+        List<Parameter> filtered = new ArrayList<Parameter>();
 
         if ( parameterList != null )
         {
-            for ( Iterator parameters = parameterList.iterator(); parameters.hasNext(); )
+            for ( Parameter parameter :  parameterList )
             {
-                Parameter parameter = (Parameter) parameters.next();
-
                 if ( parameter.isEditable() )
                 {
                     String expression = parameter.getExpression();
@@ -500,14 +500,14 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @param w not null
      */
-    private void writeParameterDetails( MojoDescriptor mojoDescriptor, List parameterList, XMLWriter w )
+    private void writeParameterDetails( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
 
-        for ( Iterator parameters = parameterList.iterator(); parameters.hasNext(); )
+        for ( Iterator<Parameter> parameters = parameterList.iterator(); parameters.hasNext(); )
         {
-            Parameter parameter = (Parameter) parameters.next();
+            Parameter parameter = parameters.next();
 
             w.startElement( "p" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_internal", parameter.getName() ) );
@@ -633,16 +633,16 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @param w not null
      */
-    private void writeParameterSummary( MojoDescriptor mojoDescriptor, List parameterList, XMLWriter w )
+    private void writeParameterSummary( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
     {
-        List requiredParams = getParametersByRequired( true, parameterList );
+        List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
         if ( requiredParams.size() > 0 )
         {
             writeParameterList( mojoDescriptor, getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
                                 requiredParams, w );
         }
 
-        List optionalParams = getParametersByRequired( false, parameterList );
+        List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
         if ( optionalParams.size() > 0 )
         {
             writeParameterList( mojoDescriptor, getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
@@ -656,7 +656,7 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @param w not null
      */
-    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List parameterList, XMLWriter w )
+    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -679,10 +679,8 @@ public class PluginXdocGenerator
         w.endElement(); //th
         w.endElement(); //tr
 
-        for ( Iterator parameters = parameterList.iterator(); parameters.hasNext(); )
+        for ( Parameter parameter : parameterList )
         {
-            Parameter parameter = (Parameter) parameters.next();
-
             w.startElement( "tr" );
             w.startElement( "td" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_link", parameter.getName() ) );
@@ -744,14 +742,12 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @return list of parameters depending the value of <code>required</code>
      */
-    private List getParametersByRequired( boolean required, List parameterList )
+    private List<Parameter> getParametersByRequired( boolean required, List<Parameter> parameterList )
     {
-        List list = new ArrayList();
+        List<Parameter> list = new ArrayList<Parameter>();
 
-        for ( Iterator parameters = parameterList.iterator(); parameters.hasNext(); )
+        for ( Parameter parameter : parameterList )
         {
-            Parameter parameter = (Parameter) parameters.next();
-
             if ( parameter.isRequired() == required )
             {
                 list.add( parameter );

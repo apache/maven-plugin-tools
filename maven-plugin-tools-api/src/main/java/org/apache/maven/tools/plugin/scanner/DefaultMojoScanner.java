@@ -19,6 +19,11 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -31,12 +36,6 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author jdcasey
  */
@@ -45,19 +44,19 @@ public class DefaultMojoScanner
     implements MojoScanner
 {
 
-    private Map mojoDescriptorExtractors;
+    private Map<String, MojoDescriptorExtractor> mojoDescriptorExtractors;
 
     /**
      * The names of the active extractors
      */
-    private Set/* <String> */activeExtractors;
+    private Set<String> activeExtractors;
 
     /**
      * Default constructor
      *
      * @param extractors not null
      */
-    public DefaultMojoScanner( Map extractors )
+    public DefaultMojoScanner( Map<String, MojoDescriptorExtractor> extractors )
     {
         this.mojoDescriptorExtractors = extractors;
 
@@ -84,15 +83,14 @@ public class DefaultMojoScanner
         throws ExtractionException, InvalidPluginDescriptorException
     {
         Logger logger = getLogger();
-        Set activeExtractorsInternal = getActiveExtractors();
+        Set<String> activeExtractorsInternal = getActiveExtractors();
 
         logger.debug( "Using " + activeExtractorsInternal.size() + " mojo extractors." );
 
         int numMojoDescriptors = 0;
 
-        for ( Iterator it = activeExtractorsInternal.iterator(); it.hasNext(); )
+        for ( String language : activeExtractorsInternal )
         {
-            String language = (String) it.next();
             MojoDescriptorExtractor extractor = (MojoDescriptorExtractor) mojoDescriptorExtractors.get( language );
 
             if ( extractor == null )
@@ -102,16 +100,14 @@ public class DefaultMojoScanner
 
             logger.info( "Applying mojo extractor for language: " + language );
 
-            List extractorDescriptors = extractor.execute( request );
+            List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
 
             logger.info( "Mojo extractor for language: " + language + " found " + extractorDescriptors.size()
                 + " mojo descriptors." );
             numMojoDescriptors += extractorDescriptors.size();
 
-            for ( Iterator descriptorIt = extractorDescriptors.iterator(); descriptorIt.hasNext(); )
+            for ( MojoDescriptor descriptor : extractorDescriptors )
             {
-                MojoDescriptor descriptor = (MojoDescriptor) descriptorIt.next();
-
                 logger.debug( "Adding mojo: " + descriptor + " to plugin descriptor." );
 
                 descriptor.setPluginDescriptor( request.getPluginDescriptor() );
@@ -132,20 +128,19 @@ public class DefaultMojoScanner
      *
      * @return A Set containing the names of the active extractors.
      */
-    protected Set/* <String> */getActiveExtractors()
+    protected Set<String> getActiveExtractors()
     {
-        Set/* <String> */result = activeExtractors;
+        Set<String> result = activeExtractors;
 
         if ( result == null )
         {
-            result = new HashSet/* <String> */( mojoDescriptorExtractors.keySet() );
+            result = new HashSet<String>( mojoDescriptorExtractors.keySet() );
         }
 
         return result;
     }
 
-    /** {@inheritDoc} */
-    public void setActiveExtractors( Set/* <String> */extractors )
+    public void setActiveExtractors( Set<String> extractors )
     {
         if ( extractors == null )
         {
@@ -153,12 +148,10 @@ public class DefaultMojoScanner
         }
         else
         {
-            this.activeExtractors = new HashSet/* <String> */();
+            this.activeExtractors = new HashSet<String>();
 
-            for ( Iterator i = extractors.iterator(); i.hasNext(); )
+            for ( String extractor : extractors )
             {
-                String extractor = (String) i.next();
-
                 if ( extractor != null && extractor.length() > 0 )
                 {
                     this.activeExtractors.add( extractor );

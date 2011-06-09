@@ -114,9 +114,10 @@ public final class PluginUtils
     {
         w.startElement( "dependencies" );
 
-        for ( Iterator it = pluginDescriptor.getDependencies().iterator(); it.hasNext(); )
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<ComponentDependency> it = pluginDescriptor.getDependencies().iterator(); it.hasNext(); )
         {
-            ComponentDependency dep = (ComponentDependency) it.next();
+            ComponentDependency dep = it.next();
 
             w.startElement( "dependency" );
 
@@ -138,14 +139,12 @@ public final class PluginUtils
      * @param dependencies not null list of <code>Dependency</code>
      * @return list of component dependencies
      */
-    public static List toComponentDependencies( List dependencies )
+    public static List<ComponentDependency> toComponentDependencies( List<Dependency> dependencies )
     {
-        List componentDeps = new LinkedList();
+        List<ComponentDependency> componentDeps = new LinkedList<ComponentDependency>();
 
-        for ( Iterator it = dependencies.iterator(); it.hasNext(); )
+        for ( Dependency dependency : dependencies )
         {
-            Dependency dependency = (Dependency) it.next();
-
             ComponentDependency cd = new ComponentDependency();
 
             cd.setArtifactId( dependency.getArtifactId() );
@@ -196,7 +195,7 @@ public final class PluginUtils
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if ( project != null )
         {
-            List classPathStrings;
+            List<String> classPathStrings;
             try
             {
                 classPathStrings = project.getCompileClasspathElements();
@@ -210,8 +209,8 @@ public final class PluginUtils
                 throw (RuntimeException) new IllegalArgumentException().initCause( e );
             }
 
-            List urls = new ArrayList( classPathStrings.size() );
-            for ( Iterator it = classPathStrings.iterator(); it.hasNext(); )
+            List<URL> urls = new ArrayList<URL>( classPathStrings.size() );
+            for ( Iterator<String> it = classPathStrings.iterator(); it.hasNext(); )
             {
                 try
                 {
@@ -227,7 +226,7 @@ public final class PluginUtils
                                                                     classLoader );
         }
 
-        Class clazz = null;
+        Class<?> clazz = null;
         try
         {
             clazz = Class.forName( impl, false, classLoader );
@@ -417,17 +416,17 @@ public final class PluginUtils
      * @param mojoDescriptors The mojo descriptors to sort, may be <code>null</code>.
      * @see MojoDescriptor#getGoal()
      */
-    public static void sortMojos( List mojoDescriptors )
+    public static void sortMojos( List<MojoDescriptor> mojoDescriptors )
     {
         if ( mojoDescriptors != null )
         {
-            Collections.sort( mojoDescriptors, new Comparator()
+            Collections.sort( mojoDescriptors, new Comparator<MojoDescriptor>()
             {
                 /** {@inheritDoc} */
-                public int compare( Object arg0, Object arg1 )
+                public int compare( MojoDescriptor arg0, MojoDescriptor arg1 )
                 {
-                    MojoDescriptor mojo0 = (MojoDescriptor) arg0;
-                    MojoDescriptor mojo1 = (MojoDescriptor) arg1;
+                    MojoDescriptor mojo0 = arg0;
+                    MojoDescriptor mojo1 = arg1;
 
                     return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
                 }
@@ -442,14 +441,14 @@ public final class PluginUtils
      * @see Parameter#getName()
      * @since 2.4.4
      */
-    public static void sortMojoParameters( List parameters )
+    public static void sortMojoParameters( List<Parameter> parameters )
     {
         if ( parameters != null )
         {
-            Collections.sort( parameters, new Comparator()
+            Collections.sort( parameters, new Comparator<Parameter>()
             {
                 /** {@inheritDoc} */
-                public int compare( Object arg0, Object arg1 )
+                public int compare( Parameter arg0, Parameter arg1 )
                 {
                     Parameter parameter1 = (Parameter) arg0;
                     Parameter parameter2 = (Parameter) arg1;
@@ -534,7 +533,7 @@ public final class PluginUtils
          * A stack of {@link Counter} objects corresponding to the nesting of (un-)ordered lists. A
          * <code>null</code> element denotes an unordered list.
          */
-        private Stack numbering = new Stack();
+        private Stack<Counter> numbering = new Stack<Counter>();
 
         /**
          * A flag whether an implicit line break is pending in the output buffer. This flag is used to postpone the

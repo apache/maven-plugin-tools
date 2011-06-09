@@ -325,9 +325,10 @@ public class PluginReport
 
 
             boolean hasMavenReport = false;
-            for ( Iterator i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            for ( @SuppressWarnings( "unchecked" )
+            Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
             {
-                MojoDescriptor mojo = (MojoDescriptor) i.next();
+                MojoDescriptor mojo = i.next();
 
                 if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
                 {
@@ -349,13 +350,11 @@ public class PluginReport
                 tableHeader( new String[] { goalColumnName, descriptionColumnName } );
             }
 
-            List mojos = new ArrayList();
+            List<MojoDescriptor> mojos = new ArrayList<MojoDescriptor>();
             mojos.addAll( pluginDescriptor.getMojos() );
             PluginUtils.sortMojos( mojos );
-            for ( Iterator i = mojos.iterator(); i.hasNext(); )
+            for ( MojoDescriptor mojo : mojos )
             {
-                MojoDescriptor mojo = (MojoDescriptor) i.next();
-
                 String goalName = mojo.getFullGoalName();
 
                 /*

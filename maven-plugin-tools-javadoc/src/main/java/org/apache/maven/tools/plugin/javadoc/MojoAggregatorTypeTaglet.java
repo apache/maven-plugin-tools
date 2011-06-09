@@ -105,10 +105,10 @@ public class MojoAggregatorTypeTaglet
      *
      * @param tagletMap the map to register this tag to.
      */
-    public static void register( Map tagletMap )
+    public static void register( Map<String, Taglet> tagletMap )
     {
         MojoAggregatorTypeTaglet tag = new MojoAggregatorTypeTaglet();
-        Taglet t = (Taglet) tagletMap.get( tag.getName() );
+        Taglet t = tagletMap.get( tag.getName() );
         if ( t != null )
         {
             tagletMap.remove( tag.getName() );

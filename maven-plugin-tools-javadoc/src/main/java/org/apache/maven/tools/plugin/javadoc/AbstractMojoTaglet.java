@@ -247,7 +247,7 @@ public abstract class AbstractMojoTaglet
                 }
                 else
                 {
-                    List l = getOnlyValues( getAllowedValue() );
+                    List<String> l = getOnlyValues( getAllowedValue() );
                     if ( isNotEmpty( tagValue ) )
                     {
                         if ( l.contains( tagValue ) )
@@ -300,7 +300,7 @@ public abstract class AbstractMojoTaglet
                 }
                 else
                 {
-                    List l = getOnlyValues( getAllowedValue() );
+                    List<String> l = getOnlyValues( getAllowedValue() );
                     if ( isNotEmpty( tagValue ) )
                     {
                         if ( l.contains( tagValue ) )
@@ -347,7 +347,7 @@ public abstract class AbstractMojoTaglet
     {
         sb.append( "<DL>" );
 
-        Enumeration names = att.getAttributeNames();
+        Enumeration<?> names = att.getAttributeNames();
         while ( names.hasMoreElements() )
         {
             Object key = names.nextElement();
@@ -383,14 +383,14 @@ public abstract class AbstractMojoTaglet
      * @return a list of parsed Strings or <code>Collections.EMPTY_LIST</code>.
      * By convention, the default value is the first element.
      */
-    private static List getOnlyValues( String text )
+    private static List<String> getOnlyValues( String text )
     {
         if ( text.indexOf( "|" ) == -1 )
         {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
-        List l = new ArrayList();
+        List<String> l = new ArrayList<String>();
         StringTokenizer token = new StringTokenizer( text, "|" );
         while ( token.hasMoreTokens() )
         {

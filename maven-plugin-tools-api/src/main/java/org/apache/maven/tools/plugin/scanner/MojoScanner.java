@@ -66,6 +66,6 @@ public interface MojoScanner
      * all the scanner's extractors are considered active. Set entries that are <code>null</code> or
      * empty ("") will be ignored.
      */
-    void setActiveExtractors( Set/* <String> */extractors );
+    void setActiveExtractors( Set<String> extractors );
 
 }

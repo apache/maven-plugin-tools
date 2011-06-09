@@ -19,6 +19,13 @@ package org.apache.maven.tools.plugin.extractor.ant;
  * under the License.
  */
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -31,14 +38,6 @@ import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExt
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
@@ -55,25 +54,21 @@ public class AntMojoDescriptorExtractor
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
     
     /** {@inheritDoc} */
-    protected List extractMojoDescriptorsFromMetadata( Map metadataFilesKeyedByBasedir,
+    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesKeyedByBasedir,
                                                        PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List descriptors = new ArrayList();
+        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
 
         PluginMetadataParser parser = new PluginMetadataParser();
 
-        for ( Iterator mapIterator = metadataFilesKeyedByBasedir.entrySet().iterator(); mapIterator.hasNext(); )
+        for ( Map.Entry<String, Set<File>> entry : metadataFilesKeyedByBasedir.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) mapIterator.next();
-
             String basedir = (String) entry.getKey();
-            Set metadataFiles = (Set) entry.getValue();
+            Set<File> metadataFiles = entry.getValue();
 
-            for ( Iterator it = metadataFiles.iterator(); it.hasNext(); )
+            for ( File metadataFile : metadataFiles )
             {
-                File metadataFile = (File) it.next();
-
                 String basename = metadataFile.getName();
                 basename = basename.substring( 0, basename.length() - METADATA_FILE_EXTENSION.length() );
 
@@ -97,14 +92,12 @@ public class AntMojoDescriptorExtractor
 
                 try
                 {
-                    Set mojoDescriptors = parser.parseMojoDescriptors( metadataFile );
+                    Set<MojoDescriptor> mojoDescriptors = parser.parseMojoDescriptors( metadataFile );
 
-                    for ( Iterator discoveredMojoIterator = mojoDescriptors.iterator(); discoveredMojoIterator
-                        .hasNext(); )
+                    for ( MojoDescriptor descriptor : mojoDescriptors )
                     {
-                        MojoDescriptor descriptor = (MojoDescriptor) discoveredMojoIterator.next();
-
-                        Map paramMap = descriptor.getParameterMap();
+                        @SuppressWarnings( "unchecked" )
+                        Map<String, ?> paramMap = descriptor.getParameterMap();
 
                         if ( !paramMap.containsKey( "basedir" ) )
                         {
@@ -175,15 +168,14 @@ public class AntMojoDescriptorExtractor
                             descriptor.addParameter( param );
                         }
                         
-                        List requirements = descriptor.getRequirements();
-                        Map reqMap = new HashMap();
+                        @SuppressWarnings( "unchecked" )
+                        List<ComponentRequirement> requirements = descriptor.getRequirements();
+                        Map<String, ComponentRequirement> reqMap = new HashMap<String, ComponentRequirement>();
 
                         if ( requirements != null )
                         {
-                            for ( Iterator reqIterator = requirements.iterator(); reqIterator.hasNext(); )
+                            for ( ComponentRequirement req : requirements )
                             {
-                                ComponentRequirement req = (ComponentRequirement) reqIterator.next();
-
                                 reqMap.put( req.getRole(), req );
                             }
                         }

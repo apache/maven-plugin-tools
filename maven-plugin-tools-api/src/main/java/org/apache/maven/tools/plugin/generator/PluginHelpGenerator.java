@@ -103,9 +103,10 @@ public class PluginHelpGenerator
         MojoDescriptor helpDescriptor = makeHelpDescriptor( pluginDescriptor );
 
         // Verify that no help goal already exists
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
+            MojoDescriptor descriptor = it.next();
 
             if ( descriptor.getGoal().equals( helpDescriptor.getGoal() )
                 && !descriptor.getImplementation().equals( helpDescriptor.getImplementation() ) )
@@ -240,10 +241,11 @@ public class PluginHelpGenerator
      */
     private static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
-        Map packageNames = new HashMap();
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        Map<String, Integer> packageNames = new HashMap<String, Integer>();
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
+            MojoDescriptor descriptor = it.next();
 
             String impl = descriptor.getImplementation();
             if ( impl.lastIndexOf( '.' ) != -1 )
@@ -267,9 +269,8 @@ public class PluginHelpGenerator
 
         String packageName = "";
         int max = 0;
-        for ( Iterator it = packageNames.keySet().iterator(); it.hasNext(); )
+        for ( String key : packageNames.keySet() )
         {
-            String key = it.next().toString();
             int value = ( (Integer) packageNames.get( key ) ).intValue();
             if ( value > max )
             {
@@ -399,9 +400,10 @@ public class PluginHelpGenerator
     private static void writeVariables( Writer writer, MojoDescriptor helpDescriptor )
         throws IOException
     {
-        for ( Iterator it = helpDescriptor.getParameters().iterator(); it.hasNext(); )
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<Parameter> it = helpDescriptor.getParameters().iterator(); it.hasNext(); )
         {
-            Parameter param = (Parameter) it.next();
+            Parameter param = it.next();
             writer.write( "    /**" + LS );
             writer.write( "     * " + StringUtils.escape( param.getDescription() ) + LS );
             writer.write( "     * " + LS );
@@ -434,12 +436,13 @@ public class PluginHelpGenerator
     private static void writeExecute( Writer writer, PluginDescriptor pluginDescriptor, MojoDescriptor helpDescriptor )
         throws IOException
     {
-        List mojoDescriptors = new ArrayList();
+        List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>();
 
         mojoDescriptors.add( helpDescriptor );
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        for ( @SuppressWarnings( "unchecked" )
+        Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
-            MojoDescriptor mojoDescriptor = (MojoDescriptor) it.next();
+            MojoDescriptor mojoDescriptor = it.next();
 
             if ( !helpDescriptor.getGoal().equals( mojoDescriptor.getGoal() ) )
             {
@@ -509,9 +512,9 @@ public class PluginHelpGenerator
 
         writer.write( LS );
 
-        for ( Iterator it = mojoDescriptors.iterator(); it.hasNext(); )
+        for ( Iterator<MojoDescriptor> it = mojoDescriptors.iterator(); it.hasNext(); )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
+            MojoDescriptor descriptor = it.next();
 
             writeGoal( writer, descriptor );
         }
@@ -556,7 +559,8 @@ public class PluginHelpGenerator
 
         if ( descriptor.getParameters() != null && descriptor.getParameters().size() > 0 )
         {
-            List params = descriptor.getParameters();
+            @SuppressWarnings( "unchecked" )
+            List<Parameter> params = descriptor.getParameters();
 
             PluginUtils.sortMojoParameters( params );
 
@@ -566,10 +570,8 @@ public class PluginHelpGenerator
             writer.write( "                append( sb, \"Available parameters:\", 1 );" + LS );
             writer.write( "                append( sb, \"\", 0 );" + LS );
 
-            for ( Iterator it = params.iterator(); it.hasNext(); )
+            for ( Parameter parameter : params )
             {
-                Parameter parameter = (Parameter) it.next();
-
                 if ( parameter.isEditable() )
                 {
                     writer.write( LS );
