@@ -265,7 +265,8 @@ public final class PluginUtils
         tidy.setDocType( "loose" );
         tidy.setXHTML( true );
         tidy.setXmlOut( true );
-        tidy.setCharEncoding( Configuration.UTF8 );
+        tidy.setInputEncoding("UTF-8");
+        tidy.setOutputEncoding("UTF-8");
         tidy.setMakeClean( true );
         tidy.setNumEntities( true );
         tidy.setQuoteNbsp( false );

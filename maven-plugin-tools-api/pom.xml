@@ -83,9 +83,9 @@
 
     <!-- misc -->
     <dependency>
-      <groupId>jtidy</groupId>
+      <groupId>net.sf.jtidy</groupId>
       <artifactId>jtidy</artifactId>
-      <version>4aug2000r7-dev</version>
+      <version>r938</version>
     </dependency>
 
     <!-- test -->
