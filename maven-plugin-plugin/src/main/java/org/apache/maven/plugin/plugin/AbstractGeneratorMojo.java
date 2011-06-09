@@ -107,6 +107,14 @@ public abstract class AbstractGeneratorMojo
     protected Set<String> extractors;
 
     /**
+     * Set this to "true" to skip invoking any goals or reports of the plugin.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.skip}"
+     * @since 2.8
+     */
+    protected boolean skip;
+
+    /**
      * @return the output directory where files will be generated.
      */
     protected abstract File getOutputDirectory();
@@ -122,6 +130,11 @@ public abstract class AbstractGeneratorMojo
     {
         if ( !"maven-plugin".equals( project.getPackaging() ) )
         {
+            return;
+        }
+        if ( skip )
+        {
+            getLog().warn( "Execution skipped" );
             return;
         }
 

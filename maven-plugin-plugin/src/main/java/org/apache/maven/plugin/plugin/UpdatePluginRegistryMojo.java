@@ -94,12 +94,33 @@ public class UpdatePluginRegistryMojo
      */
     private MavenPluginRegistryBuilder pluginRegistryBuilder;
 
+    /**
+     * Set this to "true" to skip invoking any goals or reports of the plugin.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.skip}"
+     * @since 2.8
+     */
+    private boolean skip;
+
+    /**
+     * Set this to "true" to skip updating the plugin registry.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.update.registry.skip}"
+     * @since 2.8
+     */
+    private boolean skipUpdatePluginRegistry;
+
     /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
         if ( usePluginRegistry )
         {
+            if ( skip || skipUpdatePluginRegistry )
+            {
+                getLog().warn( "Execution skipped" );
+                return;
+            }
             updatePluginVersionInRegistry( groupId, artifactId, version );
         }
     }

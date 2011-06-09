@@ -58,10 +58,23 @@ public class AddPluginArtifactMetadataMojo
      */
     private String goalPrefix;
 
+    /**
+     * Set this to "true" to skip invoking any goals or reports of the plugin.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.skip}"
+     * @since 2.8
+     */
+    private boolean skip;
+
     /** {@inheritDoc} */
     public void execute()
         throws MojoExecutionException
     {
+        if ( skip )
+        {
+            getLog().warn( "Execution skipped" );
+            return;
+        }
         Artifact projectArtifact = project.getArtifact();
 
         Versioning versioning = new Versioning();

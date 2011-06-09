@@ -79,7 +79,7 @@ public class HelpGeneratorMojo
     {
         super.execute();
 
-        if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) )
+        if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) && !skip )
         {
             project.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
         }

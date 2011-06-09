@@ -131,6 +131,22 @@ public class PluginReport
      */
     protected String goalPrefix;
 
+    /**
+     * Set this to "true" to skip invoking any goals or reports of the plugin.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.skip}"
+     * @since 2.8
+     */
+    private boolean skip;
+
+    /**
+     * Set this to "true" to skip generating the report.
+     *
+     * @parameter default-value="false" expression="${maven.plugin.report.skip}"
+     * @since 2.8
+     */
+    private boolean skipReport;
+
     /** {@inheritDoc} */
     protected Renderer getSiteRenderer()
     {
@@ -161,6 +177,11 @@ public class PluginReport
     {
         if ( !canGenerateReport() )
         {
+            return;
+        }
+        if (skip || skipReport)
+        {
+            getLog().info( "Maven Plugin Plugin Report generation skipped." );
             return;
         }
 
