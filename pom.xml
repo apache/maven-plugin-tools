@@ -25,7 +25,7 @@
   <parent>
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>19</version>
+    <version>21</version>
     <relativePath>../pom/maven/pom.xml</relativePath>
   </parent>
 
@@ -155,7 +155,7 @@
   </distributionManagement>
 
   <properties>
-    <pluginToolsVersion>2.9</pluginToolsVersion>
+    <pluginToolsVersion>2.10-SNAPSHOT</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
   </properties>
 
@@ -242,7 +242,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>2.2</version>
+          <version>3.0</version>
           <configuration>
             <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}</stagingSiteURL>
           </configuration>
