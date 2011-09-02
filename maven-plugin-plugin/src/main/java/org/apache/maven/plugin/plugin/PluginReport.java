@@ -615,8 +615,7 @@ public class PluginReport
             }
             if ( jdk == null )
             {
-                // The Maven Compiler Plugin uses a fixed default value, not the current JDK version.
-                jdk = "1.1";
+                jdk = "Unknown";
             }
 
             return jdk;
@@ -635,6 +634,7 @@ public class PluginReport
             }
 
             String jdk = null;
+            String backupJdk = null;
             for ( Iterator it = pluginsAsMap.keySet().iterator(); it.hasNext(); )
             {
                 String key = it.next().toString();
@@ -647,17 +647,18 @@ public class PluginReport
                 Object value = pluginsAsMap.get( key );
                 Xpp3Dom pluginConf = null;
 
+                backupJdk = "Default version for maven-compiler-plugin";
                 if ( value instanceof Plugin )
                 {
                     Plugin plugin = (Plugin) value;
-
+                    backupJdk = "Default target for maven-compiler-plugin version " + plugin.getVersion();
                     pluginConf = (Xpp3Dom) plugin.getConfiguration();
                 }
 
                 if ( value instanceof ReportPlugin )
                 {
                     ReportPlugin reportPlugin = (ReportPlugin) value;
-
+                    backupJdk = "Default target for maven-compiler-plugin version " + reportPlugin.getVersion();
                     pluginConf = (Xpp3Dom) reportPlugin.getConfiguration();
                 }
 
@@ -674,7 +675,14 @@ public class PluginReport
                 jdk = pluginConf.getChild( "target" ).getValue();
             }
 
-            return jdk;
+            if ( jdk == null ) 
+            {
+                return backupJdk;
+            }
+            else 
+            {
+                return jdk;
+            }
         }
     }
 }
