@@ -33,12 +33,6 @@
   <name>Maven Plugin Tool for Ant</name>
   <description>Descriptor extractor for plugins written in Ant.</description>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-ant/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-ant/</url>
-  </scm>
-
   <dependencies>
     <!-- maven -->
     <dependency>

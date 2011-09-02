@@ -34,12 +34,6 @@
   <description>The Maven Plugin Tools Javadoc provides several Javadoc taglets to be used when generating Javadoc.</description>
   <inceptionYear>2008</inceptionYear>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-tools-javadoc/</url>
-  </scm>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -72,7 +66,6 @@
         <plugins>
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>1.5</version>
             <configuration>
               <debug>true</debug>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
