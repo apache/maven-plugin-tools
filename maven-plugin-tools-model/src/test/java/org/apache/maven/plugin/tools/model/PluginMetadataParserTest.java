@@ -36,11 +36,11 @@ public class PluginMetadataParserTest
         throws PluginMetadataParseException
     {
         File metadataFile = getMetadataFile( "test.mojos.xml" );
-        Set descriptors = new PluginMetadataParser().parseMojoDescriptors( metadataFile );
+        Set<MojoDescriptor> descriptors = new PluginMetadataParser().parseMojoDescriptors( metadataFile );
         
         assertEquals( 1, descriptors.size() );
         
-        MojoDescriptor desc = (MojoDescriptor) descriptors.iterator().next();
+        MojoDescriptor desc = descriptors.iterator().next();
         assertTrue( desc.getImplementation().indexOf( ":" ) < 0 );
         assertEquals( "test", desc.getGoal() );
     }
@@ -49,11 +49,11 @@ public class PluginMetadataParserTest
         throws PluginMetadataParseException
     {
         File metadataFile = getMetadataFile( "test2.mojos.xml" );
-        Set descriptors = new PluginMetadataParser().parseMojoDescriptors( metadataFile );
+        Set<MojoDescriptor> descriptors = new PluginMetadataParser().parseMojoDescriptors( metadataFile );
         
         assertEquals( 1, descriptors.size() );
         
-        MojoDescriptor desc = (MojoDescriptor) descriptors.iterator().next();
+        MojoDescriptor desc = descriptors.iterator().next();
         assertTrue( desc.getImplementation().endsWith( ":test2" ) );
         assertEquals( "test2", desc.getGoal() );
     }
