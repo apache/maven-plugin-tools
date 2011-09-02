@@ -172,6 +172,7 @@ public class PluginReport
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings( "unchecked" )
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -216,7 +217,16 @@ public class PluginReport
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
 
-            mojoScanner.populatePluginDescriptor( request );
+            try 
+            {
+                mojoScanner.populatePluginDescriptor( request );
+            }
+            catch ( InvalidPluginDescriptorException e )
+            {
+                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
+                getLog().debug( "Plugin without mojos.", e );
+
+            }
 
             // Generate the plugin's documentation
             generatePluginDocumentation( pluginDescriptor, locale );
@@ -226,11 +236,7 @@ public class PluginReport
                                                                    locale );
             r.render();
         }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                            e );
-        }
+        
         catch ( ExtractionException e )
         {
             throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
