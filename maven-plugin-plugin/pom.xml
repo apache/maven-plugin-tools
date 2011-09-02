@@ -61,8 +61,8 @@
 
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
-    <doxiaVersion>1.0</doxiaVersion>
-    <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
+    <doxiaVersion>1.2</doxiaVersion>
+    <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
     <pluginToolsVersion>2.9-SNAPSHOT</pluginToolsVersion>
   </properties>
 
