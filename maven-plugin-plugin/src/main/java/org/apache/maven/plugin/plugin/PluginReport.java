@@ -337,6 +337,7 @@ public class PluginReport
         }
 
         /** {@inheritDoc} */
+        @SuppressWarnings( { "unchecked", "rawtypes" } )
         public void renderBody()
         {
             startSection( getTitle() );
@@ -352,8 +353,7 @@ public class PluginReport
 
 
             boolean hasMavenReport = false;
-            for ( @SuppressWarnings( "unchecked" )
-            Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            for ( Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
             {
                 MojoDescriptor mojo = i.next();
 
@@ -626,6 +626,7 @@ public class PluginReport
          * @param pluginsAsMap could be null
          * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
          */
+        @SuppressWarnings( "rawtypes" )
         private static String discoverJdkRequirementFromPlugins( Map pluginsAsMap )
         {
             if ( pluginsAsMap == null )

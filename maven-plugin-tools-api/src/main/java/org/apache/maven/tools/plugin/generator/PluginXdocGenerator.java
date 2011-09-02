@@ -273,6 +273,18 @@ public class PluginXdocGenerator
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
             w.endElement(); //li
         }
+        
+        if ( mojoDescriptor.isRequiresReports() )
+        {
+            if ( !addedUl )
+            {
+                w.startElement(  "ul" );
+                addedUl = true;
+            }
+            w.startElement( "li" );
+            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.reportingMojo" ) );
+            w.endElement(); // li
+        }
 
         if ( mojoDescriptor.isAggregator() )
         {

@@ -46,6 +46,7 @@ public class MyMojo
      * @parameter
      * @required
      */
+    @SuppressWarnings( "unused" )
     private String required;
 
     /**
@@ -55,6 +56,7 @@ public class MyMojo
      * @deprecated Just testing.
      * @since 1.1
      */
+    @SuppressWarnings( "unused" )
     private String string;
 
     public void execute()

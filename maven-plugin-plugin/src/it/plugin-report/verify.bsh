@@ -14,7 +14,8 @@ try
 
     String[] expectedFiles = {
         "noop-mojo.html",
-        "plugin-info.html",
+        "noop-mojo.html",
+        "report-mojo.html",
     };
     for ( String path : expectedFiles )
     {
