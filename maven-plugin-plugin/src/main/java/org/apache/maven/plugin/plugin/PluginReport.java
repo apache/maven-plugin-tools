@@ -191,7 +191,7 @@ public class PluginReport
         {
             return;
         }
-        if (skip || skipReport)
+        if ( skip || skipReport )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );
             return;

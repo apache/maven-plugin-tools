@@ -55,7 +55,6 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
-import org.w3c.tidy.Configuration;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -264,8 +263,8 @@ public final class PluginUtils
         tidy.setDocType( "loose" );
         tidy.setXHTML( true );
         tidy.setXmlOut( true );
-        tidy.setInputEncoding("UTF-8");
-        tidy.setOutputEncoding("UTF-8");
+        tidy.setInputEncoding( "UTF-8" );
+        tidy.setOutputEncoding( "UTF-8" );
         tidy.setMakeClean( true );
         tidy.setNumEntities( true );
         tidy.setQuoteNbsp( false );
