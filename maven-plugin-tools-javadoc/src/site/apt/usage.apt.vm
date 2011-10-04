@@ -29,7 +29,7 @@
 
 Usage
 
- The taglets could be use directly in the {{{http://maven.apache.org/plugins/maven-javadoc-plugin/}Maven Javadoc Plugin}}.
+ The taglets can be used directly in the {{{/plugins/maven-javadoc-plugin/}Maven Javadoc Plugin}}.
 
 +-----+
 <project>
@@ -105,8 +105,8 @@ Usage
 
 * Resources
 
- * {{{apidocs/index.html}API}}
+ * {{{./apidocs/index.html}API}}
 
- * {{{http://maven.apache.org/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
+ * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
 
  []

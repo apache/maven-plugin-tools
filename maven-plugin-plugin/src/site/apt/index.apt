@@ -29,7 +29,7 @@
 Maven Plugin Plugin
 
  The Maven Plugin Plugin is used to create a Maven plugin descriptor for any
- {{{http://maven.apache.org/general.html#What_is_a_Mojo}Mojo}}'s found in the source tree, to include in the JAR.
+ {{{/general.html#What_is_a_Mojo}Mojo}}'s found in the source tree, to include in the JAR.
  It is also used to generate report files for the Mojos as well as for updating the plugin registry, the artifact
  metadata and generating a generic help goal.
 
@@ -72,7 +72,7 @@ Maven Plugin Plugin
   entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
   Of course, patches are welcome, too. Contributors can check out the project from our
   {{{./source-repository.html}source repository}} and will find supplementary information in the
-  {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
+  {{{/guides/development/guide-helping.html}guide to helping with Maven}}.
 
 * Examples
 
