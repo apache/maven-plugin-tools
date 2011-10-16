@@ -227,6 +227,13 @@ public interface JavaMojoAnnotation
      */
     String REQUIRES_REPORTS = "requiresReports";
 
+    /**
+     * Indicates that this mojo is thread-safe and can be run in parallel
+     *
+     * <b>Note</b>: Should be defined in a Mojo Type.
+     */
+    String THREAD_SAFE = "threadSafe";
+
 
     // ----------------------------------------------------------------------
     // Descriptor for fields i.e. parameters
@@ -350,12 +357,5 @@ public interface JavaMojoAnnotation
      * <b>Note</b>: Could be defined in a Mojo Type or a Mojo Field.
      */
     String DEPRECATED = "deprecated";
-
-    /**
-     * Indicates that this mojo is thread-safe and can be run in parallel
-     *
-     * <b>Note</b>: Should be defined in a Mojo Type.
-     */
-    String THREAD_SAFE = "threadSafe";
 
 }
