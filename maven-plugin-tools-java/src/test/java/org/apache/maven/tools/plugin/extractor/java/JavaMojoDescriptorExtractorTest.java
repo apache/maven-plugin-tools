@@ -55,7 +55,7 @@ public class JavaMojoDescriptorExtractorTest
         return result;
     }
 
-    public List extract( String directory )
+    public List<MojoDescriptor> extract( String directory )
         throws Exception
     {
         JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
@@ -83,7 +83,7 @@ public class JavaMojoDescriptorExtractorTest
     public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
         throws Exception
     {
-        List results = extract( "source" );
+        List<MojoDescriptor> results = extract( "source" );
         
         assertEquals( "Extracted mojos", 2, results.size() );
 
@@ -100,17 +100,18 @@ public class JavaMojoDescriptorExtractorTest
     public void testShouldPropagateImplementationParameter()
         throws Exception
     {
-        List results = extract( "source2" );
+        List<MojoDescriptor> results = extract( "source2" );
 
         assertEquals( 1, results.size() );
 
         MojoDescriptor mojoDescriptor = (MojoDescriptor) results.get( 0 );
 
-        List parameters = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" )
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         assertEquals( 1, parameters.size() );
 
-        Parameter parameter = (Parameter) parameters.get( 0 );
+        Parameter parameter = parameters.get( 0 );
 
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
@@ -118,7 +119,7 @@ public class JavaMojoDescriptorExtractorTest
     public void testMaven30Parameters()
         throws Exception
     {
-        List results = extract( "source2" );
+        List<MojoDescriptor> results = extract( "source2" );
 
         assertEquals( 1, results.size() );
 
@@ -135,7 +136,7 @@ public class JavaMojoDescriptorExtractorTest
     public void testAnnotationInPlugin()
         throws Exception
     {
-        List results = extract( "source3" );
+        List<MojoDescriptor> results = extract( "source3" );
 
         assertEquals( 0, results.size() );
     }
@@ -147,7 +148,7 @@ public class JavaMojoDescriptorExtractorTest
     public void testJava15SyntaxParsing()
         throws Exception
     {
-        List results = extract( "java-1.5" );
+        List<MojoDescriptor> results = extract( "java-1.5" );
 
         assertEquals( 1, results.size() );
     }
