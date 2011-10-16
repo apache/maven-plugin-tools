@@ -35,17 +35,17 @@ Maven Plugin Tools
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 || <<Maven Plugin Tools>>                                                     || <<Overview>>
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}          | Maven Plugin which generates a Plugin report.
-*-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-ant/index.html}maven-plugin-tools-ant}}             | Descriptor extractor for plugins written in Ant.
+| {{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}          | Maven Plugin which generates a descriptors, help, and plugin report.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-api/index.html}maven-plugin-tools-api}}             | API to extract Plugin information.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-beanshell/index.html}maven-plugin-tools-beanshell}} | Descriptor extractor for plugins written in Beanshell.
+| \ \ {{{./maven-plugin-tools-beanshell/index.html}maven-plugin-tools-beanshell}} | Descriptor extractor for plugins written in Beanshell.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-java/index.html}maven-plugin-tools-java}}           | Descriptor extractor for plugins written in Java.
+| \ \ {{{./maven-plugin-tools-java/index.html}maven-plugin-tools-java}}           | Descriptor extractor for plugins written in Java.
+*-----------------------------------------------------------------------------+---------------------------------------------------------+
+| \ \ {{{./maven-plugin-tools-ant/index.html}maven-plugin-tools-ant}}             | Descriptor extractor for plugins written in Ant.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-javadoc/index.html}maven-plugin-tools-javadoc}}     | Provides the support of Mojo Javadoc Tags in the Javadoc Tool.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-model/index.html}maven-plugin-tools-model}}         | API to play with the Maven Plugin Metadata Model.
+| {{{./maven-plugin-tools-model/index.html}maven-plugin-tools-model}}         | API to play with the Maven Plugin Metadata Model for script-based plugins.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
