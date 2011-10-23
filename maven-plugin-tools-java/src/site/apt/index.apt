@@ -2,8 +2,9 @@
  Introduction
  ------
  Vincent Siveton
+ Hervé Boutemy
  ------
- 2008-07-15
+ 2011-10-23
  ------
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -30,3 +31,55 @@ Maven Plugin Tool for Java
 
  The Maven Plugin Tool for Java is the Java impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors for plugins written in Java.
+
+* Supported javadoc annotations
+
++---------+
+import org.apache.maven.plugin.AbstractMojo;
+
+/**
+ * Mojo Description: goal is the only required annotation.
+ *
+ * @goal <goalName>
+ * @aggregator
+ * @configurator <roleHint>
+ * @execute phase="<phaseName>" lifecycle="<lifecycleId>" goal="<goalName>"
+ * @executionStrategy <once-per-session|always>
+ * @inheritByDefault <true|false>
+ * @instantiationStrategy <per-lookup>
+ * @phase <phaseName>
+ * @requiresDependencyResolution <compile|runtime|compile+runtime|test>
+ * @requiresDependencyCollection <compile|runtime|compile+runtime|test> (since Maven 3.0)
+ * @requiresDirectInvocation <true|false>
+ * @requiresOnline <true|false>
+ * @requiresProject <true|false>
+ * @requiresReports <true|false> (unsupported since Maven 3.0)
+ * @threadSafe (since Maven 3.0)
+ * @since <since-text>
+ * @deprecated <deprecated-text>
+ */
+public class MyMojo
+    extends AbstractMojo
+{
+    /**
+     * @parameter alias="myAlias" implementation="" expression="${aSystemProperty}" default-value="${anExpression}"
+     * @component role="..." roleHint="..."
+     * @readonly
+     * @required
+     * @since <since-text>
+     * @deprecated <deprecated-text>
+     */
+    private String parameter;
+
+    public void execute()
+    {
+        ...
+    }
+}
++---------+
+
+* See also
+
+ * {{{/developers/mojo-api-specification.html}Mojo API Specification}}
+
+ * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
