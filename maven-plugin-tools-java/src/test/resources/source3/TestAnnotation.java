@@ -1,8 +1,8 @@
 package source3;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.ANNOTATION_TYPE )
+public @interface TestAnnotation
+{
 
-public @interface TestAnnotation {
-    
 }

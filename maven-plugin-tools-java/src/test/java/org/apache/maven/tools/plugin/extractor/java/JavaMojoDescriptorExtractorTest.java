@@ -28,6 +28,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -55,13 +56,10 @@ public class JavaMojoDescriptorExtractorTest
         return result;
     }
 
-    public List<MojoDescriptor> extract( String directory )
+    protected List<MojoDescriptor> extract( String directory )
         throws Exception
     {
-        JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
-
         File sourceFile = fileOf( "dir-flag.txt" );
-
         File dir = sourceFile.getParentFile();
 
         Model model = new Model();
@@ -77,6 +75,8 @@ public class JavaMojoDescriptorExtractorTest
 
         PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
 
+        MojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
+
         return extractor.execute( request );
     }
 
@@ -87,9 +87,8 @@ public class JavaMojoDescriptorExtractorTest
         
         assertEquals( "Extracted mojos", 2, results.size() );
 
-        for ( int i = 0; i < 2; i++ )
+        for ( MojoDescriptor mojoDescriptor : results )
         {
-            MojoDescriptor mojoDescriptor = (MojoDescriptor) results.get( i );
             assertEquals( 1, mojoDescriptor.getParameters().size() );
             Parameter parameter = (Parameter) mojoDescriptor.getParameters().get( 0 );
             assertEquals( "project", parameter.getName() );
@@ -104,7 +103,7 @@ public class JavaMojoDescriptorExtractorTest
 
         assertEquals( 1, results.size() );
 
-        MojoDescriptor mojoDescriptor = (MojoDescriptor) results.get( 0 );
+        MojoDescriptor mojoDescriptor = results.get( 0 );
 
         @SuppressWarnings( "unchecked" )
         List<Parameter> parameters = mojoDescriptor.getParameters();
