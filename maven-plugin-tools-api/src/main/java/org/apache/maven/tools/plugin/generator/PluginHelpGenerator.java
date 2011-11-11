@@ -247,35 +247,33 @@ public class PluginHelpGenerator
         {
             MojoDescriptor descriptor = it.next();
 
+            String name = "";
+            int next = 1;
+
             String impl = descriptor.getImplementation();
             if ( impl.lastIndexOf( '.' ) != -1 )
             {
-                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
-                if ( packageNames.get( name ) != null )
+                name = impl.substring( 0, impl.lastIndexOf( '.' ) );
+                Integer count = packageNames.get( name );
+
+                if ( count != null )
                 {
-                    int next = ( (Integer) packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name, new Integer( next ) );
-                }
-                else
-                {
-                    packageNames.put( name, new Integer( 1 ) );
+                    next = count.intValue() + 1;
                 }
             }
-            else
-            {
-                packageNames.put( "", new Integer( 1 ) );
-            }
+
+            packageNames.put( name, next );
         }
 
         String packageName = "";
         int max = 0;
-        for ( String key : packageNames.keySet() )
+        for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
         {
-            int value = ( (Integer) packageNames.get( key ) ).intValue();
+            int value = entry.getValue().intValue();
             if ( value > max )
             {
                 max = value;
-                packageName = key;
+                packageName = entry.getKey();
             }
         }
 
@@ -378,6 +376,10 @@ public class PluginHelpGenerator
             catch ( IOException e )
             {
                 // nope
+            }
+            finally
+            {
+                IOUtil.close( resourceAsStream );
             }
         }
 
@@ -512,10 +514,8 @@ public class PluginHelpGenerator
 
         writer.write( LS );
 
-        for ( Iterator<MojoDescriptor> it = mojoDescriptors.iterator(); it.hasNext(); )
+        for ( MojoDescriptor descriptor : mojoDescriptors )
         {
-            MojoDescriptor descriptor = it.next();
-
             writeGoal( writer, descriptor );
         }
 
