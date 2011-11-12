@@ -29,10 +29,20 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +51,13 @@ import java.util.List;
 public class JavaMojoDescriptorExtractorTest
     extends TestCase
 {
+    private File root;
+
+    protected void setUp()
+    {
+        File sourceFile = fileOf( "dir-flag.txt" );
+        root = sourceFile.getParentFile();
+    }
 
     private File fileOf( String classpathResource )
     {
@@ -56,28 +73,48 @@ public class JavaMojoDescriptorExtractorTest
         return result;
     }
 
-    protected List<MojoDescriptor> extract( String directory )
-        throws Exception
+    private PluginToolsRequest createRequest( String directory )
     {
-        File sourceFile = fileOf( "dir-flag.txt" );
-        File dir = sourceFile.getParentFile();
-
         Model model = new Model();
         model.setArtifactId( "maven-unitTesting-plugin" );
 
         MavenProject project = new MavenProject( model );
 
-        project.setFile( new File( dir, "pom.xml" ) );
-        project.addCompileSourceRoot( new File( dir, directory ).getPath() );
+        project.setFile( new File( root, "pom.xml" ) );
+        project.addCompileSourceRoot( new File( root, directory ).getPath() );
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix( "test" );
+        pluginDescriptor.setDependencies( new ArrayList<ComponentDependency>() );
 
-        PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
+        return new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
+    }
 
+    protected PluginDescriptor generate( String directory )
+        throws Exception
+    {
         MojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
+        PluginToolsRequest request = createRequest( directory );
 
-        return extractor.execute( request );
+        List<MojoDescriptor> mojoDescriptors = extractor.execute( request );
+
+        for ( MojoDescriptor mojoDescriptor : mojoDescriptors )
+        {
+            request.getPluginDescriptor().addMojo( mojoDescriptor );
+        }
+
+        Generator descriptorGenerator = new PluginDescriptorGenerator();
+
+        descriptorGenerator.execute( new File( root, directory ), request );
+
+        return request.getPluginDescriptor();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected List<MojoDescriptor> extract( String directory )
+        throws Exception
+    {
+        return generate( directory ).getMojos();
     }
 
     public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
@@ -137,7 +174,7 @@ public class JavaMojoDescriptorExtractorTest
     {
         List<MojoDescriptor> results = extract( "source3" );
 
-        assertEquals( 0, results.size() );
+        assertNull( results );
     }
     
     /**
