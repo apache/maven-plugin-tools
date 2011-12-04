@@ -33,6 +33,9 @@ import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.net.URL;
@@ -84,6 +87,9 @@ public class JavaMojoDescriptorExtractorTest
         return new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
     }
 
+    /**
+     * generate plugin.xml for a test resources directory content.
+     */
     protected PluginDescriptor generate( String directory )
         throws Exception
     {
@@ -104,11 +110,42 @@ public class JavaMojoDescriptorExtractorTest
         return request.getPluginDescriptor();
     }
 
+    /**
+     * compare mojos from generated plugin.xml against plugin-expected.xml
+     */
+    protected void checkExpected( String directory )
+        throws Exception
+    {
+        File testDirectory = new File( root, directory );
+
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLUnit.setIgnoreComments( true );
+        
+        Document expected =
+            XMLUnit.buildControlDocument( FileUtils.fileRead( new File( testDirectory, "plugin-expected.xml" ), "UTF-8" ) );
+        Document actual =
+            XMLUnit.buildTestDocument( FileUtils.fileRead( new File( testDirectory, "plugin.xml" ), "UTF-8" ) );
+
+        Diff diff = XMLUnit.compareXML( expected, actual );
+
+        if ( !diff.identical() )
+        {
+            fail( "generated plugin.xml is not identital as plugin-expected.xml for " + directory + ": " + diff );
+        }
+    }
+
+    /**
+     * extract plugin descriptor for test resources directory and check against plugin-expected.xml
+     */
     @SuppressWarnings( "unchecked" )
     protected List<MojoDescriptor> extract( String directory )
         throws Exception
     {
-        return generate( directory ).getMojos();
+        PluginDescriptor descriptor = generate( directory );
+
+        checkExpected( directory );
+
+        return descriptor.getMojos();
     }
 
     public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
