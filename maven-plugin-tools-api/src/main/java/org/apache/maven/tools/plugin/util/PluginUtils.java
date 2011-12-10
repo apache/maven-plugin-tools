@@ -413,11 +413,8 @@ public final class PluginUtils
             Collections.sort( mojoDescriptors, new Comparator<MojoDescriptor>()
             {
                 /** {@inheritDoc} */
-                public int compare( MojoDescriptor arg0, MojoDescriptor arg1 )
+                public int compare( MojoDescriptor mojo0, MojoDescriptor mojo1 )
                 {
-                    MojoDescriptor mojo0 = arg0;
-                    MojoDescriptor mojo1 = arg1;
-
                     return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
                 }
             } );
