@@ -30,16 +30,16 @@
   <inheritedByDefault>true</inheritedByDefault>
   <mojos>
     <mojo>
-      <goal>ideaTwo</goal>
+      <goal>ideaOne</goal>
       <description>Create an IDEA project file from a Maven project.</description>
-      <requiresDependencyResolution>compile</requiresDependencyResolution>
+      <requiresDependencyResolution>runtime</requiresDependencyResolution>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
       <requiresReports>false</requiresReports>
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>source.JavaExtractorTestTwo</implementation>
+      <implementation>source.JavaExtractorTestOne</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -55,16 +55,16 @@
       </parameters>
     </mojo>
     <mojo>
-      <goal>ideaOne</goal>
+      <goal>ideaTwo</goal>
       <description>Create an IDEA project file from a Maven project.</description>
-      <requiresDependencyResolution>runtime</requiresDependencyResolution>
+      <requiresDependencyResolution>compile</requiresDependencyResolution>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
       <requiresReports>false</requiresReports>
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>source.JavaExtractorTestOne</implementation>
+      <implementation>source.JavaExtractorTestTwo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>

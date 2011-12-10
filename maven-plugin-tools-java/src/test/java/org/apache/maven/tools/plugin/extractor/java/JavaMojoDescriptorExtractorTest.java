@@ -31,6 +31,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
 import org.custommonkey.xmlunit.Diff;
@@ -98,8 +99,14 @@ public class JavaMojoDescriptorExtractorTest
 
         List<MojoDescriptor> mojoDescriptors = extractor.execute( request );
 
+        // to ensure order against plugin-expected.xml
+        PluginUtils.sortMojos( mojoDescriptors );
+
         for ( MojoDescriptor mojoDescriptor : mojoDescriptors )
         {
+            // to ensure order against plugin-expected.xml
+            PluginUtils.sortMojoParameters( mojoDescriptor.getParameters() );
+
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
@@ -130,8 +137,7 @@ public class JavaMojoDescriptorExtractorTest
 
         if ( !diff.identical() )
         {
-            // elements order is not the same on every machine, cause problems with lists...
-            //fail( "generated plugin.xml is not identital as plugin-expected.xml for " + directory + ": " + diff );
+            fail( "generated plugin.xml is not identical as plugin-expected.xml for " + directory + ": " + diff );
         }
     }
 
