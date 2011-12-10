@@ -31,7 +31,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -113,11 +112,10 @@ public final class PluginUtils
     {
         w.startElement( "dependencies" );
 
-        for ( @SuppressWarnings( "unchecked" )
-        Iterator<ComponentDependency> it = pluginDescriptor.getDependencies().iterator(); it.hasNext(); )
+        @SuppressWarnings( "unchecked" )
+        List<ComponentDependency> deps = pluginDescriptor.getDependencies();
+        for ( ComponentDependency dep : deps )
         {
-            ComponentDependency dep = it.next();
-
             w.startElement( "dependency" );
 
             PluginUtils.element( w, "groupId", dep.getGroupId() );
@@ -205,42 +203,35 @@ public final class PluginUtils
             }
             catch ( DependencyResolutionRequiredException e )
             {
-                throw (RuntimeException) new IllegalArgumentException().initCause( e );
+                throw new IllegalArgumentException( e );
             }
 
             List<URL> urls = new ArrayList<URL>( classPathStrings.size() );
-            for ( Iterator<String> it = classPathStrings.iterator(); it.hasNext(); )
+            for ( String classPathString : classPathStrings )
             {
                 try
                 {
-                    urls.add( new File( ( (String) it.next() ) ).toURL() );
+                    urls.add( new File( classPathString ).toURL() );
                 }
                 catch ( MalformedURLException e )
                 {
-                    throw (RuntimeException) new IllegalArgumentException().initCause( e );
+                    throw new IllegalArgumentException( e );
                 }
             }
 
-            classLoader = new URLClassLoader( (URL[]) urls.toArray( new URL[urls.size()] ),
-                                                                    classLoader );
+            classLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ), classLoader );
         }
 
-        Class<?> clazz = null;
         try
         {
-            clazz = Class.forName( impl, false, classLoader );
+            Class<?> clazz = Class.forName( impl, false, classLoader );
+
+            return MavenReport.class.isAssignableFrom( clazz );
         }
         catch ( ClassNotFoundException e )
         {
             return false;
         }
-
-        if ( MavenReport.class.isAssignableFrom( clazz ) )
-        {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -447,11 +438,8 @@ public final class PluginUtils
             Collections.sort( parameters, new Comparator<Parameter>()
             {
                 /** {@inheritDoc} */
-                public int compare( Parameter arg0, Parameter arg1 )
+                public int compare( Parameter parameter1, Parameter parameter2 )
                 {
-                    Parameter parameter1 = (Parameter) arg0;
-                    Parameter parameter2 = (Parameter) arg1;
-
                     return parameter1.getName().compareToIgnoreCase( parameter2.getName() );
                 }
             } );
@@ -587,7 +575,7 @@ public final class PluginUtils
             }
             else if ( HTML.Tag.LI.equals( t ) )
             {
-                Counter counter = (Counter) numbering.peek();
+                Counter counter = numbering.peek();
                 if ( counter == null )
                 {
                     text( "-\t" );

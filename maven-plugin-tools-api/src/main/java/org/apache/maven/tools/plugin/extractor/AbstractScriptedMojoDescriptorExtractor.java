@@ -171,9 +171,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
 
                 String[] relativePaths = scanner.getIncludedFiles();
 
-                for ( int i = 0; i < relativePaths.length; i++ )
+                for ( String relativePath : relativePaths )
                 {
-                    String relativePath = relativePaths[i];
                     File scriptFile = new File( dir, relativePath ).getAbsoluteFile();
 
                     if ( scriptFile.isFile() && relativePath.endsWith( scriptFileExtension ) )

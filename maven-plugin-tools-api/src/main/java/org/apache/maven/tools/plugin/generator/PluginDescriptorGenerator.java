@@ -316,7 +316,7 @@ public class PluginDescriptorGenerator
                                      extendedMojoDescriptor.getDependencyCollectionRequired() );
             }
 
-            PluginUtils.element( w, "threadSafe", "" + extendedMojoDescriptor.isThreadSafe() );
+            PluginUtils.element( w, "threadSafe", String.valueOf( extendedMojoDescriptor.isThreadSafe() ) );
         }
 
         // ----------------------------------------------------------------------

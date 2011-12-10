@@ -91,7 +91,7 @@ public class DefaultMojoScanner
 
         for ( String language : activeExtractorsInternal )
         {
-            MojoDescriptorExtractor extractor = (MojoDescriptorExtractor) mojoDescriptorExtractors.get( language );
+            MojoDescriptorExtractor extractor = mojoDescriptorExtractors.get( language );
 
             if ( extractor == null )
             {
