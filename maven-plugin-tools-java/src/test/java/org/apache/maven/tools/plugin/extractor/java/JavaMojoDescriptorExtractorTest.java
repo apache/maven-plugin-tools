@@ -155,22 +155,6 @@ public class JavaMojoDescriptorExtractorTest
         return descriptor.getMojos();
     }
 
-    public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "source" );
-        
-        assertEquals( "Extracted mojos", 2, results.size() );
-
-        for ( MojoDescriptor mojoDescriptor : results )
-        {
-            assertEquals( 1, mojoDescriptor.getParameters().size() );
-            Parameter parameter = (Parameter) mojoDescriptor.getParameters().get( 0 );
-            assertEquals( "project", parameter.getName() );
-            assertEquals( "java.lang.String[]", parameter.getType() );
-        }
-    }
-
     public void testShouldPropagateImplementationParameter()
         throws Exception
     {

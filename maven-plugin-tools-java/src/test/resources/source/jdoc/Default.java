@@ -1,4 +1,4 @@
-package source;
+package source.jdoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,25 +20,36 @@ package source;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.tools.plugin.scanner.MojoScanner;
 
 /**
- * Create an IDEA project file from a Maven project.
+ * Test default values.
  *
- * @goal ideaOne
- * @requiresDependencyResolution
+ * @goal default-values
  */
-public class JavaExtractorTestOne
+public class Default
     extends AbstractMojo
 {
     /**
-     * Maven project used to generate IDEA project files.
+     * A parameter.
      *
      * @parameter
-     * @required
      */
-    protected String[] project;
+    protected String[] parameter;
 
-    public JavaExtractorTestOne()
+    /**
+     * An attribute not published as parameter.
+     */
+    protected String[] attribute;
+
+    /**
+     * A component.
+     * 
+     * @component
+     */
+    private MojoScanner component;
+
+    public Default()
     {
     }
 

@@ -30,54 +30,84 @@
   <inheritedByDefault>true</inheritedByDefault>
   <mojos>
     <mojo>
-      <goal>ideaOne</goal>
-      <description>Create an IDEA project file from a Maven project.</description>
-      <requiresDependencyResolution>runtime</requiresDependencyResolution>
+      <goal>default-values</goal>
+      <description>Test default values.</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
       <requiresReports>false</requiresReports>
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>source.JavaExtractorTestOne</implementation>
+      <implementation>source.jdoc.Default</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
       <threadSafe>false</threadSafe>
       <parameters>
         <parameter>
-          <name>project</name>
+          <name>parameter</name>
           <type>java.lang.String[]</type>
-          <required>true</required>
+          <required>false</required>
           <editable>true</editable>
-          <description>Maven project used to generate IDEA project files.</description>
+          <description>A parameter.</description>
         </parameter>
       </parameters>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.tools.plugin.scanner.MojoScanner</role>
+          <field-name>component</field-name>
+        </requirement>
+      </requirements>
     </mojo>
     <mojo>
-      <goal>ideaTwo</goal>
-      <description>Create an IDEA project file from a Maven project.</description>
-      <requiresDependencyResolution>compile</requiresDependencyResolution>
-      <requiresDirectInvocation>false</requiresDirectInvocation>
-      <requiresProject>true</requiresProject>
-      <requiresReports>false</requiresReports>
-      <aggregator>false</aggregator>
-      <requiresOnline>false</requiresOnline>
-      <inheritedByDefault>true</inheritedByDefault>
-      <implementation>source.JavaExtractorTestTwo</implementation>
+      <goal>full-annotations</goal>
+      <description>Test defining every javadoc annotation.</description>
+      <requiresDependencyResolution>compile+runtime</requiresDependencyResolution>
+      <requiresDirectInvocation>true</requiresDirectInvocation>
+      <requiresProject>false</requiresProject>
+      <requiresReports>true</requiresReports>
+      <aggregator>true</aggregator>
+      <requiresOnline>true</requiresOnline>
+      <inheritedByDefault>false</inheritedByDefault>
+      <phase>install</phase>
+      <executePhase>site-deploy</executePhase>
+      <executeLifecycle>site</executeLifecycle>
+      <implementation>source.jdoc.Full</implementation>
       <language>java</language>
-      <instantiationStrategy>per-lookup</instantiationStrategy>
+      <configurator>&quot;role-hint&quot;</configurator>
+      <instantiationStrategy>singleton</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
-      <threadSafe>false</threadSafe>
+      <deprecated>deprecation text test</deprecated>
+      <requiresDependencyCollection>test</requiresDependencyCollection>
+      <threadSafe>true</threadSafe>
       <parameters>
         <parameter>
-          <name>project</name>
-          <type>java.lang.String[]</type>
+          <name>file</name>
+          <alias>myAlias</alias>
+          <type>java.io.File</type>
+          <deprecated>after tomorrow</deprecated>
           <required>true</required>
+          <editable>false</editable>
+          <description></description>
+        </parameter>
+        <parameter>
+          <name>parameter</name>
+          <type>java.lang.String[]</type>
+          <required>false</required>
           <editable>true</editable>
-          <description>Maven project used to generate IDEA project files.</description>
+          <description>A parameter.</description>
         </parameter>
       </parameters>
+      <configuration>
+        <file implementation="java.io.File" default-value="${anExpression}">${aSystemProperty}</file>
+      </configuration>
+      <requirements>
+        <requirement>
+          <role>role</role>
+          <role-hint>hint</role-hint>
+          <field-name>component</field-name>
+        </requirement>
+      </requirements>
     </mojo>
   </mojos>
   <dependencies/>
