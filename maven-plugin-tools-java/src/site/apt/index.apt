@@ -46,14 +46,14 @@ import org.apache.maven.plugin.AbstractMojo;
  * @execute phase="<phaseName>" lifecycle="<lifecycleId>" goal="<goalName>"
  * @executionStrategy <once-per-session|always>
  * @inheritByDefault <true|false>
- * @instantiationStrategy <per-lookup>
+ * @instantiationStrategy <per-lookup|singleton|keep-alive|poolable>
  * @phase <phaseName>
  * @requiresDependencyResolution <compile|runtime|compile+runtime|test>
  * @requiresDependencyCollection <compile|runtime|compile+runtime|test> (since Maven 3.0)
- * @requiresDirectInvocation <true|false>
- * @requiresOnline <true|false>
+ * @requiresDirectInvocation <false|true>
+ * @requiresOnline <false|true>
  * @requiresProject <true|false>
- * @requiresReports <true|false> (unsupported since Maven 3.0)
+ * @requiresReports <false|true> (unsupported since Maven 3.0)
  * @threadSafe (since Maven 3.0)
  * @since <since-text>
  * @deprecated <deprecated-text>
@@ -63,13 +63,21 @@ public class MyMojo
 {
     /**
      * @parameter alias="myAlias" implementation="" expression="${aSystemProperty}" default-value="${anExpression}"
-     * @component role="..." roleHint="..."
      * @readonly
      * @required
      * @since <since-text>
      * @deprecated <deprecated-text>
      */
     private String parameter;
+
+    /**
+     * @component role="..." roleHint="..."
+     * @readonly
+     * @required
+     * @since <since-text>
+     * @deprecated <deprecated-text>
+     */
+    private Component component;
 
     public void execute()
     {
@@ -80,6 +88,6 @@ public class MyMojo
 
 * See also
 
- * {{{/developers/mojo-api-specification.html}Mojo API Specification}}
+ * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
 
  * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
