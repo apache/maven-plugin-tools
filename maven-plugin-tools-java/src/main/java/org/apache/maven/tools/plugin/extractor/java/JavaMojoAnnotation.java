@@ -20,7 +20,7 @@ package org.apache.maven.tools.plugin.extractor.java;
  */
 
 /**
- * List all Javadoc annotations used to describe a Mojo.
+ * List of all Javadoc annotations used to describe a java Mojo.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
@@ -60,7 +60,7 @@ public interface JavaMojoAnnotation
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Type.
      * <br/>
-     * <b>Note</b>: Mojo's description is auto-detect.
+     * <b>Note</b>: Mojo's description is auto-detected.
      */
     String DESCRIPTION = "description";
 
@@ -81,7 +81,7 @@ public interface JavaMojoAnnotation
     String EXECUTE_GOAL = "goal";
 
     /**
-     * The Mojo will be invoke in a parallel lifecycle.
+     * The Mojo will be invoked in a parallel lifecycle.
      * <br/>
      * Refer to <code>&#64;execute lifecycle="&lt;lifecycleId&gt;"</code>.
      * <br/>
@@ -90,7 +90,7 @@ public interface JavaMojoAnnotation
     String EXECUTE_LIFECYCLE = "lifecycle";
 
     /**
-     * The Mojo will be invoke in a parallel lifecycle, ending at the given phase.
+     * The Mojo will be invoked in a parallel lifecycle, ending at the given phase.
      * <br/>
      * Refer to <code>&#64;execute phase="&lt;phaseName&gt;"</code>.
      * <br/>
@@ -123,7 +123,7 @@ public interface JavaMojoAnnotation
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Type.
      * <br/>
-     * <b>Note</b>: Mojo's implementation is auto-detect.
+     * <b>Note</b>: Mojo's implementation is auto-detected.
      */
     String IMPLEMENTATION = "implementation";
 
@@ -150,12 +150,12 @@ public interface JavaMojoAnnotation
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Type.
      * <br/>
-     * <b>Note</b>: Mojo's implementation is auto-detect.
+     * <b>Note</b>: Mojo's implementation is auto-detected.
      */
     String LANGUAGE = "language";
 
     /**
-     * Specifies the execution strategy
+     * Specifies the execution strategy.
      * <br/>
      * Refer to <code>&#64;attainAlways</code>.
      * <br/>
@@ -172,8 +172,8 @@ public interface JavaMojoAnnotation
 
     /**
      * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be resolved
-     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>, and
-     * <code>test</code> scopes.
+     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>,
+     * <code>compile+runtime</code> and <code>test</code> scopes.
      * <br/>
      * Refer to <code>&#64;requiresDependencyResolution &lt;requiredScope&gt;</code>.
      * <br/>
@@ -183,8 +183,8 @@ public interface JavaMojoAnnotation
 
     /**
      * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be collected
-     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>, and
-     * <code>test</code> scopes.
+     * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>,
+     * <code>compile+runtime</code> and <code>test</code> scopes.
      * <br/>
      * Refer to <code>&#64;requiresDependencyCollection &lt;requiredScope&gt;</code>.
      * <br/>
@@ -228,7 +228,7 @@ public interface JavaMojoAnnotation
     String REQUIRES_REPORTS = "requiresReports";
 
     /**
-     * Indicates that this mojo is thread-safe and can be run in parallel
+     * Indicates that this mojo is thread-safe and can be run in parallel.
      *
      * <b>Note</b>: Should be defined in a Mojo Type.
      */
@@ -240,7 +240,7 @@ public interface JavaMojoAnnotation
     // ----------------------------------------------------------------------
 
     /**
-     * Populates the field with an instance of a Plexus component. This is like declaring a requirement in a
+     * Populate the field with an instance of a Plexus component. This is like declaring a requirement in a
      * Plexus component.
      * <br/>
      * Refer to <code>&#64;component ...</code>.
@@ -281,7 +281,7 @@ public interface JavaMojoAnnotation
     String PARAMETER_ALIAS = "alias";
 
     /**
-     * This defines the default value to be injected into this parameter of the Mojo at buildtime.
+     * This defines the default value to be injected into this parameter of the Mojo at build time.
      * <br/>
      * Refer to <code>&#64;parameter default-value="..."</code>.
      * <br/>
@@ -291,7 +291,7 @@ public interface JavaMojoAnnotation
 
     /**
      * This defines the expression used to calculate the value to be injected into this parameter of the
-     * Mojo at buildtime.
+     * Mojo at build time.
      * <br/>
      * Refer to <code>&#64;parameter expression="..."</code>.
      * <br/>
@@ -332,7 +332,7 @@ public interface JavaMojoAnnotation
     String READONLY = "readonly";
 
     /**
-     * Whether this parameter is required for the Mojo to function
+     * Specifies that this parameter is required for the Mojo to function.
      * <br/>
      * Refer to <code>&#64;required</code>.
      * <br/>
