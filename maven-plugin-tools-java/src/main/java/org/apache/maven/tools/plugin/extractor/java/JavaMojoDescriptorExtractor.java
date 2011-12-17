@@ -43,7 +43,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -588,6 +587,8 @@ public class JavaMojoDescriptorExtractor
     }
 
     /**
+     * extract fields that are either parameters or components.
+     * 
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
@@ -612,10 +613,8 @@ public class JavaMojoDescriptorExtractor
 
         if ( classFields != null )
         {
-            for ( int i = 0; i < classFields.length; i++ )
+            for ( JavaField field : classFields )
             {
-                JavaField field = classFields[i];
-
                 if ( field.getTagByName( JavaMojoAnnotation.PARAMETER ) != null
                     || field.getTagByName( JavaMojoAnnotation.COMPONENT ) != null )
                 {
@@ -641,13 +640,13 @@ public class JavaMojoDescriptorExtractor
 
         List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
 
-        for ( int i = 0; i < javaClasses.length; i++ )
+        for ( JavaClass javaClass : javaClasses )
         {
-            DocletTag tag = javaClasses[i].getTagByName( GOAL );
+            DocletTag tag = javaClass.getTagByName( GOAL );
 
             if ( tag != null )
             {
-                MojoDescriptor mojoDescriptor = createMojoDescriptor( javaClasses[i] );
+                MojoDescriptor mojoDescriptor = createMojoDescriptor( javaClass );
                 mojoDescriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
                 // Validate the descriptor as best we can before allowing it to be processed.
@@ -664,6 +663,7 @@ public class JavaMojoDescriptorExtractor
      * @param request The plugin request.
      * @return an array of java class
      */
+    @SuppressWarnings( "unchecked" )
     protected JavaClass[] discoverClasses( final PluginToolsRequest request )
     {
         JavaDocBuilder builder = new JavaDocBuilder();
@@ -671,17 +671,16 @@ public class JavaMojoDescriptorExtractor
         
         MavenProject project = request.getProject();
 
-        for ( @SuppressWarnings( "unchecked" )
-        Iterator<String> i = project.getCompileSourceRoots().iterator(); i.hasNext(); )
+        for ( String source : (List<String>) project.getCompileSourceRoots() )
         {
-            builder.addSourceTree( new File( i.next() ) );
+            builder.addSourceTree( new File( source ) );
         }
 
         // TODO be more dynamic
-        if ( !project.getCompileSourceRoots()
-            .contains( new File( project.getBasedir(), "target/generated-sources/plugin" ).getAbsolutePath() ) )
+        File generatedPlugin = new File( project.getBasedir(), "target/generated-sources/plugin" );
+        if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() ) )
         {
-            builder.addSourceTree( new File( project.getBasedir(), "target/generated-sources/plugin" ) );
+            builder.addSourceTree( generatedPlugin );
         }
 
         return builder.getClasses();
