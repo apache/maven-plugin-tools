@@ -155,6 +155,14 @@ public class JavaMojoDescriptorExtractorTest
         return descriptor.getMojos();
     }
 
+    public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
+        throws Exception
+    {
+        List<MojoDescriptor> results = extract( "source" );
+
+        assertEquals( "Extracted mojos", 2, results.size() );
+    }
+
     public void testShouldPropagateImplementationParameter()
         throws Exception
     {

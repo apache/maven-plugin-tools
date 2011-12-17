@@ -271,14 +271,24 @@ public class JavaMojoDescriptorExtractor
         {
             mojoDescriptor.setInstantiationStrategy( tag.getValue() );
         }
+
+        // executionStrategy (and deprecated @attainAlways)
         tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY );
         if ( tag != null )
         {
+            getLogger().warn( "@" + JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in "
+                                  + javaClass.getFullyQualifiedName() + " is deprecated: please use '@"
+                                  + JavaMojoAnnotation.EXECUTION_STATEGY + " always' instead.");
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
         }
         else
         {
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY );
+        }
+        tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.EXECUTION_STATEGY );
+        if ( tag != null )
+        {
+            mojoDescriptor.setExecutionStrategy( tag.getValue() );
         }
 
         // Phase name

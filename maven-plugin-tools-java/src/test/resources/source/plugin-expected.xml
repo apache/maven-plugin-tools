@@ -76,7 +76,7 @@
       <language>java</language>
       <configurator>&quot;role-hint&quot;</configurator>
       <instantiationStrategy>singleton</instantiationStrategy>
-      <executionStrategy>once-per-session</executionStrategy>
+      <executionStrategy>always</executionStrategy>
       <deprecated>deprecation text test</deprecated>
       <requiresDependencyCollection>test</requiresDependencyCollection>
       <threadSafe>true</threadSafe>

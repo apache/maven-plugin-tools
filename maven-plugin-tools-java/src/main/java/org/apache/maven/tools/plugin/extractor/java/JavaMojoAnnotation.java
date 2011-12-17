@@ -160,6 +160,7 @@ public interface JavaMojoAnnotation
      * Refer to <code>&#64;attainAlways</code>.
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * @deprecated use <code>&#64executionStrategy always</code> instead
      */
     String MULTI_EXECUTION_STRATEGY = "attainAlways";
 
