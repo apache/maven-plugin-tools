@@ -35,9 +35,9 @@ Maven Plugin Tools
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 || <<Maven Plugin Tools>>                                                     || <<Overview>>
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}          | Maven Plugin which generates a descriptors, help, and plugin report.
+| <<{{{../plugins/maven-plugin-plugin/index.html}maven-plugin-plugin}}>>      | Create a Maven plugin descriptor for any mojos found in the source tree, to include in the JAR.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-api/index.html}maven-plugin-tools-api}}             | API to extract Plugin information.
+| {{{./maven-plugin-tools-api/index.html}maven-plugin-tools-api}}             | API used by maven-plugin-plugin to extract Plugin information.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | \ \ {{{./maven-plugin-tools-beanshell/index.html}maven-plugin-tools-beanshell}} | Descriptor extractor for plugins written in Beanshell.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
