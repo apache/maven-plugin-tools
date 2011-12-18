@@ -38,7 +38,7 @@
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>source.jdoc.Default</implementation>
+      <implementation>source.Default</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -72,7 +72,7 @@
       <phase>install</phase>
       <executePhase>site-deploy</executePhase>
       <executeLifecycle>site</executeLifecycle>
-      <implementation>source.jdoc.Full</implementation>
+      <implementation>source.Full</implementation>
       <language>java</language>
       <configurator>&quot;role-hint&quot;</configurator>
       <instantiationStrategy>singleton</instantiationStrategy>

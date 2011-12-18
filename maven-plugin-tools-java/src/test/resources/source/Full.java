@@ -1,4 +1,4 @@
-package source.jdoc;
+package source;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,15 +19,32 @@ package source.jdoc;
  * under the License.
  */
 
+import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 
 /**
- * Test default values.
+ * Test defining every javadoc annotation.
  *
- * @goal default-values
+ * @goal full-annotations
+ * @aggregator
+ * @configurator "role-hint"
+ * @execute phase="site-deploy" lifecycle="site"
+ * @executionStrategy always
+ * @inheritByDefault false
+ * @instantiationStrategy singleton
+ * @phase install
+ * @requiresDependencyResolution compile+runtime
+ * @requiresDependencyCollection test
+ * @requiresDirectInvocation true
+ * @requiresOnline true
+ * @requiresProject false
+ * @requiresReports true
+ * @threadSafe
+ * @since now
+ * @deprecated deprecation text test
  */
-public class Default
+public class Full
     extends AbstractMojo
 {
     /**
@@ -38,18 +55,26 @@ public class Default
     protected String[] parameter;
 
     /**
-     * An attribute not published as parameter.
+     * @parameter alias="myAlias" expression="${aSystemProperty}" default-value="${anExpression}"
+     * @readonly
+     * @required
+     * @since tomorrow
+     * @deprecated after tomorrow
      */
-    protected String[] attribute;
+    private File file;
 
     /**
      * A component.
      * 
-     * @component
+     * @component role="role" roleHint="hint"
+     * @readonly
+     * @required
+     * @since tomorrow
+     * @deprecated after tomorrow
      */
     private MojoScanner component;
 
-    public Default()
+    public Full()
     {
     }
 
