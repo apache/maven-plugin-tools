@@ -274,30 +274,23 @@
     <profile>
       <id>run-its</id>
       <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <configuration>
-              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-              <filterProperties>
-                <sitePluginVersion>3.0</sitePluginVersion>
-              </filterProperties>
-              <goals>
-                <goal>verify</goal>
-              </goals>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-invoker-plugin</artifactId>
+              <configuration>
+                <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                <filterProperties>
+                  <sitePluginVersion>3.0</sitePluginVersion>
+                </filterProperties>
                 <goals>
-                  <goal>install</goal>
-                  <goal>run</goal>
+                  <goal>verify</goal>
                 </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>
