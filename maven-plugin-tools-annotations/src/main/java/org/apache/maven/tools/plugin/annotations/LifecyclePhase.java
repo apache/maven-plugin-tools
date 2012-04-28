@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.annotations;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public enum LifecyclePhase
 {

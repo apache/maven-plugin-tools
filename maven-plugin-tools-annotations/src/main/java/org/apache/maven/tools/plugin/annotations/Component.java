@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
