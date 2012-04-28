@@ -60,7 +60,6 @@
 
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
-    <pluginToolsVersion>3.0-SNAPSHOT</pluginToolsVersion>
     <doxiaVersion>1.2</doxiaVersion>
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
   </properties>
@@ -72,22 +71,22 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-api</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-model</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-java</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-beanshell</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>

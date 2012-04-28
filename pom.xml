@@ -155,7 +155,6 @@
   </distributionManagement>
 
   <properties>
-    <pluginToolsVersion>${project.version}</pluginToolsVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
   </properties>
 
@@ -165,22 +164,22 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-api</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-model</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-java</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-beanshell</artifactId>
-        <version>${pluginToolsVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
