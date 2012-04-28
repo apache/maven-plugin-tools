@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>maven-plugin-plugin</artifactId>
-  <version>2.10-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Maven Plugin Plugin</name>
@@ -60,7 +60,7 @@
 
   <properties>
     <mavenVersion>2.0.6</mavenVersion>
-    <pluginToolsVersion>2.10-SNAPSHOT</pluginToolsVersion>
+    <pluginToolsVersion>3.0-SNAPSHOT</pluginToolsVersion>
     <doxiaVersion>1.2</doxiaVersion>
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
   </properties>
