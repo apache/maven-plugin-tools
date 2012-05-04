@@ -30,6 +30,12 @@
       <role>org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor</role>
       <role-hint>java-annotations</role-hint>
       <implementation>org.apache.maven.tools.plugin.annotations.JavaAnnotationsMojoDescriptorExtractor</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner</role>
+          <role-hint>default</role-hint>
+        </requirement>
+      </requirements>
     </component>
 
     <component>

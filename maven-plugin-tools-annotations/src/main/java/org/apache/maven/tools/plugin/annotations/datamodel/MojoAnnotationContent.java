@@ -27,6 +27,7 @@ import java.lang.annotation.Annotation;
  * @author Olivier Lamy
  */
 public class MojoAnnotationContent
+    extends AnnotatedContent
     implements Mojo
 {
     private String name;

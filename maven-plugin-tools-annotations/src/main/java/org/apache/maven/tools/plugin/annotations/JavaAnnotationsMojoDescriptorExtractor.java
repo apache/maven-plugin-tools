@@ -25,10 +25,16 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
+import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,6 +44,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
+
+    /**
+     * @requirement
+     */
+    MojoAnnotationsScanner mojoAnnotationsScanner;
 
     public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
@@ -50,12 +61,50 @@ public class JavaAnnotationsMojoDescriptorExtractor
     {
         try
         {
-            List<String> classpathElements = request.getProject().getCompileClasspathElements();
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
+            List<File> classesDirectories = toFiles( request.getProject().getCompileClasspathElements() );
+            mojoAnnotationsScannerRequest.setClassesDirectories( classesDirectories );
+
+            List<MojoAnnotatedClass> mojoAnnotatedClasses =
+                mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+
+            return toMojoDescriptors( mojoAnnotatedClasses );
         }
         catch ( DependencyResolutionRequiredException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
+    }
+
+    private List<File> toFiles( List<String> directories )
+    {
+        if ( directories == null )
+        {
+            return Collections.emptyList();
+        }
+        List<File> files = new ArrayList<File>( directories.size() );
+        for ( String directory : directories )
+        {
+            files.add( new File( directory ) );
+        }
+        return files;
+    }
+
+    private List<MojoDescriptor> toMojoDescriptors( List<MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+        List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
+        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
+        {
+            MojoDescriptor mojoDescriptor = new MojoDescriptor();
+
+            Mojo mojo = mojoAnnotatedClass.getMojo();
+
+            mojoDescriptor.setAggregator( mojo.aggregator() );
+            mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
+            mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
+
+            mojoDescriptors.add( mojoDescriptor );
+        }
+        return mojoDescriptors;
     }
 }

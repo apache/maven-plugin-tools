@@ -21,33 +21,41 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
 /**
  * @author Olivier Lamy
  */
-public class AnnotatedField
-    extends AnnotatedContent
+public class AnnotatedContent
 {
-    private String fieldName;
+    private String description;
 
-    public AnnotatedField( String fieldName )
+    private String since;
+
+    private String deprecated;
+
+    public String getDescription()
     {
-        this.fieldName = fieldName;
+        return description;
     }
 
-    public String getFieldName()
+    public void setDescription( String description )
     {
-        return fieldName;
+        this.description = description;
     }
 
-    public void setFieldName( String name )
+    public String getSince()
     {
-        this.fieldName = name;
+        return since;
     }
 
-    @Override
-    public String toString()
+    public void setSince( String since )
     {
-        final StringBuilder sb = new StringBuilder();
-        sb.append( "AnnotatedField" );
-        sb.append( "{fieldName='" ).append( fieldName ).append( '\'' );
-        sb.append( '}' );
-        return sb.toString();
+        this.since = since;
+    }
+
+    public String getDeprecated()
+    {
+        return deprecated;
+    }
+
+    public void setDeprecated( String deprecated )
+    {
+        this.deprecated = deprecated;
     }
 }
