@@ -25,6 +25,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
@@ -98,12 +99,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             MojoDescriptor mojoDescriptor = new MojoDescriptor();
 
-            Mojo mojo = mojoAnnotatedClass.getMojo();
+            MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
-
+            mojoDescriptor.setDeprecated( mojo.getDeprecated() );
             mojoDescriptors.add( mojoDescriptor );
         }
         return mojoDescriptors;

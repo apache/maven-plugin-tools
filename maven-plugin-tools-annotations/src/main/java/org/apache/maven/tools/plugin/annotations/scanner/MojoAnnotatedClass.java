@@ -18,9 +18,9 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.Execute;
-import org.apache.maven.tools.plugin.annotations.Mojo;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ public class MojoAnnotatedClass
 
     private String parentClassName;
 
-    private Mojo mojo;
+    private MojoAnnotationContent mojo;
 
-    private Execute execute;
+    private ExecuteAnnotationContent execute;
 
     private List<ParameterAnnotationContent> parameters;
 
@@ -60,23 +60,23 @@ public class MojoAnnotatedClass
         return this;
     }
 
-    public Mojo getMojo()
+    public MojoAnnotationContent getMojo()
     {
         return mojo;
     }
 
-    public MojoAnnotatedClass setMojo( Mojo mojo )
+    public MojoAnnotatedClass setMojo( MojoAnnotationContent mojo )
     {
         this.mojo = mojo;
         return this;
     }
 
-    public Execute getExecute()
+    public ExecuteAnnotationContent getExecute()
     {
         return execute;
     }
 
-    public MojoAnnotatedClass setExecute( Execute execute )
+    public MojoAnnotatedClass setExecute( ExecuteAnnotationContent execute )
     {
         this.execute = execute;
         return this;
