@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class ParameterAnnotationContent
     extends AnnotatedField

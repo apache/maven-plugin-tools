@@ -27,6 +27,7 @@ import org.objectweb.asm.Type;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class MojoFieldVisitor
     implements FieldVisitor

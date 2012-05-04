@@ -36,6 +36,7 @@ import java.util.Map;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class MojoClassVisitor
     implements ClassVisitor

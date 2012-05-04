@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class AnnotatedContent
 {

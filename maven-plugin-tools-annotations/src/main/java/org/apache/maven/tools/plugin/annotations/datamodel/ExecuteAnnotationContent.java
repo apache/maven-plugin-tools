@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class ExecuteAnnotationContent
     implements Execute

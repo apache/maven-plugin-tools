@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * @author Olivier Lamy
+ * @since 3.0
  */
 public class MojoAnnotationsScannerRequest
 {
