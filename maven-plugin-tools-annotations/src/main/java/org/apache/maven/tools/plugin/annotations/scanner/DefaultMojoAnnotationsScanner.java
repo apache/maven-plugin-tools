@@ -66,7 +66,6 @@ public class DefaultMojoAnnotationsScanner
                 if ( classDirectory.exists() && classDirectory.isDirectory() )
                 {
                     mojoAnnotatedClasses.putAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
-                    // TODO scan sources to get @since and @deprecated and description of classes and fields.
                 }
             }
 

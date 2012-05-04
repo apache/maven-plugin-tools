@@ -19,6 +19,7 @@ package org.apache.maven.tools.plugin.annotations;
  */
 
 import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
@@ -28,6 +29,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
@@ -44,6 +46,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +85,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
             Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
                 mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
 
-            JavaClass[] javaClasses = discoverClasses( request );
+            Map<String, JavaClass> javaClassesMap = discoverClasses( request );
+
+            populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
 
             return toMojoDescriptors( mojoAnnotatedClasses, request );
         }
@@ -92,7 +97,61 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
     }
 
-    protected JavaClass[] discoverClasses( final PluginToolsRequest request )
+    /**
+     * from sources scan to get @since and @deprecated and description of classes and fields.
+     *
+     * @param mojoAnnotatedClasses
+     * @param javaClassesMap
+     */
+    protected void populateDataFromJavadoc( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+                                            Map<String, JavaClass> javaClassesMap )
+    {
+
+        for ( Map.Entry<String, MojoAnnotatedClass> entry : mojoAnnotatedClasses.entrySet() )
+        {
+            JavaClass javaClass = javaClassesMap.get( entry.getKey() );
+            if ( javaClass != null )
+            {
+                entry.getValue().getMojo().setDescription( javaClass.getComment() );
+                DocletTag since = findInClassHierarchy( javaClass, "since" );
+                if ( since != null )
+                {
+                    entry.getValue().getMojo().setSince( since.getValue() );
+                }
+
+                DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
+                if ( deprecated != null )
+                {
+                    entry.getValue().getMojo().setDeprecated( deprecated.getValue() );
+                }
+            }
+        }
+
+    }
+
+    /**
+     * @param javaClass not null
+     * @param tagName   not null
+     * @return docletTag instance
+     */
+    private static DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
+    {
+        DocletTag tag = javaClass.getTagByName( tagName );
+
+        if ( tag == null )
+        {
+            JavaClass superClass = javaClass.getSuperJavaClass();
+
+            if ( superClass != null )
+            {
+                tag = findInClassHierarchy( superClass, tagName );
+            }
+        }
+
+        return tag;
+    }
+
+    protected Map<String, JavaClass> discoverClasses( final PluginToolsRequest request )
     {
         JavaDocBuilder builder = new JavaDocBuilder();
         builder.setEncoding( request.getEncoding() );
@@ -111,7 +170,21 @@ public class JavaAnnotationsMojoDescriptorExtractor
             builder.addSourceTree( generatedPlugin );
         }
 
-        return builder.getClasses();
+        JavaClass[] javaClasses = builder.getClasses();
+
+        if ( javaClasses == null || javaClasses.length < 1 )
+        {
+            return Collections.emptyMap();
+        }
+
+        Map<String, JavaClass> javaClassMap = new HashMap<String, JavaClass>( javaClasses.length );
+
+        for ( JavaClass javaClass : javaClasses )
+        {
+            javaClassMap.put( javaClass.getFullyQualifiedName(), javaClass );
+        }
+
+        return javaClassMap;
     }
 
     private List<File> toFiles( List<String> directories )
@@ -135,7 +208,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
         {
-            MojoDescriptor mojoDescriptor = new MojoDescriptor();
+            ExtendedMojoDescriptor mojoDescriptor = new ExtendedMojoDescriptor();
 
             //mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
             //mojoDescriptor.setRoleHint( "default" );
@@ -144,10 +217,15 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
 
+            mojoDescriptor.setDescription( mojo.getDescription() );
+            mojoDescriptor.setSince( mojo.getSince() );
+            mojo.setDeprecated( mojo.getDeprecated() );
+
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
+            mojoDescriptor.setThreadSafe( mojo.threadSafe() );
 
             ExecuteAnnotationContent execute = mojoAnnotatedClass.getExecute();
 
@@ -176,7 +254,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
-                // FIXME olamy wtf ?
                 parameter.setEditable( !parameterAnnotationContent.readonly() );
                 parameter.setExpression( parameterAnnotationContent.expression() );
                 mojoDescriptor.addParameter( parameter );
@@ -190,6 +267,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setRequirement(
                     new Requirement( componentAnnotationContent.role(), componentAnnotationContent.roleHint() ) );
                 parameter.setEditable( false );
+
                 mojoDescriptor.addParameter( parameter );
             }
 
