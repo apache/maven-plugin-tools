@@ -62,11 +62,18 @@ under the License.
         </configuration>
         <executions>
           <execution>
+            <id>mojo-descriptor</id>
+            <phase>process-classes</phase>
             <goals>
               <goal>descriptor</goal>
             </goals>
-            <id>mojo-descriptor</id>
+          </execution>
+          <execution>
+            <id>help-goal</id>
             <phase>process-classes</phase>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
