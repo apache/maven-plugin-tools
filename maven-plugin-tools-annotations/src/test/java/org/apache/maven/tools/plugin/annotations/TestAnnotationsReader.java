@@ -18,11 +18,12 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
-import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.codehaus.plexus.PlexusTestCase;
 import org.fest.assertions.Assertions;
 
@@ -53,6 +54,9 @@ public class TestAnnotationsReader
         Assertions.assertThat( mojoAnnotatedClasses ).isNotNull().isNotEmpty().hasSize( 1 );
 
         MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.get( 0 );
+
+        assertEquals( FooMojo.class.getName(), mojoAnnotatedClass.getClassName() );
+        assertEquals( AbstractMojo.class.getName(), mojoAnnotatedClass.getParentClassName() );
 
         Mojo mojo = mojoAnnotatedClass.getMojo();
 
