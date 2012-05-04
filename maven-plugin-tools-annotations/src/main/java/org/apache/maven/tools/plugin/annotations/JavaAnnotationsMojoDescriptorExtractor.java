@@ -40,6 +40,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,8 +70,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
         try
         {
             MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
-            List<File> classesDirectories = toFiles( request.getProject().getCompileClasspathElements() );
-            mojoAnnotationsScannerRequest.setClassesDirectories( classesDirectories );
+
+            mojoAnnotationsScannerRequest.setClassesDirectories(
+                Arrays.asList( new File( request.getProject().getBuild().getOutputDirectory() ) ) );
+
+            mojoAnnotationsScannerRequest.setDependencies( request.getProject().getCompileClasspathElements() );
 
             List<MojoAnnotatedClass> mojoAnnotatedClasses =
                 mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );

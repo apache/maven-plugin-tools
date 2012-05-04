@@ -35,6 +35,8 @@ public class MojoAnnotationsScannerRequest
 
     private List<String> includePatterns = Arrays.asList( "**/*.class" );
 
+    private List<File> sourceDirectories = new ArrayList<File>();
+
     public MojoAnnotationsScannerRequest()
     {
         // no o
@@ -68,5 +70,15 @@ public class MojoAnnotationsScannerRequest
     public void setIncludePatterns( List<String> includePatterns )
     {
         this.includePatterns = includePatterns;
+    }
+
+    public List<File> getSourceDirectories()
+    {
+        return sourceDirectories;
+    }
+
+    public void setSourceDirectories( List<File> sourceDirectories )
+    {
+        this.sourceDirectories = sourceDirectories;
     }
 }

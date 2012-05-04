@@ -63,8 +63,16 @@ public class DefaultMojoAnnotationsScanner
         {
             for ( File classDirectory : request.getClassesDirectories() )
             {
-                mojoAnnotatedClasses.addAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
+                if ( classDirectory.exists() && classDirectory.isDirectory() )
+                {
+                    mojoAnnotatedClasses.addAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
+                    // TODO scan sources to get @since and @deprecated and description of classes and fields.
+                }
             }
+
+
+            //TODO scan dependencies to get super class annotations if exist request.getDependencies()
+
             return mojoAnnotatedClasses;
         }
         catch ( IOException e )
