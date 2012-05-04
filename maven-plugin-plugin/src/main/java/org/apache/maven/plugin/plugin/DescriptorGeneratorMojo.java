@@ -34,7 +34,7 @@ import java.io.File;
  * @version $Id$
  * @since 2.0
  * @goal descriptor
- * @phase generate-resources
+ * @phase process-classes
  * @requiresDependencyResolution runtime
  */
 public class DescriptorGeneratorMojo

@@ -79,7 +79,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             List<MojoAnnotatedClass> mojoAnnotatedClasses =
                 mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
 
-            return toMojoDescriptors( mojoAnnotatedClasses );
+            return toMojoDescriptors( mojoAnnotatedClasses, request );
         }
         catch ( DependencyResolutionRequiredException e )
         {
@@ -101,7 +101,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return files;
     }
 
-    private List<MojoDescriptor> toMojoDescriptors( List<MojoAnnotatedClass> mojoAnnotatedClasses )
+    private List<MojoDescriptor> toMojoDescriptors( List<MojoAnnotatedClass> mojoAnnotatedClasses,
+                                                    PluginToolsRequest request )
         throws DuplicateParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
@@ -109,17 +110,25 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             MojoDescriptor mojoDescriptor = new MojoDescriptor();
 
+            //mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
+            //mojoDescriptor.setRoleHint( "default" );
+            mojoDescriptor.setImplementation( mojoAnnotatedClass.getClassName() );
+
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
-            ExecuteAnnotationContent execute = mojoAnnotatedClass.getExecute();
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
 
-            mojoDescriptor.setExecuteGoal( execute.goal() );
-            mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
-            mojoDescriptor.setExecutePhase( execute.phase().id() );
+            ExecuteAnnotationContent execute = mojoAnnotatedClass.getExecute();
+
+            if ( execute != null )
+            {
+                mojoDescriptor.setExecuteGoal( execute.goal() );
+                mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
+                mojoDescriptor.setExecutePhase( execute.phase().id() );
+            }
 
             mojoDescriptor.setExecutionStrategy( mojo.executionStrategy() );
             // FIXME olamy wtf ?
@@ -156,6 +165,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setEditable( false );
                 mojoDescriptor.addParameter( parameter );
             }
+
+            mojoDescriptor.setPluginDescriptor( request.getPluginDescriptor() );
 
             mojoDescriptors.add( mojoDescriptor );
         }

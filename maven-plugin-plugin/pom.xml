@@ -62,6 +62,7 @@
     <mavenVersion>2.0.6</mavenVersion>
     <doxiaVersion>1.2</doxiaVersion>
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
+    <it.debug>true</it.debug>
   </properties>
 
   <!-- Copy from project up -->
@@ -292,6 +293,7 @@
               <configuration>
                 <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                 <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                <debug>${it.debug}</debug>
                 <filterProperties>
                   <sitePluginVersion>3.0</sitePluginVersion>
                 </filterProperties>

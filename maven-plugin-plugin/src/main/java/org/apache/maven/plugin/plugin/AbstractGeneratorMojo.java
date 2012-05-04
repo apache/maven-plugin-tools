@@ -80,6 +80,15 @@ public abstract class AbstractGeneratorMojo
     protected String goalPrefix;
 
     /**
+     * By default an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
+     * descriptor generator mojo is bound to generate-resources phase.
+     * But for annotations, the compiled classes are needed, so skip error
+     * @parameter expression="${maven.plugin.skipErrorNoDescriptorsFound}" default-value="false"
+     * @since 3.0
+     */
+    protected boolean skipErrorNoDescriptorsFound;
+
+    /**
      * The role names of mojo extractors to use.
      * <p/>
      * If not set, all mojo extractors will be used. If set to an empty extractor name, no mojo extractors
@@ -193,6 +202,7 @@ public abstract class AbstractGeneratorMojo
             
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
+            request.setSkipErrorNoDescriptorsFound( skipErrorNoDescriptorsFound );
 
             mojoScanner.populatePluginDescriptor( request );
 

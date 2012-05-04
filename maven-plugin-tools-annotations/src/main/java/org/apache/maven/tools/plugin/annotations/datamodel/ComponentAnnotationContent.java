@@ -49,7 +49,7 @@ public class ComponentAnnotationContent
 
     public String role()
     {
-        return role;
+        return role == null ? "" : role;
     }
 
     public void role( String role )
@@ -59,7 +59,7 @@ public class ComponentAnnotationContent
 
     public String roleHint()
     {
-        return roleHint;
+        return roleHint == null ? "" : roleHint;
     }
 
     public void roleHint( String roleHint )

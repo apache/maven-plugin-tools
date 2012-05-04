@@ -44,6 +44,8 @@ public class DefaultPluginToolsRequest
 
     private String encoding = DEFAULT_ENCODING;
 
+    private boolean skipErrorNoDescriptorsFound;
+
     public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
     {
         this.project = project;
@@ -109,4 +111,20 @@ public class DefaultPluginToolsRequest
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSkipErrorNoDescriptorsFound()
+    {
+        return skipErrorNoDescriptorsFound;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound )
+    {
+        this.skipErrorNoDescriptorsFound = skipErrorNoDescriptorsFound;
+        return this;
+    }
 }
