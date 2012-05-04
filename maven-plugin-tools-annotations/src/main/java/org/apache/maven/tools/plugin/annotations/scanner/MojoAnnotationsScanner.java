@@ -26,6 +26,7 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olivier Lamy
@@ -41,6 +42,6 @@ public interface MojoAnnotationsScanner
     static final List<String> acceptedFieldLevelAnnotationClasses =
         Arrays.asList( Parameter.class.getName(), Component.class.getName() );
 
-    List<MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
+    Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException;
 }

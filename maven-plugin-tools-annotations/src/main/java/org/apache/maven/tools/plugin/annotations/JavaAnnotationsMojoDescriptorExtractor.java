@@ -18,6 +18,8 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
+import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olivier Lamy
@@ -76,8 +79,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoAnnotationsScannerRequest.setDependencies( request.getProject().getCompileClasspathElements() );
 
-            List<MojoAnnotatedClass> mojoAnnotatedClasses =
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
                 mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+
+            JavaClass[] javaClasses = discoverClasses( request );
 
             return toMojoDescriptors( mojoAnnotatedClasses, request );
         }
@@ -85,6 +90,28 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             throw new ExtractionException( e.getMessage(), e );
         }
+    }
+
+    protected JavaClass[] discoverClasses( final PluginToolsRequest request )
+    {
+        JavaDocBuilder builder = new JavaDocBuilder();
+        builder.setEncoding( request.getEncoding() );
+
+        MavenProject project = request.getProject();
+
+        for ( String source : (List<String>) project.getCompileSourceRoots() )
+        {
+            builder.addSourceTree( new File( source ) );
+        }
+
+        // TODO be more dynamic
+        File generatedPlugin = new File( project.getBasedir(), "target/generated-sources/plugin" );
+        if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() ) )
+        {
+            builder.addSourceTree( generatedPlugin );
+        }
+
+        return builder.getClasses();
     }
 
     private List<File> toFiles( List<String> directories )
@@ -101,18 +128,19 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return files;
     }
 
-    private List<MojoDescriptor> toMojoDescriptors( List<MojoAnnotatedClass> mojoAnnotatedClasses,
+    private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                                     PluginToolsRequest request )
         throws DuplicateParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
-        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
+        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
         {
             MojoDescriptor mojoDescriptor = new MojoDescriptor();
 
             //mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
             //mojoDescriptor.setRoleHint( "default" );
             mojoDescriptor.setImplementation( mojoAnnotatedClass.getClassName() );
+            mojoDescriptor.setLanguage( "java" );
 
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
 
@@ -138,7 +166,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoDescriptor.setOnlineRequired( mojo.requiresOnline() );
 
             mojoDescriptor.setPhase( mojo.defaultPhase().id() );
-            mojoDescriptor.setLanguage( "java" );
 
             for ( ParameterAnnotationContent parameterAnnotationContent : mojoAnnotatedClass.getParameters() )
             {

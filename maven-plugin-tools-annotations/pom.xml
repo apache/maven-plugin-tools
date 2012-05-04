@@ -71,6 +71,12 @@
       <artifactId>asm-commons</artifactId>
       <version>3.3.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.qdox</groupId>
+      <artifactId>qdox</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

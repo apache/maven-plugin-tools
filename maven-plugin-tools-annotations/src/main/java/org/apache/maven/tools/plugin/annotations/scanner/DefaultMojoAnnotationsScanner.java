@@ -41,7 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,21 +55,20 @@ public class DefaultMojoAnnotationsScanner
 {
     private Reflector reflector = new Reflector();
 
-    public List<MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
+    public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException
     {
-        List<MojoAnnotatedClass> mojoAnnotatedClasses = new ArrayList<MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
         try
         {
             for ( File classDirectory : request.getClassesDirectories() )
             {
                 if ( classDirectory.exists() && classDirectory.isDirectory() )
                 {
-                    mojoAnnotatedClasses.addAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
+                    mojoAnnotatedClasses.putAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
                     // TODO scan sources to get @since and @deprecated and description of classes and fields.
                 }
             }
-
 
             //TODO scan dependencies to get super class annotations if exist request.getDependencies()
 
@@ -81,10 +80,10 @@ public class DefaultMojoAnnotationsScanner
         }
     }
 
-    protected List<MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns )
+    protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns )
         throws IOException, ExtractionException
     {
-        List<MojoAnnotatedClass> mojoAnnotatedClasses = new ArrayList<MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classDirectory );
         scanner.addDefaultExcludes();
@@ -110,7 +109,8 @@ public class DefaultMojoAnnotationsScanner
                     analyzeVisitors( mojoClassVisitor );
                     if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
-                        mojoAnnotatedClasses.add( mojoClassVisitor.getMojoAnnotatedClass() );
+                        mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
+                                                  mojoClassVisitor.getMojoAnnotatedClass() );
                     }
 
                 }

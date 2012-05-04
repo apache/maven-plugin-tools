@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olivier Lamy
@@ -50,13 +51,13 @@ public class TestAnnotationsReader
         request.setClassesDirectories( Collections.singletonList( new File( "target/test-classes" ) ) );
         request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );
 
-        List<MojoAnnotatedClass> mojoAnnotatedClasses = mojoAnnotationsScanner.scan( request );
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = mojoAnnotationsScanner.scan( request );
 
         System.out.println( "mojoAnnotatedClasses:" + mojoAnnotatedClasses );
 
         Assertions.assertThat( mojoAnnotatedClasses ).isNotNull().isNotEmpty().hasSize( 1 );
 
-        MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.get( 0 );
+        MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.values().iterator().next();
 
         assertEquals( FooMojo.class.getName(), mojoAnnotatedClass.getClassName() );
         assertEquals( AbstractMojo.class.getName(), mojoAnnotatedClass.getParentClassName() );
