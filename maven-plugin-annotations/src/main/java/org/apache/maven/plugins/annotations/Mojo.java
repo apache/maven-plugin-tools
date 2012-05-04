@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations;
+package org.apache.maven.plugins.annotations;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +18,7 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -31,17 +32,35 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.METHOD } )
+@Target( ElementType.TYPE )
 @Inherited
-public @interface Parameter
+public @interface Mojo
 {
-    String alias() default "";
+    String name();
 
-    String expression() default "";
+    LifecyclePhase defaultPhase() default LifecyclePhase.NONE;
 
-    String defaultValue() default "";
+    String requiresDependencyResolution() default "runtime";
 
-    boolean required() default false;
+    String requiresDependencyCollection() default "runtime";
 
-    boolean readonly() default false;
+    String instantiationStrategy() default "per-lookup";
+
+    String executionStrategy() default "once-per-session";
+
+    boolean requiresProject() default true;
+
+    boolean requiresReports() default false;
+
+    boolean aggregator() default false;
+
+    boolean requiresDirectInvocation() default false;
+
+    boolean requiresOnline() default false;
+
+    boolean inheritByDefault() default true;
+
+    String configurator() default "";
+
+    boolean threadSafe() default false;
 }

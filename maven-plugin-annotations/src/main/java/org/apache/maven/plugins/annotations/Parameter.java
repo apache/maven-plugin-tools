@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations;
+package org.apache.maven.plugins.annotations;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,13 +31,17 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.TYPE )
+@Target( { ElementType.FIELD, ElementType.METHOD } )
 @Inherited
-public @interface Execute
+public @interface Parameter
 {
-    LifecyclePhase phase() default LifecyclePhase.NONE;
+    String alias() default "";
 
-    String goal() default "";
+    String expression() default "";
 
-    String lifecycle() default "";
+    String defaultValue() default "";
+
+    boolean required() default false;
+
+    boolean readonly() default false;
 }

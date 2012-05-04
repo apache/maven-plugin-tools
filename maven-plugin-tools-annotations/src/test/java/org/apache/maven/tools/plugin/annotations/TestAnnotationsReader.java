@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.annotations;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;

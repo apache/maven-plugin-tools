@@ -18,7 +18,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.Parameter;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.lang.annotation.Annotation;
 

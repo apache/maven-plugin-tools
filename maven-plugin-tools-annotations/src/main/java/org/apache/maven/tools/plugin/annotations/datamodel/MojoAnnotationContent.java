@@ -18,8 +18,8 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.LifecyclePhase;
-import org.apache.maven.tools.plugin.annotations.Mojo;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 import java.lang.annotation.Annotation;
 
