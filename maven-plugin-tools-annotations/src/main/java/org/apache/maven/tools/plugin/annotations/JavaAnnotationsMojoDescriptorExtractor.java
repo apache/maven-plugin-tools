@@ -19,13 +19,18 @@ package org.apache.maven.tools.plugin.annotations;
  */
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
@@ -93,6 +98,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     private List<MojoDescriptor> toMojoDescriptors( List<MojoAnnotatedClass> mojoAnnotatedClasses )
+        throws DuplicateParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
@@ -100,11 +106,53 @@ public class JavaAnnotationsMojoDescriptorExtractor
             MojoDescriptor mojoDescriptor = new MojoDescriptor();
 
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
+            ExecuteAnnotationContent execute = mojoAnnotatedClass.getExecute();
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
+
+            mojoDescriptor.setExecuteGoal( execute.goal() );
+            mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
+            mojoDescriptor.setExecutePhase( execute.phase().id() );
+
+            mojoDescriptor.setExecutionStrategy( mojo.executionStrategy() );
+            // FIXME olamy wtf ?
+            //mojoDescriptor.alwaysExecute(mojo.a)
+
+            mojoDescriptor.setGoal( mojo.name() );
+            mojoDescriptor.setOnlineRequired( mojo.requiresOnline() );
+
+            mojoDescriptor.setPhase( mojo.defaultPhase().id() );
+            mojoDescriptor.setLanguage( "java" );
+
+            for ( ParameterAnnotationContent parameterAnnotationContent : mojoAnnotatedClass.getParameters() )
+            {
+                org.apache.maven.plugin.descriptor.Parameter parameter =
+                    new org.apache.maven.plugin.descriptor.Parameter();
+                parameter.setName( parameterAnnotationContent.getFieldName() );
+                parameter.setAlias( parameterAnnotationContent.alias() );
+                parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
+                parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
+                parameter.setDescription( parameterAnnotationContent.getDescription() );
+                // FIXME olamy wtf ?
+                parameter.setEditable( !parameterAnnotationContent.readonly() );
+                parameter.setExpression( parameterAnnotationContent.expression() );
+                mojoDescriptor.addParameter( parameter );
+            }
+
+            for ( ComponentAnnotationContent componentAnnotationContent : mojoAnnotatedClass.getComponents() )
+            {
+                org.apache.maven.plugin.descriptor.Parameter parameter =
+                    new org.apache.maven.plugin.descriptor.Parameter();
+                parameter.setName( componentAnnotationContent.getFieldName() );
+                parameter.setRequirement(
+                    new Requirement( componentAnnotationContent.role(), componentAnnotationContent.roleHint() ) );
+                parameter.setEditable( false );
+                mojoDescriptor.addParameter( parameter );
+            }
+
             mojoDescriptors.add( mojoDescriptor );
         }
         return mojoDescriptors;
