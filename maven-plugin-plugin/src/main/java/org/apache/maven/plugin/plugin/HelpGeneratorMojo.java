@@ -32,7 +32,7 @@ import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
  * @version $Id$
  * @since 2.4
  * @goal helpmojo
- * @phase process-classes
+ * @phase generate-sources
  */
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo

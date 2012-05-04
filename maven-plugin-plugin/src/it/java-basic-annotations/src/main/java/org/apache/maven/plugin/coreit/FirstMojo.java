@@ -41,6 +41,9 @@ public class FirstMojo
     extends AbstractMojo
 {
 
+    /**
+     * Project directory.
+     */
     @Parameter( defaultValue = "${basedir}", readonly = true )
     private File basedir;
 

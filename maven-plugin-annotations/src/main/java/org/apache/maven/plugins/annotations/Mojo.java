@@ -42,7 +42,7 @@ public @interface Mojo
 
     String requiresDependencyResolution() default "runtime";
 
-    String requiresDependencyCollection() default "runtime";
+    String requiresDependencyCollection() default "";
 
     String instantiationStrategy() default "per-lookup";
 

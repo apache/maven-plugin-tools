@@ -37,7 +37,7 @@ public class MojoAnnotationContent
 
     private String requiresDependencyResolution = "runtime";
 
-    private String requiresDependencyCollection = "runtime";
+    private String requiresDependencyCollection;
 
     private String instantiationStrategy = "per-lookup";
 
@@ -86,7 +86,7 @@ public class MojoAnnotationContent
 
     public String requiresDependencyCollection()
     {
-        return requiresDependencyCollection;
+        return requiresDependencyCollection == null ? "" : requiresDependencyCollection;
     }
 
     public void requiresDependencyCollection( String requiresDependencyCollection )

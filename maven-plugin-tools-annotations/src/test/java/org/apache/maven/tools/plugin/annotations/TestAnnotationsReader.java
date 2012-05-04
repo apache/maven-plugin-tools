@@ -32,8 +32,8 @@ import org.fest.assertions.Assertions;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,12 +75,12 @@ public class TestAnnotationsReader
         assertEquals( "my-lifecycle", execute.lifecycle() );
         assertEquals( LifecyclePhase.PACKAGE, execute.phase() );
 
-        List<ComponentAnnotationContent> components = mojoAnnotatedClass.getComponents();
+        Collection<ComponentAnnotationContent> components = mojoAnnotatedClass.getComponents().values();
         Assertions.assertThat( components ).isNotNull().isNotEmpty().hasSize( 2 );
 
-        List<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters();
+        Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
         Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
-            new ParameterAnnotationContent( "bar", null, "${thebar}", null, false, false ),
-            new ParameterAnnotationContent( "beer", null, "${thebeer}", null, false, false ) );
+            new ParameterAnnotationContent( "bar", null, "${thebar}", null, true, false, String.class.getName() ),
+            new ParameterAnnotationContent( "beer", null, "${thebeer}", null, false, false, String.class.getName() ) );
     }
 }

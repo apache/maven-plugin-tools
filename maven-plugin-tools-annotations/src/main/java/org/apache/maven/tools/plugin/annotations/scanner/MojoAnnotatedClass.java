@@ -23,8 +23,8 @@ import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationCont
 import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olivier Lamy
@@ -40,9 +40,15 @@ public class MojoAnnotatedClass
 
     private ExecuteAnnotationContent execute;
 
-    private List<ParameterAnnotationContent> parameters;
+    /**
+     * key is field name
+     */
+    private Map<String, ParameterAnnotationContent> parameters;
 
-    private List<ComponentAnnotationContent> components;
+    /**
+     * key is field name
+     */
+    private Map<String, ComponentAnnotationContent> components;
 
     public MojoAnnotatedClass()
     {
@@ -82,31 +88,31 @@ public class MojoAnnotatedClass
         return this;
     }
 
-    public List<ParameterAnnotationContent> getParameters()
+    public Map<String, ParameterAnnotationContent> getParameters()
     {
         if ( this.parameters == null )
         {
-            this.parameters = new ArrayList<ParameterAnnotationContent>();
+            this.parameters = new HashMap<String, ParameterAnnotationContent>();
         }
         return parameters;
     }
 
-    public MojoAnnotatedClass setParameters( List<ParameterAnnotationContent> parameters )
+    public MojoAnnotatedClass setParameters( Map<String, ParameterAnnotationContent> parameters )
     {
         this.parameters = parameters;
         return this;
     }
 
-    public List<ComponentAnnotationContent> getComponents()
+    public Map<String, ComponentAnnotationContent> getComponents()
     {
         if ( this.components == null )
         {
-            this.components = new ArrayList<ComponentAnnotationContent>();
+            this.components = new HashMap<String, ComponentAnnotationContent>();
         }
         return components;
     }
 
-    public MojoAnnotatedClass setComponents( List<ComponentAnnotationContent> components )
+    public MojoAnnotatedClass setComponents( Map<String, ComponentAnnotationContent> components )
     {
         this.components = components;
         return this;

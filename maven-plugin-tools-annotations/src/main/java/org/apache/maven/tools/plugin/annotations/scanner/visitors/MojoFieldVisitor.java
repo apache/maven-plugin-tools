@@ -38,10 +38,13 @@ public class MojoFieldVisitor
 
     private MojoAnnotationVisitor mojoAnnotationVisitor;
 
-    MojoFieldVisitor( Logger logger, String fieldName )
+    private String className;
+
+    MojoFieldVisitor( Logger logger, String fieldName, String className )
     {
         this.logger = logger;
         this.fieldName = fieldName;
+        this.className = className;
     }
 
     public MojoAnnotationVisitor getMojoAnnotationVisitor()
@@ -74,5 +77,15 @@ public class MojoFieldVisitor
     public void visitEnd()
     {
         logger.debug( "MojoFieldVisitor#visitEnd" );
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName( String className )
+    {
+        this.className = className;
     }
 }

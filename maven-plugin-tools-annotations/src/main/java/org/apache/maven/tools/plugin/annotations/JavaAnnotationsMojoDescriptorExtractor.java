@@ -21,6 +21,7 @@ package org.apache.maven.tools.plugin.annotations;
 import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -49,6 +50,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Olivier Lamy
@@ -124,6 +126,48 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 {
                     entry.getValue().getMojo().setDeprecated( deprecated.getValue() );
                 }
+
+                Map<String, JavaField> fieldsMap = extractFieldParameterTags( javaClass );
+                for ( Map.Entry<String, ParameterAnnotationContent> parameter : entry.getValue().getParameters().entrySet() )
+                {
+                    JavaField javaField = fieldsMap.get( parameter.getKey() );
+                    if ( javaField != null )
+                    {
+                        ParameterAnnotationContent parameterAnnotationContent = parameter.getValue();
+                        deprecated = javaField.getTagByName( "deprecated" );
+                        if ( deprecated != null )
+                        {
+                            parameterAnnotationContent.setDeprecated( deprecated.getValue() );
+                        }
+                        since = javaField.getTagByName( "since" );
+                        if ( since != null )
+                        {
+                            parameterAnnotationContent.setSince( since.getValue() );
+                        }
+                        parameterAnnotationContent.setDescription( javaField.getComment() );
+                    }
+                }
+
+                for ( Map.Entry<String, ComponentAnnotationContent> component : entry.getValue().getComponents().entrySet() )
+                {
+                    JavaField javaField = fieldsMap.get( component.getKey() );
+                    if ( javaField != null )
+                    {
+                        ComponentAnnotationContent componentAnnotationContent = component.getValue();
+                        deprecated = javaField.getTagByName( "deprecated" );
+                        if ( deprecated != null )
+                        {
+                            componentAnnotationContent.setDeprecated( deprecated.getValue() );
+                        }
+                        since = javaField.getTagByName( "since" );
+                        if ( since != null )
+                        {
+                            componentAnnotationContent.setSince( since.getValue() );
+                        }
+                        componentAnnotationContent.setDescription( javaField.getComment() );
+                    }
+                }
+
             }
         }
 
@@ -149,6 +193,41 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
 
         return tag;
+    }
+
+    /**
+     * extract fields that are either parameters or components.
+     *
+     * @param javaClass not null
+     * @return map with Mojo parameters names as keys
+     */
+    private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass )
+    {
+        Map<String, JavaField> rawParams;
+
+        // we have to add the parent fields first, so that they will be overwritten by the local fields if
+        // that actually happens...
+        JavaClass superClass = javaClass.getSuperJavaClass();
+
+        if ( superClass != null )
+        {
+            rawParams = extractFieldParameterTags( superClass );
+        }
+        else
+        {
+            rawParams = new TreeMap<String, JavaField>();
+        }
+
+        JavaField[] classFields = javaClass.getFields();
+
+        if ( classFields != null )
+        {
+            for ( JavaField field : classFields )
+            {
+                rawParams.put( field.getName(), field );
+            }
+        }
+        return rawParams;
     }
 
     protected Map<String, JavaClass> discoverClasses( final PluginToolsRequest request )
@@ -208,6 +287,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
         {
+            // no mojo so skip it
+            if ( mojoAnnotatedClass.getMojo() == null )
+            {
+                continue;
+            }
+
             ExtendedMojoDescriptor mojoDescriptor = new ExtendedMojoDescriptor();
 
             //mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
@@ -223,6 +308,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution() );
+            mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection() );
+
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
             mojoDescriptor.setThreadSafe( mojo.threadSafe() );
@@ -245,7 +332,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setPhase( mojo.defaultPhase().id() );
 
-            for ( ParameterAnnotationContent parameterAnnotationContent : mojoAnnotatedClass.getParameters() )
+            for ( ParameterAnnotationContent parameterAnnotationContent : mojoAnnotatedClass.getParameters().values() )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -256,10 +343,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
                 parameter.setEditable( !parameterAnnotationContent.readonly() );
                 parameter.setExpression( parameterAnnotationContent.expression() );
+                parameter.setType( parameterAnnotationContent.getClassName() );
+                parameter.setRequired( parameterAnnotationContent.required() );
+
                 mojoDescriptor.addParameter( parameter );
             }
 
-            for ( ComponentAnnotationContent componentAnnotationContent : mojoAnnotatedClass.getComponents() )
+            for ( ComponentAnnotationContent componentAnnotationContent : mojoAnnotatedClass.getComponents().values() )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();

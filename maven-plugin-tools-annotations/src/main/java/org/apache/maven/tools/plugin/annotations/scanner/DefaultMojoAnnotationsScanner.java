@@ -173,7 +173,7 @@ public class DefaultMojoAnnotationsScanner
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
-                    new ParameterAnnotationContent( mojoFieldVisitor.getFieldName() );
+                    new ParameterAnnotationContent( mojoFieldVisitor.getFieldName(), mojoFieldVisitor.getClassName() );
                 if ( mojoFieldVisitor.getMojoAnnotationVisitor() != null )
                 {
                     for ( Map.Entry<String, Object> entry : mojoFieldVisitor.getMojoAnnotationVisitor().getAnnotationValues().entrySet() )
@@ -183,7 +183,8 @@ public class DefaultMojoAnnotationsScanner
                     }
 
                 }
-                mojoClassVisitor.getMojoAnnotatedClass().getParameters().add( parameterAnnotationContent );
+                mojoClassVisitor.getMojoAnnotatedClass().getParameters().put( parameterAnnotationContent.getFieldName(),
+                                                                              parameterAnnotationContent );
             }
 
             mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotationClass( Component.class.getName() );
@@ -202,7 +203,8 @@ public class DefaultMojoAnnotationsScanner
                     }
 
                 }
-                mojoClassVisitor.getMojoAnnotatedClass().getComponents().add( componentAnnotationContent );
+                mojoClassVisitor.getMojoAnnotatedClass().getComponents().put( componentAnnotationContent.getFieldName(),
+                                                                              componentAnnotationContent );
             }
 
         }

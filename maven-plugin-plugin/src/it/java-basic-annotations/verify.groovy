@@ -40,29 +40,35 @@ assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3
 
-assert mojo.parameters.parameter[0].name.text() == 'aliasedParam'
-assert mojo.parameters.parameter[0].alias.text() == 'alias'
-assert mojo.parameters.parameter[0].type.text() == 'java.lang.String'
-assert mojo.parameters.parameter[0].deprecated.text() == 'As of 0.2'
-assert mojo.parameters.parameter[0].required.text() == 'false'
-assert mojo.parameters.parameter[0].editable.text() == 'true'
-assert mojo.parameters.parameter[0].description.text() == ''
+def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
 
-assert mojo.parameters.parameter[1].name.text() == 'basedir'
-assert mojo.parameters.parameter[1].alias.isEmpty()
-assert mojo.parameters.parameter[1].type.text() == 'java.io.File'
-assert mojo.parameters.parameter[1].deprecated.isEmpty()
-assert mojo.parameters.parameter[1].required.text() == 'false'
-assert mojo.parameters.parameter[1].editable.text() == 'false'
-assert mojo.parameters.parameter[1].description.text() == 'Project directory.'
+assert parameter.name.text() == 'aliasedParam'
+assert parameter.alias.text() == 'alias'
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.deprecated.text() == 'As of 0.2'
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == ''
 
-assert mojo.parameters.parameter[2].name.text() == 'touchFile'
-assert mojo.parameters.parameter[2].alias.isEmpty()
-assert mojo.parameters.parameter[2].type.text() == 'java.io.File'
-assert mojo.parameters.parameter[2].deprecated.isEmpty()
-assert mojo.parameters.parameter[2].required.text() == 'true'
-assert mojo.parameters.parameter[2].editable.text() == 'true'
-assert mojo.parameters.parameter[2].description.text() == ''
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile"}[0]
+
+assert parameter.name.text() == 'touchFile'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.io.File'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'true'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir"}[0]
+
+assert parameter.name.text() == 'basedir'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.io.File'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == 'Project directory.'
 
 mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
 

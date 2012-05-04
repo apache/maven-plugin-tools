@@ -35,7 +35,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class FooMojo
     extends AbstractMojo
 {
-    @Parameter( expression = "${thebar}" )
+    @Parameter( expression = "${thebar}", required = true)
     private String bar;
 
     @Parameter( expression = "${thebeer}" )

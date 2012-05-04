@@ -124,9 +124,8 @@ public class MojoClassVisitor
 
     public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
     {
-        // Type.getType( desc ).getClassName()
         logger.debug( "MojoClassVisitor#visitField" );
-        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( logger, name );
+        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( logger, name, Type.getType( desc ).getClassName() );
         fieldVisitors.add( mojoFieldVisitor );
         return mojoFieldVisitor;
     }

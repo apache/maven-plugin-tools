@@ -41,15 +41,18 @@ public class ParameterAnnotationContent
 
     private boolean readonly = false;
 
-    public ParameterAnnotationContent( String fieldName )
+    private String className;
+
+    public ParameterAnnotationContent( String fieldName, String className )
     {
         super( fieldName );
+        this.className = className;
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String expression, String defaultValue,
-                                       boolean required, boolean readonly )
+                                       boolean required, boolean readonly, String className )
     {
-        this( fieldName );
+        this( fieldName, className );
         this.alias = alias;
         this.expression = expression;
         this.defaultValue = defaultValue;
@@ -110,6 +113,16 @@ public class ParameterAnnotationContent
     public Class<? extends Annotation> annotationType()
     {
         return null;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName( String className )
+    {
+        this.className = className;
     }
 
     @Override
