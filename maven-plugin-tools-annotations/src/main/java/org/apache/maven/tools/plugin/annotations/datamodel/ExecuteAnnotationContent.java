@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner;
+package org.apache.maven.tools.plugin.annotations.datamodel;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,52 +18,54 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.Component;
+import org.apache.maven.tools.plugin.annotations.Execute;
+import org.apache.maven.tools.plugin.annotations.LifecyclePhase;
 
 import java.lang.annotation.Annotation;
 
 /**
  * @author Olivier Lamy
  */
-public class ComponentAnnotationContent
-    extends AnnotatedField
-    implements Component
+public class ExecuteAnnotationContent
+    implements Execute
 {
-    private String role;
+    private String goal;
 
-    private String roleHint;
+    private String lifecycle;
 
-    public ComponentAnnotationContent( String fieldName )
+    private LifecyclePhase phase;
+
+    public LifecyclePhase phase()
     {
-        super( fieldName );
+        return this.phase;
     }
 
-    public ComponentAnnotationContent( String fieldName, String role, String roleHint )
+    public String goal()
     {
-        this( fieldName );
-        this.role = role;
-        this.roleHint = roleHint;
+        return this.goal;
     }
 
-    public String role()
+    public String lifecycle()
     {
-        return role;
+        return this.lifecycle;
     }
 
-    public void role( String role )
+
+    public void phase( String phase )
     {
-        this.role = role;
+        this.phase = LifecyclePhase.valueOf( phase );
     }
 
-    public String roleHint()
+    public void goal( String goal )
     {
-        return roleHint;
+        this.goal = goal;
     }
 
-    public void roleHint( String roleHint )
+    public void lifecycle( String lifecycle )
     {
-        this.roleHint = roleHint;
+        this.lifecycle = lifecycle;
     }
+
 
     public Class<? extends Annotation> annotationType()
     {
@@ -74,10 +76,10 @@ public class ComponentAnnotationContent
     public String toString()
     {
         final StringBuilder sb = new StringBuilder();
-        sb.append( super.toString() );
-        sb.append( "ComponentAnnotationContent" );
-        sb.append( "{role='" ).append( role ).append( '\'' );
-        sb.append( ", roleHint='" ).append( roleHint ).append( '\'' );
+        sb.append( "ExecuteAnnotationContent" );
+        sb.append( "{goal='" ).append( goal ).append( '\'' );
+        sb.append( ", lifecycle='" ).append( lifecycle ).append( '\'' );
+        sb.append( ", phase=" ).append( phase );
         sb.append( '}' );
         return sb.toString();
     }

@@ -20,6 +20,8 @@ package org.apache.maven.tools.plugin.annotations.scanner;
 
 import org.apache.maven.tools.plugin.annotations.Execute;
 import org.apache.maven.tools.plugin.annotations.Mojo;
+import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 
 import java.util.ArrayList;
 import java.util.List;

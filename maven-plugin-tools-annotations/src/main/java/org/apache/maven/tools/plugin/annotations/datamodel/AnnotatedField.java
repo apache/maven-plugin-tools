@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner;
+package org.apache.maven.tools.plugin.annotations.datamodel;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file

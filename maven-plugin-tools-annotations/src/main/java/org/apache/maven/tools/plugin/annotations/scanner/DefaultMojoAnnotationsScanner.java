@@ -22,6 +22,13 @@ import org.apache.maven.tools.plugin.annotations.Component;
 import org.apache.maven.tools.plugin.annotations.Execute;
 import org.apache.maven.tools.plugin.annotations.Mojo;
 import org.apache.maven.tools.plugin.annotations.Parameter;
+import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoAnnotationVisitor;
+import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoClassVisitor;
+import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoFieldVisitor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -128,14 +135,11 @@ public class DefaultMojoAnnotationsScanner
 
         try
         {
-            MojoClassVisitor.MojoAnnotationVisitor mojoAnnotationVisitor =
+            MojoAnnotationVisitor mojoAnnotationVisitor =
                 mojoClassVisitor.getAnnotationVisitorMap().get( Mojo.class.getName() );
             if ( mojoAnnotationVisitor != null )
             {
-                MojoClassVisitor.MojoAnnotationContent mojoAnnotationContent =
-                    new MojoClassVisitor.MojoAnnotationContent();
-                Class clazz = Thread.currentThread().getContextClassLoader().loadClass(
-                    MojoClassVisitor.MojoAnnotationContent.class.getName() );
+                MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
                 for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
                 {
                     reflector.invoke( mojoAnnotationContent, entry.getKey(), new Object[]{ entry.getValue() } );
@@ -146,10 +150,8 @@ public class DefaultMojoAnnotationsScanner
             mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitorMap().get( Execute.class.getName() );
             if ( mojoAnnotationVisitor != null )
             {
-                MojoClassVisitor.ExecuteAnnotationContent executeAnnotationContent =
-                    new MojoClassVisitor.ExecuteAnnotationContent();
-                Class clazz = Thread.currentThread().getContextClassLoader().loadClass(
-                    MojoClassVisitor.MojoAnnotationContent.class.getName() );
+                ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
+
                 for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
                 {
                     reflector.invoke( executeAnnotationContent, entry.getKey(), new Object[]{ entry.getValue() } );
@@ -157,10 +159,10 @@ public class DefaultMojoAnnotationsScanner
                 mojoClassVisitor.getMojoAnnotatedClass().setExecute( executeAnnotationContent );
             }
 
-            List<MojoClassVisitor.MojoFieldVisitor> mojoFieldVisitors =
+            List<MojoFieldVisitor> mojoFieldVisitors =
                 mojoClassVisitor.findFieldWithAnnotationClass( Parameter.class.getName() );
 
-            for ( MojoClassVisitor.MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
+            for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
                     new ParameterAnnotationContent( mojoFieldVisitor.getFieldName() );
@@ -178,7 +180,7 @@ public class DefaultMojoAnnotationsScanner
 
             mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotationClass( Component.class.getName() );
 
-            for ( MojoClassVisitor.MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
+            for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ComponentAnnotationContent componentAnnotationContent =
                     new ComponentAnnotationContent( mojoFieldVisitor.getFieldName() );

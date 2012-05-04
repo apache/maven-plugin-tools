@@ -18,11 +18,11 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.scanner.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
-import org.apache.maven.tools.plugin.annotations.scanner.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.codehaus.plexus.PlexusTestCase;
 import org.fest.assertions.Assertions;
 
