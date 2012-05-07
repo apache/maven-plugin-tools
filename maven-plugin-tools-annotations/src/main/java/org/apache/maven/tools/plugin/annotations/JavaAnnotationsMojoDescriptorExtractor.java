@@ -64,7 +64,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     /**
      * @requirement
      */
-    MojoAnnotationsScanner mojoAnnotationsScanner;
+    private MojoAnnotationsScanner mojoAnnotationsScanner;
 
     public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
