@@ -44,6 +44,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * @author Olivier Lamy
@@ -61,6 +63,21 @@ public class DefaultMojoAnnotationsScanner
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
         try
         {
+
+            //TODO scan dependencies to get super class annotations if exist request.getDependencies()
+            /*for ( File dependency : request.getDependencies() )
+            {
+                if ( dependency.isDirectory() )
+                {
+                    mojoAnnotatedClasses.putAll( scanDirectory( dependency, request.getIncludePatterns() ) );
+                }
+                else
+                {
+                    mojoAnnotatedClasses.putAll( scanFile( dependency, request.getIncludePatterns() ) );
+                }
+
+            }*/
+
             for ( File classDirectory : request.getClassesDirectories() )
             {
                 if ( classDirectory.exists() && classDirectory.isDirectory() )
@@ -69,14 +86,49 @@ public class DefaultMojoAnnotationsScanner
                 }
             }
 
-            //TODO scan dependencies to get super class annotations if exist request.getDependencies()
-
             return mojoAnnotatedClasses;
         }
         catch ( IOException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
+    }
+
+    protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns )
+        throws IOException, ExtractionException
+    {
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+        ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
+
+        try
+        {
+            for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
+                  zipEntry = archiveStream.getNextEntry() )
+            {
+                if ( zipEntry.getName().endsWith( ".class" ) )
+                {
+                    MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
+
+                    ClassReader rdr = new ClassReader( archiveStream );
+                    rdr.accept( mojoClassVisitor,
+                                ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
+                    analyzeVisitors( mojoClassVisitor );
+                    if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
+                    {
+                        getLogger().debug(
+                            "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
+                                + mojoClassVisitor.getMojoAnnotatedClass() );
+                        mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
+                                                  mojoClassVisitor.getMojoAnnotatedClass() );
+                    }
+                }
+            }
+        }
+        finally
+        {
+            IOUtil.close( archiveStream );
+        }
+        return mojoAnnotatedClasses;
     }
 
     protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns )
@@ -108,6 +160,9 @@ public class DefaultMojoAnnotationsScanner
                     analyzeVisitors( mojoClassVisitor );
                     if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
+                        getLogger().debug(
+                            "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
+                                + mojoClassVisitor.getMojoAnnotatedClass() );
                         mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
                                                   mojoClassVisitor.getMojoAnnotatedClass() );
                     }

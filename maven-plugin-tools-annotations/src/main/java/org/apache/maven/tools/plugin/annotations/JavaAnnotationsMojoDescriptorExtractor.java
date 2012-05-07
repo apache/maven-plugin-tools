@@ -82,7 +82,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoAnnotationsScannerRequest.setClassesDirectories(
                 Arrays.asList( new File( request.getProject().getBuild().getOutputDirectory() ) ) );
 
-            mojoAnnotationsScannerRequest.setDependencies( request.getProject().getCompileClasspathElements() );
+            mojoAnnotationsScannerRequest.setDependencies(
+                toFiles( request.getProject().getCompileClasspathElements() ) );
 
             Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
                 mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
@@ -114,19 +115,22 @@ public class JavaAnnotationsMojoDescriptorExtractor
             JavaClass javaClass = javaClassesMap.get( entry.getKey() );
             if ( javaClass != null )
             {
-                entry.getValue().getMojo().setDescription( javaClass.getComment() );
-                DocletTag since = findInClassHierarchy( javaClass, "since" );
-                if ( since != null )
+                MojoAnnotationContent mojoAnnotationContent = entry.getValue().getMojo();
+                if ( mojoAnnotationContent != null )
                 {
-                    entry.getValue().getMojo().setSince( since.getValue() );
-                }
+                    mojoAnnotationContent.setDescription( javaClass.getComment() );
+                    DocletTag since = findInClassHierarchy( javaClass, "since" );
+                    if ( since != null )
+                    {
+                        mojoAnnotationContent.setSince( since.getValue() );
+                    }
 
-                DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
-                if ( deprecated != null )
-                {
-                    entry.getValue().getMojo().setDeprecated( deprecated.getValue() );
+                    DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
+                    if ( deprecated != null )
+                    {
+                        mojoAnnotationContent.setDeprecated( deprecated.getValue() );
+                    }
                 }
-
                 Map<String, JavaField> fieldsMap = extractFieldParameterTags( javaClass );
                 for ( Map.Entry<String, ParameterAnnotationContent> parameter : entry.getValue().getParameters().entrySet() )
                 {
@@ -134,12 +138,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
                     if ( javaField != null )
                     {
                         ParameterAnnotationContent parameterAnnotationContent = parameter.getValue();
-                        deprecated = javaField.getTagByName( "deprecated" );
+                        DocletTag deprecated = javaField.getTagByName( "deprecated" );
                         if ( deprecated != null )
                         {
                             parameterAnnotationContent.setDeprecated( deprecated.getValue() );
                         }
-                        since = javaField.getTagByName( "since" );
+                        DocletTag since = javaField.getTagByName( "since" );
                         if ( since != null )
                         {
                             parameterAnnotationContent.setSince( since.getValue() );
@@ -154,12 +158,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
                     if ( javaField != null )
                     {
                         ComponentAnnotationContent componentAnnotationContent = component.getValue();
-                        deprecated = javaField.getTagByName( "deprecated" );
+                        DocletTag deprecated = javaField.getTagByName( "deprecated" );
                         if ( deprecated != null )
                         {
                             componentAnnotationContent.setDeprecated( deprecated.getValue() );
                         }
-                        since = javaField.getTagByName( "since" );
+                        DocletTag since = javaField.getTagByName( "since" );
                         if ( since != null )
                         {
                             componentAnnotationContent.setSince( since.getValue() );
@@ -332,7 +336,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setPhase( mojo.defaultPhase().id() );
 
-            for ( ParameterAnnotationContent parameterAnnotationContent : mojoAnnotatedClass.getParameters().values() )
+            Map<String, ParameterAnnotationContent> parameters =
+                getParametersParentHierarchy( mojoAnnotatedClass, new HashMap<String, ParameterAnnotationContent>(),
+                                              mojoAnnotatedClasses );
+
+            for ( ParameterAnnotationContent parameterAnnotationContent : parameters.values() )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -366,5 +374,44 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoDescriptors.add( mojoDescriptor );
         }
         return mojoDescriptors;
+    }
+
+    protected Map<String, ParameterAnnotationContent> getParametersParentHierarchy(
+        MojoAnnotatedClass mojoAnnotatedClass, Map<String, ParameterAnnotationContent> parameters,
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+        List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<ParameterAnnotationContent>();
+
+        parameterAnnotationContents =
+            getParent( mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses );
+
+        // move to parent first to build the Map
+        Collections.reverse( parameterAnnotationContents );
+
+        Map<String, ParameterAnnotationContent> map =
+            new HashMap<String, ParameterAnnotationContent>( parameterAnnotationContents.size() );
+
+        for ( ParameterAnnotationContent parameterAnnotationContent : parameterAnnotationContents )
+        {
+            map.put( parameterAnnotationContent.getFieldName(), parameterAnnotationContent );
+        }
+        return map;
+    }
+
+    protected List<ParameterAnnotationContent> getParent( MojoAnnotatedClass mojoAnnotatedClass,
+                                                          List<ParameterAnnotationContent> parameterAnnotationContents,
+                                                          Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+        parameterAnnotationContents.addAll( mojoAnnotatedClass.getParameters().values() );
+        String parentClassName = mojoAnnotatedClass.getParentClassName();
+        if ( parentClassName != null )
+        {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
+            if ( parent != null )
+            {
+                return getParent( parent, parameterAnnotationContents, mojoAnnotatedClasses );
+            }
+        }
+        return parameterAnnotationContents;
     }
 }
