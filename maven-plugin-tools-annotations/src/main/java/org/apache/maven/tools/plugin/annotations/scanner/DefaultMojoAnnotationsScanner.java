@@ -33,6 +33,7 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
 import org.objectweb.asm.ClassReader;
 
@@ -256,7 +257,10 @@ public class DefaultMojoAnnotationsScanner
                         reflector.invoke( componentAnnotationContent, entry.getKey(),
                                           new Object[]{ entry.getValue() } );
                     }
-
+                    if ( StringUtils.isEmpty( componentAnnotationContent.role() ) )
+                    {
+                        componentAnnotationContent.role( mojoFieldVisitor.getClassName() );
+                    }
                 }
                 mojoClassVisitor.getMojoAnnotatedClass().getComponents().put( componentAnnotationContent.getFieldName(),
                                                                               componentAnnotationContent );

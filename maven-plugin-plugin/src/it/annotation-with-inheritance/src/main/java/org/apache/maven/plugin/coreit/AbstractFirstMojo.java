@@ -52,7 +52,7 @@ public abstract class AbstractFirstMojo
     /**
      * Plexus compiler manager.
      */
-    @Component(role = "org.codehaus.plexus.compiler.manager.CompilerManager")
+    @Component
     protected CompilerManager compilerManager;
 
     /**
