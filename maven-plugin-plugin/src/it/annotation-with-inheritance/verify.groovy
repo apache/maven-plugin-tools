@@ -35,7 +35,7 @@ assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.dire
 assert mojo.requirements.requirement.size() == 1
 
 assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.project.MavenProjectHelper'
-assert mojo.requirements.requirement[0].'role-hint'.text() == 'test'
+assert mojo.requirements.requirement[0].'role-hint'.text() == 'default'
 assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3

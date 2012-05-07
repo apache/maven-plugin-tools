@@ -1,0 +1,17 @@
+<lifecycles>
+  <lifecycle>
+    <id>cobertura</id>
+    <phases>
+      <phase>
+        <id>process-classes</id>
+      </phase>
+      <phase>
+        <id>test</id>
+        <configuration>
+          <classesDirectory>${project.build.directory}/generated-classes/cobertura</classesDirectory>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </phase>
+    </phases>
+  </lifecycle>
+</lifecycles>

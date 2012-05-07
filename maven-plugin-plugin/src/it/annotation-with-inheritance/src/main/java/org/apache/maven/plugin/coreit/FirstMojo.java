@@ -19,15 +19,12 @@ package org.apache.maven.plugin.coreit;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import java.io.File;
 
 /**
  * Touches a test file.
@@ -48,12 +45,20 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper", roleHint = "test" )
+    @Component( role = "org.apache.maven.project.MavenProjectHelper", roleHint = "default" )
     private Object projectHelper;
 
     public void execute()
         throws MojoExecutionException
     {
+        if ( projectHelper == null )
+        {
+            throw new MojoExecutionException( "projectHelper == null" );
+        }
+        if (basedir == null || touchFile == null)
+        {
+            throw new MojoExecutionException( "basedir == null || touchFile == null" );
+        }
     }
 
 }
