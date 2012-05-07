@@ -51,14 +51,23 @@ public class FirstMojo
     public void execute()
         throws MojoExecutionException
     {
+        if (basedir == null)
+        {
+            throw new MojoExecutionException( "basedir == null" );
+        }
+        if (touchFile == null)
+        {
+            throw new MojoExecutionException( "touchFile == null" );
+        }
         if ( projectHelper == null )
         {
             throw new MojoExecutionException( "projectHelper == null" );
         }
-        if (basedir == null || touchFile == null)
+        if ( compilerManager == null )
         {
-            throw new MojoExecutionException( "basedir == null || touchFile == null" );
+            throw new MojoExecutionException( "compilerManager == null" );
         }
+
     }
 
 }

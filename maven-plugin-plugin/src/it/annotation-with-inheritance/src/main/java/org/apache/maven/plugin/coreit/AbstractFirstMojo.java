@@ -26,6 +26,8 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.compiler.manager.CompilerManager;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 
 import java.io.File;
 
@@ -46,6 +48,18 @@ public abstract class AbstractFirstMojo
     @Parameter( expression = "${first.touchFile}", defaultValue = "${project.build.directory}/touch.txt",
                 required = true )
     protected File touchFile;
+
+    /**
+     * Plexus compiler manager.
+     */
+    @Component(role = "org.codehaus.plexus.compiler.manager.CompilerManager")
+    protected CompilerManager compilerManager;
+
+    /**
+     *
+     */
+    @Component(role = "org.apache.maven.artifact.metadata.ArtifactMetadataSource", roleHint = "maven")
+    protected ArtifactMetadataSource artifactMetadataSource;
 
 
 

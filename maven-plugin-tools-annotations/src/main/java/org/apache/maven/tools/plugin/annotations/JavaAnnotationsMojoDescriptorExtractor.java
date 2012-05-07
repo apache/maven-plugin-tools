@@ -357,7 +357,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 mojoDescriptor.addParameter( parameter );
             }
 
-            for ( ComponentAnnotationContent componentAnnotationContent : mojoAnnotatedClass.getComponents().values() )
+            Map<String, ComponentAnnotationContent> components =
+                getComponentsParentHierarchy( mojoAnnotatedClass, new HashMap<String, ComponentAnnotationContent>(),
+                                              mojoAnnotatedClasses );
+
+            for ( ComponentAnnotationContent componentAnnotationContent : components.values() )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -383,7 +387,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<ParameterAnnotationContent>();
 
         parameterAnnotationContents =
-            getParent( mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses );
+            getParametersParent( mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses );
 
         // move to parent first to build the Map
         Collections.reverse( parameterAnnotationContents );
@@ -398,9 +402,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return map;
     }
 
-    protected List<ParameterAnnotationContent> getParent( MojoAnnotatedClass mojoAnnotatedClass,
-                                                          List<ParameterAnnotationContent> parameterAnnotationContents,
-                                                          Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    protected List<ParameterAnnotationContent> getParametersParent( MojoAnnotatedClass mojoAnnotatedClass,
+                                                                    List<ParameterAnnotationContent> parameterAnnotationContents,
+                                                                    Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         parameterAnnotationContents.addAll( mojoAnnotatedClass.getParameters().values() );
         String parentClassName = mojoAnnotatedClass.getParentClassName();
@@ -409,9 +413,49 @@ public class JavaAnnotationsMojoDescriptorExtractor
             MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
             if ( parent != null )
             {
-                return getParent( parent, parameterAnnotationContents, mojoAnnotatedClasses );
+                return getParametersParent( parent, parameterAnnotationContents, mojoAnnotatedClasses );
             }
         }
         return parameterAnnotationContents;
+    }
+
+
+    protected Map<String, ComponentAnnotationContent> getComponentsParentHierarchy(
+        MojoAnnotatedClass mojoAnnotatedClass, Map<String, ComponentAnnotationContent> components,
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+        List<ComponentAnnotationContent> componentAnnotationContents = new ArrayList<ComponentAnnotationContent>();
+
+        componentAnnotationContents =
+            getComponentParent( mojoAnnotatedClass, componentAnnotationContents, mojoAnnotatedClasses );
+
+        // move to parent first to build the Map
+        Collections.reverse( componentAnnotationContents );
+
+        Map<String, ComponentAnnotationContent> map =
+            new HashMap<String, ComponentAnnotationContent>( componentAnnotationContents.size() );
+
+        for ( ComponentAnnotationContent componentAnnotationContent : componentAnnotationContents )
+        {
+            map.put( componentAnnotationContent.getFieldName(), componentAnnotationContent );
+        }
+        return map;
+    }
+
+    protected List<ComponentAnnotationContent> getComponentParent( MojoAnnotatedClass mojoAnnotatedClass,
+                                                                   List<ComponentAnnotationContent> componentAnnotationContents,
+                                                                   Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+        componentAnnotationContents.addAll( mojoAnnotatedClass.getComponents().values() );
+        String parentClassName = mojoAnnotatedClass.getParentClassName();
+        if ( parentClassName != null )
+        {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
+            if ( parent != null )
+            {
+                return getComponentParent( parent, componentAnnotationContents, mojoAnnotatedClasses );
+            }
+        }
+        return componentAnnotationContents;
     }
 }
