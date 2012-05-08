@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,7 @@ public class DefaultMojoAnnotationsScanner
         try
         {
 
-            //TODO scan dependencies to get super class annotations if exist request.getDependencies()
-            /*for ( File dependency : request.getDependencies() )
+            for ( File dependency : request.getDependencies() )
             {
                 if ( dependency.isDirectory() )
                 {
@@ -77,7 +77,7 @@ public class DefaultMojoAnnotationsScanner
                     mojoAnnotatedClasses.putAll( scanFile( dependency, request.getIncludePatterns() ) );
                 }
 
-            }*/
+            }
 
             for ( File classDirectory : request.getClassesDirectories() )
             {
@@ -98,6 +98,10 @@ public class DefaultMojoAnnotationsScanner
     protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns )
         throws IOException, ExtractionException
     {
+        if ( !archiveFile.exists() )
+        {
+            return Collections.emptyMap();
+        }
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
         ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
 
@@ -135,6 +139,10 @@ public class DefaultMojoAnnotationsScanner
     protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns )
         throws IOException, ExtractionException
     {
+        if ( !classDirectory.exists() )
+        {
+            return Collections.emptyMap();
+        }
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classDirectory );
