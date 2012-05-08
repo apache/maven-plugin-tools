@@ -18,6 +18,7 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
@@ -49,6 +50,11 @@ public class MojoAnnotatedClass
      * key is field name
      */
     private Map<String, ComponentAnnotationContent> components;
+
+    /**
+     * artifact which contains this annotation
+     */
+    private Artifact artifact;
 
     public MojoAnnotatedClass()
     {
@@ -129,6 +135,15 @@ public class MojoAnnotatedClass
         return this;
     }
 
+    public Artifact getArtifact()
+    {
+        return artifact;
+    }
+
+    public void setArtifact( Artifact artifact )
+    {
+        this.artifact = artifact;
+    }
 
     @Override
     public String toString()

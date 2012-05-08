@@ -74,11 +74,13 @@ public class DefaultMojoAnnotationsScanner
                 {
                     if ( dependencyFile.isDirectory() )
                     {
-                        mojoAnnotatedClasses.putAll( scanDirectory( dependencyFile, request.getIncludePatterns() ) );
+                        mojoAnnotatedClasses.putAll(
+                            scanDirectory( dependencyFile, request.getIncludePatterns(), dependency ) );
                     }
                     else
                     {
-                        mojoAnnotatedClasses.putAll( scanFile( dependencyFile, request.getIncludePatterns() ) );
+                        mojoAnnotatedClasses.putAll(
+                            scanFile( dependencyFile, request.getIncludePatterns(), dependency ) );
                     }
                 }
             }
@@ -87,7 +89,8 @@ public class DefaultMojoAnnotationsScanner
             {
                 if ( classDirectory.exists() && classDirectory.isDirectory() )
                 {
-                    mojoAnnotatedClasses.putAll( scanDirectory( classDirectory, request.getIncludePatterns() ) );
+                    mojoAnnotatedClasses.putAll( scanDirectory( classDirectory, request.getIncludePatterns(),
+                                                                request.getProject().getArtifact() ) );
                 }
             }
 
@@ -99,7 +102,8 @@ public class DefaultMojoAnnotationsScanner
         }
     }
 
-    protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns )
+    protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns,
+                                                        Artifact artifact )
         throws IOException, ExtractionException
     {
         if ( !archiveFile.exists() )
@@ -127,6 +131,7 @@ public class DefaultMojoAnnotationsScanner
                         getLogger().debug(
                             "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
                                 + mojoClassVisitor.getMojoAnnotatedClass() );
+                        mojoClassVisitor.getMojoAnnotatedClass().setArtifact( artifact );
                         mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
                                                   mojoClassVisitor.getMojoAnnotatedClass() );
                     }
@@ -140,7 +145,8 @@ public class DefaultMojoAnnotationsScanner
         return mojoAnnotatedClasses;
     }
 
-    protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns )
+    protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns,
+                                                             Artifact artifact )
         throws IOException, ExtractionException
     {
         if ( !classDirectory.exists() )
@@ -176,6 +182,7 @@ public class DefaultMojoAnnotationsScanner
                         getLogger().debug(
                             "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
                                 + mojoClassVisitor.getMojoAnnotatedClass() );
+                        mojoClassVisitor.getMojoAnnotatedClass().setArtifact( artifact );
                         mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
                                                   mojoClassVisitor.getMojoAnnotatedClass() );
                     }

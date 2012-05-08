@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class MojoAnnotationsScannerRequest
     private List<String> includePatterns = Arrays.asList( "**/*.class" );
 
     private List<File> sourceDirectories = new ArrayList<File>();
+
+    private MavenProject project;
 
     public MojoAnnotationsScannerRequest()
     {
@@ -84,5 +88,15 @@ public class MojoAnnotationsScannerRequest
     public void setSourceDirectories( List<File> sourceDirectories )
     {
         this.sourceDirectories = sourceDirectories;
+    }
+
+    public MavenProject getProject()
+    {
+        return project;
+    }
+
+    public void setProject( MavenProject project )
+    {
+        this.project = project;
     }
 }

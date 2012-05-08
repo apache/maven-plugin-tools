@@ -18,12 +18,15 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
 public class AnnotatedContent
 {
+
     private String description;
 
     private String since;
@@ -59,4 +62,5 @@ public class AnnotatedContent
     {
         this.deprecated = deprecated;
     }
+
 }

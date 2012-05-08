@@ -6,6 +6,8 @@ assert descriptorFile.isFile()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
+assert pluginDescriptor.mojos.mojo.size() == 3
+
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first"}[0]
 
 assert mojo.goal.text() == 'first'

@@ -82,6 +82,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         mojoAnnotationsScannerRequest.setDependencies( request.getDependencies() );
 
+        mojoAnnotationsScannerRequest.setProject( request.getProject() );
+
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
             mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
 

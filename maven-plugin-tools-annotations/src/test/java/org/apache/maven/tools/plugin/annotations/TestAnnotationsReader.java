@@ -22,6 +22,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
@@ -50,6 +51,7 @@ public class TestAnnotationsReader
         MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
         request.setClassesDirectories( Collections.singletonList( new File( "target/test-classes" ) ) );
         request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );
+        request.setProject( new MavenProject(  ) );
 
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = mojoAnnotationsScanner.scan( request );
 
