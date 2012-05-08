@@ -22,6 +22,7 @@ import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -41,10 +42,12 @@ import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerR
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +90,32 @@ public class JavaAnnotationsMojoDescriptorExtractor
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
             mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
 
-        Map<String, JavaClass> javaClassesMap = discoverClasses( request );
+        // found artifact from reactors to scan sources
+        // we currently only scan sources from reactors
+        List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
+
+        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
+        {
+            if ( !StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
+                                      request.getProject().getArtifact().getArtifactId() ) )
+            {
+                MavenProject mavenProject =
+                    getFromProjectReferences( mojoAnnotatedClass.getArtifact(), request.getProject() );
+                if ( mavenProject != null )
+                {
+                    mavenProjects.add( mavenProject );
+                }
+            }
+        }
+
+        Map<String, JavaClass> javaClassesMap = new HashMap<String, JavaClass>();
+
+        for ( MavenProject mavenProject : mavenProjects )
+        {
+            javaClassesMap.putAll( discoverClasses( request.getEncoding(), mavenProject ) );
+        }
+
+        javaClassesMap.putAll( discoverClasses( request ) );
 
         populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
 
@@ -231,10 +259,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     protected Map<String, JavaClass> discoverClasses( final PluginToolsRequest request )
     {
-        JavaDocBuilder builder = new JavaDocBuilder();
-        builder.setEncoding( request.getEncoding() );
+        return discoverClasses( request.getEncoding(), request.getProject() );
+    }
 
-        MavenProject project = request.getProject();
+    protected Map<String, JavaClass> discoverClasses( final String encoding, MavenProject project )
+    {
+        JavaDocBuilder builder = new JavaDocBuilder();
+        builder.setEncoding( encoding );
 
         for ( String source : (List<String>) project.getCompileSourceRoots() )
         {
@@ -453,4 +484,22 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         return componentAnnotationContents;
     }
+
+    protected MavenProject getFromProjectReferences( Artifact artifact, MavenProject project )
+    {
+        if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
+        {
+            return null;
+        }
+        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
+        for ( MavenProject mavenProject : mavenProjects )
+        {
+            if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )
+            {
+                return mavenProject;
+            }
+        }
+        return null;
+    }
+
 }
