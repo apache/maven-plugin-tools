@@ -18,6 +18,7 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -66,17 +67,20 @@ public class DefaultMojoAnnotationsScanner
         try
         {
 
-            for ( File dependency : request.getDependencies() )
+            for ( Artifact dependency : request.getDependencies() )
             {
-                if ( dependency.isDirectory() )
+                File dependencyFile = dependency.getFile();
+                if ( dependencyFile != null && dependencyFile.exists() )
                 {
-                    mojoAnnotatedClasses.putAll( scanDirectory( dependency, request.getIncludePatterns() ) );
+                    if ( dependencyFile.isDirectory() )
+                    {
+                        mojoAnnotatedClasses.putAll( scanDirectory( dependencyFile, request.getIncludePatterns() ) );
+                    }
+                    else
+                    {
+                        mojoAnnotatedClasses.putAll( scanFile( dependencyFile, request.getIncludePatterns() ) );
+                    }
                 }
-                else
-                {
-                    mojoAnnotatedClasses.putAll( scanFile( dependency, request.getIncludePatterns() ) );
-                }
-
             }
 
             for ( File classDirectory : request.getClassesDirectories() )

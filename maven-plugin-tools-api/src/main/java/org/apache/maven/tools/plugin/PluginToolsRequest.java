@@ -19,9 +19,12 @@ package org.apache.maven.tools.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+
+import java.util.Set;
 
 /**
  * Request that encapsulates all information relevant to the process of extracting {@link MojoDescriptor}
@@ -74,16 +77,29 @@ public interface PluginToolsRequest
      * By default an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
      * descriptor generator mojo is bound to generate-resources phase.
      * But for annotations, the compiled classes are needed, so skip error
+     *
      * @since 3.0
      */
     PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound );
 
     /**
-     * @since 3.0
      * @return
+     * @since 3.0
      */
     boolean isSkipErrorNoDescriptorsFound();
 
+    /**
+     * Returns the list of {@link Artifact} used in class path scanning for annotations
+     * @return
+     * @since 3.0
+     */
+    Set<Artifact> getDependencies();
 
+    /**
+     *
+     * @param dependencies
+     * @return
+     */
+    PluginToolsRequest setDependencies( Set<Artifact> dependencies );
 
 }

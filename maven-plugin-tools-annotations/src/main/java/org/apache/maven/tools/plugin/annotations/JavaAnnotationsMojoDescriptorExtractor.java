@@ -22,7 +22,6 @@ import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -75,29 +74,23 @@ public class JavaAnnotationsMojoDescriptorExtractor
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        try
-        {
-            MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
 
-            mojoAnnotationsScannerRequest.setClassesDirectories(
-                Arrays.asList( new File( request.getProject().getBuild().getOutputDirectory() ) ) );
+        MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
 
-            mojoAnnotationsScannerRequest.setDependencies(
-                toFiles( request.getProject().getCompileClasspathElements() ) );
+        mojoAnnotationsScannerRequest.setClassesDirectories(
+            Arrays.asList( new File( request.getProject().getBuild().getOutputDirectory() ) ) );
 
-            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
-                mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+        mojoAnnotationsScannerRequest.setDependencies( request.getDependencies() );
 
-            Map<String, JavaClass> javaClassesMap = discoverClasses( request );
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
+            mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
 
-            populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
+        Map<String, JavaClass> javaClassesMap = discoverClasses( request );
 
-            return toMojoDescriptors( mojoAnnotatedClasses, request );
-        }
-        catch ( DependencyResolutionRequiredException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
-        }
+        populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
+
+        return toMojoDescriptors( mojoAnnotatedClasses, request );
+
     }
 
     /**

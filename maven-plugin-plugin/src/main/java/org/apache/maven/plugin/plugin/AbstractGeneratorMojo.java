@@ -19,6 +19,7 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -124,6 +125,16 @@ public abstract class AbstractGeneratorMojo
     protected boolean skip;
 
     /**
+     * The set of dependencies for the current project
+     *
+     * @parameter default-value = "${project.artifacts}"
+     * @required
+     * @readonly
+     * @since 3.0
+     */
+    protected Set<Artifact> dependencies;
+
+    /**
      * @return the output directory where files will be generated.
      */
     protected abstract File getOutputDirectory();
@@ -203,6 +214,7 @@ public abstract class AbstractGeneratorMojo
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
             request.setSkipErrorNoDescriptorsFound( skipErrorNoDescriptorsFound );
+            request.setDependencies( dependencies );
 
             mojoScanner.populatePluginDescriptor( request );
 

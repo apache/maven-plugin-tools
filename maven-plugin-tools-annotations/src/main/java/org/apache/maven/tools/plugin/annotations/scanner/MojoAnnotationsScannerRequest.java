@@ -18,10 +18,14 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olivier Lamy
@@ -31,7 +35,7 @@ public class MojoAnnotationsScannerRequest
 {
     private List<File> classesDirectories = new ArrayList<File>();
 
-    private List<File> dependencies = new ArrayList<File>();
+    private Set<Artifact> dependencies = new HashSet<Artifact>();
 
     private List<String> includePatterns = Arrays.asList( "**/*.class" );
 
@@ -52,12 +56,12 @@ public class MojoAnnotationsScannerRequest
         this.classesDirectories = classesDirectories;
     }
 
-    public List<File> getDependencies()
+    public Set<Artifact> getDependencies()
     {
         return dependencies;
     }
 
-    public void setDependencies( List<File> dependencies )
+    public void setDependencies( Set<Artifact> dependencies )
     {
         this.dependencies = dependencies;
     }
