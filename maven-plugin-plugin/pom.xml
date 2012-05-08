@@ -316,6 +316,14 @@
           </plugins>
         </pluginManagement>
       </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.maven.plugin-tools</groupId>
+          <artifactId>maven-plugin-tools-annotations</artifactId>
+          <version>${project.version}</version>
+          <classifier>tests</classifier>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 </project>

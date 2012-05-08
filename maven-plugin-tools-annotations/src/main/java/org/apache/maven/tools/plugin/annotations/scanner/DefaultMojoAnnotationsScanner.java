@@ -75,12 +75,12 @@ public class DefaultMojoAnnotationsScanner
                     if ( dependencyFile.isDirectory() )
                     {
                         mojoAnnotatedClasses.putAll(
-                            scanDirectory( dependencyFile, request.getIncludePatterns(), dependency ) );
+                            scanDirectory( dependencyFile, request.getIncludePatterns(), dependency, true ) );
                     }
                     else
                     {
                         mojoAnnotatedClasses.putAll(
-                            scanFile( dependencyFile, request.getIncludePatterns(), dependency ) );
+                            scanFile( dependencyFile, request.getIncludePatterns(), dependency, true ) );
                     }
                 }
             }
@@ -89,8 +89,9 @@ public class DefaultMojoAnnotationsScanner
             {
                 if ( classDirectory.exists() && classDirectory.isDirectory() )
                 {
-                    mojoAnnotatedClasses.putAll( scanDirectory( classDirectory, request.getIncludePatterns(),
-                                                                request.getProject().getArtifact() ) );
+                    mojoAnnotatedClasses.putAll(
+                        scanDirectory( classDirectory, request.getIncludePatterns(), request.getProject().getArtifact(),
+                                       false ) );
                 }
             }
 
@@ -102,8 +103,17 @@ public class DefaultMojoAnnotationsScanner
         }
     }
 
+    /**
+     * @param archiveFile
+     * @param includePatterns
+     * @param artifact
+     * @param excludeMojo     for dependencies we exclude Mojo annotations found
+     * @return
+     * @throws IOException
+     * @throws ExtractionException
+     */
     protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns,
-                                                        Artifact artifact )
+                                                        Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
         if ( !archiveFile.exists() )
@@ -126,6 +136,10 @@ public class DefaultMojoAnnotationsScanner
                     rdr.accept( mojoClassVisitor,
                                 ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
                     analyzeVisitors( mojoClassVisitor );
+                    if ( excludeMojo )
+                    {
+                        mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
+                    }
                     if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
                         getLogger().debug(
@@ -145,8 +159,17 @@ public class DefaultMojoAnnotationsScanner
         return mojoAnnotatedClasses;
     }
 
+    /**
+     * @param classDirectory
+     * @param includePatterns
+     * @param artifact
+     * @param excludeMojo     for dependencies we exclude Mojo annotations found
+     * @return
+     * @throws IOException
+     * @throws ExtractionException
+     */
     protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns,
-                                                             Artifact artifact )
+                                                             Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
         if ( !classDirectory.exists() )
@@ -177,6 +200,10 @@ public class DefaultMojoAnnotationsScanner
                     rdr.accept( mojoClassVisitor,
                                 ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
                     analyzeVisitors( mojoClassVisitor );
+                    if ( excludeMojo )
+                    {
+                        mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
+                    }
                     if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
                         getLogger().debug(
