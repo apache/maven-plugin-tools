@@ -262,7 +262,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return discoverClasses( request.getEncoding(), request.getProject() );
     }
 
-    protected Map<String, JavaClass> discoverClasses( final String encoding, MavenProject project )
+    protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
         JavaDocBuilder builder = new JavaDocBuilder();
         builder.setEncoding( encoding );
@@ -274,7 +274,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         // TODO be more dynamic
         File generatedPlugin = new File( project.getBasedir(), "target/generated-sources/plugin" );
-        if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() ) )
+        if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() )
+            && generatedPlugin.exists() )
         {
             builder.addSourceTree( generatedPlugin );
         }
