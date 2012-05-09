@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author Olivier Lamy
@@ -297,19 +298,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return javaClassMap;
     }
 
-    private List<File> toFiles( List<String> directories )
-    {
-        if ( directories == null )
-        {
-            return Collections.emptyList();
-        }
-        List<File> files = new ArrayList<File>( directories.size() );
-        for ( String directory : directories )
-        {
-            files.add( new File( directory ) );
-        }
-        return files;
-    }
 
     private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                                     PluginToolsRequest request )
@@ -345,8 +333,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
             mojoDescriptor.setThreadSafe( mojo.threadSafe() );
 
-            ExecuteAnnotationContent execute = mojoAnnotatedClass.getExecute();
-
+            ExecuteAnnotationContent execute = findExecuteInParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
             if ( execute != null )
             {
                 mojoDescriptor.setExecuteGoal( execute.goal() );
@@ -355,7 +342,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             }
 
             mojoDescriptor.setExecutionStrategy( mojo.executionStrategy() );
-            // FIXME olamy wtf ?
+            // ???
             //mojoDescriptor.alwaysExecute(mojo.a)
 
             mojoDescriptor.setGoal( mojo.name() );
@@ -367,7 +354,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 getParametersParentHierarchy( mojoAnnotatedClass, new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
 
-            for ( ParameterAnnotationContent parameterAnnotationContent : parameters.values() )
+            for ( ParameterAnnotationContent parameterAnnotationContent : new TreeSet<ParameterAnnotationContent>(
+                parameters.values() ) )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -388,7 +376,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 getComponentsParentHierarchy( mojoAnnotatedClass, new HashMap<String, ComponentAnnotationContent>(),
                                               mojoAnnotatedClasses );
 
-            for ( ComponentAnnotationContent componentAnnotationContent : components.values() )
+            for ( ComponentAnnotationContent componentAnnotationContent : new TreeSet<ComponentAnnotationContent>(
+                components.values() ) )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -406,6 +395,29 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         return mojoDescriptors;
     }
+
+
+    protected ExecuteAnnotationContent findExecuteInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
+                                                                     Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+    {
+
+        if ( mojoAnnotatedClass.getExecute() != null )
+        {
+            return mojoAnnotatedClass.getExecute();
+        }
+        String parentClassName = mojoAnnotatedClass.getParentClassName();
+        if ( StringUtils.isEmpty( parentClassName ) )
+        {
+            return null;
+        }
+        MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
+        if ( parent == null )
+        {
+            return null;
+        }
+        return findExecuteInParentHierarchy( parent, mojoAnnotatedClasses );
+    }
+
 
     protected Map<String, ParameterAnnotationContent> getParametersParentHierarchy(
         MojoAnnotatedClass mojoAnnotatedClass, Map<String, ParameterAnnotationContent> parameters,

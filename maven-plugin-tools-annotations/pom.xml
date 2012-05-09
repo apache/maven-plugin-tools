@@ -77,6 +77,19 @@
       <artifactId>qdox</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-compiler-manager</artifactId>
+      <version>1.8.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -88,6 +101,17 @@
           <execution>
             <goals>
               <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
         </executions>

@@ -51,7 +51,7 @@ public class TestAnnotationsReader
         MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
         request.setClassesDirectories( Collections.singletonList( new File( "target/test-classes" ) ) );
         request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );
-        request.setProject( new MavenProject(  ) );
+        request.setProject( new MavenProject() );
 
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = mojoAnnotationsScanner.scan( request );
 
@@ -82,7 +82,8 @@ public class TestAnnotationsReader
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
         Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
-            new ParameterAnnotationContent( "bar", null, "${thebar}", null, true, false, String.class.getName() ),
-            new ParameterAnnotationContent( "beer", null, "${thebeer}", null, false, false, String.class.getName() ) );
+            new ParameterAnnotationContent( "bar", null, "${thebar}", "coolbar", true, false, String.class.getName() ),
+            new ParameterAnnotationContent( "beer", null, "${thebeer}", "coolbeer", false, false,
+                                            String.class.getName() ) );
     }
 }

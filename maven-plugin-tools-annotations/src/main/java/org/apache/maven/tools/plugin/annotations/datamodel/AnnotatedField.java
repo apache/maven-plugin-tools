@@ -24,6 +24,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  */
 public class AnnotatedField
     extends AnnotatedContent
+    implements Comparable<AnnotatedField>
 {
     private String fieldName;
 
@@ -50,5 +51,10 @@ public class AnnotatedField
         sb.append( "{fieldName='" ).append( fieldName ).append( '\'' );
         sb.append( '}' );
         return sb.toString();
+    }
+
+    public int compareTo( AnnotatedField annotatedField )
+    {
+        return getFieldName().compareTo( annotatedField.getFieldName() );
     }
 }

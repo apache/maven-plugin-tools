@@ -18,6 +18,7 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,6 +27,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.compiler.manager.CompilerManager;
 
 /**
  * @author Olivier Lamy
@@ -35,17 +37,32 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class FooMojo
     extends AbstractMojo
 {
-    @Parameter( expression = "${thebar}", required = true)
-    private String bar;
+    /**
+     * the cool bar to go
+     * @since 1.0
+     *
+     */
+    @Parameter( expression = "${thebar}", required = true, defaultValue = "coolbar" )
+    protected String bar;
 
-    @Parameter( expression = "${thebeer}" )
-    private String beer;
+    /**
+     * beer for non french folks
+     * @deprecated wine is better
+     */
+    @Parameter( expression = "${thebeer}", defaultValue = "coolbeer" )
+    protected String beer;
 
-    @Component( role = "wine", roleHint = "bordeaux" )
-    private Mojo wine;
+    /**
+     * Plexus compiler manager.
+     */
+    @Component
+    protected CompilerManager compilerManager;
 
-    @Component( role = "wine", roleHint = "foo" )
-    private Mojo foo;
+    /**
+     *
+     */
+    @Component( role = "org.apache.maven.artifact.metadata.ArtifactMetadataSource", roleHint = "maven" )
+    protected ArtifactMetadataSource artifactMetadataSource;
 
     public void execute()
         throws MojoExecutionException, MojoFailureException
