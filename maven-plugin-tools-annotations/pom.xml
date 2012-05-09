@@ -73,6 +73,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
       <artifactId>qdox</artifactId>
     </dependency>

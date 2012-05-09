@@ -35,6 +35,18 @@
           <role>org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner</role>
           <role-hint>default</role-hint>
         </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+          <role-hint>default</role-hint>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.factory.ArtifactFactory</role>
+          <role-hint>default</role-hint>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
+          <role-hint>default</role-hint>
+        </requirement>
       </requirements>
     </component>
 

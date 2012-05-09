@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -27,6 +28,7 @@ import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,6 +53,10 @@ public class DefaultPluginToolsRequest
     private boolean skipErrorNoDescriptorsFound;
 
     private Set<Artifact> dependencies;
+
+    private List<ArtifactRepository> remoteRepos;
+
+    private ArtifactRepository local;
 
     public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
     {
@@ -146,6 +152,28 @@ public class DefaultPluginToolsRequest
     public PluginToolsRequest setDependencies( Set<Artifact> dependencies )
     {
         this.dependencies = dependencies;
+        return this;
+    }
+
+    public List<ArtifactRepository> getRemoteRepos()
+    {
+        return remoteRepos;
+    }
+
+    public PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos )
+    {
+        this.remoteRepos = remoteRepos;
+        return this;
+    }
+
+    public ArtifactRepository getLocal()
+    {
+        return local;
+    }
+
+    public PluginToolsRequest setLocal( ArtifactRepository local )
+    {
+        this.local = local;
         return this;
     }
 }

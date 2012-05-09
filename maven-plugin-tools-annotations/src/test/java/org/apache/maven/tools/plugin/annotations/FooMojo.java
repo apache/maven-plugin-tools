@@ -40,7 +40,6 @@ public class FooMojo
     /**
      * the cool bar to go
      * @since 1.0
-     *
      */
     @Parameter( expression = "${thebar}", required = true, defaultValue = "coolbar" )
     protected String bar;

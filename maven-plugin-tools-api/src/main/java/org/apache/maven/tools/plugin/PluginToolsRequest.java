@@ -20,10 +20,12 @@ package org.apache.maven.tools.plugin;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -90,16 +92,47 @@ public interface PluginToolsRequest
 
     /**
      * Returns the list of {@link Artifact} used in class path scanning for annotations
+     *
      * @return
      * @since 3.0
      */
     Set<Artifact> getDependencies();
 
     /**
-     *
      * @param dependencies
      * @return
+     * @since 3.0
      */
     PluginToolsRequest setDependencies( Set<Artifact> dependencies );
+
+    /**
+     *
+     * @return
+     * @since 3.0
+     */
+    List<ArtifactRepository> getRemoteRepos();
+
+    /**
+     *
+     * @param remoteRepos
+     * @return
+     * @since 3.0
+     */
+    PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos );
+
+    /**
+     *
+     * @return
+     * @since 3.0
+     */
+    ArtifactRepository getLocal();
+
+    /**
+     *
+     * @param local
+     * @return
+     * @since 3.0
+     */
+    PluginToolsRequest setLocal( ArtifactRepository local );
 
 }

@@ -23,6 +23,10 @@ import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -41,6 +45,9 @@ import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -50,8 +57,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -68,6 +77,21 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @requirement
      */
     private MojoAnnotationsScanner mojoAnnotationsScanner;
+
+    /**
+     * @requirement
+     */
+    private ArtifactResolver artifactResolver;
+
+    /**
+     * @requirement
+     */
+    private ArtifactFactory artifactFactory;
+
+    /**
+     * @requirement
+     */
+    private ArchiverManager archiverManager;
 
     public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
@@ -95,6 +119,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
         // we currently only scan sources from reactors
         List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
 
+        // if we need to scan sources from external artifacts
+        Set<Artifact> externalArtifacts = new HashSet<Artifact>();
+
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
         {
             if ( !StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
@@ -106,10 +133,30 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 {
                     mavenProjects.add( mavenProject );
                 }
+                else
+                {
+                    externalArtifacts.add( mojoAnnotatedClass.getArtifact() );
+                }
             }
         }
 
         Map<String, JavaClass> javaClassesMap = new HashMap<String, JavaClass>();
+
+        // try to get artifact with classifier sources
+        // extract somewhere then scan doclet for @since, @deprecated
+        for ( Artifact artifact : externalArtifacts )
+        {
+            // parameter for test-sources too ?? olamy I need that for it test only
+            if ( StringUtils.equalsIgnoreCase( "tests", artifact.getClassifier() ) )
+            {
+                javaClassesMap.putAll( discoverClassesFromSourcesJar( artifact, request, "test-sources" ) );
+            }
+            else
+            {
+                javaClassesMap.putAll( discoverClassesFromSourcesJar( artifact, request, "sources" ) );
+            }
+
+        }
 
         for ( MavenProject mavenProject : mavenProjects )
         {
@@ -120,8 +167,57 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
 
-        return toMojoDescriptors( mojoAnnotatedClasses, request );
+        return toMojoDescriptors( mojoAnnotatedClasses, request, javaClassesMap );
 
+    }
+
+
+    protected Map<String, JavaClass> discoverClassesFromSourcesJar( Artifact artifact, PluginToolsRequest request,
+                                                                    String classifier )
+        throws ExtractionException
+    {
+        try
+        {
+            Artifact sourcesArtifact =
+                artifactFactory.createArtifactWithClassifier( artifact.getGroupId(), artifact.getArtifactId(),
+                                                              artifact.getVersion(), artifact.getType(), classifier );
+
+            artifactResolver.resolve( sourcesArtifact, request.getRemoteRepos(), request.getLocal() );
+            if ( sourcesArtifact.getFile() != null && sourcesArtifact.getFile().exists() )
+            {
+                File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
+                                                  "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
+                                                      + sourcesArtifact.getArtifactId() + "/"
+                                                      + sourcesArtifact.getVersion() + "/"
+                                                      + sourcesArtifact.getClassifier() );
+                if ( !extractDirectory.exists() )
+                {
+                    extractDirectory.mkdirs();
+                }
+                // extract sources in a directory
+                //target/maven-plugin-plugin/${groupId}/${artifact}/sources
+                UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
+                unArchiver.setSourceFile( sourcesArtifact.getFile() );
+                unArchiver.setDestDirectory( extractDirectory );
+                unArchiver.extract();
+
+                return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ) );
+            }
+        }
+        catch ( ArtifactResolutionException e )
+        {
+            throw new ExtractionException( e.getMessage(), e );
+        }
+        catch ( ArtifactNotFoundException e )
+        {
+            //throw new ExtractionException( e.getMessage(), e );
+            getLogger().debug( "skip ArtifactNotFoundException:" + e.getMessage() );
+        }
+        catch ( NoSuchArchiverException e )
+        {
+            throw new ExtractionException( e.getMessage(), e );
+        }
+        return Collections.emptyMap();
     }
 
     /**
@@ -155,8 +251,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
                         mojoAnnotationContent.setDeprecated( deprecated.getValue() );
                     }
                 }
-                Map<String, JavaField> fieldsMap = extractFieldParameterTags( javaClass );
-                for ( Map.Entry<String, ParameterAnnotationContent> parameter : entry.getValue().getParameters().entrySet() )
+                Map<String, JavaField> fieldsMap =
+                    extractFieldParameterTags( javaClass, javaClassesMap, mojoAnnotatedClasses );
+                Map<String, ParameterAnnotationContent> parameters =
+                    getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
+                                                  mojoAnnotatedClasses );
+                for ( Map.Entry<String, ParameterAnnotationContent> parameter : new TreeMap<String, ParameterAnnotationContent>(
+                    parameters ).entrySet() )
                 {
                     JavaField javaField = fieldsMap.get( parameter.getKey() );
                     if ( javaField != null )
@@ -206,7 +307,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param tagName   not null
      * @return docletTag instance
      */
-    private static DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
+    private DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
     {
         DocletTag tag = javaClass.getTagByName( tagName );
 
@@ -229,9 +330,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
-    private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass )
+    private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass,
+                                                              Map<String, JavaClass> javaClassesMap,
+                                                              Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
-        Map<String, JavaField> rawParams;
+        Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
 
         // we have to add the parent fields first, so that they will be overwritten by the local fields if
         // that actually happens...
@@ -239,10 +342,20 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         if ( superClass != null )
         {
-            rawParams = extractFieldParameterTags( superClass );
+            if ( superClass.getFields().length > 0 )
+            {
+                rawParams = extractFieldParameterTags( superClass, javaClassesMap, mojoAnnotatedClasses );
+            }
+            // maybe sources comes from scan of sources artifact
+            superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
+            if ( superClass != null )
+            {
+                rawParams = extractFieldParameterTags( superClass, javaClassesMap, mojoAnnotatedClasses );
+            }
         }
         else
         {
+
             rawParams = new TreeMap<String, JavaField>();
         }
 
@@ -265,12 +378,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
-        JavaDocBuilder builder = new JavaDocBuilder();
-        builder.setEncoding( encoding );
+        List<File> sources = new ArrayList<File>();
 
         for ( String source : (List<String>) project.getCompileSourceRoots() )
         {
-            builder.addSourceTree( new File( source ) );
+            sources.add( new File( source ) );
         }
 
         // TODO be more dynamic
@@ -278,7 +390,20 @@ public class JavaAnnotationsMojoDescriptorExtractor
         if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() )
             && generatedPlugin.exists() )
         {
-            builder.addSourceTree( generatedPlugin );
+            sources.add( generatedPlugin );
+        }
+
+        return discoverClasses( encoding, sources );
+    }
+
+    protected Map<String, JavaClass> discoverClasses( final String encoding, List<File> sourceDirectories )
+    {
+        JavaDocBuilder builder = new JavaDocBuilder();
+        builder.setEncoding( encoding );
+
+        for ( File source : sourceDirectories )
+        {
+            builder.addSourceTree( source );
         }
 
         JavaClass[] javaClasses = builder.getClasses();
@@ -298,9 +423,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return javaClassMap;
     }
 
-
     private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
-                                                    PluginToolsRequest request )
+                                                    PluginToolsRequest request, Map<String, JavaClass> javaClassesMap )
         throws DuplicateParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
@@ -367,6 +491,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setEditable( !parameterAnnotationContent.readonly() );
                 parameter.setExpression( parameterAnnotationContent.expression() );
                 parameter.setType( parameterAnnotationContent.getClassName() );
+                parameter.setSince( parameterAnnotationContent.getSince() );
                 parameter.setRequired( parameterAnnotationContent.required() );
 
                 mojoDescriptor.addParameter( parameter );
@@ -385,7 +510,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setRequirement(
                     new Requirement( componentAnnotationContent.role(), componentAnnotationContent.roleHint() ) );
                 parameter.setEditable( false );
-
+                parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
+                parameter.setSince( componentAnnotationContent.getSince() );
                 mojoDescriptor.addParameter( parameter );
             }
 
