@@ -212,6 +212,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             //throw new ExtractionException( e.getMessage(), e );
             getLogger().debug( "skip ArtifactNotFoundException:" + e.getMessage() );
+            getLogger().warn(
+                "Impossible to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
+                    + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
         }
         catch ( NoSuchArchiverException e )
         {
