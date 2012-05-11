@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.extractor.java;
  */
 
 import junit.framework.TestCase;
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -77,6 +78,13 @@ public class JavaMojoDescriptorExtractorTest
         model.setArtifactId( "maven-unitTesting-plugin" );
 
         MavenProject project = new MavenProject( model );
+        project.setBuild( new Build(){
+            @Override
+            public String getOutputDirectory()
+            {
+                return System.getProperty( "filePath" );
+            }
+        });
 
         project.setFile( new File( root, "pom.xml" ) );
         project.addCompileSourceRoot( new File( root, directory ).getPath() );
