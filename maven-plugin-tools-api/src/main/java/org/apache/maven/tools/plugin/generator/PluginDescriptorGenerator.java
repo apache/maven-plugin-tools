@@ -148,8 +148,14 @@ public class PluginDescriptorGenerator
             w.startElement( "plugin" );
 
             PluginUtils.element( w, "name", pluginDescriptor.getName() );
-
-            PluginUtils.element( w, "description", pluginDescriptor.getDescription() );
+            if ( cleanDescription )
+            {
+                PluginUtils.element( w, "description", PluginUtils.toText( pluginDescriptor.getDescription() ) );
+            }
+            else
+            {
+                PluginUtils.element( w, "description", pluginDescriptor.getDescription() );
+            }
 
             PluginUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
 
