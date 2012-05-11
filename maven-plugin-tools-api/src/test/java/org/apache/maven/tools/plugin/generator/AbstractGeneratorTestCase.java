@@ -19,11 +19,13 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -38,7 +40,7 @@ import java.util.List;
  *          jdcasey Exp $
  */
 public abstract class AbstractGeneratorTestCase
-    extends TestCase
+    extends PlexusTestCase
 {
     protected Generator generator;
 
@@ -47,6 +49,7 @@ public abstract class AbstractGeneratorTestCase
     protected void setUp()
         throws Exception
     {
+        super.setUp();
         basedir = System.getProperty( "basedir" );
     }
 
@@ -93,7 +96,25 @@ public abstract class AbstractGeneratorTestCase
         FileUtils.deleteDirectory( destinationDirectory );
         destinationDirectory.mkdir();
 
-        generator.execute( destinationDirectory, new DefaultPluginToolsRequest( null, pluginDescriptor ) );
+        MavenProject mavenProject = new MavenProject();
+        mavenProject.setGroupId( "foo" );
+        mavenProject.setArtifactId( "bar" );
+        mavenProject.setBuild( new Build()
+        {
+            @Override
+            public String getDirectory()
+            {
+                return basedir + "/target";
+            }
+
+            @Override
+            public String getOutputDirectory()
+            {
+                return basedir + "/target";
+            }
+        } );
+
+        generator.execute( destinationDirectory, new DefaultPluginToolsRequest( mavenProject, pluginDescriptor ) );
 
         validate( destinationDirectory );
 
@@ -120,8 +141,8 @@ public abstract class AbstractGeneratorTestCase
         catch ( Exception e )
         {
             throw new Exception( "Cannot find " + generatorClassName +
-                "! Make sure your test case is named in the form ${generatorClassName}Test " +
-                "or override the setupPlugin() method to instantiate the mojo yourself." );
+                                     "! Make sure your test case is named in the form ${generatorClassName}Test " +
+                                     "or override the setupPlugin() method to instantiate the mojo yourself." );
         }
     }
 

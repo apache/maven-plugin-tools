@@ -19,11 +19,12 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
-import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
@@ -33,53 +34,91 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
+ * @version $Id$
  * @todo add example usage tag that can be shown in the doco
  * @todo need to add validation directives so that systems embedding maven2 can
  * get validation directives to help users in IDEs.
- *
- * @version $Id$
  */
 public class PluginDescriptorGenerator
     implements Generator
 {
-    /** {@inheritDoc} */
-    public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
-        throws IOException
-    {
-        execute( destinationDirectory, new DefaultPluginToolsRequest( null, pluginDescriptor ) );
-    }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public void execute( File destinationDirectory, PluginToolsRequest request )
-        throws IOException
+        throws GeneratorException
+    {
+        try
+        {
+            File f = new File( destinationDirectory, "plugin.xml" );
+            writeDescriptor( f, request, false );
+            MavenProject mavenProject = request.getProject();
+            String pluginDescriptionFilePath =
+                "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId()
+                    + "/plugin-description.xml";
+            f = new File( request.getProject().getBuild().getOutputDirectory(), pluginDescriptionFilePath );
+            writeDescriptor( f, request, true );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+        catch ( DuplicateMojoDescriptorException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+    }
+
+    public void writeDescriptor( File destinationFile, PluginToolsRequest request, boolean cleanDescription )
+        throws IOException, DuplicateMojoDescriptorException
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
-        
-        String encoding = "UTF-8";
 
-        File f = new File( destinationDirectory, "plugin.xml" );
+        File tmpPropertiesFile =
+            new File( request.getProject().getBuild().getDirectory(), "maven-plugin-help.properties" );
 
-        if ( !f.getParentFile().exists() )
+        if ( tmpPropertiesFile.exists() )
         {
-            f.getParentFile().mkdirs();
+            Properties properties = new Properties();
+            properties.load( new FileInputStream( tmpPropertiesFile ) );
+            //MojoDescriptor mojoDescriptor =
+            //    makeHelpDescriptor( pluginDescriptor, properties.getProperty( "helpPackageName" ) );
+            //pluginDescriptor.addMojo( mojoDescriptor );
         }
+        if ( destinationFile.exists() )
+        {
+            destinationFile.delete();
+        }
+        else
+        {
+            if ( !destinationFile.getParentFile().exists() )
+            {
+                destinationFile.getParentFile().mkdirs();
+            }
+        }
+
+        String encoding = "UTF-8";
 
         Writer writer = null;
         try
         {
-            writer = new OutputStreamWriter( new FileOutputStream( f ), encoding );
+            writer = new OutputStreamWriter( new FileOutputStream( destinationFile ), encoding );
 
             XMLWriter w = new PrettyPrintXMLWriter( writer, encoding, null );
 
@@ -105,11 +144,11 @@ public class PluginDescriptorGenerator
 
             if ( pluginDescriptor.getMojos() != null )
             {
-                for ( @SuppressWarnings( "unchecked" )
-                Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+                for ( @SuppressWarnings( "unchecked" ) Iterator<MojoDescriptor> it =
+                          pluginDescriptor.getMojos().iterator(); it.hasNext(); )
                 {
                     MojoDescriptor descriptor = it.next();
-                    processMojoDescriptor( descriptor, w );
+                    processMojoDescriptor( descriptor, w, cleanDescription );
                 }
             }
 
@@ -120,6 +159,7 @@ public class PluginDescriptorGenerator
             w.endElement();
 
             writer.flush();
+
         }
         finally
         {
@@ -128,10 +168,142 @@ public class PluginDescriptorGenerator
     }
 
     /**
-     * @param mojoDescriptor not null
-     * @param w not null
+     * Creates a minimalistic mojo descriptor for the generated help goal.
+     *
+     * @param pluginDescriptor The descriptor of the plugin for which to generate a help goal, must not be
+     *                         <code>null</code>.
+     * @return The mojo descriptor for the generated help goal, never <code>null</code>.
      */
+    private MojoDescriptor makeHelpDescriptor( PluginDescriptor pluginDescriptor, String packageName )
+    {
+        MojoDescriptor descriptor = new MojoDescriptor();
+
+        descriptor.setPluginDescriptor( pluginDescriptor );
+
+        descriptor.setLanguage( "java" );
+
+        descriptor.setGoal( "help" );
+
+        if ( StringUtils.isEmpty( packageName ) )
+        {
+            packageName = discoverPackageName( pluginDescriptor );
+        }
+        if ( StringUtils.isNotEmpty( packageName ) )
+        {
+            descriptor.setImplementation( packageName + '.' + "HelpMojo" );
+        }
+        else
+        {
+            descriptor.setImplementation( "HelpMojo" );
+        }
+
+        descriptor.setDescription(
+            "Display help information on " + pluginDescriptor.getArtifactId() + ".<br/> Call <pre>  mvn "
+                + descriptor.getFullGoalName()
+                + " -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details." );
+
+        try
+        {
+            Parameter param = new Parameter();
+            param.setName( "detail" );
+            param.setType( "boolean" );
+            param.setDescription( "If <code>true</code>, display all settable properties for each goal." );
+            param.setDefaultValue( "false" );
+            param.setExpression( "${detail}" );
+            descriptor.addParameter( param );
+
+            param = new Parameter();
+            param.setName( "goal" );
+            param.setType( "java.lang.String" );
+            param.setDescription(
+                "The name of the goal for which to show help." + " If unspecified, all goals will be displayed." );
+            param.setExpression( "${goal}" );
+            descriptor.addParameter( param );
+
+            param = new Parameter();
+            param.setName( "lineLength" );
+            param.setType( "int" );
+            param.setDescription( "The maximum length of a display line, should be positive." );
+            param.setDefaultValue( "80" );
+            param.setExpression( "${lineLength}" );
+            descriptor.addParameter( param );
+
+            param = new Parameter();
+            param.setName( "indentSize" );
+            param.setType( "int" );
+            param.setDescription( "The number of spaces per indentation level, should be positive." );
+            param.setDefaultValue( "2" );
+            param.setExpression( "${indentSize}" );
+            descriptor.addParameter( param );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( "Failed to setup parameters for help goal", e );
+        }
+
+        return descriptor;
+    }
+
+    /**
+     * Find the best package name, based on the number of hits of actual Mojo classes.
+     *
+     * @param pluginDescriptor not null
+     * @return the best name of the package for the generated mojo
+     */
+    private static String discoverPackageName( PluginDescriptor pluginDescriptor )
+    {
+        Map packageNames = new HashMap();
+        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        {
+            MojoDescriptor descriptor = (MojoDescriptor) it.next();
+
+            String impl = descriptor.getImplementation();
+            if ( impl.lastIndexOf( '.' ) != -1 )
+            {
+                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
+                if ( packageNames.get( name ) != null )
+                {
+                    int next = ( (Integer) packageNames.get( name ) ).intValue() + 1;
+                    packageNames.put( name, new Integer( next ) );
+                }
+                else
+                {
+                    packageNames.put( name, new Integer( 1 ) );
+                }
+            }
+            else
+            {
+                packageNames.put( "", new Integer( 1 ) );
+            }
+        }
+
+        String packageName = "";
+        int max = 0;
+        for ( Iterator it = packageNames.keySet().iterator(); it.hasNext(); )
+        {
+            String key = it.next().toString();
+            int value = ( (Integer) packageNames.get( key ) ).intValue();
+            if ( value > max )
+            {
+                max = value;
+                packageName = key;
+            }
+        }
+
+        return packageName;
+    }
+
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w )
+    {
+        processMojoDescriptor( mojoDescriptor, w, false );
+    }
+
+    /**
+     * @param mojoDescriptor   not null
+     * @param w                not null
+     * @param cleanDescription will clean html content from description fields
+     */
+    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, boolean cleanDescription )
     {
         w.startElement( "mojo" );
 
@@ -152,7 +324,14 @@ public class PluginDescriptorGenerator
         if ( description != null )
         {
             w.startElement( "description" );
-            w.writeText( mojoDescriptor.getDescription() );
+            if ( cleanDescription )
+            {
+                w.writeText( PluginUtils.toText( mojoDescriptor.getDescription() ) );
+            }
+            else
+            {
+                w.writeText( mojoDescriptor.getDescription() );
+            }
             w.endElement();
         }
 
@@ -323,8 +502,7 @@ public class PluginDescriptorGenerator
         // Parameters
         // ----------------------------------------------------------------------
 
-        @SuppressWarnings( "unchecked" )
-        List<Parameter> parameters = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" ) List<Parameter> parameters = mojoDescriptor.getParameters();
 
         w.startElement( "parameters" );
 
@@ -397,11 +575,17 @@ public class PluginDescriptorGenerator
                     PluginUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
 
                     PluginUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
+                    if ( cleanDescription )
+                    {
+                        PluginUtils.element( w, "description", PluginUtils.toText( parameter.getDescription() ) );
+                    }
+                    else
+                    {
+                        PluginUtils.element( w, "description", parameter.getDescription() );
+                    }
 
-                    PluginUtils.element( w, "description", parameter.getDescription() );
-
-                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() )
-                        || StringUtils.isNotEmpty( parameter.getExpression() ) )
+                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) || StringUtils.isNotEmpty(
+                        parameter.getExpression() ) )
                     {
                         configuration.add( parameter );
                     }

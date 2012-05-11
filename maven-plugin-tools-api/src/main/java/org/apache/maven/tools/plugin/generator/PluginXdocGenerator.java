@@ -19,6 +19,17 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,30 +43,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
-import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
-
 /**
- * @todo add example usage tag that can be shown in the doco
  * @version $Id$
+ * @todo add example usage tag that can be shown in the doco
  */
 public class PluginXdocGenerator
     implements Generator
 {
-    /** locale */
+    /**
+     * locale
+     */
     private final Locale locale;
 
-    /** project */
+    /**
+     * project
+     */
     private final MavenProject project;
 
     /**
@@ -81,7 +83,7 @@ public class PluginXdocGenerator
 
     /**
      * @param project not null.
-     * @param locale not null wanted locale.
+     * @param locale  not null wanted locale.
      */
     public PluginXdocGenerator( MavenProject project, Locale locale )
     {
@@ -96,31 +98,35 @@ public class PluginXdocGenerator
         }
     }
 
-    /** {@inheritDoc} */
-    public void execute( File destinationDirectory, PluginDescriptor pluginDescriptor )
-        throws IOException
-    {
-        execute( destinationDirectory, new DefaultPluginToolsRequest( project, pluginDescriptor ) );
-    }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void execute( File destinationDirectory, PluginToolsRequest request )
-        throws IOException
+        throws GeneratorException
     {
-        if ( request.getPluginDescriptor().getMojos() != null )
+        try
         {
-            for ( @SuppressWarnings( "unchecked" )
-            Iterator<MojoDescriptor> it = request.getPluginDescriptor().getMojos().iterator(); it.hasNext(); )
+            if ( request.getPluginDescriptor().getMojos() != null )
             {
-                MojoDescriptor descriptor = it.next();
+                for ( @SuppressWarnings( "unchecked" ) Iterator<MojoDescriptor> it =
+                          request.getPluginDescriptor().getMojos().iterator(); it.hasNext(); )
+                {
+                    MojoDescriptor descriptor = it.next();
 
-                processMojoDescriptor( descriptor, destinationDirectory );
+                    processMojoDescriptor( descriptor, destinationDirectory );
+                }
             }
         }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+
     }
 
     /**
-     * @param mojoDescriptor not null
+     * @param mojoDescriptor       not null
      * @param destinationDirectory not null
      * @throws IOException if any
      */
@@ -147,7 +153,7 @@ public class PluginXdocGenerator
 
     /**
      * @param mojo not null
-     * @param ext not null
+     * @param ext  not null
      * @return the output file name
      */
     private String getMojoFilename( MojoDescriptor mojo, String ext )
@@ -157,7 +163,7 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param w not null
+     * @param w              not null
      */
     private void writeBody( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
@@ -196,8 +202,8 @@ public class PluginXdocGenerator
         w.endElement(); //p
         w.startElement( "p" );
         w.writeMarkup( mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
-            + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
-            + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
+                           + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
+                           + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
         w.endElement(); //p
 
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDeprecated() ) )
@@ -237,7 +243,7 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param w not null
+     * @param w              not null
      */
     private void writeReportNotice( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
@@ -252,7 +258,7 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param w not null
+     * @param w              not null
      */
     private void writeGoalAttributes( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
@@ -273,12 +279,12 @@ public class PluginXdocGenerator
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
             w.endElement(); //li
         }
-        
+
         if ( mojoDescriptor.isRequiresReports() )
         {
             if ( !addedUl )
             {
-                w.startElement(  "ul" );
+                w.startElement( "ul" );
                 addedUl = true;
             }
             w.startElement( "li" );
@@ -451,12 +457,11 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param w not null
+     * @param w              not null
      */
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        @SuppressWarnings( "unchecked" )
-        List<Parameter> parameterList = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" ) List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         //remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );
@@ -490,7 +495,7 @@ public class PluginXdocGenerator
 
         if ( parameterList != null )
         {
-            for ( Parameter parameter :  parameterList )
+            for ( Parameter parameter : parameterList )
             {
                 if ( parameter.isEditable() )
                 {
@@ -509,8 +514,8 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param parameterList not null
-     * @param w not null
+     * @param parameterList  not null
+     * @param w              not null
      */
     private void writeParameterDetails( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
     {
@@ -570,8 +575,8 @@ public class PluginXdocGenerator
                         w.startElement( "ul" );
                         addedUl = true;
                     }
-                    writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ),
-                                 mojoDescriptor.getSince(), w );
+                    writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), mojoDescriptor.getSince(),
+                                 w );
                 }
             }
 
@@ -582,8 +587,8 @@ public class PluginXdocGenerator
                     w.startElement( "ul" );
                     addedUl = true;
                 }
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ),
-                             getString( "pluginxdoc.yes" ), w );
+                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.yes" ),
+                             w );
             }
             else
             {
@@ -592,8 +597,8 @@ public class PluginXdocGenerator
                     w.startElement( "ul" );
                     addedUl = true;
                 }
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ),
-                             getString( "pluginxdoc.no" ), w );
+                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.no" ),
+                             w );
             }
 
             if ( !addedUl && StringUtils.isNotEmpty( parameter.getExpression() ) )
@@ -628,7 +633,7 @@ public class PluginXdocGenerator
     /**
      * @param param not null
      * @param value could be null
-     * @param w not null
+     * @param w     not null
      */
     private void writeDetail( String param, String value, XMLWriter w )
     {
@@ -642,8 +647,8 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param parameterList not null
-     * @param w not null
+     * @param parameterList  not null
+     * @param w              not null
      */
     private void writeParameterSummary( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
     {
@@ -664,11 +669,12 @@ public class PluginXdocGenerator
 
     /**
      * @param mojoDescriptor not null
-     * @param title not null
-     * @param parameterList not null
-     * @param w not null
+     * @param title          not null
+     * @param parameterList  not null
+     * @param w              not null
      */
-    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List<Parameter> parameterList,
+                                     XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -722,9 +728,8 @@ public class PluginXdocGenerator
             String description;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description =
-                    format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                            PluginUtils.makeHtmlValid( parameter.getDeprecated() ) );
+                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated",
+                                      PluginUtils.makeHtmlValid( parameter.getDeprecated() ) );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
@@ -750,7 +755,7 @@ public class PluginXdocGenerator
     }
 
     /**
-     * @param required <code>true</code> for required parameters, <code>false</code> otherwise.
+     * @param required      <code>true</code> for required parameters, <code>false</code> otherwise.
      * @param parameterList not null
      * @return list of parameters depending the value of <code>required</code>
      */
@@ -792,21 +797,21 @@ public class PluginXdocGenerator
     /**
      * Convenience method.
      *
-     * @param key not null
+     * @param key  not null
      * @param arg1 not null
      * @return Localized, formatted text identified by <code>key</code>.
      * @see #format(String, Object[])
      */
     private String format( String key, Object arg1 )
     {
-        return format( key, new Object[] { arg1 } );
+        return format( key, new Object[]{ arg1 } );
     }
 
     /**
      * Looks up the value for <code>key</code> in the <code>ResourceBundle</code>,
      * then formats that value for the specified <code>Locale</code> using <code>args</code>.
      *
-     * @param key not null
+     * @param key  not null
      * @param args not null
      * @return Localized, formatted text identified by <code>key</code>.
      */

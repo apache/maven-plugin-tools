@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import org.codehaus.plexus.velocity.VelocityComponent;
+
 /**
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
@@ -27,4 +29,12 @@ public class PluginHelpGeneratorTest
     extends AbstractGeneratorTestCase
 {
     // inherits tests from base class
+    protected void setupGenerator()
+        throws Exception
+    {
+
+        generator =
+            new PluginHelpGenerator().setVelocityComponent( (VelocityComponent) lookup( VelocityComponent.ROLE ) );
+
+    }
 }

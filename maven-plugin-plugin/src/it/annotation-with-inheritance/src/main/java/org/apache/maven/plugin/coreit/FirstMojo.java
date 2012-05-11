@@ -32,7 +32,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = "test", defaultPhase = LifecyclePhase.INTEGRATION_TEST )
+@Mojo( name = "first", requiresDependencyResolution = "test", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 @Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
 public class FirstMojo
     extends AbstractFirstMojo

@@ -233,6 +233,24 @@
         <artifactId>plexus-archiver</artifactId>
         <version>2.1.1</version>
       </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-velocity</artifactId>
+        <version>1.1.8</version>
+        <exclusions>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- other -->
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
+      </dependency>
 
       <dependency>
         <groupId>com.thoughtworks.qdox</groupId>

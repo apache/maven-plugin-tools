@@ -19,20 +19,21 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
+import org.codehaus.plexus.velocity.VelocityComponent;
+
+import java.io.File;
 
 /**
  * Generates a <code>HelpMojo</code> class.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
- * @since 2.4
  * @goal helpmojo
  * @phase generate-sources
+ * @since 2.4
  */
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
@@ -47,7 +48,7 @@ public class HelpGeneratorMojo
     /**
      * The name of the package for the generated <code>HelpMojo</code>. By default, the package will be calculated based
      * on the packages of the other plugin goals.
-     * 
+     *
      * @parameter
      * @since 2.6
      */
@@ -61,19 +62,35 @@ public class HelpGeneratorMojo
      */
     private boolean useJava5;
 
-    /** {@inheritDoc} */
+    /**
+     * Velocity component.
+     *
+     * @component
+     * @readonly
+     * @required
+     */
+    private VelocityComponent velocity;
+
+    /**
+     * {@inheritDoc}
+     */
     protected File getOutputDirectory()
     {
         return outputDirectory;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseJava5( useJava5 );
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseJava5(
+            useJava5 ).setVelocityComponent( this.velocity );
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void execute()
         throws MojoExecutionException
     {
@@ -83,5 +100,7 @@ public class HelpGeneratorMojo
         {
             project.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
         }
+
     }
+
 }

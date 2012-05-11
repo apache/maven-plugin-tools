@@ -30,12 +30,14 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Documented;
 import java.util.List;
 import java.util.Set;
 
@@ -248,7 +250,7 @@ public abstract class AbstractGeneratorMojo
 
             createGenerator().execute( getOutputDirectory(), request );
         }
-        catch ( IOException e )
+        catch ( GeneratorException e )
         {
             throw new MojoExecutionException( "Error writing plugin descriptor", e );
         }
