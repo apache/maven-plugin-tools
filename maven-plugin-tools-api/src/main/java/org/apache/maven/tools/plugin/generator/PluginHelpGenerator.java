@@ -315,7 +315,7 @@ public class PluginHelpGenerator
      */
     protected static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
-        Map packageNames = new HashMap();
+        Map<String, Integer> packageNames = new HashMap<String, Integer>();
         for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
         {
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
@@ -330,7 +330,7 @@ public class PluginHelpGenerator
                 String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
                 if ( packageNames.get( name ) != null )
                 {
-                    int next = ( (Integer) packageNames.get( name ) ).intValue() + 1;
+                    int next = ( packageNames.get( name ) ).intValue() + 1;
                     packageNames.put( name, new Integer( next ) );
                 }
                 else
@@ -349,7 +349,7 @@ public class PluginHelpGenerator
         for ( Iterator it = packageNames.keySet().iterator(); it.hasNext(); )
         {
             String key = it.next().toString();
-            int value = ( (Integer) packageNames.get( key ) ).intValue();
+            int value = ( packageNames.get( key ) ).intValue();
             if ( value > max )
             {
                 max = value;
