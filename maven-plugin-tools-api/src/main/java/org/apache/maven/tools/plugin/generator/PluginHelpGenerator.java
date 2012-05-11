@@ -313,7 +313,7 @@ public class PluginHelpGenerator
      * @param pluginDescriptor not null
      * @return the best name of the package for the generated mojo
      */
-    private static String discoverPackageName( PluginDescriptor pluginDescriptor )
+    protected static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
         Map packageNames = new HashMap();
         for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
@@ -321,6 +321,10 @@ public class PluginHelpGenerator
             MojoDescriptor descriptor = (MojoDescriptor) it.next();
 
             String impl = descriptor.getImplementation();
+            if ( StringUtils.equals( descriptor.getGoal(), "help" ) && StringUtils.equals( "HelpMojo", impl ) )
+            {
+                continue;
+            }
             if ( impl.lastIndexOf( '.' ) != -1 )
             {
                 String name = impl.substring( 0, impl.lastIndexOf( '.' ) );

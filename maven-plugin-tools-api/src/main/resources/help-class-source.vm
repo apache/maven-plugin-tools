@@ -81,12 +81,13 @@ private int lineLength;
 private int indentSize;
 
     // groupId/artifactId/version
-    private String pluginDescriptorPath = "${propertiesFilePath}";
+    private String pluginDescriptorPath = "/${propertiesFilePath}";
 
     private Xpp3Dom build()
         throws MojoExecutionException
     {
         // olamy more than one pluginDescriptor in the classloader possible ?
+        getLog().debug("load pluginDescriptorPath: " + pluginDescriptorPath);
         InputStream is = getClass().getResourceAsStream( pluginDescriptorPath );
         try
         {
