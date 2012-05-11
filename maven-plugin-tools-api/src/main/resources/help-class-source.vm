@@ -14,14 +14,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 /**
  * @author
  * @version
+ * @goal help
+ * @requiresProject false
+ * @threadSafe
  */
-@Mojo( name = "help", threadSafe = true, requiresProject = false)
 public class HelpMojo
     extends AbstractMojo
 {
@@ -29,29 +28,57 @@ public class HelpMojo
      * If <code>true</code>, display all settable properties for each goal.
      *
      */
-    @Parameter( expression = "${detail}", defaultValue = "false" )
-    private boolean detail;
+    //@Parameter( expression = "${detail}", defaultValue = "false" )
+    //private boolean detail;
 
     /**
      * The name of the goal for which to show help. If unspecified, all goals will be displayed.
      *
      */
-    @Parameter( expression = "${goal}" )
-    private java.lang.String goal;
+    //@Parameter( expression = "${goal}" )
+    //private java.lang.String goal;
 
     /**
      * The maximum length of a display line, should be positive.
      *
      */
-    @Parameter( expression = "${lineLength}", defaultValue = "80" )
-    private int lineLength;
+    //@Parameter( expression = "${lineLength}", defaultValue = "80" )
+    //private int lineLength;
 
     /**
      * The number of spaces per indentation level, should be positive.
      *
      */
-    @Parameter( expression = "${indentSize}", defaultValue = "2" )
-    private int indentSize;
+    //@Parameter( expression = "${indentSize}", defaultValue = "2" )
+    //private int indentSize;
+
+/**
+ * If <code>true</code>, display all settable properties for each goal.
+ *
+ * @parameter expression="${detail}" default-value="false"
+ */
+private boolean detail;
+
+/**
+ * The name of the goal for which to show help. If unspecified, all goals will be displayed.
+ *
+ * @parameter expression="${goal}"
+ */
+private java.lang.String goal;
+
+/**
+ * The maximum length of a display line, should be positive.
+ *
+ * @parameter expression="${lineLength}" default-value="80"
+ */
+private int lineLength;
+
+/**
+ * The number of spaces per indentation level, should be positive.
+ *
+ * @parameter expression="${indentSize}" default-value="2"
+ */
+private int indentSize;
 
     // groupId/artifactId/version
     private String pluginDescriptorPath = "${propertiesFilePath}";
