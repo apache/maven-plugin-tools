@@ -43,7 +43,7 @@ assert mojo.requirements.requirement[1].'role-hint'.text() == ''
 assert mojo.requirements.requirement[1].'field-name'.text() == 'compilerManager'
 
 assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.project.MavenProjectHelper'
-assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
+//assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
 assert mojo.requirements.requirement[2].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3

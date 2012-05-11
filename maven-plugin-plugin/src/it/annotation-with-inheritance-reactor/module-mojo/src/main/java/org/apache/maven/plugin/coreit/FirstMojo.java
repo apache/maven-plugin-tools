@@ -46,7 +46,7 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper", roleHint = "default" )
+    @Component( role = "org.apache.maven.project.MavenProjectHelper")
     private Object projectHelper;
 
     public void execute()

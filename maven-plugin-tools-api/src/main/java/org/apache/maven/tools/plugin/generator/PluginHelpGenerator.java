@@ -42,6 +42,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -103,26 +104,27 @@ public class PluginHelpGenerator
 
         MojoDescriptor helpDescriptor = makeHelpDescriptor( pluginDescriptor );
 
-        // Verify that no help goal already exists
-        for ( @SuppressWarnings( "unchecked" ) Iterator<MojoDescriptor> it = pluginDescriptor.getMojos().iterator();
-              it.hasNext(); )
+        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+
+        if ( mojoDescriptors != null )
         {
-            MojoDescriptor descriptor = it.next();
-
-            if ( descriptor.getGoal().equals( helpDescriptor.getGoal() ) && !descriptor.getImplementation().equals(
-                helpDescriptor.getImplementation() ) )
+            // Verify that no help goal already exists
+            for ( MojoDescriptor descriptor : mojoDescriptors )
             {
-                if ( getLogger().isWarnEnabled() )
+                if ( descriptor.getGoal().equals( helpDescriptor.getGoal() ) && !descriptor.getImplementation().equals(
+                    helpDescriptor.getImplementation() ) )
                 {
-                    getLogger().warn( "\n\nA help goal (" + descriptor.getImplementation()
-                                          + ") already exists in this plugin. SKIPPED THE "
-                                          + helpDescriptor.getImplementation() + " GENERATION.\n" );
-                }
+                    if ( getLogger().isWarnEnabled() )
+                    {
+                        getLogger().warn( "\n\nA help goal (" + descriptor.getImplementation()
+                                              + ") already exists in this plugin. SKIPPED THE "
+                                              + helpDescriptor.getImplementation() + " GENERATION.\n" );
+                    }
 
-                return;
+                    return;
+                }
             }
         }
-
         Properties properties = new Properties();
         properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
 
@@ -316,9 +318,13 @@ public class PluginHelpGenerator
     protected static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
         Map<String, Integer> packageNames = new HashMap<String, Integer>();
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+        if ( mojoDescriptors == null )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
+            return "";
+        }
+        for ( MojoDescriptor descriptor : mojoDescriptors )
+        {
 
             String impl = descriptor.getImplementation();
             if ( StringUtils.equals( descriptor.getGoal(), "help" ) && StringUtils.equals( "HelpMojo", impl ) )
