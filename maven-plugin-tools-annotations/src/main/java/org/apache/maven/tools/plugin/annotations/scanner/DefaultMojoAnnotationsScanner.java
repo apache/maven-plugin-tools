@@ -55,6 +55,7 @@ import java.util.zip.ZipInputStream;
  * @author Olivier Lamy
  * @since 3.0
  */
+@org.codehaus.plexus.component.annotations.Component( role = MojoAnnotationsScanner.class )
 public class DefaultMojoAnnotationsScanner
     extends AbstractLogEnabled
     implements MojoAnnotationsScanner

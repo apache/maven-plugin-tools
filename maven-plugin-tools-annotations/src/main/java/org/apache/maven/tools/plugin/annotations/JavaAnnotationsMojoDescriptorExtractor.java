@@ -49,6 +49,7 @@ import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -69,29 +70,22 @@ import java.util.TreeSet;
  * @author Olivier Lamy
  * @since 3.0
  */
+@Component(role = MojoDescriptorExtractor.class, hint = "java-annotations")
 public class JavaAnnotationsMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
 
-    /**
-     * @requirement
-     */
+    @org.codehaus.plexus.component.annotations.Requirement
     private MojoAnnotationsScanner mojoAnnotationsScanner;
 
-    /**
-     * @requirement
-     */
+    @org.codehaus.plexus.component.annotations.Requirement
     private ArtifactResolver artifactResolver;
 
-    /**
-     * @requirement
-     */
+    @org.codehaus.plexus.component.annotations.Requirement
     private ArtifactFactory artifactFactory;
 
-    /**
-     * @requirement
-     */
+    @org.codehaus.plexus.component.annotations.Requirement
     private ArchiverManager archiverManager;
 
     public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )

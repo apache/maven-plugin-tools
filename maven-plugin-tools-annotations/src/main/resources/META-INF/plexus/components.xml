@@ -26,31 +26,6 @@
      | descriptors from java classes with annotations.
      |
      -->
-    <component>
-      <role>org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor</role>
-      <role-hint>java-annotations</role-hint>
-      <implementation>org.apache.maven.tools.plugin.annotations.JavaAnnotationsMojoDescriptorExtractor</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.artifact.factory.ArtifactFactory</role>
-        </requirement>
-        <requirement>
-          <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
-        </requirement>
-      </requirements>
-    </component>
-
-    <component>
-      <role>org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner</role>
-      <role-hint>default</role-hint>
-      <implementation>org.apache.maven.tools.plugin.annotations.scanner.DefaultMojoAnnotationsScanner</implementation>
-    </component>
 
   </components>
 </component-set>
