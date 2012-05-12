@@ -454,8 +454,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojo.setDeprecated( mojo.getDeprecated() );
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
-            mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().toString() );
-            mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection().toString() );
+            mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );
+            mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection().id() );
 
             mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
