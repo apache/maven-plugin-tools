@@ -715,7 +715,7 @@ public final class PluginUtils
             String text;
             if ( preformatted > 0 )
             {
-                text = data.replace( ' ', '\u00A0' );
+                text = data;
             }
             else
             {

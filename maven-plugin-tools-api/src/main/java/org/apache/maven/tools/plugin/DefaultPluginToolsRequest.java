@@ -19,23 +19,29 @@ package org.apache.maven.tools.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Default implementation of {@link PluginToolsRequest}, which is used to pass parameters to components used to extract
  * {@link MojoDescriptor} instances from different types of metadata for a given plugin.
- * 
+ *
  * @author jdcasey
  * @since 2.5
  */
 public class DefaultPluginToolsRequest
     implements PluginToolsRequest
 {
-    
+
     private static final String DEFAULT_ENCODING = ReaderFactory.FILE_ENCODING;
 
     private PluginDescriptor pluginDescriptor;
@@ -43,6 +49,14 @@ public class DefaultPluginToolsRequest
     private MavenProject project;
 
     private String encoding = DEFAULT_ENCODING;
+
+    private boolean skipErrorNoDescriptorsFound;
+
+    private Set<Artifact> dependencies;
+
+    private List<ArtifactRepository> remoteRepos;
+
+    private ArtifactRepository local;
 
     public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
     {
@@ -57,7 +71,7 @@ public class DefaultPluginToolsRequest
     {
         return pluginDescriptor;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -74,7 +88,7 @@ public class DefaultPluginToolsRequest
     {
         return project;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,4 +123,57 @@ public class DefaultPluginToolsRequest
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSkipErrorNoDescriptorsFound()
+    {
+        return skipErrorNoDescriptorsFound;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound )
+    {
+        this.skipErrorNoDescriptorsFound = skipErrorNoDescriptorsFound;
+        return this;
+    }
+
+    public Set<Artifact> getDependencies()
+    {
+        if ( this.dependencies == null )
+        {
+            this.dependencies = new HashSet<Artifact>();
+        }
+        return dependencies;
+    }
+
+    public PluginToolsRequest setDependencies( Set<Artifact> dependencies )
+    {
+        this.dependencies = dependencies;
+        return this;
+    }
+
+    public List<ArtifactRepository> getRemoteRepos()
+    {
+        return remoteRepos;
+    }
+
+    public PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos )
+    {
+        this.remoteRepos = remoteRepos;
+        return this;
+    }
+
+    public ArtifactRepository getLocal()
+    {
+        return local;
+    }
+
+    public PluginToolsRequest setLocal( ArtifactRepository local )
+    {
+        this.local = local;
+        return this;
+    }
 }

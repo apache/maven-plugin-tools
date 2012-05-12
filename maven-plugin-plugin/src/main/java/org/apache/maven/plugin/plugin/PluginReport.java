@@ -19,15 +19,6 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Plugin;
@@ -42,11 +33,20 @@ import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Generates the Plugin's documentation report.
@@ -54,9 +54,9 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
- * @since 2.0
  * @goal report
  * @execute phase="compile"
+ * @since 2.0
  */
 public class PluginReport
     extends AbstractMavenReport
@@ -91,13 +91,12 @@ public class PluginReport
      */
     protected MojoScanner mojoScanner;
 
-   /**
-    * The file encoding of the source files.
-    *
-    * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
-    *
-    * @since 2.7
-    */
+    /**
+     * The file encoding of the source files.
+     *
+     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
+     * @since 2.7
+     */
     private String encoding;
 
 
@@ -124,10 +123,10 @@ public class PluginReport
     private Requirements requirements;
 
     /**
-     * The goal prefix that will appear before the ":". 
-     * By default, this plugin applies a heuristic to derive a heuristic from 
-     * the plugin's artifactId. 
-     * 
+     * The goal prefix that will appear before the ":".
+     * By default, this plugin applies a heuristic to derive a heuristic from
+     * the plugin's artifactId.
+     * <p/>
      * It removes any occurrences of the regular expression <strong>-?maven-?</strong>,
      * and then removes any occurrences of <strong>-?plugin-?</strong>.
      * <p>
@@ -158,31 +157,41 @@ public class PluginReport
      */
     private boolean skipReport;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected Renderer getSiteRenderer()
     {
         return siteRenderer;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String getOutputDirectory()
     {
         return outputDirectory.getPath();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected MavenProject getProject()
     {
         return project;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean canGenerateReport()
     {
         return "maven-plugin".equals( project.getPackaging() );
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings( "unchecked" )
     protected void executeReport( Locale locale )
         throws MavenReportException
@@ -205,8 +214,7 @@ public class PluginReport
         }
         else
         {
-            getLog().warn(
-                           "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
+            getLog().warn( "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
                                + defaultGoalPrefix + "'.\n" );
         }
 
@@ -224,11 +232,11 @@ public class PluginReport
         try
         {
             pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
-            
+
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
 
-            try 
+            try
             {
                 mojoScanner.populatePluginDescriptor( request );
             }
@@ -243,11 +251,11 @@ public class PluginReport
             generatePluginDocumentation( pluginDescriptor, locale );
 
             // Write the overview
-            PluginOverviewRenderer r = new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor,
-                                                                   locale );
+            PluginOverviewRenderer r =
+                new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor, locale );
             r.render();
         }
-        
+
         catch ( ExtractionException e )
         {
             throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
@@ -255,19 +263,25 @@ public class PluginReport
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getDescription( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.description" );
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getName( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.name" );
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getOutputName()
     {
         return "plugin-info";
@@ -275,7 +289,7 @@ public class PluginReport
 
     /**
      * @param pluginDescriptor not null
-     * @param locale not null
+     * @param locale           not null
      * @throws MavenReportException if any
      */
     private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Locale locale )
@@ -287,9 +301,10 @@ public class PluginReport
             outputDir.mkdirs();
 
             PluginXdocGenerator generator = new PluginXdocGenerator( project, locale );
-            generator.execute( outputDir, pluginDescriptor );
+            PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            generator.execute( outputDir, pluginToolsRequest );
         }
-        catch ( IOException e )
+        catch ( GeneratorException e )
         {
             throw new MavenReportException( "Error writing plugin documentation", e );
         }
@@ -321,11 +336,11 @@ public class PluginReport
         private final Locale locale;
 
         /**
-         * @param project not null
-         * @param requirements not null
-         * @param sink not null
+         * @param project          not null
+         * @param requirements     not null
+         * @param sink             not null
          * @param pluginDescriptor not null
-         * @param locale not null
+         * @param locale           not null
          */
         public PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
                                        PluginDescriptor pluginDescriptor, Locale locale )
@@ -341,13 +356,17 @@ public class PluginReport
             this.locale = locale;
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         public String getTitle()
         {
             return getBundle( locale ).getString( "report.plugin.title" );
         }
 
-        /** {@inheritDoc} */
+        /**
+         * {@inheritDoc}
+         */
         @SuppressWarnings( { "unchecked", "rawtypes" } )
         public void renderBody()
         {
@@ -361,7 +380,6 @@ public class PluginReport
             }
 
             paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
-
 
             boolean hasMavenReport = false;
             for ( Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
@@ -381,11 +399,11 @@ public class PluginReport
             String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
             if ( hasMavenReport )
             {
-                tableHeader( new String[] { goalColumnName, isMavenReport, descriptionColumnName } );
+                tableHeader( new String[]{ goalColumnName, isMavenReport, descriptionColumnName } );
             }
             else
             {
-                tableHeader( new String[] { goalColumnName, descriptionColumnName } );
+                tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
             }
 
             List<MojoDescriptor> mojos = new ArrayList<MojoDescriptor>();
@@ -449,15 +467,16 @@ public class PluginReport
             String maven = discoverMavenRequirement( project, requirements );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.maven" ) );
-            tableCell( ( maven != null ? maven : getBundle( locale )
-                .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+            tableCell( ( maven != null
+                ? maven
+                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
             String jdk = discoverJdkRequirement( project, requirements );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.jdk" ) );
-            tableCell( ( jdk != null ? jdk : getBundle( locale )
-                .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+            tableCell(
+                ( jdk != null ? jdk : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
             sink.tableRow();
@@ -482,9 +501,9 @@ public class PluginReport
 
                     sink.tableRow();
                     tableCell( key );
-                    tableCell( ( StringUtils.isNotEmpty( requirements.getOthers().getProperty( key ) ) ? requirements
-                        .getOthers().getProperty( key ) : getBundle( locale )
-                        .getString( "report.plugin.systemrequirements.nominimum" ) ) );
+                    tableCell( ( StringUtils.isNotEmpty( requirements.getOthers().getProperty( key ) )
+                        ? requirements.getOthers().getProperty( key )
+                        : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
                     sink.tableRow_();
                 }
             }
@@ -515,31 +534,32 @@ public class PluginReport
             sb.append( "<project>" ).append( '\n' );
             sb.append( "  ..." ).append( '\n' );
             sb.append( "  <build>" ).append( '\n' );
-            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" )
-                .append( '\n' );
+            sb.append(
+                "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" ).append(
+                '\n' );
             sb.append( "    <pluginManagement>" ).append( '\n' );
             sb.append( "      <plugins>" ).append( '\n' );
             sb.append( "        <plugin>" ).append( '\n' );
-            sb.append( "          <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
-                .append( '\n' );
-            sb.append( "          <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
-                .append( '\n' );
-            sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
-                .append( '\n' );
+            sb.append( "          <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" ).append(
+                '\n' );
+            sb.append( "          <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append(
+                "</artifactId>" ).append( '\n' );
+            sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
+                '\n' );
             sb.append( "        </plugin>" ).append( '\n' );
             sb.append( "        ..." ).append( '\n' );
             sb.append( "      </plugins>" ).append( '\n' );
             sb.append( "    </pluginManagement>" ).append( '\n' );
-            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" )
-                .append( '\n' );
+            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" ).append(
+                '\n' );
             sb.append( "    <plugins>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
-            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
-                .append( '\n' );
-            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
-                .append( '\n' );
-            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
-            .append( '\n' );
+            sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" ).append(
+                '\n' );
+            sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append(
+                "</artifactId>" ).append( '\n' );
+            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
+                '\n' );
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
             sb.append( "    </plugins>" ).append( '\n' );
@@ -548,17 +568,18 @@ public class PluginReport
             if ( hasMavenReport )
             {
                 sb.append( "  ..." ).append( '\n' );
-                sb.append( "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" )
-                    .append( '\n' );
+                sb.append(
+                    "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" ).append(
+                    '\n' );
                 sb.append( "  <reporting>" ).append( '\n' );
                 sb.append( "    <plugins>" ).append( '\n' );
                 sb.append( "      <plugin>" ).append( '\n' );
-                sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" )
-                    .append( '\n' );
-                sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append( "</artifactId>" )
-                    .append( '\n' );
-                sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" )
-                    .append( '\n' );
+                sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" ).append(
+                    '\n' );
+                sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append(
+                    "</artifactId>" ).append( '\n' );
+                sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
+                    '\n' );
                 sb.append( "      </plugin>" ).append( '\n' );
                 sb.append( "      ..." ).append( '\n' );
                 sb.append( "    </plugins>" ).append( '\n' );
@@ -581,7 +602,7 @@ public class PluginReport
          * Try to lookup on the Maven prerequisites property.
          * If not specified, uses the value defined by the user.
          *
-         * @param project not null
+         * @param project      not null
          * @param requirements not null
          * @return the Maven version
          */
@@ -606,7 +627,7 @@ public class PluginReport
          * If not specified, uses the value defined by the user.
          * If not specified, uses the value of the system property <code>java.specification.version</code>.
          *
-         * @param project not null
+         * @param project      not null
          * @param requirements not null
          * @return the JDK version
          */
@@ -686,11 +707,11 @@ public class PluginReport
                 jdk = pluginConf.getChild( "target" ).getValue();
             }
 
-            if ( jdk == null ) 
+            if ( jdk == null )
             {
                 return backupJdk;
             }
-            else 
+            else
             {
                 return jdk;
             }

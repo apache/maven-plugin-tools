@@ -25,7 +25,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.its.plugin</groupId>
     <artifactId>ipcr</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>  
 
   <artifactId>ipcr-dep-a</artifactId>

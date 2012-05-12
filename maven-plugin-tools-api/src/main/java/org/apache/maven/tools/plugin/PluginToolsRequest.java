@@ -19,30 +19,35 @@ package org.apache.maven.tools.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Request that encapsulates all information relevant to the process of extracting {@link MojoDescriptor}
  * instances from metadata for a certain type of mojo.
- * 
+ *
  * @author jdcasey
  * @since 2.5
  */
 public interface PluginToolsRequest
 {
-    
+
     /**
      * Return the current {@link MavenProject} instance in use.
      */
     MavenProject getProject();
-    
+
     /**
      * @see PluginToolsRequest#getProject()
      */
     PluginToolsRequest setProject( MavenProject project );
-    
+
     /**
      * Return the {@link PluginDescriptor} currently being populated as part of the build of the
      * current plugin project.
@@ -53,21 +58,81 @@ public interface PluginToolsRequest
      * @see PluginToolsRequest#getPluginDescriptor()
      */
     PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor );
-    
+
     /**
      * Gets the file encoding of the source files.
-     * 
+     *
      * @return The file encoding of the source files, never <code>null</code>.
      */
     String getEncoding();
 
     /**
      * Sets the file encoding of the source files.
-     * 
+     *
      * @param encoding The file encoding of the source files, may be empty or <code>null</code> to use the platform's
-     *            default encoding.
+     *                 default encoding.
      * @return This request.
      */
     PluginToolsRequest setEncoding( String encoding );
+
+    /**
+     * By default an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
+     * descriptor generator mojo is bound to generate-resources phase.
+     * But for annotations, the compiled classes are needed, so skip error
+     *
+     * @since 3.0
+     */
+    PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound );
+
+    /**
+     * @return
+     * @since 3.0
+     */
+    boolean isSkipErrorNoDescriptorsFound();
+
+    /**
+     * Returns the list of {@link Artifact} used in class path scanning for annotations
+     *
+     * @return
+     * @since 3.0
+     */
+    Set<Artifact> getDependencies();
+
+    /**
+     * @param dependencies
+     * @return
+     * @since 3.0
+     */
+    PluginToolsRequest setDependencies( Set<Artifact> dependencies );
+
+    /**
+     *
+     * @return
+     * @since 3.0
+     */
+    List<ArtifactRepository> getRemoteRepos();
+
+    /**
+     *
+     * @param remoteRepos
+     * @return
+     * @since 3.0
+     */
+    PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos );
+
+    /**
+     *
+     * @return
+     * @since 3.0
+     */
+    ArtifactRepository getLocal();
+
+    /**
+     *
+     * @param local
+     * @return
+     * @since 3.0
+     */
+    PluginToolsRequest setLocal( ArtifactRepository local );
 
 }

@@ -19,11 +19,6 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -35,6 +30,11 @@ import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jdcasey
@@ -71,14 +71,18 @@ public class DefaultMojoScanner
         // nop
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void populatePluginDescriptor( MavenProject project, PluginDescriptor pluginDescriptor )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public void populatePluginDescriptor( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
@@ -103,7 +107,7 @@ public class DefaultMojoScanner
             List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
 
             logger.info( "Mojo extractor for language: " + language + " found " + extractorDescriptors.size()
-                + " mojo descriptors." );
+                             + " mojo descriptors." );
             numMojoDescriptors += extractorDescriptors.size();
 
             for ( MojoDescriptor descriptor : extractorDescriptors )
@@ -116,10 +120,11 @@ public class DefaultMojoScanner
             }
         }
 
-        if ( numMojoDescriptors == 0 )
+        if ( numMojoDescriptors == 0 && !request.isSkipErrorNoDescriptorsFound() )
         {
-            throw new InvalidPluginDescriptorException( "No mojo definitions were found for plugin: "
-                + request.getPluginDescriptor().getPluginLookupKey() + "." );
+            throw new InvalidPluginDescriptorException(
+                "No mojo definitions were found for plugin: " + request.getPluginDescriptor().getPluginLookupKey()
+                    + "." );
         }
     }
 

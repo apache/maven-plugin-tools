@@ -20,6 +20,13 @@ under the License.
 -->
 
 <settings>
+  <!--mirrors>
+    <mirror>
+      <id>local.mirror</id>
+      <url>@localRepositoryUrl@</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors-->
   <profiles>
     <profile>
       <id>it-repo</id>
