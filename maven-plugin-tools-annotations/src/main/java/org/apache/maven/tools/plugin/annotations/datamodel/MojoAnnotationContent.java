@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.InstanciationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -41,7 +42,7 @@ public class MojoAnnotationContent
 
     private DependencyScope requiresDependencyCollection = DependencyScope.RUNTIME;
 
-    private String instantiationStrategy = "per-lookup";
+    private InstanciationStrategy instantiationStrategy = InstanciationStrategy.PER_LOOKUP;
 
     private String executionStrategy = "once-per-session";
 
@@ -96,12 +97,12 @@ public class MojoAnnotationContent
         this.requiresDependencyCollection = requiresDependencyCollection;
     }
 
-    public String instantiationStrategy()
+    public InstanciationStrategy instantiationStrategy()
     {
         return instantiationStrategy;
     }
 
-    public void instantiationStrategy( String instantiationStrategy )
+    public void instantiationStrategy( InstanciationStrategy instantiationStrategy )
     {
         this.instantiationStrategy = instantiationStrategy;
     }

@@ -39,6 +39,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.DependencyScope;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.InstanciationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -53,7 +54,7 @@ import org.apache.maven.plugins.annotations.Parameter;
        configurator = "<roleHint>",
        executionStrategy = "<once-per-session|always>",
        inheritByDefault = <true|false>,
-       instantiationStrategy = "<per-lookup|singleton|keep-alive|poolable>",
+       instantiationStrategy = InstanciationStrategy.<strategy>,
        defaultPhase = "<phaseName>",
        requiresDependencyResolution = DependencyScope.<scope>,
        requiresDependencyCollection = DependencyScope.<scope>, // (since Maven 3.0)

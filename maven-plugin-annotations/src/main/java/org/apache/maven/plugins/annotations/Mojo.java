@@ -44,7 +44,7 @@ public @interface Mojo
 
     DependencyScope requiresDependencyCollection() default DependencyScope.RUNTIME;
 
-    String instantiationStrategy() default "per-lookup";
+    InstanciationStrategy instantiationStrategy() default InstanciationStrategy.PER_LOOKUP;
 
     String executionStrategy() default "once-per-session";
 
