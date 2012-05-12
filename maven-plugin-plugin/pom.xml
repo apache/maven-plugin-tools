@@ -43,9 +43,9 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/branches/plugin-tools-2.x/maven-plugin-plugin/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/branches/plugin-tools-2.x/maven-plugin-plugin/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/branches/plugin-tools-2.x/maven-plugin-plugin/</url>
   </scm>
   <issueManagement>
     <system>jira</system>

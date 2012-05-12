@@ -135,9 +135,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/branches/plugin-tools-2.x</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/branches/plugin-tools-2.x</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/branches/plugin-tools-2.x</url>
   </scm>
   <issueManagement>
     <system>jira</system>
@@ -145,7 +145,7 @@
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/hudson/job/maven-plugin-tools/</url>
+    <url>https://builds.apache.org/job/maven-plugin-tools/</url>
   </ciManagement>
   <distributionManagement>
     <site>
