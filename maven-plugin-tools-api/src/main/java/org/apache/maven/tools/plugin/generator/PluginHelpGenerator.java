@@ -24,6 +24,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -40,10 +41,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -104,6 +102,7 @@ public class PluginHelpGenerator
 
         MojoDescriptor helpDescriptor = makeHelpDescriptor( pluginDescriptor );
 
+        @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
 
         if ( mojoDescriptors != null )
@@ -251,7 +250,7 @@ public class PluginHelpGenerator
         String packageName = helpPackageName;
         if ( StringUtils.isEmpty( packageName ) )
         {
-            packageName = discoverPackageName( pluginDescriptor );
+            packageName = PluginUtils.discoverPackageName( pluginDescriptor );
         }
         if ( StringUtils.isNotEmpty( packageName ) )
         {
@@ -308,62 +307,4 @@ public class PluginHelpGenerator
 
         return descriptor;
     }
-
-    /**
-     * Find the best package name, based on the number of hits of actual Mojo classes.
-     *
-     * @param pluginDescriptor not null
-     * @return the best name of the package for the generated mojo
-     */
-    protected static String discoverPackageName( PluginDescriptor pluginDescriptor )
-    {
-        Map<String, Integer> packageNames = new HashMap<String, Integer>();
-        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
-        if ( mojoDescriptors == null )
-        {
-            return "";
-        }
-        for ( MojoDescriptor descriptor : mojoDescriptors )
-        {
-
-            String impl = descriptor.getImplementation();
-            if ( StringUtils.equals( descriptor.getGoal(), "help" ) && StringUtils.equals( "HelpMojo", impl ) )
-            {
-                continue;
-            }
-            if ( impl.lastIndexOf( '.' ) != -1 )
-            {
-                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
-                if ( packageNames.get( name ) != null )
-                {
-                    int next = ( packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name, new Integer( next ) );
-                }
-                else
-                {
-                    packageNames.put( name, new Integer( 1 ) );
-                }
-            }
-            else
-            {
-                packageNames.put( "", new Integer( 1 ) );
-            }
-        }
-
-        String packageName = "";
-        int max = 0;
-        for ( Iterator it = packageNames.keySet().iterator(); it.hasNext(); )
-        {
-            String key = it.next().toString();
-            int value = ( packageNames.get( key ) ).intValue();
-            if ( value > max )
-            {
-                max = value;
-                packageName = key;
-            }
-        }
-
-        return packageName;
-    }
-
 }

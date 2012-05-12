@@ -31,8 +31,10 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -181,6 +183,7 @@ public final class PluginUtils
      * <code>false</code> otherwise.
      * @throws IllegalArgumentException if any
      */
+    @SuppressWarnings( "unchecked" )
     public static boolean isMavenReport( String impl, MavenProject project )
         throws IllegalArgumentException
     {
@@ -723,5 +726,62 @@ public final class PluginUtils
             }
             sb.append( text );
         }
+    }
+
+    /**
+     * Find the best package name, based on the number of hits of actual Mojo classes.
+     *
+     * @param pluginDescriptor not null
+     * @return the best name of the package for the generated mojo
+     */
+    public static String discoverPackageName( PluginDescriptor pluginDescriptor )
+    {
+        Map<String, Integer> packageNames = new HashMap<String, Integer>();
+        @SuppressWarnings( "unchecked" )
+        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+        if ( mojoDescriptors == null )
+        {
+            return "";
+        }
+        for ( MojoDescriptor descriptor : mojoDescriptors )
+        {
+
+            String impl = descriptor.getImplementation();
+            if ( StringUtils.equals( descriptor.getGoal(), "help" ) && StringUtils.equals( "HelpMojo", impl ) )
+            {
+                continue;
+            }
+            if ( impl.lastIndexOf( '.' ) != -1 )
+            {
+                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
+                if ( packageNames.get( name ) != null )
+                {
+                    int next = ( packageNames.get( name ) ).intValue() + 1;
+                    packageNames.put( name, new Integer( next ) );
+                }
+                else
+                {
+                    packageNames.put( name, new Integer( 1 ) );
+                }
+            }
+            else
+            {
+                packageNames.put( "", new Integer( 1 ) );
+            }
+        }
+
+        String packageName = "";
+        int max = 0;
+        for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
+        {
+            int value = entry.getValue().intValue();
+            if ( value > max )
+            {
+                max = value;
+                packageName = entry.getKey();
+            }
+        }
+
+        return packageName;
     }
 }

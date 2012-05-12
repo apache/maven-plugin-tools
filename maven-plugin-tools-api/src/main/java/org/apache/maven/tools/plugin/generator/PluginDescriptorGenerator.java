@@ -44,7 +44,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -214,7 +213,7 @@ public class PluginDescriptorGenerator
 
         if ( StringUtils.isEmpty( packageName ) )
         {
-            packageName = discoverPackageName( pluginDescriptor );
+            packageName = PluginUtils.discoverPackageName( pluginDescriptor );
         }
         if ( StringUtils.isNotEmpty( packageName ) )
         {
@@ -270,55 +269,6 @@ public class PluginDescriptorGenerator
         }
 
         return descriptor;
-    }
-
-    /**
-     * Find the best package name, based on the number of hits of actual Mojo classes.
-     *
-     * @param pluginDescriptor not null
-     * @return the best name of the package for the generated mojo
-     */
-    private static String discoverPackageName( PluginDescriptor pluginDescriptor )
-    {
-        Map<String, Integer> packageNames = new HashMap<String, Integer>();
-        @SuppressWarnings( "unchecked" )
-        List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
-        for ( MojoDescriptor descriptor : descriptors )
-        {
-            String impl = descriptor.getImplementation();
-            if ( impl.lastIndexOf( '.' ) != -1 )
-            {
-                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
-                if ( packageNames.get( name ) != null )
-                {
-                    int next = packageNames.get( name ).intValue() + 1;
-                    packageNames.put( name, new Integer( next ) );
-                }
-                else
-                {
-                    packageNames.put( name, new Integer( 1 ) );
-                }
-            }
-            else
-            {
-                packageNames.put( "", new Integer( 1 ) );
-            }
-        }
-
-        String packageName = "";
-        int max = 0;
-        for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
-        {
-            String key = entry.getKey();
-            int value = entry.getValue().intValue();
-            if ( value > max )
-            {
-                max = value;
-                packageName = key;
-            }
-        }
-
-        return packageName;
     }
 
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w )
@@ -696,7 +646,7 @@ public class PluginDescriptorGenerator
     protected String rewriteHelpClassToMojoPackage( PluginToolsRequest request )
         throws GeneratorException
     {
-        String destinationPackage = PluginHelpGenerator.discoverPackageName( request.getPluginDescriptor() );
+        String destinationPackage = PluginUtils.discoverPackageName( request.getPluginDescriptor() );
         if ( StringUtils.isEmpty( destinationPackage ) )
         {
             return null;
