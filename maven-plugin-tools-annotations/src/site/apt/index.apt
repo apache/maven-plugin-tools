@@ -36,6 +36,8 @@ Maven Plugin Tool for Annotations
 
 +---------+
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -53,8 +55,8 @@ import org.apache.maven.plugins.annotations.Parameter;
        inheritByDefault = <true|false>,
        instantiationStrategy = "<per-lookup|singleton|keep-alive|poolable>",
        defaultPhase = "<phaseName>",
-       requiresDependencyResolution = "<compile|runtime|compile+runtime|test>",
-       requiresDependencyCollection = "<compile|runtime|compile+runtime|test>", // (since Maven 3.0)
+       requiresDependencyResolution = DependencyScope.<scope>,
+       requiresDependencyCollection = DependencyScope.<scope>, // (since Maven 3.0)
        requiresDirectInvocation = <false|true>,
        requiresOnline = <false|true>,
        requiresProject = <true|false>,

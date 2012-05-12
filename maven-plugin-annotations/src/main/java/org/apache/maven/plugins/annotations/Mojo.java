@@ -40,9 +40,9 @@ public @interface Mojo
 
     LifecyclePhase defaultPhase() default LifecyclePhase.NONE;
 
-    String requiresDependencyResolution() default "runtime";
+    DependencyScope requiresDependencyResolution() default DependencyScope.RUNTIME;
 
-    String requiresDependencyCollection() default "";
+    DependencyScope requiresDependencyCollection() default DependencyScope.RUNTIME;
 
     String instantiationStrategy() default "per-lookup";
 

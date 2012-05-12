@@ -19,6 +19,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.DependencyScope;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -36,9 +37,9 @@ public class MojoAnnotationContent
 
     private LifecyclePhase defaultPhase = LifecyclePhase.NONE;
 
-    private String requiresDependencyResolution = "runtime";
+    private DependencyScope requiresDependencyResolution = DependencyScope.RUNTIME;
 
-    private String requiresDependencyCollection;
+    private DependencyScope requiresDependencyCollection = DependencyScope.RUNTIME;
 
     private String instantiationStrategy = "per-lookup";
 
@@ -75,22 +76,22 @@ public class MojoAnnotationContent
         this.defaultPhase = LifecyclePhase.valueOf( phase );
     }
 
-    public String requiresDependencyResolution()
+    public DependencyScope requiresDependencyResolution()
     {
         return requiresDependencyResolution;
     }
 
-    public void requiresDependencyResolution( String requiresDependencyResolution )
+    public void requiresDependencyResolution( DependencyScope requiresDependencyResolution )
     {
         this.requiresDependencyResolution = requiresDependencyResolution;
     }
 
-    public String requiresDependencyCollection()
+    public DependencyScope requiresDependencyCollection()
     {
-        return requiresDependencyCollection == null ? "" : requiresDependencyCollection;
+        return requiresDependencyCollection;
     }
 
-    public void requiresDependencyCollection( String requiresDependencyCollection )
+    public void requiresDependencyCollection( DependencyScope requiresDependencyCollection )
     {
         this.requiresDependencyCollection = requiresDependencyCollection;
     }
