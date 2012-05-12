@@ -67,6 +67,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
+ * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
