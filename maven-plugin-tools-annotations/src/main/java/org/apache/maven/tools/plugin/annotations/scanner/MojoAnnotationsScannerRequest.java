@@ -1,4 +1,5 @@
 package org.apache.maven.tools.plugin.annotations.scanner;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,7 +21,6 @@ package org.apache.maven.tools.plugin.annotations.scanner;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 
 import java.io.File;
 import java.util.ArrayList;
