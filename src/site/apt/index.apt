@@ -39,13 +39,17 @@ Maven Plugin Tools
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-api/index.html}maven-plugin-tools-api}}             | API used by maven-plugin-plugin to extract Plugin information.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| \ \ {{{./maven-plugin-tools-beanshell/index.html}maven-plugin-tools-beanshell}} | Descriptor extractor for plugins written in Beanshell.
+| \ \ {{{./maven-plugin-tools-beanshell/index.html}maven-plugin-tools-beanshell}}      | Descriptor extractor for plugins written in Beanshell.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| \ \ {{{./maven-plugin-tools-java/index.html}maven-plugin-tools-java}}           | Descriptor extractor for plugins written in Java.
+| \ \ {{{./maven-plugin-tools-java/index.html}maven-plugin-tools-java}}                | Descriptor extractor for plugins written in Java annotated with Mojo Javadoc Tags.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| \ \ {{{./maven-plugin-tools-ant/index.html}maven-plugin-tools-ant}}             | Descriptor extractor for plugins written in Ant.
+| \ \ \ \ {{{./maven-plugin-tools-javadoc/index.html}maven-plugin-tools-javadoc}}      | Provides the support of Mojo Javadoc Tags in the Javadoc Tool.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
-| {{{./maven-plugin-tools-javadoc/index.html}maven-plugin-tools-javadoc}}     | Provides the support of Mojo Javadoc Tags in the Javadoc Tool.
+| \ \ {{{./maven-plugin-tools-annotations/index.html}maven-plugin-tools--annotations}} | Descriptor extractor for plugins written in Java with Java 5 annotations.
+*-----------------------------------------------------------------------------+---------------------------------------------------------+
+| \ \ \ \ {{{./maven-plugin-annotations/index.html}maven-plugin-annotations}}          | Provides the Java 5 annotations to use in Mojos.
+*-----------------------------------------------------------------------------+---------------------------------------------------------+
+| \ \ {{{./maven-plugin-tools-ant/index.html}maven-plugin-tools-ant}}                  | Descriptor extractor for plugins written in Ant.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-model/index.html}maven-plugin-tools-model}}         | API to play with the Maven Plugin Metadata Model for script-based plugins.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
