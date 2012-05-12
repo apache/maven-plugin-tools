@@ -133,14 +133,17 @@ public class PluginHelpGenerator
                 tmpPropertiesFile.getParentFile().mkdirs();
             }
         }
-
+        FileOutputStream fos = null;
         try
         {
-            properties.store( new FileOutputStream( tmpPropertiesFile ), "maven plugin help generation informations" );
+            fos = new FileOutputStream( tmpPropertiesFile );
+            properties.store( fos, "maven plugin help generation informations" );
         }
         catch ( IOException e )
         {
             throw new GeneratorException( e.getMessage(), e );
+        } finally {
+            IOUtil.close( fos );
         }
 
         String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";

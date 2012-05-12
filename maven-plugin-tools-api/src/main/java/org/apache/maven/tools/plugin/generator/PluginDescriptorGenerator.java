@@ -74,13 +74,19 @@ public class PluginDescriptorGenerator
         if ( tmpPropertiesFile.exists() )
         {
             Properties properties = new Properties();
+            FileInputStream fis = null;
             try
             {
-                properties.load( new FileInputStream( tmpPropertiesFile ) );
+                fis = new FileInputStream( tmpPropertiesFile );
+                properties.load( fis );
             }
             catch ( IOException e )
             {
                 throw new GeneratorException( e.getMessage(), e );
+            }
+            finally
+            {
+                IOUtil.close( fis );
             }
             String helpPackageName = properties.getProperty( "helpPackageName" );
             // if helpPackageName property is empty we have to rewrite the class with a better package name than empty
@@ -171,8 +177,7 @@ public class PluginDescriptorGenerator
 
             if ( pluginDescriptor.getMojos() != null )
             {
-                @SuppressWarnings( "unchecked" )
-                List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
+                @SuppressWarnings( "unchecked" ) List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
                 for ( MojoDescriptor descriptor : descriptors )
                 {
                     processMojoDescriptor( descriptor, w, cleanDescription );
