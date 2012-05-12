@@ -32,7 +32,7 @@ Maven Plugin Tool for Annotations
  to extract descriptors from plugins written in Java with
  {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java 5 Annotations}}.
 
-* Supported Mojo Javadoc Tags
+* Supported Annotations
 
 +---------+
 import org.apache.maven.plugin.AbstractMojo;
