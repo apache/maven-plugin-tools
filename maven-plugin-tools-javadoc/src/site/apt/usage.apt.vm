@@ -3,7 +3,7 @@
  ------
  Vincent Siveton
  ------
- February 2008
+ 2008-02-01
  ------
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -62,8 +62,8 @@ Usage
 </project>
 +-----+
 
- <<Note>>: Several taglets are similars to the Javadoc
- {{{http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html#tag}-tag}} option, i.e.:
+ <<Note>>: Several taglets are similar to simple Javadoc
+ {{{http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html#tag}-tag}} options, i.e.:
 
 *--------------------------------------------+---------------------------------+
 || Taglet Class                              || Javadoc -tag option

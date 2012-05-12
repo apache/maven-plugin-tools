@@ -31,7 +31,10 @@
   <artifactId>maven-plugin-tools-javadoc</artifactId>
 
   <name>Maven Plugin Tools Javadoc</name>
-  <description>The Maven Plugin Tools Javadoc provides several Javadoc taglets to be used when generating Javadoc.</description>
+  <description>
+    The Maven Plugin Tools Javadoc provides several Javadoc taglets to be used when generating Javadoc from
+    java sources annotated with Mojo Javadoc Tags.
+  </description>
   <inceptionYear>2008</inceptionYear>
 
   <dependencies>

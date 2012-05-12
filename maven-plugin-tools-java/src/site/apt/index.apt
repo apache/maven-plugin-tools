@@ -27,12 +27,12 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Maven Plugin Tool for Java
+Maven Plugin Tool for Java Annotated with Mojo Javadoc Tags
 
  The Maven Plugin Tool for Java is the Java impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
- to extract descriptors for plugins written in Java.
+ to extract descriptors for plugins written in Java annotated with Mojo Javadoc Tags.
 
-* Supported javadoc annotations
+* Supported Mojo Javadoc Tags
 
 +---------+
 import org.apache.maven.plugin.AbstractMojo;

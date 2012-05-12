@@ -3,7 +3,7 @@
  ------
  Vincent Siveton
  ------
- February 2008
+ 2012-05-12
  ------
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -28,9 +28,9 @@
 
 Maven Plugin Tools Javadoc
 
- The Maven Plugin Tools Javadoc project is a collection of several
- {{{http://java.sun.com/j2se/1.4.2/docs/tooldocs/javadoc/taglet/overview.html}taglets}} which are used by
- the Plugin tool.
+ The Maven Plugin Tools Javadoc module is a collection of several
+ {{{http://java.sun.com/j2se/1.4.2/docs/tooldocs/javadoc/taglet/overview.html}javadoc taglets}}
+ to enhance javadoc generated from sources annotated with {{{../maven-plugin-tools-java}Mojo Javadoc Tags}}.
  For more information about the standard Javadoc tool, please refer to
  {{{http://java.sun.com/j2se/1.4.2/docs/tooldocs/windows/javadoc.html}Reference Guide}}.
 
