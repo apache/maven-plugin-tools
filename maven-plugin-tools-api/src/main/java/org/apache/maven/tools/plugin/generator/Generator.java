@@ -19,7 +19,6 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 import java.io.File;
