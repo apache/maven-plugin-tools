@@ -55,14 +55,6 @@ public class HelpGeneratorMojo
     private String helpPackageName;
 
     /**
-     * Generate Java 5 sources.
-     *
-     * @parameter expression="${useJava5}" default-value="false"
-     * @since 2.7
-     */
-    private boolean useJava5;
-
-    /**
      * Velocity component.
      *
      * @component
@@ -84,8 +76,7 @@ public class HelpGeneratorMojo
      */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseJava5(
-            useJava5 ).setVelocityComponent( this.velocity );
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setVelocityComponent( this.velocity );
     }
 
     /**

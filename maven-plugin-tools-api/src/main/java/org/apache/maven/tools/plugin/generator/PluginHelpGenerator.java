@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -56,11 +55,6 @@ public class PluginHelpGenerator
     implements Generator
 {
     /**
-     * Line separator
-     */
-    private static final String LS = System.getProperty( "line.separator" );
-
-    /**
      * Default generated class name
      */
     private static final String HELP_MOJO_CLASS_NAME = "HelpMojo";
@@ -71,11 +65,6 @@ public class PluginHelpGenerator
     private static final String HELP_GOAL = "help";
 
     private String helpPackageName;
-
-    /**
-     * Flag to indicate if the generated help mojo should use Java 5 features
-     */
-    private boolean useJava5;
 
     private VelocityComponent velocityComponent;
 
@@ -100,7 +89,7 @@ public class PluginHelpGenerator
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
 
-        MojoDescriptor helpDescriptor = makeHelpDescriptor( pluginDescriptor );
+        String helpImplementation = getImplementation( pluginDescriptor );
 
         @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
@@ -110,14 +99,14 @@ public class PluginHelpGenerator
             // Verify that no help goal already exists
             for ( MojoDescriptor descriptor : mojoDescriptors )
             {
-                if ( descriptor.getGoal().equals( helpDescriptor.getGoal() ) && !descriptor.getImplementation().equals(
-                    helpDescriptor.getImplementation() ) )
+                if ( HELP_GOAL.equals( descriptor.getGoal() )
+                    && !descriptor.getImplementation().equals( helpImplementation ) )
                 {
                     if ( getLogger().isWarnEnabled() )
                     {
                         getLogger().warn( "\n\nA help goal (" + descriptor.getImplementation()
                                               + ") already exists in this plugin. SKIPPED THE "
-                                              + helpDescriptor.getImplementation() + " GENERATION.\n" );
+                                              + helpImplementation + " GENERATION.\n" );
                     }
 
                     return;
@@ -154,7 +143,7 @@ public class PluginHelpGenerator
             throw new GeneratorException( e.getMessage(), e );
         }
 
-        String sourcePath = helpDescriptor.getImplementation().replace( '.', File.separatorChar ) + ".java";
+        String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";
         File helpClass = new File( destinationDirectory, sourcePath );
         helpClass.getParentFile().mkdirs();
 
@@ -173,19 +162,11 @@ public class PluginHelpGenerator
         {
             IOUtil.close( writer );
         }
-
-
     }
 
     public PluginHelpGenerator setHelpPackageName( String helpPackageName )
     {
         this.helpPackageName = helpPackageName;
-        return this;
-    }
-
-    public PluginHelpGenerator setUseJava5( boolean useJava5 )
-    {
-        this.useJava5 = useJava5;
         return this;
     }
 
@@ -226,85 +207,22 @@ public class PluginHelpGenerator
         velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
 
         return stringWriter.toString();
-
     }
 
 
     /**
-     * Creates a minimalistic mojo descriptor for the generated help goal.
-     *
      * @param pluginDescriptor The descriptor of the plugin for which to generate a help goal, must not be
      *                         <code>null</code>.
-     * @return The mojo descriptor for the generated help goal, never <code>null</code>.
+     * @return The implementation.
      */
-    private MojoDescriptor makeHelpDescriptor( PluginDescriptor pluginDescriptor )
+    private String getImplementation( PluginDescriptor pluginDescriptor )
     {
-        MojoDescriptor descriptor = new MojoDescriptor();
-
-        descriptor.setPluginDescriptor( pluginDescriptor );
-
-        descriptor.setLanguage( "java" );
-
-        descriptor.setGoal( HELP_GOAL );
-
         String packageName = helpPackageName;
         if ( StringUtils.isEmpty( packageName ) )
         {
             packageName = PluginUtils.discoverPackageName( pluginDescriptor );
         }
-        if ( StringUtils.isNotEmpty( packageName ) )
-        {
-            descriptor.setImplementation( packageName + '.' + HELP_MOJO_CLASS_NAME );
-        }
-        else
-        {
-            descriptor.setImplementation( HELP_MOJO_CLASS_NAME );
-        }
 
-        descriptor.setDescription(
-            "Display help information on " + pluginDescriptor.getArtifactId() + ".<br/> Call <pre>  mvn "
-                + descriptor.getFullGoalName()
-                + " -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details." );
-
-        try
-        {
-            Parameter param = new Parameter();
-            param.setName( "detail" );
-            param.setType( "boolean" );
-            param.setDescription( "If <code>true</code>, display all settable properties for each goal." );
-            param.setDefaultValue( "false" );
-            param.setExpression( "${detail}" );
-            descriptor.addParameter( param );
-
-            param = new Parameter();
-            param.setName( "goal" );
-            param.setType( "java.lang.String" );
-            param.setDescription(
-                "The name of the goal for which to show help." + " If unspecified, all goals will be displayed." );
-            param.setExpression( "${goal}" );
-            descriptor.addParameter( param );
-
-            param = new Parameter();
-            param.setName( "lineLength" );
-            param.setType( "int" );
-            param.setDescription( "The maximum length of a display line, should be positive." );
-            param.setDefaultValue( "80" );
-            param.setExpression( "${lineLength}" );
-            descriptor.addParameter( param );
-
-            param = new Parameter();
-            param.setName( "indentSize" );
-            param.setType( "int" );
-            param.setDescription( "The number of spaces per indentation level, should be positive." );
-            param.setDefaultValue( "2" );
-            param.setExpression( "${indentSize}" );
-            descriptor.addParameter( param );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( "Failed to setup parameters for help goal", e );
-        }
-
-        return descriptor;
+        return StringUtils.isEmpty( packageName ) ? HELP_MOJO_CLASS_NAME : packageName + '.' + HELP_MOJO_CLASS_NAME;
     }
 }

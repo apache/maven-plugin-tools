@@ -15,7 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Display help information on maven-plugin-plugin.<br/> Call <pre> mvn plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details.
+ * Display help information on maven-plugin-plugin.<br/>
+ * Call <pre> mvn plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details.
  * @author
  * @version
  * @goal help
@@ -53,33 +54,33 @@ public class HelpMojo
     //@Parameter( expression = "${indentSize}", defaultValue = "2" )
     //private int indentSize;
 
-/**
- * If <code>true</code>, display all settable properties for each goal.
- *
- * @parameter expression="${detail}" default-value="false"
- */
-private boolean detail;
+    /**
+     * If <code>true</code>, display all settable properties for each goal.
+     *
+     * @parameter expression="${detail}" default-value="false"
+     */
+    private boolean detail;
 
-/**
- * The name of the goal for which to show help. If unspecified, all goals will be displayed.
- *
- * @parameter expression="${goal}"
- */
-private java.lang.String goal;
+    /**
+     * The name of the goal for which to show help. If unspecified, all goals will be displayed.
+     *
+     * @parameter expression="${goal}"
+     */
+    private java.lang.String goal;
 
-/**
- * The maximum length of a display line, should be positive.
- *
- * @parameter expression="${lineLength}" default-value="80"
- */
-private int lineLength;
+    /**
+     * The maximum length of a display line, should be positive.
+     *
+     * @parameter expression="${lineLength}" default-value="80"
+     */
+    private int lineLength;
 
-/**
- * The number of spaces per indentation level, should be positive.
- *
- * @parameter expression="${indentSize}" default-value="2"
- */
-private int indentSize;
+    /**
+     * The number of spaces per indentation level, should be positive.
+     *
+     * @parameter expression="${indentSize}" default-value="2"
+     */
+    private int indentSize;
 
     // groupId/artifactId/version
     private String pluginDescriptorPath = "/${propertiesFilePath}";
@@ -88,7 +89,7 @@ private int indentSize;
         throws MojoExecutionException
     {
         // olamy more than one pluginDescriptor in the classloader possible ?
-        getLog().debug("load pluginDescriptorPath: " + pluginDescriptorPath);
+        getLog().debug( "load pluginDescriptorPath: " + pluginDescriptorPath );
         InputStream is = getClass().getResourceAsStream( pluginDescriptorPath );
         try
         {
