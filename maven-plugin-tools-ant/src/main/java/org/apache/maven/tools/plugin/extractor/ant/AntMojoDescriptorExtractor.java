@@ -68,7 +68,7 @@ public class AntMojoDescriptorExtractor
 
         for ( Map.Entry<String, Set<File>> entry : metadataFilesKeyedByBasedir.entrySet() )
         {
-            String basedir = (String) entry.getKey();
+            String basedir = entry.getKey();
             Set<File> metadataFiles = entry.getValue();
 
             for ( File metadataFile : metadataFiles )
@@ -84,10 +84,7 @@ public class AntMojoDescriptorExtractor
                         "Found orphaned plugin metadata file: " + metadataFile );
                 }
 
-                String relativePath = null;
-
-                relativePath = scriptFile.getPath().substring( basedir.length() );
-                relativePath = relativePath.replace( '\\', '/' );
+                String relativePath = scriptFile.getPath().substring( basedir.length() ).replace( '\\', '/' );
                 
                 if ( relativePath.startsWith( "/" ) )
                 {
