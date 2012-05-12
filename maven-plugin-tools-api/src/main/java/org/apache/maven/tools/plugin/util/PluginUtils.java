@@ -757,16 +757,16 @@ public final class PluginUtils
                 if ( packageNames.get( name ) != null )
                 {
                     int next = ( packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name, new Integer( next ) );
+                    packageNames.put( name,  Integer.valueOf( next ) );
                 }
                 else
                 {
-                    packageNames.put( name, new Integer( 1 ) );
+                    packageNames.put( name, Integer.valueOf( 1 ) );
                 }
             }
             else
             {
-                packageNames.put( "", new Integer( 1 ) );
+                packageNames.put( "", Integer.valueOf( 1 ) );
             }
         }
 
