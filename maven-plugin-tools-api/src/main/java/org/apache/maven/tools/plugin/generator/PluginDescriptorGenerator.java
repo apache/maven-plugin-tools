@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -173,10 +172,10 @@ public class PluginDescriptorGenerator
 
             if ( pluginDescriptor.getMojos() != null )
             {
-                for ( @SuppressWarnings( "unchecked" ) Iterator<MojoDescriptor> it =
-                          pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+                @SuppressWarnings( "unchecked" )
+                List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
+                for ( MojoDescriptor descriptor : descriptors )
                 {
-                    MojoDescriptor descriptor = it.next();
                     processMojoDescriptor( descriptor, w, cleanDescription );
                 }
             }
@@ -281,18 +280,18 @@ public class PluginDescriptorGenerator
      */
     private static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
-        Map packageNames = new HashMap();
-        for ( Iterator it = pluginDescriptor.getMojos().iterator(); it.hasNext(); )
+        Map<String, Integer> packageNames = new HashMap<String, Integer>();
+        @SuppressWarnings( "unchecked" )
+        List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
+        for ( MojoDescriptor descriptor : descriptors )
         {
-            MojoDescriptor descriptor = (MojoDescriptor) it.next();
-
             String impl = descriptor.getImplementation();
             if ( impl.lastIndexOf( '.' ) != -1 )
             {
                 String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
                 if ( packageNames.get( name ) != null )
                 {
-                    int next = ( (Integer) packageNames.get( name ) ).intValue() + 1;
+                    int next = packageNames.get( name ).intValue() + 1;
                     packageNames.put( name, new Integer( next ) );
                 }
                 else
@@ -308,10 +307,10 @@ public class PluginDescriptorGenerator
 
         String packageName = "";
         int max = 0;
-        for ( Iterator it = packageNames.keySet().iterator(); it.hasNext(); )
+        for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
         {
-            String key = it.next().toString();
-            int value = ( (Integer) packageNames.get( key ) ).intValue();
+            String key = entry.getKey();
+            int value = entry.getValue().intValue();
             if ( value > max )
             {
                 max = value;
