@@ -36,6 +36,8 @@ import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -44,8 +46,10 @@ import org.codehaus.plexus.util.StringUtils;
  *
  * @version $Id$
  */
+@Component( role = MojoDescriptorExtractor.class, hint = "ant")
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
+    implements MojoDescriptorExtractor
 {
     /** Default metadata file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
