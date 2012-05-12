@@ -72,7 +72,7 @@ import java.util.TreeSet;
  * @author Olivier Lamy
  * @since 3.0
  */
-@Component(role = MojoDescriptorExtractor.class, hint = "java-annotations")
+@Component( role = MojoDescriptorExtractor.class, hint = "java-annotations" )
 public class JavaAnnotationsMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
@@ -376,6 +376,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return discoverClasses( request.getEncoding(), request.getProject() );
     }
 
+    @SuppressWarnings( "unchecked" )
     protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
         List<File> sources = new ArrayList<File>();
@@ -633,6 +634,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             return null;
         }
+        @SuppressWarnings( "unchecked" )
         Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
