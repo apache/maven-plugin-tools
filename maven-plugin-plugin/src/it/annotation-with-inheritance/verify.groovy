@@ -12,7 +12,7 @@ assert newHelpClass.exists()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
-def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first"}[0]
+def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
 assert mojo.goal.text() == 'first'
 assert mojo.implementation.text() == 'org.apache.maven.plugin.coreit.FirstMojo'

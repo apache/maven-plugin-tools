@@ -20,13 +20,14 @@ package org.apache.maven.plugin.coreit;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.DependencyScope;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Does nothing special.
  * 
  */
-@Mojo( name = "second",requiresDependencyCollection = "compile", threadSafe = true)
+@Mojo( name = "second", requiresDependencyCollection = DependencyScope.COMPILE, threadSafe = true )
 public class SecondMojo
     extends AbstractMojo
 {

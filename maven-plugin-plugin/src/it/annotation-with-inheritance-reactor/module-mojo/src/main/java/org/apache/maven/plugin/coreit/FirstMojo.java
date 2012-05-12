@@ -21,6 +21,7 @@ package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.DependencyScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -33,7 +34,7 @@ import org.apache.maven.plugins.AbstractFirstMojo;
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = "test", defaultPhase = LifecyclePhase.INTEGRATION_TEST )
+@Mojo( name = "first", requiresDependencyResolution = DependencyScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
 @Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
 public class FirstMojo
     extends AbstractFirstMojo
@@ -46,17 +47,17 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper")
+    @Component( role = "org.apache.maven.project.MavenProjectHelper" )
     private Object projectHelper;
 
     public void execute()
         throws MojoExecutionException
     {
-        if (basedir == null)
+        if ( basedir == null )
         {
             throw new MojoExecutionException( "basedir == null" );
         }
-        if (touchFile == null)
+        if ( touchFile == null )
         {
             throw new MojoExecutionException( "touchFile == null" );
         }

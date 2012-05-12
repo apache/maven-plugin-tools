@@ -31,12 +31,12 @@ import java.io.IOException;
  * Touches a test file.
  * 
  */
-@Mojo( name = "it0014")
+@Mojo( name = "it0014" )
 public class CoreIt0014Mojo
     extends AbstractMojo
 {
     
-    @Parameter(expression ="${project.build.directory}", required = true)
+    @Parameter( expression = "${project.build.directory}", required = true )
     private String outputDirectory;
 
     public void execute()

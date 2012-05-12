@@ -6,7 +6,7 @@ assert descriptorFile.isFile()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
-def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first"}[0]
+def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
 assert mojo.goal.text() == 'first'
 assert mojo.implementation.text() == 'org.apache.maven.plugin.coreit.FirstMojo'
@@ -40,7 +40,7 @@ assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3
 
-def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
+def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam" }[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
@@ -50,7 +50,7 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile"}[0]
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
 
 assert parameter.name.text() == 'touchFile'
 assert parameter.alias.isEmpty()
@@ -60,7 +60,7 @@ assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir"}[0]
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir" }[0]
 
 assert parameter.name.text() == 'basedir'
 assert parameter.alias.isEmpty()
@@ -70,7 +70,7 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == 'Project directory.'
 
-mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second" }[0]
 
 assert mojo.requiresDependencyCollection.text() == 'compile'
 assert mojo.threadSafe.text() == 'true'

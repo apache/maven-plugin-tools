@@ -21,6 +21,7 @@ package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.DependencyScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -33,7 +34,7 @@ import org.apache.maven.tools.plugin.annotations.FooMojo;
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = "test", defaultPhase = LifecyclePhase.INTEGRATION_TEST )
+@Mojo( name = "first", requiresDependencyResolution = DependencyScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
 public class FirstMojo
     extends FooMojo
 {
@@ -51,11 +52,11 @@ public class FirstMojo
     public void execute()
         throws MojoExecutionException
     {
-        if (bar == null)
+        if ( bar == null )
         {
             throw new MojoExecutionException( "bar == null" );
         }
-        if (beer == null)
+        if ( beer == null )
         {
             throw new MojoExecutionException( "beer == null" );
         }

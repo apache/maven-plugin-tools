@@ -82,9 +82,9 @@ public class MojoAnnotationContent
         return requiresDependencyResolution;
     }
 
-    public void requiresDependencyResolution( DependencyScope requiresDependencyResolution )
+    public void requiresDependencyResolution( String requiresDependencyResolution )
     {
-        this.requiresDependencyResolution = requiresDependencyResolution;
+        this.requiresDependencyResolution = DependencyScope.valueOf( requiresDependencyResolution );
     }
 
     public DependencyScope requiresDependencyCollection()
@@ -92,9 +92,9 @@ public class MojoAnnotationContent
         return requiresDependencyCollection;
     }
 
-    public void requiresDependencyCollection( DependencyScope requiresDependencyCollection )
+    public void requiresDependencyCollection( String requiresDependencyCollection )
     {
-        this.requiresDependencyCollection = requiresDependencyCollection;
+        this.requiresDependencyCollection = DependencyScope.valueOf( requiresDependencyCollection );
     }
 
     public InstanciationStrategy instantiationStrategy()
@@ -102,9 +102,9 @@ public class MojoAnnotationContent
         return instantiationStrategy;
     }
 
-    public void instantiationStrategy( InstanciationStrategy instantiationStrategy )
+    public void instantiationStrategy( String instantiationStrategy )
     {
-        this.instantiationStrategy = instantiationStrategy;
+        this.instantiationStrategy = InstanciationStrategy.valueOf( instantiationStrategy );
     }
 
     public String executionStrategy()
