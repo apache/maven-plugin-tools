@@ -38,6 +38,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -59,6 +60,7 @@ import java.util.TreeMap;
  * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
+@Component( role = MojoDescriptorExtractor.class, hint = "java")
 public class JavaMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor, JavaMojoAnnotation
