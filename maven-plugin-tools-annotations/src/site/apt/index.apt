@@ -1,0 +1,103 @@
+ ------
+ Introduction
+ ------
+ Hervé Boutemy
+ ------
+ 2012-05-12
+ ------
+
+~~ Licensed to the Apache Software Foundation (ASF) under one
+~~ or more contributor license agreements.  See the NOTICE file
+~~ distributed with this work for additional information
+~~ regarding copyright ownership.  The ASF licenses this file
+~~ to you under the Apache License, Version 2.0 (the
+~~ "License"); you may not use this file except in compliance
+~~ with the License.  You may obtain a copy of the License at
+~~
+~~   http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing,
+~~ software distributed under the License is distributed on an
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~ KIND, either express or implied.  See the License for the
+~~ specific language governing permissions and limitations
+~~ under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Maven Plugin Tool for Annotations
+
+ The Maven Plugin Tool for Annotations is the impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
+ to extract descriptors from plugins written in Java with
+ {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java 5 Annotations}}.
+
+* Supported Mojo Javadoc Tags
+
++---------+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+/**
+ * Mojo Description. @Mojo( name = "<goalName>" ) is the minimal required annotation.
+ * @since <since-text>
+ * @deprecated <deprecated-text>
+ */
+@Mojo( name = "<goalName>",
+       aggregator = <false|true>, 
+       configurator = "<roleHint>",
+       executionStrategy = "<once-per-session|always>",
+       inheritByDefault = <true|false>,
+       instantiationStrategy = "<per-lookup|singleton|keep-alive|poolable>",
+       defaultPhase = "<phaseName>",
+       requiresDependencyResolution = "<compile|runtime|compile+runtime|test>",
+       requiresDependencyCollection = "<compile|runtime|compile+runtime|test>", // (since Maven 3.0)
+       requiresDirectInvocation = <false|true>,
+       requiresOnline = <false|true>,
+       requiresProject = <true|false>,
+       requiresReports = <false|true>, // (unsupported since Maven 3.0)
+       threadSafe = <false|true> ) // (since Maven 3.0)
+@Execute( goal = "<goalName>",
+          phase = LifecyclePhase.<phase>
+          lifecycle = "<lifecycleId>" )
+public class MyMojo
+    extends AbstractMojo
+{
+    /**
+     * @since <since-text>
+     * @deprecated <deprecated-text>
+     */
+    @Parameter( alias = "myAlias",
+                expression = "${aSystemProperty}",
+                defaultValue = "${anExpression}",
+                readonly = <false|true>
+                required = <false|true> )
+    private String parameter;
+
+    /**
+     * @since <since-text>
+     * @deprecated <deprecated-text>
+     */
+    @Component( role = "...",
+                roleHint="..." )
+     // @readonly
+     // @required
+    private MyComponent component;
+
+    public void execute()
+    {
+        ...
+    }
+}
++---------+
+
+* See also
+
+ * {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java 5 Annotations}}
+
+ * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
+
+ * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
