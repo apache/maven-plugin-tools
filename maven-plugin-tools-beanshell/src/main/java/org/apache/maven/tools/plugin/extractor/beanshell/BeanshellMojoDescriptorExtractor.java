@@ -35,6 +35,8 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
 import bsh.EvalError;
 import bsh.Interpreter;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
@@ -45,8 +47,10 @@ import bsh.Interpreter;
  * get validation directives to help users in IDEs.
  * @version $Id$
  */
+@Component( role = MojoDescriptorExtractor.class, hint = "bsh")
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
+    implements MojoDescriptorExtractor
 {
     /** {@inheritDoc} */
     protected String getScriptFileExtension( PluginToolsRequest request )
