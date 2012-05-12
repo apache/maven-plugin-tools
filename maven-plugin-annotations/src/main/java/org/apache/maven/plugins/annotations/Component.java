@@ -39,4 +39,8 @@ public @interface Component
     String role() default "";
 
     String roleHint() default "";
+
+    boolean required() default false;
+
+    boolean readonly() default false;
 }

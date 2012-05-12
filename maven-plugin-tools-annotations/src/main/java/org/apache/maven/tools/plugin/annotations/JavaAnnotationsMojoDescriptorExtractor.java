@@ -516,6 +516,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setEditable( false );
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
+                // same behaviour as JavaMojoDescriptorExtractor
+                //parameter.setRequired( componentAnnotationContent.required() );
+                parameter.setEditable( false );
                 mojoDescriptor.addParameter( parameter );
             }
 
