@@ -36,8 +36,6 @@ import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Documented;
 import java.util.List;
 import java.util.Set;
 
