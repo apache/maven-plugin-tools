@@ -39,6 +39,8 @@ Maven Plugin Tools
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | {{{./maven-plugin-tools-api/index.html}maven-plugin-tools-api}}             | Descriptor extractor API, used by maven-plugin-plugin to extract Plugin information.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
+| {{{./maven-plugin-tools-generators/index.html}maven-plugin-tools-generators}} | Generators (help, documentation), used by maven-plugin-plugin to generate content from descriptor.
+*-----------------------------------------------------------------------------+---------------------------------------------------------+
 | \ \ {{{./maven-plugin-tools-java/index.html}maven-plugin-tools-java}}               | Descriptor extractor for plugins written in Java annotated with Mojo Javadoc Tags.
 *-----------------------------------------------------------------------------+---------------------------------------------------------+
 | \ \ \ \ {{{./maven-plugin-tools-javadoc/index.html}maven-plugin-tools-javadoc}}     | Provides the support of Mojo Javadoc Tags in the Javadoc Tool.

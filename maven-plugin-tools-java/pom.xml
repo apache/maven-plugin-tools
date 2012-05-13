@@ -34,6 +34,12 @@
   <description>Descriptor extractor for plugins written in Java annotated with Mojo Javadoc Tags.</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-generators</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
