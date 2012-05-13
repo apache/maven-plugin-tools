@@ -34,6 +34,7 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
@@ -231,7 +232,7 @@ public class PluginReport
 
         try
         {
-            pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
+            pluginDescriptor.setDependencies( GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
@@ -386,7 +387,7 @@ public class PluginReport
             {
                 MojoDescriptor mojo = i.next();
 
-                if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
+                if ( GeneratorUtils.isMavenReport( mojo.getImplementation(), project ) )
                 {
                     hasMavenReport = true;
                 }
@@ -424,11 +425,11 @@ public class PluginReport
                 {
                     description =
                         "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> "
-                            + PluginUtils.makeHtmlValid( mojo.getDeprecated() );
+                            + GeneratorUtils.makeHtmlValid( mojo.getDeprecated() );
                 }
                 else if ( StringUtils.isNotEmpty( mojo.getDescription() ) )
                 {
-                    description = PluginUtils.makeHtmlValid( mojo.getDescription() );
+                    description = GeneratorUtils.makeHtmlValid( mojo.getDescription() );
                 }
                 else
                 {
@@ -439,7 +440,7 @@ public class PluginReport
                 tableCell( createLinkPatternedText( goalName, goalDocumentationLink ) );
                 if ( hasMavenReport )
                 {
-                    if ( PluginUtils.isMavenReport( mojo.getImplementation(), project ) )
+                    if ( GeneratorUtils.isMavenReport( mojo.getImplementation(), project ) )
                     {
                         sink.tableCell();
                         sink.text( getBundle( locale ).getString( "report.plugin.isReport" ) );

@@ -19,7 +19,6 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -31,6 +30,7 @@ import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;

@@ -151,27 +151,27 @@ public class PluginDescriptorGenerator
 
             w.startElement( "plugin" );
 
-            PluginUtils.element( w, "name", pluginDescriptor.getName() );
+            GeneratorUtils.element( w, "name", pluginDescriptor.getName() );
             if ( cleanDescription )
             {
-                PluginUtils.element( w, "description", PluginUtils.toText( pluginDescriptor.getDescription() ) );
+                GeneratorUtils.element( w, "description", GeneratorUtils.toText( pluginDescriptor.getDescription() ) );
             }
             else
             {
-                PluginUtils.element( w, "description", pluginDescriptor.getDescription() );
+                GeneratorUtils.element( w, "description", pluginDescriptor.getDescription() );
             }
 
-            PluginUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
+            GeneratorUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
 
-            PluginUtils.element( w, "artifactId", pluginDescriptor.getArtifactId() );
+            GeneratorUtils.element( w, "artifactId", pluginDescriptor.getArtifactId() );
 
-            PluginUtils.element( w, "version", pluginDescriptor.getVersion() );
+            GeneratorUtils.element( w, "version", pluginDescriptor.getVersion() );
 
-            PluginUtils.element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
+            GeneratorUtils.element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
-            PluginUtils.element( w, "isolatedRealm", "" + pluginDescriptor.isIsolatedRealm() );
+            GeneratorUtils.element( w, "isolatedRealm", "" + pluginDescriptor.isIsolatedRealm() );
 
-            PluginUtils.element( w, "inheritedByDefault", "" + pluginDescriptor.isInheritedByDefault() );
+            GeneratorUtils.element( w, "inheritedByDefault", "" + pluginDescriptor.isInheritedByDefault() );
 
             w.startElement( "mojos" );
 
@@ -186,7 +186,7 @@ public class PluginDescriptorGenerator
 
             w.endElement();
 
-            PluginUtils.writeDependencies( w, pluginDescriptor );
+            GeneratorUtils.writeDependencies( w, pluginDescriptor );
 
             w.endElement();
 
@@ -232,7 +232,7 @@ public class PluginDescriptorGenerator
             w.startElement( "description" );
             if ( cleanDescription )
             {
-                w.writeText( PluginUtils.toText( mojoDescriptor.getDescription() ) );
+                w.writeText( GeneratorUtils.toText( mojoDescriptor.getDescription() ) );
             }
             else
             {
@@ -247,44 +247,44 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.isDependencyResolutionRequired() != null )
         {
-            PluginUtils.element( w, "requiresDependencyResolution", mojoDescriptor.isDependencyResolutionRequired() );
+            GeneratorUtils.element( w, "requiresDependencyResolution", mojoDescriptor.isDependencyResolutionRequired() );
         }
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "requiresDirectInvocation", "" + mojoDescriptor.isDirectInvocationOnly() );
+        GeneratorUtils.element( w, "requiresDirectInvocation", "" + mojoDescriptor.isDirectInvocationOnly() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "requiresProject", "" + mojoDescriptor.isProjectRequired() );
+        GeneratorUtils.element( w, "requiresProject", "" + mojoDescriptor.isProjectRequired() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "requiresReports", "" + mojoDescriptor.isRequiresReports() );
+        GeneratorUtils.element( w, "requiresReports", "" + mojoDescriptor.isRequiresReports() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "aggregator", "" + mojoDescriptor.isAggregator() );
+        GeneratorUtils.element( w, "aggregator", "" + mojoDescriptor.isAggregator() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "requiresOnline", "" + mojoDescriptor.isOnlineRequired() );
+        GeneratorUtils.element( w, "requiresOnline", "" + mojoDescriptor.isOnlineRequired() );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        PluginUtils.element( w, "inheritedByDefault", "" + mojoDescriptor.isInheritedByDefault() );
+        GeneratorUtils.element( w, "inheritedByDefault", "" + mojoDescriptor.isInheritedByDefault() );
 
         // ----------------------------------------------------------------------
         //
@@ -292,7 +292,7 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.getPhase() != null )
         {
-            PluginUtils.element( w, "phase", mojoDescriptor.getPhase() );
+            GeneratorUtils.element( w, "phase", mojoDescriptor.getPhase() );
         }
 
         // ----------------------------------------------------------------------
@@ -301,17 +301,17 @@ public class PluginDescriptorGenerator
 
         if ( mojoDescriptor.getExecutePhase() != null )
         {
-            PluginUtils.element( w, "executePhase", mojoDescriptor.getExecutePhase() );
+            GeneratorUtils.element( w, "executePhase", mojoDescriptor.getExecutePhase() );
         }
 
         if ( mojoDescriptor.getExecuteGoal() != null )
         {
-            PluginUtils.element( w, "executeGoal", mojoDescriptor.getExecuteGoal() );
+            GeneratorUtils.element( w, "executeGoal", mojoDescriptor.getExecuteGoal() );
         }
 
         if ( mojoDescriptor.getExecuteLifecycle() != null )
         {
-            PluginUtils.element( w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle() );
+            GeneratorUtils.element( w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle() );
         }
 
         // ----------------------------------------------------------------------
@@ -397,11 +397,11 @@ public class PluginDescriptorGenerator
             ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
             if ( extendedMojoDescriptor.getDependencyCollectionRequired() != null )
             {
-                PluginUtils.element( w, "requiresDependencyCollection",
+                GeneratorUtils.element( w, "requiresDependencyCollection",
                                      extendedMojoDescriptor.getDependencyCollectionRequired() );
             }
 
-            PluginUtils.element( w, "threadSafe", String.valueOf( extendedMojoDescriptor.isThreadSafe() ) );
+            GeneratorUtils.element( w, "threadSafe", String.valueOf( extendedMojoDescriptor.isThreadSafe() ) );
         }
 
         // ----------------------------------------------------------------------
@@ -452,42 +452,42 @@ public class PluginDescriptorGenerator
 
                     w.startElement( "parameter" );
 
-                    PluginUtils.element( w, "name", parameter.getName() );
+                    GeneratorUtils.element( w, "name", parameter.getName() );
 
                     if ( parameter.getAlias() != null )
                     {
-                        PluginUtils.element( w, "alias", parameter.getAlias() );
+                        GeneratorUtils.element( w, "alias", parameter.getAlias() );
                     }
 
-                    PluginUtils.element( w, "type", parameter.getType() );
+                    GeneratorUtils.element( w, "type", parameter.getType() );
 
                     if ( parameter.getDeprecated() != null )
                     {
                         if ( StringUtils.isEmpty( parameter.getDeprecated() ) )
                         {
-                            PluginUtils.element( w, "deprecated", "No reason given" );
+                            GeneratorUtils.element( w, "deprecated", "No reason given" );
                         }
                         else
                         {
-                            PluginUtils.element( w, "deprecated", parameter.getDeprecated() );
+                            GeneratorUtils.element( w, "deprecated", parameter.getDeprecated() );
                         }
                     }
 
                     if ( parameter.getImplementation() != null )
                     {
-                        PluginUtils.element( w, "implementation", parameter.getImplementation() );
+                        GeneratorUtils.element( w, "implementation", parameter.getImplementation() );
                     }
 
-                    PluginUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
+                    GeneratorUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
 
-                    PluginUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
+                    GeneratorUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
                     if ( cleanDescription )
                     {
-                        PluginUtils.element( w, "description", PluginUtils.toText( parameter.getDescription() ) );
+                        GeneratorUtils.element( w, "description", GeneratorUtils.toText( parameter.getDescription() ) );
                     }
                     else
                     {
-                        PluginUtils.element( w, "description", parameter.getDescription() );
+                        GeneratorUtils.element( w, "description", parameter.getDescription() );
                     }
 
                     if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) || StringUtils.isNotEmpty(
@@ -553,14 +553,14 @@ public class PluginDescriptorGenerator
 
                 w.startElement( "requirement" );
 
-                PluginUtils.element( w, "role", requirement.getRole() );
+                GeneratorUtils.element( w, "role", requirement.getRole() );
 
                 if ( requirement.getRoleHint() != null )
                 {
-                    PluginUtils.element( w, "role-hint", requirement.getRoleHint() );
+                    GeneratorUtils.element( w, "role-hint", requirement.getRoleHint() );
                 }
 
-                PluginUtils.element( w, "field-name", key );
+                GeneratorUtils.element( w, "field-name", key );
 
                 w.endElement();
             }
@@ -591,7 +591,7 @@ public class PluginDescriptorGenerator
     protected String rewriteHelpClassToMojoPackage( PluginToolsRequest request )
         throws GeneratorException
     {
-        String destinationPackage = PluginUtils.discoverPackageName( request.getPluginDescriptor() );
+        String destinationPackage = GeneratorUtils.discoverPackageName( request.getPluginDescriptor() );
         if ( StringUtils.isEmpty( destinationPackage ) )
         {
             return null;

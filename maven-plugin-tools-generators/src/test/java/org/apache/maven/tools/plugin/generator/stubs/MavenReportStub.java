@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.util.stubs;
+package org.apache.maven.tools.plugin.generator.stubs;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

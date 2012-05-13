@@ -56,12 +56,6 @@
       <artifactId>maven-plugin-descriptor</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-api</artifactId>
-      <version>3.0</version>
-    </dependency>
-
     <!-- plexus -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -72,20 +66,7 @@
       <artifactId>plexus-container-default</artifactId>
     </dependency>
 
-    <!-- misc -->
-    <dependency>
-      <groupId>net.sf.jtidy</groupId>
-      <artifactId>jtidy</artifactId>
-      <version>r938</version>
-    </dependency>
-
     <!-- test -->
-    <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-impl</artifactId>
-      <version>2.1</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>

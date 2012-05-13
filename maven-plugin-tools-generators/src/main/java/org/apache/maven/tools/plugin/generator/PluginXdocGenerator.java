@@ -24,7 +24,6 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
@@ -212,7 +211,7 @@ public class PluginXdocGenerator
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.deprecated" ) );
             w.endElement(); // p
             w.startElement( "div" );
-            w.writeMarkup( PluginUtils.makeHtmlValid( mojoDescriptor.getDeprecated() ) );
+            w.writeMarkup( GeneratorUtils.makeHtmlValid( mojoDescriptor.getDeprecated() ) );
             w.endElement(); // div
         }
 
@@ -222,7 +221,7 @@ public class PluginXdocGenerator
         w.startElement( "div" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
-            w.writeMarkup( PluginUtils.makeHtmlValid( mojoDescriptor.getDescription() ) );
+            w.writeMarkup( GeneratorUtils.makeHtmlValid( mojoDescriptor.getDescription() ) );
         }
         else
         {
@@ -247,7 +246,7 @@ public class PluginXdocGenerator
      */
     private void writeReportNotice( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        if ( PluginUtils.isMavenReport( mojoDescriptor.getImplementation(), project ) )
+        if ( GeneratorUtils.isMavenReport( mojoDescriptor.getImplementation(), project ) )
         {
             w.startElement( "p" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.notice.note" ) );
@@ -534,14 +533,14 @@ public class PluginXdocGenerator
             {
                 w.startElement( "div" );
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                       PluginUtils.makeHtmlValid( parameter.getDeprecated() ) ) );
+                                       GeneratorUtils.makeHtmlValid( parameter.getDeprecated() ) ) );
                 w.endElement(); // div
             }
 
             w.startElement( "div" );
             if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                w.writeMarkup( PluginUtils.makeHtmlValid( parameter.getDescription() ) );
+                w.writeMarkup( GeneratorUtils.makeHtmlValid( parameter.getDescription() ) );
             }
             else
             {
@@ -729,11 +728,11 @@ public class PluginXdocGenerator
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 description = format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                      PluginUtils.makeHtmlValid( parameter.getDeprecated() ) );
+                                      GeneratorUtils.makeHtmlValid( parameter.getDeprecated() ) );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                description = PluginUtils.makeHtmlValid( parameter.getDescription() );
+                description = GeneratorUtils.makeHtmlValid( parameter.getDescription() );
             }
             else
             {

@@ -223,7 +223,7 @@ public class PluginHelpGenerator
         String packageName = helpPackageName;
         if ( StringUtils.isEmpty( packageName ) )
         {
-            packageName = PluginUtils.discoverPackageName( pluginDescriptor );
+            packageName = GeneratorUtils.discoverPackageName( pluginDescriptor );
         }
 
         return StringUtils.isEmpty( packageName ) ? HELP_MOJO_CLASS_NAME : packageName + '.' + HELP_MOJO_CLASS_NAME;
