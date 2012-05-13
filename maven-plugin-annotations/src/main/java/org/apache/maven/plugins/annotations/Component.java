@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * @since 3.0
  */
 @Documented
-@Retention( RetentionPolicy.RUNTIME )
+@Retention( RetentionPolicy.CLASS )
 @Target( { ElementType.FIELD, ElementType.METHOD } )
 @Inherited
 public @interface Component
