@@ -26,9 +26,8 @@
     <artifactId>simpleUsage-root</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>simpleUsage-plugin</artifactId>
-  <name>Simple Ant-Mojo</name>
-  <packaging>maven-plugin</packaging>
+  <artifactId>simpleUsage-usage</artifactId>
+  <name>Simple Ant-Mojo Usage Case</name>
   <description>Tests the simplest case of using an Ant script to drive a mojo.</description>
   
   <dependencies>
@@ -37,28 +36,28 @@
       <artifactId>ant</artifactId>
       <version>1.6.5</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-script-ant</artifactId>
-      <version>2.0.1</version>
-    </dependency>
   </dependencies>
   
   <build>
-    <scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
     <plugins>
       <plugin>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <groupId>org.apache.maven.ant.it</groupId>
+        <artifactId>simpleUsage-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+
         <configuration>
-          <prefix>antSimpleUsage</prefix>
+          <name>Hani</name>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-tools-ant</artifactId>
-            <version>2.0.1</version>
-          </dependency>
-        </dependencies>
+
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>package</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
