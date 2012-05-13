@@ -39,7 +39,6 @@
     <dependency>
       <groupId>ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

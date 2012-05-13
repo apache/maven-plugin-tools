@@ -27,15 +27,17 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>Tests the simplest case of using an Ant script to drive a mojo.</description>
-  
-  <dependencies>
-    <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.6.5</version>
-    </dependency>
-  </dependencies>
-  
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.6.5</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>plugin</module>
     <module>usage</module>

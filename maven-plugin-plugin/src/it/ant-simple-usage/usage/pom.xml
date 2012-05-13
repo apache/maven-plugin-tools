@@ -29,15 +29,14 @@
   <artifactId>simpleUsage-usage</artifactId>
   <name>Simple Ant-Mojo Usage Case</name>
   <description>Tests the simplest case of using an Ant script to drive a mojo.</description>
-  
+
   <dependencies>
     <dependency>
       <groupId>ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.6.5</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
