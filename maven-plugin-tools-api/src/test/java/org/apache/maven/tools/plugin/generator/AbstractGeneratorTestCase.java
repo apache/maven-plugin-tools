@@ -63,7 +63,7 @@ public abstract class AbstractGeneratorTestCase
         mojoDescriptor.setImplementation( "org.apache.maven.tools.plugin.generator.TestMojo" );
         mojoDescriptor.setDependencyResolutionRequired( "compile" );
 
-        List params = new ArrayList();
+        List<Parameter> params = new ArrayList<Parameter>();
 
         Parameter param = new Parameter();
         param.setExpression( "${project.build.directory}" );
@@ -134,7 +134,7 @@ public abstract class AbstractGeneratorTestCase
 
         try
         {
-            Class generatorClass = Thread.currentThread().getContextClassLoader().loadClass( generatorClassName );
+            Class<?> generatorClass = Thread.currentThread().getContextClassLoader().loadClass( generatorClassName );
 
             generator = (Generator) generatorClass.newInstance();
         }

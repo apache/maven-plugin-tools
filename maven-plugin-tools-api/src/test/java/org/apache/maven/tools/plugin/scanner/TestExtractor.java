@@ -36,12 +36,12 @@ public class TestExtractor
     implements MojoDescriptorExtractor
 {
 
-    public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
     {
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
     
-    public List execute( PluginToolsRequest request )
+    public List<MojoDescriptor> execute( PluginToolsRequest request )
     {
         MojoDescriptor desc = new MojoDescriptor();
         desc.setPluginDescriptor( request.getPluginDescriptor() );

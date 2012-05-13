@@ -44,13 +44,13 @@ public class ScannerTestExtractor
         this.goal = goal;
     }
 
-    public List execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
         throws InvalidPluginDescriptorException, ExtractionException
     {
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
 
-    public List execute( PluginToolsRequest request )
+    public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
             MojoDescriptor desc = new MojoDescriptor();

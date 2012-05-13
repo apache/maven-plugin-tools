@@ -28,6 +28,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
 import java.io.File;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +46,7 @@ import java.util.Set;
 public class DefaultMojoScannerTest
     extends TestCase
 {
-    private Map extractors;
+    private Map<String, MojoDescriptorExtractor> extractors;
 
     private Build build;
 
@@ -59,7 +59,7 @@ public class DefaultMojoScannerTest
     protected void setUp()
         throws Exception
     {
-        extractors = new HashMap();
+        extractors = new HashMap<String, MojoDescriptorExtractor>();
         extractors.put( "one", new ScannerTestExtractor( "one" ) );
         extractors.put( "two", new ScannerTestExtractor( "two" ) );
         extractors.put( "three", new ScannerTestExtractor( "three" ) );
@@ -89,7 +89,7 @@ public class DefaultMojoScannerTest
     public void testSpecifiedExtractors()
         throws Exception
     {
-        Set activeExtractors = new HashSet();
+        Set<String> activeExtractors = new HashSet<String>();
         activeExtractors.add( "one" );
         activeExtractors.add( "" );
         activeExtractors.add( null );
@@ -119,7 +119,7 @@ public class DefaultMojoScannerTest
     {
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
-        scanner.setActiveExtractors( Collections.EMPTY_SET );
+        scanner.setActiveExtractors( Collections.<String>emptySet() );
         try
         {
             scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
@@ -130,13 +130,13 @@ public class DefaultMojoScannerTest
             // Ok
         }
 
-        checkResult( pluginDescriptor, Collections.EMPTY_SET );
+        checkResult( pluginDescriptor, Collections.<String>emptySet() );
     }
 
     public void testUnknownExtractor()
         throws Exception
     {
-        Set activeExtractors = new HashSet();
+        Set<String> activeExtractors = new HashSet<String>();
         activeExtractors.add( "four" );
 
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
@@ -153,7 +153,7 @@ public class DefaultMojoScannerTest
             // Ok
         }
 
-        checkResult( pluginDescriptor, Collections.EMPTY_SET );
+        checkResult( pluginDescriptor, Collections.<String>emptySet() );
     }
 
     private PluginDescriptor createPluginDescriptor()
@@ -173,20 +173,20 @@ public class DefaultMojoScannerTest
      * @param pluginDescriptor The {@link PluginDescriptor} to check.
      * @param expectedGoals    The goal names of the {@link MojoDescriptor}s.
      */
-    protected void checkResult( PluginDescriptor pluginDescriptor, Collection expectedGoals )
+    protected void checkResult( PluginDescriptor pluginDescriptor, Collection<String> expectedGoals )
     {
-        Set remainingGoals = new HashSet( expectedGoals );
-        List descriptors = pluginDescriptor.getMojos();
+        Set<String> remainingGoals = new HashSet<String>( expectedGoals );
+        @SuppressWarnings( "unchecked" )
+        List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 
         if ( descriptors == null )
         {
-            // TODO Maybe getMojos should be more user frendly and not return null
-            descriptors = Collections.EMPTY_LIST;
+            // TODO Maybe getMojos should be more user friendly and not return null
+            descriptors = Collections.emptyList();
         }
 
-        for ( Iterator i = descriptors.iterator(); i.hasNext(); )
+        for ( MojoDescriptor desc : descriptors )
         {
-            MojoDescriptor desc = (MojoDescriptor) i.next();
             assertEquals( pluginDescriptor, desc.getPluginDescriptor() );
             assertTrue( "Unexpected goal in PluginDescriptor: " + desc.getGoal(),
                         remainingGoals.remove( desc.getGoal() ) );
