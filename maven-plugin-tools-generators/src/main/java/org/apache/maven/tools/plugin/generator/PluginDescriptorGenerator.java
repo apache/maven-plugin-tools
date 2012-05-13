@@ -51,6 +51,8 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a>.
+ *
  * @version $Id$
  * @todo add example usage tag that can be shown in the doco
  * @todo need to add validation directives so that systems embedding maven2 can

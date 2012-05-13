@@ -28,7 +28,7 @@
 
 Maven Plugin Plugin
 
- The Maven Plugin Plugin is used to create a Maven plugin descriptor for any
+ The Maven Plugin Plugin is used to create a {{{/ref/current/maven-plugin-api/plugin.html}Maven plugin descriptor}} for any
  {{{/general.html#What_is_a_Mojo}Mojo}}'s found in the source tree, to include in the JAR.
  It is also used to generate report files for the Mojos as well as for updating the plugin registry, the artifact
  metadata and generating a generic help goal.

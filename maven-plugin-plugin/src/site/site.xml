@@ -39,6 +39,7 @@ under the License.
 
     <menu name="Developers">
       <item name="Maven Plugin Tools" href="/plugin-tools/index.html"/>
+      <item name="Maven Plugin Descriptor" href="/ref/current/maven-plugin-api/plugin.html"/>
       <item name="Multiple Language Support: Redesign Notes" href="multiple-language-support.html"/>
     </menu>
   </body>

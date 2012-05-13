@@ -36,7 +36,8 @@ Usage
 * The <<<plugin:descriptor>>> Goal
 
   The <<<plugin:descriptor>>> goal is bound to the <<<process-classes>>> phase since 3.0; it was bound to <<<generate-resources>>> phase previously.
-  This goal generates the plugin descriptor, which is an xml file that contains information about the plugin.
+  This goal generates the plugin descriptor, which is an xml file that contains information about the plugin
+  (see {{{/ref/current/maven-plugin-api/plugin.html}descriptor's reference}}).
 
   For example, you want to create an archive of your plugin and you execute
 
