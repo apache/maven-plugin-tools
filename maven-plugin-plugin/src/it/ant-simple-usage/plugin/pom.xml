@@ -50,7 +50,9 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <version>${pluginPluginVersion}</version>
         <configuration>
           <prefix>antSimpleUsage</prefix>
         </configuration>
