@@ -78,7 +78,6 @@ under the License.
         <executions>
           <execution>
             <id>mojo-descriptor</id>
-            <phase>process-classes</phase>
             <goals>
               <goal>descriptor</goal>
             </goals>

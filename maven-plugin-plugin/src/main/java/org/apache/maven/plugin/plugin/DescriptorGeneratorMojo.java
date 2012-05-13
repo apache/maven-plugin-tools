@@ -28,13 +28,14 @@ import java.io.File;
 /**
  * Generate a plugin descriptor.
  * <br/>
- * <b>Note:</b> Phase is after the "compilation" of any scripts.
+ * <b>Note:</b> Since 3.0, <a href="http://maven.apache.org/ref/current/maven-core/lifecycles.html">phase</a>
+ * is after the "compilation" of any scripts.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  * @since 2.0
  * @goal descriptor
- * @phase generate-resources
+ * @phase process-classes
  * @requiresDependencyResolution runtime
  */
 public class DescriptorGeneratorMojo
