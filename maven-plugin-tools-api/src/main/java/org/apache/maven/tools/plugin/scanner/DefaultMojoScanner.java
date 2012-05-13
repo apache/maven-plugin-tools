@@ -19,6 +19,7 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -157,7 +158,7 @@ public class DefaultMojoScanner
 
             for ( String extractor : extractors )
             {
-                if ( extractor != null && extractor.length() > 0 )
+                if ( StringUtils.isNotEmpty( extractor ) )
                 {
                     this.activeExtractors.add( extractor );
                 }
