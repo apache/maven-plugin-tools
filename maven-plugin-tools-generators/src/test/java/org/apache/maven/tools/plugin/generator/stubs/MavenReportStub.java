@@ -19,17 +19,12 @@ package org.apache.maven.tools.plugin.generator.stubs;
  * under the License.
  */
 
-import java.io.File;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.maven.doxia.siterenderer.Renderer;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-import org.codehaus.doxia.sink.Sink;
 
 /**
  * Dummy report.
@@ -41,42 +36,10 @@ public class MavenReportStub
     extends AbstractMavenReport
 {
     /** {@inheritDoc} */
-    public boolean canGenerateReport()
-    {
-        return super.canGenerateReport();
-    }
-
-    /** {@inheritDoc} */
-    protected void closeReport()
-    {
-        super.closeReport();
-    }
-
-    /** {@inheritDoc} */
-    public void execute()
-        throws MojoExecutionException
-    {
-        super.execute();
-    }
-
-    /** {@inheritDoc} */
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
 
-    }
-
-    /** {@inheritDoc} */
-    public void generate( Sink sink, Locale locale )
-        throws MavenReportException
-    {
-        super.generate( sink, locale );
-    }
-
-    /** {@inheritDoc} */
-    public String getCategoryName()
-    {
-        return super.getCategoryName();
     }
 
     /** {@inheritDoc} */
@@ -92,57 +55,9 @@ public class MavenReportStub
     }
 
     /** {@inheritDoc} */
-    public File getReportOutputDirectory()
-    {
-        return super.getReportOutputDirectory();
-    }
-
-    /** {@inheritDoc} */
-    public org.apache.maven.doxia.sink.Sink getSink()
-    {
-        return super.getSink();
-    }
-
-    /** {@inheritDoc} */
     protected Renderer getSiteRenderer()
     {
         return null;
-    }
-
-    /** {@inheritDoc} */
-    public boolean isExternalReport()
-    {
-        return super.isExternalReport();
-    }
-
-    /** {@inheritDoc} */
-    public void setReportOutputDirectory( File reportOutputDirectory )
-    {
-        super.setReportOutputDirectory( reportOutputDirectory );
-    }
-
-    /** {@inheritDoc} */
-    public Log getLog()
-    {
-        return super.getLog();
-    }
-
-    /** {@inheritDoc} */
-    public Map getPluginContext()
-    {
-        return super.getPluginContext();
-    }
-
-    /** {@inheritDoc} */
-    public void setLog( Log log )
-    {
-        super.setLog( log );
-    }
-
-    /** {@inheritDoc} */
-    public void setPluginContext( Map pluginContext )
-    {
-        super.setPluginContext( pluginContext );
     }
 
     /** {@inheritDoc} */
@@ -161,37 +76,5 @@ public class MavenReportStub
     public String getOutputName()
     {
         return null;
-    }
-
-    /** {@inheritDoc} */
-    protected Object clone()
-        throws CloneNotSupportedException
-    {
-        return super.clone();
-    }
-
-    /** {@inheritDoc} */
-    public boolean equals( Object obj )
-    {
-        return super.equals( obj );
-    }
-
-    /** {@inheritDoc} */
-    protected void finalize()
-        throws Throwable
-    {
-        super.finalize();
-    }
-
-    /** {@inheritDoc} */
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
-
-    /** {@inheritDoc} */
-    public String toString()
-    {
-        return super.toString();
     }
 }
