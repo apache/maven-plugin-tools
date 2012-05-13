@@ -43,6 +43,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
+ * Generate xdoc documentation for each mojo.
+ *
  * @version $Id$
  * @todo add example usage tag that can be shown in the doco
  */
