@@ -123,9 +123,9 @@
   </prerequisites>
 
   <modules>
-    <module>maven-plugin-tools-api</module>
-    <module>maven-plugin-tools-generators</module>
     <module>maven-plugin-plugin</module>
+    <module>maven-plugin-tools-generators</module>
+    <module>maven-plugin-tools-api</module>
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-javadoc</module>
     <module>maven-plugin-annotations</module>
