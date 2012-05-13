@@ -420,7 +420,7 @@ public class PluginDescriptorGenerator
         {
             for ( Parameter parameter : parameters )
             {
-                String expression = parameter.getExpression();
+                String expression = getExpression( parameter );
 
                 if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${component." ) )
                 {
@@ -569,6 +569,23 @@ public class PluginDescriptorGenerator
         }
 
         w.endElement();
+    }
+
+    /**
+     * Get the expression value, eventually surrounding it with <code>${ }</code>.
+     * 
+     * @param parameter the parameter
+     * @return the expression value
+     */
+    private String getExpression( Parameter parameter )
+    {
+        String expression = parameter.getExpression();
+        if ( StringUtils.isNotBlank( expression ) && !expression.contains( "${" ) )
+        {
+            expression = "${" + expression.trim() + "}";
+            parameter.setExpression( expression );
+        }
+        return expression;
     }
 
     protected String rewriteHelpClassToMojoPackage( PluginToolsRequest request )

@@ -74,7 +74,7 @@ public class MyMojo
      * @deprecated <deprecated-text>
      */
     @Parameter( alias = "myAlias",
-                expression = "${aSystemProperty}",
+                expression = "aSystemProperty",
                 defaultValue = "${anExpression}",
                 readonly = <false|true>
                 required = <false|true> )
@@ -96,6 +96,7 @@ public class MyMojo
     }
 }
 +---------+
+
 
 * See also
 
