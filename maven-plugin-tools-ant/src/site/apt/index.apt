@@ -30,3 +30,7 @@ Maven Plugin Tool for Ant
 
  The Maven Plugin Tool for Ant is the Ant impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}} to
  extract descriptors for plugins written in Ant.
+
+ An Ant Maven Plugin has to be written in a file ending in <<<.build.xml>>> in <<<src/main/scripts>>>,
+ with {{{../maven-plugin-tools-model/plugin-metadata.html}plugin metadata}} in corresponding <<<.mojos.xml>>> file
+ to generate the plugin descriptor.
