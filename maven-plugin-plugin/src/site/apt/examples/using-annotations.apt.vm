@@ -87,14 +87,24 @@ Using Java5 annotations
 
   Information for plugin descriptor generation is specified using 4 annotations:
 
-  * <<<@Mojo>>>: This annotation will mark your class as a Mojo. See
-    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Mojo.html}javadoc}} for more information.
+  * 2 class-level annotations:
 
-  * <<<@Execute>>>: Used if your Mojo need to fork a lifecycle. See
-    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Execute.html}javadoc}} for more information.
+    * <<<@Mojo>>>: This annotation will mark your class as a Mojo. See
+      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Mojo.html}javadoc}} for more information.
 
-  * <<<@Parameter>>>: Used to configure your Mojo parameters. See
-    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Parameter.html}javadoc}} for more information.
+    * <<<@Execute>>>: Used if your Mojo need to fork a lifecycle. See
+      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Execute.html}javadoc}} for more information.
 
-  * <<<@Component>>>: Used to configure injection of Plexus components. See
-    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Component.html}javadoc}} for more information.
+    []
+
+  * 2 field-level annotations:
+
+    * <<<@Parameter>>>: Used to configure your Mojo parameters. See
+      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Parameter.html}javadoc}} for more information.
+
+    * <<<@Component>>>: Used to configure injection of Plexus components. See
+      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Component.html}javadoc}} for more information.
+
+    []
+
+  []
