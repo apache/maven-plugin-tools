@@ -27,6 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Used if your Mojo need to fork a <a href="/ref/3.0.4/maven-core/lifecycles.html">lifecycle</a>.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
@@ -36,9 +38,21 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Execute
 {
+    /**
+     * lifecycle phase to fork.
+     * @return the phase
+     */
     LifecyclePhase phase() default LifecyclePhase.NONE;
 
+    /**
+     * goal to fork.
+     * @return the goal
+     */
     String goal() default "";
 
+    /**
+     * lifecycle id to fork.
+     * @return the lifecycle id
+     */
     String lifecycle() default "";
 }

@@ -27,6 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Used to configure your Mojo Parameters.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
@@ -36,13 +38,33 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Parameter
 {
+    /**
+     * alias supported to get parameter value.
+     * @return the alias
+     */
     String alias() default "";
 
+    /**
+     * Property to use to retrieve a value. Can come from <code>-D</code> execution, setting properties or pom properties.
+     * @return property name
+     */
     String expression() default "";
 
+    /**
+     * parameter default value, eventually containing <code>${...}</code> expressions which will be interpreted at inject time. 
+     * @return the default value
+     */
     String defaultValue() default "";
 
+    /**
+     * is the parameter required?
+     * @return <code>true</code> if the Mojo should fail when the parameter cannot be injected
+     */
     boolean required() default false;
 
+    /**
+     * ignored...
+     * @return
+     */
     boolean readonly() default false;
 }

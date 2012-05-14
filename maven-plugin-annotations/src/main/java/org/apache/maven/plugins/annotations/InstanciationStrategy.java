@@ -20,6 +20,8 @@ package org.apache.maven.plugins.annotations;
  */
 
 /**
+ * Component instanciation strategy.
+ *
  * @author Hervé Boutemy
  * @since 3.0
  */

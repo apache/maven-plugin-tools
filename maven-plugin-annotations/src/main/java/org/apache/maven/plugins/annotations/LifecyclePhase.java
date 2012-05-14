@@ -20,6 +20,7 @@ package org.apache.maven.plugins.annotations;
  */
 
 /**
+ * <a href="/ref/3.0.4/maven-core/lifecycles.html">Lifecycle phases</a>.
  * @author Olivier Lamy
  * @since 3.0
  */

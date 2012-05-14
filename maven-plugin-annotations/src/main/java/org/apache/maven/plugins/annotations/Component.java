@@ -27,6 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Used to configure injection of Plexus components.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
@@ -36,11 +38,27 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Component
 {
+    /**
+     * role of the component to inject.
+     * @return the role
+     */
     String role() default "";
 
+    /**
+     * role-hint of the component to inject.
+     * @return the role-hint
+     */
     String roleHint() default "";
 
+    /**
+     * is the component required?
+     * @return <code>true</code> if the Mojo should fail when the component cannot be injected
+     */
     boolean required() default true;
 
+    /**
+     * ignored...
+     * @return
+     */
     boolean readonly() default true;
 }
