@@ -37,6 +37,7 @@
     to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the
     plugin registry, the artifact metadata and a generic help goal.
   </description>
+  <url>${siteUrlPlugin}</url>
 
   <prerequisites>
     <maven>2.0.6</maven>
@@ -54,7 +55,7 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin</url>
+      <url>${siteDeployUrlPlugin}</url>
     </site>
   </distributionManagement>
 
@@ -63,6 +64,8 @@
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
     <mavenVersion>2.0.6</mavenVersion>
     <it.debug>true</it.debug>
+    <siteDeployUrlPlugin>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin/</siteDeployUrlPlugin>
+    <siteUrlPlugin>http://maven.apache.org/plugins/maven-plugin-plugin/</siteUrlPlugin>
   </properties>
 
   <!-- Copy from project up -->
@@ -377,6 +380,13 @@
           <classifier>tests</classifier>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>snapshot-doc</id>
+      <properties>
+        <siteDeployUrlPlugin>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin-${project.version}/</siteDeployUrlPlugin>
+        <siteUrlPlugin>http://maven.apache.org/plugins/maven-plugin-plugin-${project.version}/</siteUrlPlugin>
+      </properties>
     </profile>
   </profiles>
 </project>

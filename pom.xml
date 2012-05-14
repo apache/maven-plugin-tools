@@ -34,7 +34,7 @@
 
   <name>Maven Plugin Tools</name>
   <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in a variety of languages.</description>
-  <url>http://maven.apache.org/plugin-tools/</url>
+  <url>${siteUrl}</url>
   <inceptionYear>2004</inceptionYear>
 
   <contributors>
@@ -151,12 +151,14 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugin-tools/</url>
+      <url>${siteDeployUrl}</url>
     </site>
   </distributionManagement>
 
   <properties>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
+    <siteDeployUrl>scp://people.apache.org/www/maven.apache.org/plugin-tools/</siteDeployUrl>
+    <siteUrl>http://maven.apache.org/plugin-tools/</siteUrl>
   </properties>
 
   <dependencyManagement>
@@ -400,6 +402,13 @@
           </plugin>
         </plugins>
       </reporting>
+    </profile>
+    <profile>
+      <id>snapshot-doc</id>
+      <properties>
+        <siteDeployUrl>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}/</siteDeployUrl>
+        <siteUrl>http://maven.apache.org/plugin-tools-${project.version}/</siteUrl>
+      </properties>
     </profile>
   </profiles>
 </project>
