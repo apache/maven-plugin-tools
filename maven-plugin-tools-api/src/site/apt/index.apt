@@ -3,7 +3,7 @@
  ------
  Vincent Siveton
  ------
- 2008-07-15
+ 2012-05-14
  ------
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -29,3 +29,8 @@
 Maven Plugin Tool API
 
  The Maven Plugin Tool API is the API to extract descriptors for all supported Maven plugins.
+
+ Main component is {{{./apidocs/org/apache/maven/tools/plugin/scanner/MojoScanner.html}MojoScanner}}.
+
+ Each descriptor extractor needs to implement
+ {{{./apidocs/org/apache/maven/tools/plugin/extractor/MojoDescriptorExtractor.html}MojoDescriptorExtractor}}.
