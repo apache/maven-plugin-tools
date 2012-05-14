@@ -85,77 +85,16 @@ Using Java5 annotations
 
 * Annotations
 
-** @Mojo
+  Information for plugin descriptor generation is specified using 4 annotations:
 
-  This annotation will mark your class as a Mojo.
-  Available attributes:
+  * <<<@Mojo>>>: This annotation will mark your class as a Mojo. See
+    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Mojo.html}javadoc}} for more information.
 
-  * name: goal name. Required (no default).
+  * <<<@Execute>>>: Used if your Mojo need to fork a lifecycle. See
+    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Execute.html}javadoc}} for more information.
 
-  * defaultPhase: default phase to bind your mojo. To ease usage, this comes now from an enum. Default: none.
+  * <<<@Parameter>>>: Used to configure your Mojo parameters. See
+    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Parameter.html}javadoc}} for more information.
 
-  * requiresDependencyResolution: the needed dependency resoluation. To ease usage, this comes now from an enum. . Default: runtime.
-
-  * requiresDependencyCollection: Gets the scope of (transitive) dependencies that should be collected. To ease usage, this comes now from an enum. Default: runtime.
-
-  * executionStrategy: once-per-session or always. default: once-per-session.
-
-  * instantiationStrategy: your Mojo instantiation strategy. To ease usage, this comes now from an enum. (Only per-lookup and singleton are supported).Default: per-lookup.
-
-  * requiresProject: does your mojo requires a project to be executed. Default: true.
-
-  * requiresReports: Default: false.
-
-  * aggregator: if the Mojo uses the Maven project and its child modules. Default: false.
-
-  * requiresDirectInvocation: Get flags this Mojo to be invoked directly.. Default: false.
-
-  * requiresOnline: need to be online to be executed. Default: false.
-
-  * inheritByDefault: . Default: true.
-
-  * configurator: own configurator class. Default: none.
-
-  * threadSafe: is your mojo thread safe (since Maven 3.x). Default: false.
-
-** @Execute
-
-  Used if your Mojo need to fork a lifecycle.
-  Available attributes:
-
-  * phase: phase to fork. To ease usage, this comes now from an enum. Default: none.
-
-  * goal: goal to fork. Default: none.
-
-  * lifecycle: lifecycle id to fork. Default: none.
-
-** @Parameter
-
-  Used to configure your Mojo Parameters.
-  Available attributes:
-
-  * defaultValue: parameter default value. Default: none.
-
-  * expression: expression to use to retrieve a value. Can come from -D execution or pom.properties. Default: none.
-
-  * required: is parameter required. Default: false.
-
-  * readonly: is parameter readonly. Default: false.
-
-  * alias: use of alias to get parameter value. Default: none.
-
-** @Component
-
-  Used to configure injection of Plexus components.
-  Available attributes:
-
-  * role: role of your component. Default: none.
-
-  * roleHint: role hint of your component. Default: none.
-
-  * required: is component required. Default: false.
-
-  * readonly: is component readonly. Default: false.
-
-
-
+  * <<<@Component>>>: Used to configure injection of Plexus components. See
+    {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Component.html}javadoc}} for more information.
