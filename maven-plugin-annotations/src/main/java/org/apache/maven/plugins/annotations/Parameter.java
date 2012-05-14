@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to configure your Mojo Parameters.
+ * Used to configure your Mojo parameters.
  *
  * @author Olivier Lamy
  * @since 3.0
