@@ -30,6 +30,7 @@ public enum DependencyScope
     COMPILE( Artifact.SCOPE_COMPILE ),
     COMPILE_PLUS_RUNTIME( Artifact.SCOPE_COMPILE_PLUS_RUNTIME ),
     RUNTIME( Artifact.SCOPE_RUNTIME ),
+    SCOPE_RUNTIME_PLUS_SYSTEM( Artifact.SCOPE_RUNTIME_PLUS_SYSTEM ),
     TEST( Artifact.SCOPE_TEST );
 
     private final String id;
