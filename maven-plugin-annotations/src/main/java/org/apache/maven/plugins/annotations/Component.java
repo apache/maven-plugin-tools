@@ -40,7 +40,7 @@ public @interface Component
 
     String roleHint() default "";
 
-    boolean required() default false;
+    boolean required() default true;
 
-    boolean readonly() default false;
+    boolean readonly() default true;
 }
