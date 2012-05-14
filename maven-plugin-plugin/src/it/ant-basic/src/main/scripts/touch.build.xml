@@ -18,9 +18,10 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
+<!-- START SNIPPET: ant-build -->
 <project>
   <target name="touch">
     <touch mkdirs="true" file="target/${name}"/>
   </target>
 </project>
+<!-- END SNIPPET: ant-build -->

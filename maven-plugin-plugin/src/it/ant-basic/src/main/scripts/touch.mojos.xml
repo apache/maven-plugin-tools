@@ -18,7 +18,7 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
+<!-- START SNIPPET: ant-mojo -->
 <pluginMetadata xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 ../../../../../../maven-plugin-tools-model/target/generated-site/xsd/plugin-metadata-1.0.0.xsd ">
   <mojos>
     <mojo>
@@ -36,3 +36,4 @@
     </mojo>
   </mojos>
 </pluginMetadata>
+<!-- END SNIPPET: ant-mojo -->
