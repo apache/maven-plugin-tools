@@ -20,6 +20,20 @@ under the License.
 -->
 
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.2.1</version>
+  </skin>
+
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>false</sideBarEnabled>
+    </fluidoSkin>
+  </custom>
+
   <body>
     <breadcrumbs>
       <item name="Plugin Tools" href="http://maven.apache.org/plugin-tools/index.html" />
