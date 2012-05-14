@@ -1,0 +1,44 @@
+/**
+ * Touches a test file.
+ *
+ * @goal touch
+ * @requiresDependencyResolution=test
+ * @deprecated Don't use!
+ * @since 1.2
+ */
+
+import org.apache.maven.plugin.Mojo;
+import org.apache.maven.script.beanshell.BeanshellMojoAdapter;
+import org.codehaus.plexus.util.FileUtils;
+
+
+
+execute()
+{
+    logger.info( "Executing beanshell mojo..." );
+    FileUtils.fileWrite( outDir + "/" + name, "This is a Beanshell test" );
+}
+
+/**
+ * Output directory for files.
+ *
+ * @parameter expression="${project.build.directory}"
+ * @required
+ */
+setOutDir( file )
+{
+    outDir = file;
+}
+
+/**
+ *
+ *
+ * @parameter expression="${name}"
+ * @required
+ */
+setName( name )
+{
+    name = name;
+}
+
+return new BeanshellMojoAdapter( (Mojo) this, this.interpreter );

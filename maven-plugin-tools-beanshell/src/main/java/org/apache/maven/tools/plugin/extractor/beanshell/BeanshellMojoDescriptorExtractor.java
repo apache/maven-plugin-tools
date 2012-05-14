@@ -19,6 +19,16 @@ package org.apache.maven.tools.plugin.extractor.beanshell;
  * under the License.
  */
 
+import bsh.EvalError;
+import bsh.Interpreter;
+import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
+import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.codehaus.plexus.component.annotations.Component;
+
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -27,39 +37,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
-
-import bsh.EvalError;
-import bsh.Interpreter;
-import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
-import org.codehaus.plexus.component.annotations.Component;
-
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
  *
+ * @version $Id$
  * @todo share constants
  * @todo add example usage tag that can be shown in the doco
  * @todo need to add validation directives so that systems embedding maven2 can
  * get validation directives to help users in IDEs.
- * @version $Id$
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "bsh")
+@Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor
 {
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String getScriptFileExtension( PluginToolsRequest request )
     {
         return ".bsh";
     }
 
-    /** {@inheritDoc} */
-    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir, PluginToolsRequest request )
+    /**
+     * {@inheritDoc}
+     */
+    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir,
+                                                           PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
@@ -91,11 +95,12 @@ public class BeanshellMojoDescriptorExtractor
     }
 
     /**
-     * @param basedir not null
+     * @param basedir  not null
      * @param resource not null
-     * @param request not null
+     * @param request  not null
      * @return a new Mojo descriptor instance
-     * @throws InvalidPluginDescriptorException if any
+     * @throws InvalidPluginDescriptorException
+     *          if any
      */
     private MojoDescriptor createMojoDescriptor( String basedir, String resource, PluginToolsRequest request )
         throws InvalidPluginDescriptorException
@@ -115,6 +120,8 @@ public class BeanshellMojoDescriptorExtractor
             interpreter.set( "file", new File( basedir, resource ) );
 
             interpreter.set( "mojoDescriptor", mojoDescriptor );
+
+            interpreter.set( "encoding", "UTF-8" );
 
             interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), "UTF-8" ) );
         }
