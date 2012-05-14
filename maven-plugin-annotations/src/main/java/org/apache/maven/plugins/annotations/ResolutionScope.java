@@ -28,7 +28,7 @@ import org.apache.maven.artifact.Artifact;
  * @author Hervé Boutemy
  * @since 3.0
  */
-public enum DependencyScope
+public enum ResolutionScope
 {
     /**
      * <code>compile</code> resolution scope
@@ -59,7 +59,7 @@ public enum DependencyScope
 
     private final String id;
 
-    DependencyScope( String id )
+    ResolutionScope( String id )
     {
         this.id = id;
     }

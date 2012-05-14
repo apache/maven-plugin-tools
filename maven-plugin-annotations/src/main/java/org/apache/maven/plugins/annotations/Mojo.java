@@ -40,9 +40,9 @@ public @interface Mojo
 
     LifecyclePhase defaultPhase() default LifecyclePhase.NONE;
 
-    DependencyScope requiresDependencyResolution() default DependencyScope.RUNTIME;
+    ResolutionScope requiresDependencyResolution() default ResolutionScope.RUNTIME;
 
-    DependencyScope requiresDependencyCollection() default DependencyScope.RUNTIME;
+    ResolutionScope requiresDependencyCollection() default ResolutionScope.RUNTIME;
 
     InstanciationStrategy instantiationStrategy() default InstanciationStrategy.PER_LOOKUP;
 

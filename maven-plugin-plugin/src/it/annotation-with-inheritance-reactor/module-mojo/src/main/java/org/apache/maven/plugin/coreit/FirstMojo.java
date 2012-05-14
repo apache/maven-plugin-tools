@@ -21,7 +21,7 @@ package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -34,7 +34,7 @@ import org.apache.maven.plugins.AbstractFirstMojo;
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = DependencyScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
+@Mojo( name = "first", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
 @Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
 public class FirstMojo
     extends AbstractFirstMojo

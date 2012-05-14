@@ -19,7 +19,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
-import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.InstanciationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -38,9 +38,9 @@ public class MojoAnnotationContent
 
     private LifecyclePhase defaultPhase = LifecyclePhase.NONE;
 
-    private DependencyScope requiresDependencyResolution = DependencyScope.RUNTIME;
+    private ResolutionScope requiresDependencyResolution = ResolutionScope.RUNTIME;
 
-    private DependencyScope requiresDependencyCollection = DependencyScope.RUNTIME;
+    private ResolutionScope requiresDependencyCollection = ResolutionScope.RUNTIME;
 
     private InstanciationStrategy instantiationStrategy = InstanciationStrategy.PER_LOOKUP;
 
@@ -77,24 +77,24 @@ public class MojoAnnotationContent
         this.defaultPhase = LifecyclePhase.valueOf( phase );
     }
 
-    public DependencyScope requiresDependencyResolution()
+    public ResolutionScope requiresDependencyResolution()
     {
         return requiresDependencyResolution;
     }
 
     public void requiresDependencyResolution( String requiresDependencyResolution )
     {
-        this.requiresDependencyResolution = DependencyScope.valueOf( requiresDependencyResolution );
+        this.requiresDependencyResolution = ResolutionScope.valueOf( requiresDependencyResolution );
     }
 
-    public DependencyScope requiresDependencyCollection()
+    public ResolutionScope requiresDependencyCollection()
     {
         return requiresDependencyCollection;
     }
 
     public void requiresDependencyCollection( String requiresDependencyCollection )
     {
-        this.requiresDependencyCollection = DependencyScope.valueOf( requiresDependencyCollection );
+        this.requiresDependencyCollection = ResolutionScope.valueOf( requiresDependencyCollection );
     }
 
     public InstanciationStrategy instantiationStrategy()
