@@ -33,7 +33,6 @@ import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
-import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
