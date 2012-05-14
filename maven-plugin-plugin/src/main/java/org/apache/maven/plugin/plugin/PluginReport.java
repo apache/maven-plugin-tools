@@ -19,6 +19,8 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Plugin;
@@ -48,6 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Generates the Plugin's documentation report.
@@ -56,7 +59,7 @@ import java.util.ResourceBundle;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
  * @goal report
- * @execute phase="compile"
+ * @execute phase="process-classes"
  * @since 2.0
  */
 public class PluginReport
@@ -159,6 +162,36 @@ public class PluginReport
     private boolean skipReport;
 
     /**
+     * The set of dependencies for the current project
+     *
+     * @parameter default-value = "${project.artifacts}"
+     * @required
+     * @readonly
+     * @since 3.0
+     */
+    protected Set<Artifact> dependencies;
+
+    /**
+     * List of Remote Repositories used by the resolver
+     *
+     * @parameter expression="${project.remoteArtifactRepositories}"
+     * @readonly
+     * @required
+     * @since 3.0
+     */
+    protected List<ArtifactRepository> remoteRepos;
+
+    /**
+     * Location of the local repository.
+     *
+     * @parameter expression="${localRepository}"
+     * @readonly
+     * @required
+     * @since 3.0
+     */
+    protected ArtifactRepository local;
+
+    /**
      * {@inheritDoc}
      */
     protected Renderer getSiteRenderer()
@@ -236,6 +269,11 @@ public class PluginReport
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
+            request.setSkipErrorNoDescriptorsFound( true );
+            request.setDependencies( dependencies );
+            request.setLocal( this.local );
+            request.setRemoteRepos( this.remoteRepos );
+
 
             try
             {
