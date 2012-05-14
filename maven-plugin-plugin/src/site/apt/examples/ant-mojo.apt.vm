@@ -1,5 +1,5 @@
  ------
- Writing an Ant Maven plugin
+ Writing an Ant Maven Plugin
  ------
  Olivier Lamy
  ------
@@ -26,9 +26,9 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Writing an Ant Maven plugin
+Writing an Ant Maven Plugin
 
-  You can write Maven plugins based on ant scripts.
+  You can write Maven plugins based on Ant scripts.
 
 * Pom configuration
 
@@ -63,19 +63,16 @@ Writing an Ant Maven plugin
 
 * Files structure
 
-  The Ant consists of two files. If you want to create a touch mojo, you must have:
+  The Ant plugin consists in two files. If you want to create a <<<touch>>> plugin, you must have:
 
-  * src/main/scripts/touch.mojos.xml (contains Mojo descriptor informations)
+  * <<<src/main/scripts/touch.mojos.xml>>>: contains Mojo(s) descriptor informations,
 
-  * src/main/scripts/touch.build.xml (contains the Ant xml to execute)
+  * <<<src/main/scripts/touch.build.xml>>>: contains the Ant xml to execute.
 
-** Ant Mojo descriptor
-
-  File src/main/scripts/touch.mojos.xml
+** Ant Mojos descriptor
 
 %{snippet|id=ant-mojo|url=http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/src/it/ant-basic/src/main/scripts/touch.mojos.xml}
 
 ** Ant script
 
 %{snippet|id=ant-build|url=http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/src/it/ant-basic/src/main/scripts/touch.build.xml}
-
