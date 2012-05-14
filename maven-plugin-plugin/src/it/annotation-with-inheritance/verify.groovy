@@ -19,7 +19,7 @@ assert mojo.implementation.text() == 'org.apache.maven.plugin.coreit.FirstMojo'
 assert mojo.language.text() == 'java'
 assert mojo.description.text() == 'Touches a test file.'
 assert mojo.deprecated.text() == "Don't use!"
-assert mojo.requiresDependencyResolution.text() == 'test'
+assert mojo.requiresDependencyResolution.text() == 'compile'
 assert mojo.requiresDependencyCollection.text() == 'runtime'
 assert mojo.requiresProject.text() == 'true'
 assert mojo.requiresOnline.text() == 'false'
@@ -44,7 +44,7 @@ assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.project
 //assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
 assert mojo.requirements.requirement[2].'field-name'.text() == 'projectHelper'
 
-assert mojo.parameters.parameter.size() == 3
+assert mojo.parameters.parameter.size() == 4
 
 def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
 

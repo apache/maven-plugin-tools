@@ -19,6 +19,7 @@ package org.apache.maven.plugin.coreit;
  * under the License.
  */
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.DependencyScope;
@@ -27,13 +28,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import java.util.Set;
+
 /**
  * Touches a test file.
  *
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = DependencyScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
+@Mojo( name = "first", requiresDependencyResolution = DependencyScope.COMPILE,
+       defaultPhase = LifecyclePhase.INTEGRATION_TEST )
 @Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
 public class FirstMojo
     extends AbstractFirstMojo
@@ -49,14 +53,17 @@ public class FirstMojo
     @Component( role = "org.apache.maven.project.MavenProjectHelper" )//, roleHint = "default"
     private Object projectHelper;
 
+    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
+    private Set<Artifact> dependencies;
+
     public void execute()
         throws MojoExecutionException
     {
-        if (basedir == null)
+        if ( basedir == null )
         {
             throw new MojoExecutionException( "basedir == null" );
         }
-        if (touchFile == null)
+        if ( touchFile == null )
         {
             throw new MojoExecutionException( "touchFile == null" );
         }
@@ -67,6 +74,11 @@ public class FirstMojo
         if ( compilerManager == null )
         {
             throw new MojoExecutionException( "compilerManager == null" );
+        }
+
+        if ( dependencies.isEmpty() )
+        {
+            throw new MojoExecutionException( "dependencies.isEmpty()" );
         }
 
     }
