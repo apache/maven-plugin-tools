@@ -28,7 +28,7 @@
 
 Using Java5 annotations
 
- Since version 3.0, you can use Java5 annotations to generate the plugin descriptor file.
+ Since version 3.0, you can use {{{#Annotations}Java5 annotations}} to generate the plugin descriptor file.
 
 * Pom configuration
 
@@ -43,7 +43,7 @@ Using Java5 annotations
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
-    <!-- help generation need a dependency to plexus-utils -->
+    <!-- generated help mojo has a dependency to plexus-utils -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
