@@ -22,15 +22,39 @@ package org.apache.maven.plugins.annotations;
 import org.apache.maven.artifact.Artifact;
 
 /**
+ * Dependencies resolution scopes available before
+ * <a href="/ref/current/maven-core/apidocs/org/apache/maven/lifecycle/internal/MojoExecutor.html">mojo execution</a>.
+ *
  * @author Hervé Boutemy
  * @since 3.0
  */
 public enum DependencyScope
 {
+    /**
+     * <code>compile</code> resolution scope
+     * = <code>compile</code> + <code>system</code> + <code>provided</code> dependencies
+     */
     COMPILE( Artifact.SCOPE_COMPILE ),
+    /**
+     * <code>compile+runtime</code> resolution scope (Maven 3 only)
+     * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> dependencies
+     */
     COMPILE_PLUS_RUNTIME( Artifact.SCOPE_COMPILE_PLUS_RUNTIME ),
+    /**
+     * <code>runtime</code> resolution scope
+     * = <code>compile</code> + <code>runtime</code> dependencies
+     */
     RUNTIME( Artifact.SCOPE_RUNTIME ),
-    SCOPE_RUNTIME_PLUS_SYSTEM( Artifact.SCOPE_RUNTIME_PLUS_SYSTEM ),
+    /**
+     * <code>runtime+system</code> resolution scope (Maven 3 only)
+     * = <code>compile</code> + <code>system</code> + <code>runtime</code> dependencies
+     */
+    RUNTIME_PLUS_SYSTEM( Artifact.SCOPE_RUNTIME_PLUS_SYSTEM ),
+    /**
+     * <code>test</code> resolution scope
+     * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> + <code>test</code>
+     * dependencies
+     */
     TEST( Artifact.SCOPE_TEST );
 
     private final String id;
