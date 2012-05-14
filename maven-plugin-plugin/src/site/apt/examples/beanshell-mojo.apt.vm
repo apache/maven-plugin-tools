@@ -1,5 +1,5 @@
  ------
- Writing an Ant Maven plugin
+ Writing a Beanshell Maven Plugin
  ------
  Olivier Lamy
  ------
@@ -26,9 +26,9 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Writing a Beanshell Maven plugin
+Writing a Beanshell Maven Plugin
 
-  You can write a Maven plugin using {{{http://www.beanshell.org}beanshell}}
+  You can write a Maven plugin using {{{http://www.beanshell.org}Beanshell}}.
 
 * Pom configuration
 
@@ -66,6 +66,8 @@ Writing a Beanshell Maven plugin
 
 * Beanshell plugin
 
- Sample of script content. Use same doclet as a Java plugin with doclet
+ A Beanshell mojo uses same javadoc tags as a Java mojo with javadoc tags.
+
+ Sample script content:
 
 %{snippet|id=beanshell-mojo|url=http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/src/it/beanshell-simple/src/main/scripts/touch.bsh}
