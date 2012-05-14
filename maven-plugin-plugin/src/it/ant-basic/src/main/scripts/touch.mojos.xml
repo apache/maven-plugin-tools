@@ -19,10 +19,13 @@
   ~ under the License.
   -->
 <!-- START SNIPPET: ant-mojo -->
-<pluginMetadata xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 ../../../../../../maven-plugin-tools-model/target/generated-site/xsd/plugin-metadata-1.0.0.xsd ">
+<pluginMetadata xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/plugin-metadata-1.0.0.xsd">
   <mojos>
     <mojo>
-      <call>touch</call>
+      <!-- target name to call in ant script -->
+      <call>touch-file</call>
+      <!-- mojo goal name -->
       <goal>touch</goal>
       <parameters>
         <parameter>

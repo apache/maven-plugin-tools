@@ -20,7 +20,7 @@
   -->
 <!-- START SNIPPET: ant-build -->
 <project>
-  <target name="touch">
+  <target name="touch-file">
     <touch mkdirs="true" file="target/${name}"/>
   </target>
 </project>
