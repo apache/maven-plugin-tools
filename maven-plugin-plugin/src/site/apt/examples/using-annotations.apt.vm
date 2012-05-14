@@ -1,0 +1,161 @@
+ ------
+ Using Java5 annotations
+ ------
+ Olivier Lamy
+ ------
+ 2012-05-14
+ ------
+
+~~ Licensed to the Apache Software Foundation (ASF) under one
+~~ or more contributor license agreements.  See the NOTICE file
+~~ distributed with this work for additional information
+~~ regarding copyright ownership.  The ASF licenses this file
+~~ to you under the Apache License, Version 2.0 (the
+~~ "License"); you may not use this file except in compliance
+~~ with the License.  You may obtain a copy of the License at
+~~
+~~   http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing,
+~~ software distributed under the License is distributed on an
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~ KIND, either express or implied.  See the License for the
+~~ specific language governing permissions and limitations
+~~ under the License.
+
+~~ NOTE: For help with the syntax of this file, see:
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Using Java5 annotations
+
+ Since version 3.0, you can use Java5 annotations to generate the plugin descriptor file.
+
+* Pom configuration
+
++-----+
+<project>
+  ...
+  <dependencies>
+    <!-- dependencies to annotations -->
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- help generation need a dependency to plexus-utils -->
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+  </dependencies>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
+        <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+          <!-- if you want to generate help goal -->
+          <execution>
+            <id>help-goal</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  ...
+  </build>
+  ...
+</project>
++-----+
+
+* Annotations
+
+** @Mojo
+
+  This annotation will mark your class as a Mojo.
+  Available attributes:
+
+  * name: goal name. Required (no default).
+
+  * defaultPhase: default phase to bind your mojo. To ease usage, this comes now from an enum. Default: none.
+
+  * requiresDependencyResolution: the needed dependency resoluation. To ease usage, this comes now from an enum. . Default: runtime.
+
+  * requiresDependencyCollection: Gets the scope of (transitive) dependencies that should be collected. To ease usage, this comes now from an enum. Default: runtime.
+
+  * executionStrategy: once-per-session or always. default: once-per-session.
+
+  * instantiationStrategy: your Mojo instantiation strategy. To ease usage, this comes now from an enum. (Only per-lookup and singleton are supported).Default: per-lookup.
+
+  * requiresProject: does your mojo requires a project to be executed. Default: true.
+
+  * requiresReports: Default: false.
+
+  * aggregator: if the Mojo uses the Maven project and its child modules. Default: false.
+
+  * requiresDirectInvocation: Get flags this Mojo to be invoked directly.. Default: false.
+
+  * requiresOnline: need to be online to be executed. Default: false.
+
+  * inheritByDefault: . Default: true.
+
+  * configurator: own configurator class. Default: none.
+
+  * threadSafe: is your mojo thread safe (since Maven 3.x). Default: false.
+
+** @Execute
+
+  Used if your Mojo need to fork a lifecycle.
+  Available attributes:
+
+  * phase: phase to fork. To ease usage, this comes now from an enum. Default: none.
+
+  * goal: goal to fork. Default: none.
+
+  * lifecycle: lifecycle id to fork. Default: none.
+
+** @Parameter
+
+  Used to configure your Mojo Parameters.
+  Available attributes:
+
+  * defaultValue: parameter default value. Default: none.
+
+  * expression: expression to use to retrieve a value. Can come from -D execution or pom.properties. Default: none.
+
+  * required: is parameter required. Default: false.
+
+  * readonly: is parameter readonly. Default: false.
+
+  * alias: use of alias to get parameter value. Default: none.
+
+** @Component
+
+  Used to configure injection of Plexus components.
+  Available attributes:
+
+  * role: role of your component. Default: none.
+
+  * roleHint: role hint of your component. Default: none.
+
+  * required: is component required. Default: false.
+
+  * readonly: is component readonly. Default: false.
+
+
+
