@@ -531,7 +531,7 @@ public class PluginReport
             text( getBundle( locale ).getString( "report.plugin.usage.intro" ) );
             sink.paragraph_();
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append( "<project>" ).append( '\n' );
             sb.append( "  ..." ).append( '\n' );
             sb.append( "  <build>" ).append( '\n' );

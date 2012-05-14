@@ -481,7 +481,7 @@ public class JavaMojoDescriptorExtractor
             }
             else
             {
-                StringBuffer value = new StringBuffer( type.getValue() );
+                StringBuilder value = new StringBuilder( type.getValue() );
 
                 int remaining = type.getDimensions();
 

@@ -60,7 +60,7 @@ public abstract class AbstractMojoTaglet
         String tagValue = getTagValue( tag );
         MutableAttributeSet tagAttributes = getTagAttributes( tag );
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         appendTag( sb, tag, tagAttributes, tagValue );
 
@@ -75,7 +75,7 @@ public abstract class AbstractMojoTaglet
             return null;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for ( int i = 0; i < tags.length; i++ )
         {
             String tagValue = getTagValue( tags[i] );
@@ -218,7 +218,7 @@ public abstract class AbstractMojoTaglet
      * @param tagAttributes not null
      * @param tagValue not null
      */
-    private void appendTag( StringBuffer sb, Tag tag, MutableAttributeSet tagAttributes, String tagValue )
+    private void appendTag( StringBuilder sb, Tag tag, MutableAttributeSet tagAttributes, String tagValue )
     {
         if ( !hasAnnotationParameters() )
         {
@@ -343,7 +343,7 @@ public abstract class AbstractMojoTaglet
      * @param sb not null
      * @param att not null
      */
-    private static void appendAnnotationParameters( StringBuffer sb, MutableAttributeSet att )
+    private static void appendAnnotationParameters( StringBuilder sb, MutableAttributeSet att )
     {
         sb.append( "<DL>" );
 

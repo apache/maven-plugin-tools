@@ -125,7 +125,7 @@ public class HelpMojo
         // FIXME encoding as parameter
         Xpp3Dom pluginElement = build();
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         /**
          *  <groupId>org.apache.maven.plugins</groupId>
          *  <artifactId>maven-plugin-plugin</artifactId>
@@ -214,7 +214,7 @@ public class HelpMojo
      */
     private static String repeat( String str, int repeat )
     {
-        StringBuffer buffer = new StringBuffer( repeat * str.length() );
+        StringBuilder buffer = new StringBuilder( repeat * str.length() );
 
         for ( int i = 0; i < repeat; i++ )
         {
@@ -232,7 +232,7 @@ public class HelpMojo
      * @param description The description, not <code>null</code>.
      * @param indent      The base indentation level of each line, must not be negative.
      */
-    private void append( StringBuffer sb, String description, int indent )
+    private void append( StringBuilder sb, String description, int indent )
     {
         for ( Iterator it = toLines( description, indent, indentSize, lineLength ).iterator(); it.hasNext(); )
         {
@@ -275,7 +275,7 @@ public class HelpMojo
     private static void toLines( List<String> lines, String line, int indentSize, int lineLength )
     {
         int lineIndent = getIndentLevel( line );
-        StringBuffer buf = new StringBuffer( 256 );
+        StringBuilder buf = new StringBuilder( 256 );
         String[] tokens = line.split( " +" );
         for ( int i = 0; i < tokens.length; i++ )
         {

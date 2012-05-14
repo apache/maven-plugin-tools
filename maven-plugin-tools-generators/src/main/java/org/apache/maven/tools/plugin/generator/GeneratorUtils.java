@@ -155,7 +155,7 @@ public final class GeneratorUtils
             return s;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for ( int i = 0; i < s.length(); i++ )
         {
             char c = s.charAt( i );
@@ -326,7 +326,7 @@ public final class GeneratorUtils
             return "";
         }
 
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         HTMLEditorKit.Parser parser = new ParserDelegator();
         HTMLEditorKit.ParserCallback htmlCallback = new MojoParserCallback( sb );
@@ -393,12 +393,12 @@ public final class GeneratorUtils
         /**
          * The current buffer.
          */
-        private final StringBuffer sb;
+        private final StringBuilder sb;
 
         /**
          * @param sb not null
          */
-        public MojoParserCallback( StringBuffer sb )
+        public MojoParserCallback( StringBuilder sb )
         {
             this.sb = sb;
         }
