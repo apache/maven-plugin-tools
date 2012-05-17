@@ -170,9 +170,9 @@ public class PluginDescriptorGenerator
 
             GeneratorUtils.element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
-            GeneratorUtils.element( w, "isolatedRealm", "" + pluginDescriptor.isIsolatedRealm() );
+            GeneratorUtils.element( w, "isolatedRealm", String.valueOf( pluginDescriptor.isIsolatedRealm() ) );
 
-            GeneratorUtils.element( w, "inheritedByDefault", "" + pluginDescriptor.isInheritedByDefault() );
+            GeneratorUtils.element( w, "inheritedByDefault", String.valueOf( pluginDescriptor.isInheritedByDefault() ) );
 
             w.startElement( "mojos" );
 
@@ -255,37 +255,37 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "requiresDirectInvocation", "" + mojoDescriptor.isDirectInvocationOnly() );
+        GeneratorUtils.element( w, "requiresDirectInvocation", String.valueOf( mojoDescriptor.isDirectInvocationOnly() ) );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "requiresProject", "" + mojoDescriptor.isProjectRequired() );
+        GeneratorUtils.element( w, "requiresProject", String.valueOf( mojoDescriptor.isProjectRequired() ) );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "requiresReports", "" + mojoDescriptor.isRequiresReports() );
+        GeneratorUtils.element( w, "requiresReports", String.valueOf( mojoDescriptor.isRequiresReports() ) );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "aggregator", "" + mojoDescriptor.isAggregator() );
+        GeneratorUtils.element( w, "aggregator", String.valueOf( mojoDescriptor.isAggregator() ) );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "requiresOnline", "" + mojoDescriptor.isOnlineRequired() );
+        GeneratorUtils.element( w, "requiresOnline", String.valueOf( mojoDescriptor.isOnlineRequired() ) );
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        GeneratorUtils.element( w, "inheritedByDefault", "" + mojoDescriptor.isInheritedByDefault() );
+        GeneratorUtils.element( w, "inheritedByDefault", String.valueOf( mojoDescriptor.isInheritedByDefault() ) );
 
         // ----------------------------------------------------------------------
         //
