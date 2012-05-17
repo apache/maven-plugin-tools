@@ -314,6 +314,11 @@
       <reporting>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>1.5</version>
+          </plugin>
+          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>l10n-maven-plugin</artifactId>
             <version>1.0-alpha-2</version>
