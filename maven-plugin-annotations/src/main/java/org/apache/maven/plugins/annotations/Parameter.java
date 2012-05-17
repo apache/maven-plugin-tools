@@ -63,8 +63,14 @@ public @interface Parameter
     boolean required() default false;
 
     /**
-     * ignored...
-     * @return
+     * Specifies that this parameter cannot be configured directly by the user (as in the case of POM-specified
+     * configuration). This is useful when you want to force the user to use common POM elements rather than plugin
+     * configurations, as in the case where you want to use the artifact's final name as a parameter. In this case, you
+     * want the user to modify <code>&lt;build&gt;&lt;finalName/&gt;&lt;/build&gt;</code> rather than specifying a value
+     * for finalName directly in the plugin configuration section. It is also useful to ensure that - for example - a
+     * List-typed parameter which expects items of type Artifact doesn't get a List full of Strings.
+     * 
+     * @return <code>true</code> if the user should not be allowed to configure the parameter directly
      */
     boolean readonly() default false;
 }
