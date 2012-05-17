@@ -20,7 +20,7 @@ package org;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -33,7 +33,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @deprecated You don't use test goals, do you?
  */
 @Mojo( name = "noop", defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-       requiresDependencyResolution = DependencyScope.TEST,
+       requiresDependencyResolution = ResolutionScope.TEST,
        requiresDirectInvocation = true, requiresOnline = true, inheritByDefault = false, aggregator = true )
 @Execute( phase = LifecyclePhase.COMPILE )
 public class MyMojo
