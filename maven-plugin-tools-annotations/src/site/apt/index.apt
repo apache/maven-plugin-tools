@@ -36,7 +36,7 @@ Maven Plugin Tool for Annotations
 
 +---------+
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.DependencyScope;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.InstanciationStrategy;
@@ -56,8 +56,8 @@ import org.apache.maven.plugins.annotations.Parameter;
        inheritByDefault = <true|false>,
        instantiationStrategy = InstanciationStrategy.<strategy>,
        defaultPhase = "<phaseName>",
-       requiresDependencyResolution = DependencyScope.<scope>,
-       requiresDependencyCollection = DependencyScope.<scope>, // (since Maven 3.0)
+       requiresDependencyResolution = ResolutionScope.<scope>,
+       requiresDependencyCollection = ResolutionScope.<scope>, // (since Maven 3.0)
        requiresDirectInvocation = <false|true>,
        requiresOnline = <false|true>,
        requiresProject = <true|false>,
@@ -74,7 +74,7 @@ public class MyMojo
      * @deprecated <deprecated-text>
      */
     @Parameter( alias = "myAlias",
-                expression = "aSystemProperty",
+                property = "aProperty",
                 defaultValue = "${anExpression}",
                 readonly = <false|true>
                 required = <false|true> )
@@ -86,8 +86,6 @@ public class MyMojo
      */
     @Component( role = "...",
                 roleHint="..." )
-     // @readonly
-     // @required
     private MyComponent component;
 
     public void execute()
