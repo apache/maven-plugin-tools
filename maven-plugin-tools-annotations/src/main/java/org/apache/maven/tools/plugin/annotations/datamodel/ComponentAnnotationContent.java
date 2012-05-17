@@ -35,10 +35,6 @@ public class ComponentAnnotationContent
 
     private String roleHint;
 
-    private boolean required = false;
-
-    private boolean readonly = false;
-
     public ComponentAnnotationContent( String fieldName )
     {
         super( fieldName );
@@ -74,26 +70,6 @@ public class ComponentAnnotationContent
     public Class<? extends Annotation> annotationType()
     {
         return null;
-    }
-
-    public boolean required()
-    {
-        return required;
-    }
-
-    public void required( boolean required )
-    {
-        this.required = required;
-    }
-
-    public boolean readonly()
-    {
-        return readonly;
-    }
-
-    public void readonly( boolean readonly )
-    {
-        this.readonly = readonly;
     }
 
     @Override
