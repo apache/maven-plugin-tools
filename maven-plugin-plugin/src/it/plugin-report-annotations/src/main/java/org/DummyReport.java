@@ -58,7 +58,7 @@ public class DummyReport
     /**
      * The Maven Project.
      */
-    @Parameter( expression = "${project}", readonly = true, required = true )
+    @Parameter( property = "project", readonly = true, required = true )
     private MavenProject project;
 
 
@@ -67,7 +67,7 @@ public class DummyReport
      *
      * @since 2.4
      */
-    @Parameter( expression = "${goalPrefix}" )
+    @Parameter( property = "goalPrefix" )
     protected String goalPrefix;
 
     /**
@@ -75,7 +75,7 @@ public class DummyReport
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", expression = "${maven.plugin.skip}" )
+    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
     private boolean skip;
 
     /**
@@ -83,7 +83,7 @@ public class DummyReport
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", expression = "${maven.plugin.report.skip}" )
+    @Parameter( defaultValue = "false", property = "maven.plugin.report.skip" )
     private boolean skipReport;
 
     /**

@@ -48,7 +48,7 @@ public @interface Parameter
      * Property to use to retrieve a value. Can come from <code>-D</code> execution, setting properties or pom properties.
      * @return property name
      */
-    String expression() default "";
+    String property() default "";
 
     /**
      * parameter default value, eventually containing <code>${...}</code> expressions which will be interpreted at inject time. 

@@ -48,7 +48,7 @@ public class FirstMojo
     @Parameter( defaultValue = "${basedir}", readonly = true )
     private File basedir;
 
-    @Parameter( expression = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
+    @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
                 required = true )
     private File touchFile;
 

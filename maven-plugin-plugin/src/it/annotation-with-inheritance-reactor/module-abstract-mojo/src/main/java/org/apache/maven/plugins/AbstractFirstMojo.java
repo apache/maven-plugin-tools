@@ -45,7 +45,7 @@ public abstract class AbstractFirstMojo
     @Parameter( defaultValue = "${basedir}", readonly = true )
     protected File basedir;
 
-    @Parameter( expression = "${first.touchFile}", defaultValue = "${project.build.directory}/touch.txt",
+    @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
                 required = true )
     protected File touchFile;
 
@@ -60,7 +60,5 @@ public abstract class AbstractFirstMojo
      */
     @Component( role = "org.apache.maven.artifact.metadata.ArtifactMetadataSource", roleHint = "maven" )
     protected ArtifactMetadataSource artifactMetadataSource;
-
-
 
 }

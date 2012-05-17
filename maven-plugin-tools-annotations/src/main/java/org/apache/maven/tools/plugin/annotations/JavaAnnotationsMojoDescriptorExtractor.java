@@ -29,6 +29,7 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
+import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -426,7 +427,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                                     PluginToolsRequest request, Map<String, JavaClass> javaClassesMap )
-        throws DuplicateParameterException
+        throws DuplicateParameterException, InvalidParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
@@ -490,7 +491,14 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
                 parameter.setEditable( !parameterAnnotationContent.readonly() );
-                parameter.setExpression( parameterAnnotationContent.expression() );
+                String property = parameterAnnotationContent.property();
+                if ( StringUtils.contains( property, '$' ) || StringUtils.contains( property, '{' )
+                    || StringUtils.contains( property, '}' ) )
+                {
+                    throw new InvalidParameterException( "Invalid property for parameter '" + parameter.getName() + "', "
+                                                         + "forbidden characters ${}: " + property, null );
+                }
+                parameter.setExpression( StringUtils.isEmpty( property ) ? "" : "${" + property + "}" );
                 parameter.setType( parameterAnnotationContent.getClassName() );
                 parameter.setSince( parameterAnnotationContent.getSince() );
                 parameter.setRequired( parameterAnnotationContent.required() );

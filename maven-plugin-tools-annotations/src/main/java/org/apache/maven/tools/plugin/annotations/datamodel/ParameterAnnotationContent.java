@@ -34,7 +34,7 @@ public class ParameterAnnotationContent
 
     private String alias;
 
-    private String expression;
+    private String property;
 
     private String defaultValue;
 
@@ -50,12 +50,12 @@ public class ParameterAnnotationContent
         this.className = className;
     }
 
-    public ParameterAnnotationContent( String fieldName, String alias, String expression, String defaultValue,
+    public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
                                        boolean required, boolean readonly, String className )
     {
         this( fieldName, className );
         this.alias = alias;
-        this.expression = expression;
+        this.property = property;
         this.defaultValue = defaultValue;
         this.required = required;
         this.readonly = readonly;
@@ -71,14 +71,14 @@ public class ParameterAnnotationContent
         this.alias = alias;
     }
 
-    public String expression()
+    public String property()
     {
-        return expression;
+        return property;
     }
 
-    public void expression( String expression )
+    public void property( String property )
     {
-        this.expression = expression;
+        this.property = property;
     }
 
     public String defaultValue()
@@ -133,7 +133,7 @@ public class ParameterAnnotationContent
         sb.append( super.toString() );
         sb.append( "ParameterAnnotationContent" );
         sb.append( "{alias='" ).append( alias ).append( '\'' );
-        sb.append( ", expression='" ).append( expression ).append( '\'' );
+        sb.append( ", property='" ).append( property ).append( '\'' );
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
         sb.append( ", required=" ).append( required );
         sb.append( ", readonly=" ).append( readonly );
@@ -177,7 +177,7 @@ public class ParameterAnnotationContent
         {
             return false;
         }
-        if ( expression != null ? !expression.equals( that.expression ) : that.expression != null )
+        if ( property != null ? !property.equals( that.property ) : that.property != null )
         {
             return false;
         }
@@ -190,7 +190,7 @@ public class ParameterAnnotationContent
     {
         int result = alias != null ? alias.hashCode() : 0;
         result = 31 * result + ( getFieldName() != null ? getFieldName().hashCode() : 0 );
-        result = 31 * result + ( expression != null ? expression.hashCode() : 0 );
+        result = 31 * result + ( property != null ? property.hashCode() : 0 );
         result = 31 * result + ( defaultValue != null ? defaultValue.hashCode() : 0 );
         result = 31 * result + ( required ? 1 : 0 );
         result = 31 * result + ( readonly ? 1 : 0 );

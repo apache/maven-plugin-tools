@@ -42,14 +42,14 @@ public class FooMojo
      * the cool bar to go
      * @since 1.0
      */
-    @Parameter( expression = "${thebar}", required = true, defaultValue = "coolbar" )
+    @Parameter( property = "thebar", required = true, defaultValue = "coolbar" )
     protected String bar;
 
     /**
      * beer for non french folks
      * @deprecated wine is better
      */
-    @Parameter( expression = "${thebeer}", defaultValue = "coolbeer" )
+    @Parameter( property = "thebeer", defaultValue = "coolbeer" )
     protected String beer;
 
     /**

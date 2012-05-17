@@ -36,7 +36,7 @@ public class CoreIt0014Mojo
     extends AbstractMojo
 {
     
-    @Parameter( expression = "${project.build.directory}", required = true )
+    @Parameter( property = "project.build.directory", required = true )
     private String outputDirectory;
 
     public void execute()

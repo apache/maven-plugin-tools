@@ -54,7 +54,7 @@ public class MyMojo
      * @deprecated Just testing.
      */
     @SuppressWarnings( "unused" )
-    @Parameter( expression = "${string}", defaultValue = "${project.version}/</markup-must-be-escaped>" )
+    @Parameter( property = "string", defaultValue = "${project.version}/</markup-must-be-escaped>" )
     private String string;
 
     public void execute()
