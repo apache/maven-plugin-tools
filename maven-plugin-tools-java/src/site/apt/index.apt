@@ -72,8 +72,6 @@ public class MyMojo
 
     /**
      * @component role="..." roleHint="..."
-     * @readonly
-     * @required
      * @since <since-text>
      * @deprecated <deprecated-text>
      */
@@ -93,4 +91,4 @@ public class MyMojo
 
  * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
 
- * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
+ * {{{/ref/current/maven-plugin-api/plugin.html}<<<META-INF/maven/plugin.xml>>> plugin descriptor}}

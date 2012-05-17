@@ -510,11 +510,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setName( componentAnnotationContent.getFieldName() );
                 parameter.setRequirement(
                     new Requirement( componentAnnotationContent.role(), componentAnnotationContent.roleHint() ) );
-                parameter.setEditable( false );
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
+
                 // same behaviour as JavaMojoDescriptorExtractor
-                //parameter.setRequired( componentAnnotationContent.required() );
+                //parameter.setRequired( ... );
                 parameter.setEditable( false );
                 mojoDescriptor.addParameter( parameter );
             }

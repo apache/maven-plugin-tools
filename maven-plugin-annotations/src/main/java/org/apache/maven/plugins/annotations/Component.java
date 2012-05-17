@@ -49,16 +49,4 @@ public @interface Component
      * @return the role-hint
      */
     String roleHint() default "";
-
-    /**
-     * is the component required?
-     * @return <code>true</code> if the Mojo should fail when the component cannot be injected
-     */
-    boolean required() default true;
-
-    /**
-     * ignored...
-     * @return
-     */
-    boolean readonly() default true;
 }
