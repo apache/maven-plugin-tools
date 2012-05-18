@@ -60,7 +60,7 @@ import java.util.TreeMap;
  * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "java")
+@Component( role = MojoDescriptorExtractor.class, hint = "java" )
 public class JavaMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor, JavaMojoAnnotation
