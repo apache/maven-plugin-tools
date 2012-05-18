@@ -51,7 +51,10 @@ public @interface Parameter
     String property() default "";
 
     /**
-     * parameter default value, eventually containing <code>${...}</code> expressions which will be interpreted at inject time. 
+     * parameter default value, eventually containing <code>${...}</code> expressions which will be interpreted at
+     * inject time: see
+     * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
+     * PluginParameterExpressionEvaluator</a>. 
      * @return the default value
      */
     String defaultValue() default "";
