@@ -549,6 +549,35 @@ public class JavaMojoDescriptorExtractor
                 }
 
                 String expression = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_EXPRESSION );
+                String property = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_PROPERTY );
+
+                if ( StringUtils.isNotEmpty( expression ) && StringUtils.isNotEmpty( property ) )
+                {
+                    getLogger().error( javaClass.getFullyQualifiedName() + "#" + field.getName() + ":" );
+                    getLogger().error( "  Cannot use both:" );
+                    getLogger().error( "    @parameter expression=\"${property}\"" );
+                    getLogger().error( "  and" );
+                    getLogger().error( "    @parameter property=\"property\"" );
+                    getLogger().error( "  Second syntax is preferred." );
+                    throw new InvalidParameterException( javaClass.getFullyQualifiedName() + "#" + field.getName()
+                        + ": cannot" + " use both @parameter expression and property", null );
+                }
+
+                if ( StringUtils.isNotEmpty( expression ) )
+                {
+                    getLogger().warn( javaClass.getFullyQualifiedName() + "#" + field.getName() + ":" );
+                    getLogger().warn( "  The syntax" );
+                    getLogger().warn( "    @parameter expression=\"${property}\"" );
+                    getLogger().warn( "  is deprecated, please use" );
+                    getLogger().warn( "    @parameter property=\"property\"" );
+                    getLogger().warn( "  instead." );
+
+                }
+                else if ( StringUtils.isNotEmpty( property ) )
+                {
+                    expression = "${" + property + "}";
+                }
+
                 pd.setExpression( expression );
 
                 if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${component." ) )

@@ -297,8 +297,19 @@ public interface JavaMojoAnnotation
      * Refer to <code>&#64;parameter expression="..."</code>.
      * <br/>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * @deprecated use PARAMETER_PROPERTY instead
      */
     String PARAMETER_EXPRESSION = "expression";
+
+    /**
+     * This defines the property used to calculate the value to be injected into this parameter of the
+     * Mojo at build time, which can come from <code>-D</code> execution, setting properties or pom properties.
+     * <br/>
+     * Refer to <code>&#64;parameter property="..."</code>.
+     * <br/>
+     * <b>Note</b>: Should be defined in a Mojo Field.
+     */
+    String PARAMETER_PROPERTY = "property";
 
     /**
      * This defines the default implementation in the case the parameter type is an interface.

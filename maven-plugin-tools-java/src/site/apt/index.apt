@@ -62,7 +62,7 @@ public class MyMojo
     extends AbstractMojo
 {
     /**
-     * @parameter alias="myAlias" implementation="" expression="aProperty" default-value="${anExpression}"
+     * @parameter alias="myAlias" implementation="" property="aProperty" default-value="${anExpression}"
      * @readonly
      * @required
      * @since <since-text>
@@ -84,8 +84,8 @@ public class MyMojo
 }
 +---------+
 
-  <<Notice>>: before 3.0, <<<${ }>>> were required for <<<expression>>> value (<<<expression="${aProperty}">>>),
-  but starting with 3.0, you can omit it (<<<expression="aProperty">>>)
+  <<Notice>>: before 3.0, <<<property>>> was replaced by <<<expression>>>, with <<<${ }>>> required (<<<expression="${aProperty}">>>),
+  but starting with 3.0, you can omit it (<<<expression="aProperty">>>), or preferably use <<<property="aProperty">>>.
 
 * See also
 

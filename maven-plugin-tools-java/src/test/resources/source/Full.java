@@ -64,6 +64,11 @@ public class Full
     private File file;
 
     /**
+     * @parameter property="aSystemProperty"
+     */
+    private String property;
+
+    /**
      * A component.
      * 
      * @component role="role" roleHint="hint"

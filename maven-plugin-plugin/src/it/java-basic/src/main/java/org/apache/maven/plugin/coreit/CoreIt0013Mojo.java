@@ -35,7 +35,7 @@ public class CoreIt0013Mojo
 {
     
     /**
-     * @parameter expression="${project.build.directory}"
+     * @parameter property="project.build.directory"
      * @required
      */
     private String outputDirectory;
