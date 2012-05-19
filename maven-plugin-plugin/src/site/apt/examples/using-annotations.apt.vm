@@ -30,6 +30,9 @@ Using Java5 annotations
 
  Since version 3.0, you can use {{{#Annotations}Java5 annotations}} to generate the plugin descriptor file.
 
+ <<NOTE>> With annotations, it's not anymore mandatory to have your Mojos super classes in the same project. Super classe
+ can now come from reactor projects or external dependencies.
+
 * Pom configuration
 
 +-----+
