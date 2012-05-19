@@ -490,7 +490,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
-                parameter.setEditable( !parameterAnnotationContent.readonly() );
                 String property = parameterAnnotationContent.property();
                 if ( StringUtils.contains( property, '$' ) || StringUtils.contains( property, '{' )
                     || StringUtils.contains( property, '}' ) )

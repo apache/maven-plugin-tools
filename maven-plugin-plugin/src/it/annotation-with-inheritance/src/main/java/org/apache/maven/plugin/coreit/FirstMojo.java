@@ -53,7 +53,7 @@ public class FirstMojo
     @Component( role = "org.apache.maven.project.MavenProjectHelper" )//, roleHint = "default"
     private Object projectHelper;
 
-    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
+    @Parameter( defaultValue = "${project.artifacts}", required = true )
     private Set<Artifact> dependencies;
 
     public void execute()

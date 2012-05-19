@@ -42,7 +42,7 @@ public abstract class AbstractFirstMojo
     /**
      * Project directory.
      */
-    @Parameter( defaultValue = "${basedir}", readonly = true )
+    @Parameter( defaultValue = "${basedir}" )
     protected File basedir;
 
     @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",

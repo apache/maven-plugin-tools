@@ -69,7 +69,7 @@ assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.io.File'
 assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'false'
-assert parameter.editable.text() == 'false'
+assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'Project directory.'
 
 mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]

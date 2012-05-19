@@ -83,8 +83,7 @@ public class TestAnnotationsReader
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
         Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
-            new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false, String.class.getName() ),
-            new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
-                                            String.class.getName() ) );
+            new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, String.class.getName() ),
+            new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, String.class.getName() ) );
     }
 }

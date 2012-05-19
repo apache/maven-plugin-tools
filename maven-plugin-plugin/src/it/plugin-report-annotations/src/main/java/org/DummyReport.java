@@ -58,7 +58,7 @@ public class DummyReport
     /**
      * The Maven Project.
      */
-    @Parameter( property = "project", readonly = true, required = true )
+    @Parameter( property = "project", required = true )
     private MavenProject project;
 
 
