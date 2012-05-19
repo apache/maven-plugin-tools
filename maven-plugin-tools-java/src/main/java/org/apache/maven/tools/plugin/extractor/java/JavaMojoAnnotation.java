@@ -310,19 +310,6 @@ public interface JavaMojoAnnotation
     String PARAMETER_IMPLEMENTATION = "implementation";
 
     /**
-     * This indicates the base name of the bean properties used to read/write this parameter's value.
-     * <br/>
-     * Refer to <code>&#64;parameter property="project"</code>
-     * <p/>
-     * Would say there is a getProject() method and a setProject(Project) method. Here the field
-     * name would not be the basis for the parameter's name. This mode of operation will allow the
-     * mojos to be usable as beans and will be the promoted form of use.
-     * <br/>
-     * <b>Note</b>: Should be defined in a Mojo Field.
-     */
-    String PARAMETER_PROPERTY = "property";
-
-    /**
      * Specifies that this parameter cannot be configured directly by the user (as in the case of POM-specified
      * configuration).
      * <br/>

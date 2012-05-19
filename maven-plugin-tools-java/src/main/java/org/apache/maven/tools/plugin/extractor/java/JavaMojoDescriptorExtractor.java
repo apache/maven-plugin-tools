@@ -89,9 +89,6 @@ public class JavaMojoDescriptorExtractor
     /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_IMPLEMENTATION} instead of. */
     public static final String PARAMETER_IMPLEMENTATION = JavaMojoAnnotation.PARAMETER_IMPLEMENTATION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_PROPERTY} instead of. */
-    public static final String PARAMETER_PROPERTY = JavaMojoAnnotation.PARAMETER_PROPERTY;
-
     /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRED} instead of. */
     public static final String REQUIRED = JavaMojoAnnotation.REQUIRED;
 
@@ -475,6 +472,8 @@ public class JavaMojoDescriptorExtractor
 
             Parameter pd = new Parameter();
 
+            pd.setName( entry.getKey() );
+
             if ( !type.isArray() )
             {
                 pd.setType( type.getValue() );
@@ -496,6 +495,7 @@ public class JavaMojoDescriptorExtractor
             pd.setDescription( field.getComment() );
 
             DocletTag componentTag = field.getTagByName( JavaMojoAnnotation.COMPONENT );
+
             if ( componentTag != null )
             {
                 String role = componentTag.getNamedParameter( JavaMojoAnnotation.COMPONENT_ROLE );
@@ -515,8 +515,6 @@ public class JavaMojoDescriptorExtractor
 
                 pd.setRequirement( new Requirement( role, roleHint ) );
 
-                pd.setName( entry.getKey() );
-
                 pd.setEditable( false );
                 /* TODO: or better like this? Need @component fields be editable for the user?
                 pd.setEditable( field.getTagByName( READONLY ) == null );
@@ -525,27 +523,6 @@ public class JavaMojoDescriptorExtractor
             else
             {
                 DocletTag parameter = field.getTagByName( JavaMojoAnnotation.PARAMETER );
-
-                // ----------------------------------------------------------------------
-                // We will look for a property name here first and use that if present
-                // i.e:
-                //
-                // @parameter property="project"
-                //
-                // Which will become the name used for the configuration element which
-                // will in turn will allow plexus to use the corresponding setter.
-                // ----------------------------------------------------------------------
-
-                String property = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_PROPERTY );
-
-                if ( !StringUtils.isEmpty( property ) )
-                {
-                    pd.setName( property );
-                }
-                else
-                {
-                    pd.setName( entry.getKey() );
-                }
 
                 pd.setRequired( field.getTagByName( JavaMojoAnnotation.REQUIRED ) != null );
 
