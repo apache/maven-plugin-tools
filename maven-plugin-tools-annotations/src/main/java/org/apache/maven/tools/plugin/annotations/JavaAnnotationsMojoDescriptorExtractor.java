@@ -106,7 +106,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
 
-        return toMojoDescriptors( mojoAnnotatedClasses, request, javaClassesMap );
+        return toMojoDescriptors( mojoAnnotatedClasses, request.getPluginDescriptor() );
     }
 
     private Map<String, MojoAnnotatedClass> scanAnnotations( PluginToolsRequest request )
@@ -272,8 +272,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 }
             }
 
-            Map<String, JavaField> fieldsMap =
-                            extractFieldParameterTags( javaClass, javaClassesMap, mojoAnnotatedClasses );
+            Map<String, JavaField> fieldsMap = extractFieldParameterTags( javaClass, javaClassesMap );
 
             // populate parameters
             Map<String, ParameterAnnotationContent> parameters =
@@ -362,8 +361,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @return map with Mojo parameters names as keys
      */
     private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass,
-                                                              Map<String, JavaClass> javaClassesMap,
-                                                              Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+                                                              Map<String, JavaClass> javaClassesMap )
     {
         Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
 
@@ -375,13 +373,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             if ( superClass.getFields().length > 0 )
             {
-                rawParams = extractFieldParameterTags( superClass, javaClassesMap, mojoAnnotatedClasses );
+                rawParams = extractFieldParameterTags( superClass, javaClassesMap );
             }
             // maybe sources comes from scan of sources artifact
             superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
             if ( superClass != null )
             {
-                rawParams = extractFieldParameterTags( superClass, javaClassesMap, mojoAnnotatedClasses );
+                rawParams = extractFieldParameterTags( superClass, javaClassesMap );
             }
         }
         else
@@ -456,7 +454,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
-                                                    PluginToolsRequest request, Map<String, JavaClass> javaClassesMap )
+                                                    PluginDescriptor pluginDescriptor )
         throws DuplicateParameterException, InvalidParameterException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
@@ -558,7 +556,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 mojoDescriptor.addParameter( parameter );
             }
 
-            mojoDescriptor.setPluginDescriptor( request.getPluginDescriptor() );
+            mojoDescriptor.setPluginDescriptor( pluginDescriptor );
 
             mojoDescriptors.add( mojoDescriptor );
         }
