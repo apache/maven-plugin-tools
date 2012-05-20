@@ -264,6 +264,18 @@
       <artifactId>velocity</artifactId>
     </dependency>
 
+    <!-- needed for it tests -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-script-beanshell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-script-ant</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
