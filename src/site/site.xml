@@ -38,8 +38,8 @@ under the License.
 
   <custom>
     <fluidoSkin>
-      <topBarEnabled>true</topBarEnabled>
-      <sideBarEnabled>false</sideBarEnabled>
+      <topBarEnabled>false</topBarEnabled>
+      <sideBarEnabled>true</sideBarEnabled>
     </fluidoSkin>
   </custom>
 
