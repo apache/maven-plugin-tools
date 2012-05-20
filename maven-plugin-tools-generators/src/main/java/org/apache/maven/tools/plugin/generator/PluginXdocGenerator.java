@@ -271,11 +271,7 @@ public class PluginXdocGenerator
         String value;
         if ( mojoDescriptor.isProjectRequired() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
             w.endElement(); //li
@@ -283,11 +279,7 @@ public class PluginXdocGenerator
 
         if ( mojoDescriptor.isRequiresReports() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.reportingMojo" ) );
             w.endElement(); // li
@@ -295,11 +287,7 @@ public class PluginXdocGenerator
 
         if ( mojoDescriptor.isAggregator() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.aggregator" ) );
             w.endElement(); //li
@@ -307,11 +295,7 @@ public class PluginXdocGenerator
 
         if ( mojoDescriptor.isDirectInvocationOnly() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.directInvocationOnly" ) );
             w.endElement(); //li
@@ -320,11 +304,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.isDependencyResolutionRequired();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyResolutionRequired", value ) );
             w.endElement(); //li
@@ -337,11 +317,7 @@ public class PluginXdocGenerator
             value = extendedMojoDescriptor.getDependencyCollectionRequired();
             if ( StringUtils.isNotEmpty( value ) )
             {
-                if ( !addedUl )
-                {
-                    w.startElement( "ul" );
-                    addedUl = true;
-                }
+                addedUl = addUl( w, addedUl );
                 w.startElement( "li" );
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyCollectionRequired", value ) );
                 w.endElement(); //li
@@ -349,11 +325,7 @@ public class PluginXdocGenerator
 
             if ( extendedMojoDescriptor.isThreadSafe() )
             {
-                if ( !addedUl )
-                {
-                    w.startElement( "ul" );
-                    addedUl = true;
-                }
+                addedUl = addUl( w, addedUl );
                 w.startElement( "li" );
                 w.writeMarkup( getString( "pluginxdoc.mojodescriptor.threadSafe" ) );
                 w.endElement(); //li
@@ -364,11 +336,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.getSince();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.since", value ) );
             w.endElement(); //li
@@ -377,11 +345,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.getPhase();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.phase", value ) );
             w.endElement(); //li
@@ -390,11 +354,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.getExecutePhase();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.executePhase", value ) );
             w.endElement(); //li
@@ -403,11 +363,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.getExecuteGoal();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.executeGoal", value ) );
             w.endElement(); //li
@@ -416,11 +372,7 @@ public class PluginXdocGenerator
         value = mojoDescriptor.getExecuteLifecycle();
         if ( StringUtils.isNotEmpty( value ) )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.executeLifecycle", value ) );
             w.endElement(); //li
@@ -428,11 +380,7 @@ public class PluginXdocGenerator
 
         if ( mojoDescriptor.isOnlineRequired() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.onlineRequired" ) );
             w.endElement(); //li
@@ -440,11 +388,7 @@ public class PluginXdocGenerator
 
         if ( !mojoDescriptor.isInheritedByDefault() )
         {
-            if ( !addedUl )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl );
             w.startElement( "li" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.inheritedByDefault" ) );
             w.endElement(); //li
@@ -552,31 +496,19 @@ public class PluginXdocGenerator
             w.endElement(); // div
 
             boolean addedUl = false;
-            if ( !addedUl && StringUtils.isNotEmpty( parameter.getType() ) )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl, parameter.getType() );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), parameter.getType(), w );
 
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
             {
-                if ( !addedUl )
-                {
-                    w.startElement( "ul" );
-                    addedUl = true;
-                }
+                addedUl = addUl( w, addedUl );
                 writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), parameter.getSince(), w );
             }
             else
             {
                 if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
                 {
-                    if ( !addedUl )
-                    {
-                        w.startElement( "ul" );
-                        addedUl = true;
-                    }
+                    addedUl = addUl( w, addedUl );
                     writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), mojoDescriptor.getSince(),
                                  w );
                 }
@@ -584,30 +516,18 @@ public class PluginXdocGenerator
 
             if ( parameter.isRequired() )
             {
-                if ( !addedUl )
-                {
-                    w.startElement( "ul" );
-                    addedUl = true;
-                }
+                addedUl = addUl( w, addedUl );
                 writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.yes" ),
                              w );
             }
             else
             {
-                if ( !addedUl )
-                {
-                    w.startElement( "ul" );
-                    addedUl = true;
-                }
+                addedUl = addUl( w, addedUl );
                 writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.no" ),
                              w );
             }
 
-            if ( !addedUl && StringUtils.isNotEmpty( parameter.getExpression() ) )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl, parameter.getExpression() );
             String expression = parameter.getExpression();
             String property = getPropertyFromExpression( expression );
             if ( property == null )
@@ -619,11 +539,7 @@ public class PluginXdocGenerator
                 writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.property" ), property, w );
             }
 
-            if ( !addedUl && StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
-            {
-                w.startElement( "ul" );
-                addedUl = true;
-            }
+            addedUl = addUl( w, addedUl, parameter.getDefaultValue() );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ),
                          escapeXml( parameter.getDefaultValue() ), w );
 
@@ -639,6 +555,25 @@ public class PluginXdocGenerator
         }
 
         w.endElement();
+    }
+
+    private boolean addUl( XMLWriter w, boolean addedUl, String content )
+    {
+        if ( StringUtils.isNotEmpty( content ) )
+        {
+            return addUl( w, addedUl );
+        }
+        return addedUl;
+    }
+
+    private boolean addUl( XMLWriter w, boolean addedUl )
+    {
+        if ( !addedUl )
+        {
+            w.startElement( "ul" );
+            addedUl = true;
+        }
+        return addedUl;
     }
 
     private String getPropertyFromExpression( String expression )
