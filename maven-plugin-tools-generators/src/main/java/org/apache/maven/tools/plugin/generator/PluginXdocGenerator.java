@@ -462,7 +462,8 @@ public class PluginXdocGenerator
      */
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        @SuppressWarnings( "unchecked" ) List<Parameter> parameterList = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" )
+        List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         //remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );
@@ -608,16 +609,14 @@ public class PluginXdocGenerator
                 addedUl = true;
             }
             String expression = parameter.getExpression();
-            if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${" ) && expression.endsWith( "}" )
-                && !expression.substring( 2 ).contains( "${" ) )
+            String property = getPropertyFromExpression( expression );
+            if ( property == null )
             {
-                // expression="${xxx}" -> property="xxx"
-                String property = expression.substring( 2, expression.length() - 1 );
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.property" ), property, w );
+                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.expression" ), expression, w );
             }
             else
             {
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.expression" ), parameter.getExpression(), w );
+                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.property" ), property, w );
             }
 
             if ( !addedUl && StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
@@ -642,6 +641,18 @@ public class PluginXdocGenerator
         w.endElement();
     }
 
+    private String getPropertyFromExpression( String expression )
+    {
+        if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${" ) && expression.endsWith( "}" )
+            && !expression.substring( 2 ).contains( "${" ) )
+        {
+            // expression="${xxx}" -> property="xxx"
+            return expression.substring( 2, expression.length() - 1 );
+        }
+        // no property can be extracted
+        return null;
+    }
+    
     /**
      * @param param not null
      * @param value could be null
@@ -712,13 +723,19 @@ public class PluginXdocGenerator
         for ( Parameter parameter : parameterList )
         {
             w.startElement( "tr" );
+
+            // name
             w.startElement( "td" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_link", parameter.getName() ) );
             w.endElement(); //td
+
+            //type
             w.startElement( "td" );
             int index = parameter.getType().lastIndexOf( "." );
             w.writeMarkup( "<code>" + parameter.getType().substring( index + 1 ) + "</code>" );
             w.endElement(); //td
+
+            // since
             w.startElement( "td" );
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
             {
@@ -736,6 +753,8 @@ public class PluginXdocGenerator
                 }
             }
             w.endElement(); //td
+
+            // description
             w.startElement( "td" );
             String description;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
@@ -757,7 +776,15 @@ public class PluginXdocGenerator
             {
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.defaultValue",
                                        escapeXml( parameter.getDefaultValue() ) ) );
+                w.writeMarkup( "<br/>" );
             }
+
+            String property = getPropertyFromExpression( parameter.getExpression() );
+            if ( property != null )
+            {
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.property.description", property ) );
+            }
+
             w.endElement(); //td
             w.endElement(); //tr
         }
