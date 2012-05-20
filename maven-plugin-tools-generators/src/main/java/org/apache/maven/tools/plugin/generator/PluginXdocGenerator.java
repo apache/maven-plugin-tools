@@ -527,8 +527,8 @@ public class PluginXdocGenerator
                              w );
             }
 
-            addedUl = addUl( w, addedUl, parameter.getExpression() );
             String expression = parameter.getExpression();
+            addedUl = addUl( w, addedUl, expression );
             String property = getPropertyFromExpression( expression );
             if ( property == null )
             {
