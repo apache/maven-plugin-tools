@@ -41,7 +41,7 @@
       <version>1.6.5</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-script-ant</artifactId>
       <version>@project.version@</version>
     </dependency>

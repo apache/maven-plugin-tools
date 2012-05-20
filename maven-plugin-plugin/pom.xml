@@ -266,14 +266,16 @@
 
     <!-- needed for it tests -->
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-script-beanshell</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-script-ant</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
