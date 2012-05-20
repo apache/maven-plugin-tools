@@ -27,6 +27,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.annotations.FooMojo;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Touches a test file.
@@ -46,7 +47,7 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper" )// , roleHint = "default"
+    @Component( role = MavenProjectHelper.class )// , roleHint = "default"
     private Object projectHelper;
 
     public void execute()

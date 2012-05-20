@@ -27,6 +27,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.AbstractFirstMojo;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Touches a test file.
@@ -47,7 +48,7 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper" )
+    @Component( role = MavenProjectHelper.class )
     private Object projectHelper;
 
     public void execute()
@@ -68,6 +69,10 @@ public class FirstMojo
         if ( compilerManager == null )
         {
             throw new MojoExecutionException( "compilerManager == null" );
+        }
+        if (! ( projectHelper instanceof MavenProjectHelper ))
+        {
+            throw new MojoExecutionException( "! projectHelper instanceof MavenProjectHelper" );
         }
 
     }

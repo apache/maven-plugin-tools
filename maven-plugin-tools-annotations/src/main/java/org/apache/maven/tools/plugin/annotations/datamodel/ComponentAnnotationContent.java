@@ -31,7 +31,7 @@ public class ComponentAnnotationContent
     extends AnnotatedField
     implements Component
 {
-    private String role;
+    private String roleClassName;
 
     private String roleHint;
 
@@ -43,18 +43,24 @@ public class ComponentAnnotationContent
     public ComponentAnnotationContent( String fieldName, String role, String roleHint )
     {
         this( fieldName );
-        this.role = role;
+        this.roleClassName = role;
         this.roleHint = roleHint;
     }
 
-    public String role()
+    public Class<?> role()
     {
-        return role == null ? "" : role;
+        // not used
+        return null;
     }
 
-    public void role( String role )
+    public void setRoleClassName( String roleClassName )
     {
-        this.role = role;
+        this.roleClassName = roleClassName;
+    }
+
+    public String getRoleClassName()
+    {
+        return roleClassName;
     }
 
     public String roleHint()
@@ -78,7 +84,7 @@ public class ComponentAnnotationContent
         final StringBuilder sb = new StringBuilder();
         sb.append( super.toString() );
         sb.append( "ComponentAnnotationContent" );
-        sb.append( "{role='" ).append( role ).append( '\'' );
+        sb.append( "{role='" ).append( roleClassName ).append( '\'' );
         sb.append( ", roleHint='" ).append( roleHint ).append( '\'' );
         sb.append( '}' );
         return sb.toString();

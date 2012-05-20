@@ -58,7 +58,7 @@ public abstract class AbstractFirstMojo
     /**
      *
      */
-    @Component( role = "org.apache.maven.artifact.metadata.ArtifactMetadataSource", roleHint = "maven" )
+    @Component( role = ArtifactMetadataSource.class, roleHint = "maven" )
     protected ArtifactMetadataSource artifactMetadataSource;
 
 }

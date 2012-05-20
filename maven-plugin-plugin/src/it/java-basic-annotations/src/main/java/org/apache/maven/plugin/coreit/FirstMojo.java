@@ -27,6 +27,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 
@@ -59,7 +60,7 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper", roleHint = "test" )
+    @Component( role = MavenProjectHelper.class, roleHint = "test" )
     private Object projectHelper;
 
     public void execute()

@@ -42,7 +42,7 @@ public @interface Component
      * role of the component to inject.
      * @return the role
      */
-    String role() default "";
+    Class<?> role() default Object.class;
 
     /**
      * role-hint of the component to inject.

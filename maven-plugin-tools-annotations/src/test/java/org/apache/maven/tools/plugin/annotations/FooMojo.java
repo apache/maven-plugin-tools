@@ -61,7 +61,7 @@ public class FooMojo
     /**
      *
      */
-    @Component( role = "org.apache.maven.artifact.metadata.ArtifactMetadataSource", roleHint = "maven" )
+    @Component( role = ArtifactMetadataSource.class, roleHint = "maven" )
     protected ArtifactMetadataSource artifactMetadataSource;
 
     public void execute()

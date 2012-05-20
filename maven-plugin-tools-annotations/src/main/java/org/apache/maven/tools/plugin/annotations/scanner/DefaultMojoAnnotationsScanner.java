@@ -38,6 +38,7 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Type;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -302,12 +303,21 @@ public class DefaultMojoAnnotationsScanner
                 {
                     for ( Map.Entry<String, Object> entry : mojoFieldVisitor.getMojoAnnotationVisitor().getAnnotationValues().entrySet() )
                     {
-                        reflector.invoke( componentAnnotationContent, entry.getKey(),
-                                          new Object[]{ entry.getValue() } );
+                        String methodName = entry.getKey();
+                        if ( StringUtils.equals( "role", methodName ) )
+                        {
+                            Type type = (Type) entry.getValue();
+                            componentAnnotationContent.setRoleClassName( type.getClassName() );
+                        }
+                        else
+                        {
+                            reflector.invoke( componentAnnotationContent, entry.getKey(),
+                                              new Object[]{ entry.getValue() } );
+                        }
                     }
-                    if ( StringUtils.isEmpty( componentAnnotationContent.role() ) )
+                    if ( StringUtils.isEmpty( componentAnnotationContent.getRoleClassName() ) )
                     {
-                        componentAnnotationContent.role( mojoFieldVisitor.getClassName() );
+                        componentAnnotationContent.setRoleClassName( mojoFieldVisitor.getClassName() );
                     }
                 }
                 mojoClassVisitor.getMojoAnnotatedClass().getComponents().put( componentAnnotationContent.getFieldName(),

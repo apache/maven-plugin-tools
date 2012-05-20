@@ -525,8 +525,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 if ( StringUtils.contains( property, '$' ) || StringUtils.contains( property, '{' )
                     || StringUtils.contains( property, '}' ) )
                 {
-                    throw new InvalidParameterException( "Invalid property for parameter '" + parameter.getName() + "', "
-                                                         + "forbidden characters ${}: " + property, null );
+                    throw new InvalidParameterException(
+                        "Invalid property for parameter '" + parameter.getName() + "', " + "forbidden characters ${}: "
+                            + property, null );
                 }
                 parameter.setExpression( StringUtils.isEmpty( property ) ? "" : "${" + property + "}" );
                 parameter.setType( parameterAnnotationContent.getClassName() );
@@ -546,8 +547,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
                 parameter.setName( componentAnnotationContent.getFieldName() );
-                parameter.setRequirement(
-                    new Requirement( componentAnnotationContent.role(), componentAnnotationContent.roleHint() ) );
+                parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
+                                                           componentAnnotationContent.roleHint() ) );
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
 
@@ -671,8 +672,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             return null;
         }
-        @SuppressWarnings( "unchecked" )
-        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
+        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
+            project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
             if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )

@@ -27,6 +27,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public class FirstMojo
     @Parameter( alias = "alias" )
     private String aliasedParam;
 
-    @Component( role = "org.apache.maven.project.MavenProjectHelper" )//, roleHint = "default"
+    @Component( role = MavenProjectHelper.class )//, roleHint = "default"
     private Object projectHelper;
 
     @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
