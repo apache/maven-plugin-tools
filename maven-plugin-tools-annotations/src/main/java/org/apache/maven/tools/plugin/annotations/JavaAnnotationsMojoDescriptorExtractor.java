@@ -100,19 +100,34 @@ public class JavaAnnotationsMojoDescriptorExtractor
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanAnnotations( request );
 
+        Map<String, JavaClass> javaClassesMap = scanJavadoc( request, mojoAnnotatedClasses.values() );
+
+        populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
+
+        return toMojoDescriptors( mojoAnnotatedClasses, request, javaClassesMap );
+    }
+
+    private Map<String, MojoAnnotatedClass> scanAnnotations( PluginToolsRequest request )
+        throws ExtractionException
+    {
         MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
 
-        mojoAnnotationsScannerRequest.setClassesDirectories(
-            Arrays.asList( new File( request.getProject().getBuild().getOutputDirectory() ) ) );
+        File output = new File( request.getProject().getBuild().getOutputDirectory() );
+        mojoAnnotationsScannerRequest.setClassesDirectories( Arrays.asList( output ) );
 
         mojoAnnotationsScannerRequest.setDependencies( request.getDependencies() );
 
         mojoAnnotationsScannerRequest.setProject( request.getProject() );
 
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses =
-            mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+        return mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+    }
 
+    private Map<String, JavaClass> scanJavadoc( PluginToolsRequest request,
+                                                Collection<MojoAnnotatedClass> mojoAnnotatedClasses )
+        throws ExtractionException
+    {
         // found artifact from reactors to scan sources
         // we currently only scan sources from reactors
         List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
@@ -120,7 +135,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         // if we need to scan sources from external artifacts
         Set<Artifact> externalArtifacts = new HashSet<Artifact>();
 
-        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
+        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
         {
             if ( !StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
                                       request.getProject().getArtifact().getArtifactId() ) )
@@ -163,12 +178,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         javaClassesMap.putAll( discoverClasses( request ) );
 
-        populateDataFromJavadoc( mojoAnnotatedClasses, javaClassesMap );
-
-        return toMojoDescriptors( mojoAnnotatedClasses, request, javaClassesMap );
-
+        return javaClassesMap;
     }
-
 
     protected Map<String, JavaClass> discoverClassesFromSourcesJar( Artifact artifact, PluginToolsRequest request,
                                                                     String classifier )
