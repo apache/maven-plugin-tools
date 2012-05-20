@@ -40,6 +40,8 @@ public class ParameterAnnotationContent
 
     private boolean required = false;
 
+    private boolean readonly = false;
+
     private String className;
 
     public ParameterAnnotationContent( String fieldName, String className )
@@ -49,13 +51,14 @@ public class ParameterAnnotationContent
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
-                                       boolean required, String className )
+                                       boolean required, boolean readonly, String className )
     {
         this( fieldName, className );
         this.alias = alias;
         this.property = property;
         this.defaultValue = defaultValue;
         this.required = required;
+        this.readonly = readonly;
     }
 
     public String alias()
@@ -98,6 +101,16 @@ public class ParameterAnnotationContent
         this.required = required;
     }
 
+    public boolean readonly()
+    {
+        return readonly;
+    }
+
+    public void readonly( boolean readonly )
+    {
+        this.readonly = readonly;
+    }
+
     public Class<? extends Annotation> annotationType()
     {
         return null;
@@ -123,6 +136,7 @@ public class ParameterAnnotationContent
         sb.append( ", property='" ).append( property ).append( '\'' );
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
         sb.append( ", required=" ).append( required );
+        sb.append( ", readonly=" ).append( readonly );
         sb.append( '}' );
         return sb.toString();
     }
@@ -141,6 +155,10 @@ public class ParameterAnnotationContent
 
         ParameterAnnotationContent that = (ParameterAnnotationContent) o;
 
+        if ( readonly != that.readonly )
+        {
+            return false;
+        }
         if ( required != that.required )
         {
             return false;
@@ -175,6 +193,7 @@ public class ParameterAnnotationContent
         result = 31 * result + ( property != null ? property.hashCode() : 0 );
         result = 31 * result + ( defaultValue != null ? defaultValue.hashCode() : 0 );
         result = 31 * result + ( required ? 1 : 0 );
+        result = 31 * result + ( readonly ? 1 : 0 );
         return result;
     }
 }
