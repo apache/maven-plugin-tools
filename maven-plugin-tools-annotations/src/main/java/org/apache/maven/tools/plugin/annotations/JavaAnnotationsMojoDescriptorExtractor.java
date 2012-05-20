@@ -137,26 +137,28 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
         {
-            if ( !StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
-                                      request.getProject().getArtifact().getArtifactId() ) )
+            if ( StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
+                                     request.getProject().getArtifact().getArtifactId() ) )
             {
-                MavenProject mavenProject =
-                    getFromProjectReferences( mojoAnnotatedClass.getArtifact(), request.getProject() );
-                if ( mavenProject != null )
-                {
-                    mavenProjects.add( mavenProject );
-                }
-                else
-                {
-                    externalArtifacts.add( mojoAnnotatedClass.getArtifact() );
-                }
+                continue;
+            }
+
+            MavenProject mavenProject =
+                getFromProjectReferences( mojoAnnotatedClass.getArtifact(), request.getProject() );
+
+            if ( mavenProject != null )
+            {
+                mavenProjects.add( mavenProject );
+            }
+            else
+            {
+                externalArtifacts.add( mojoAnnotatedClass.getArtifact() );
             }
         }
 
         Map<String, JavaClass> javaClassesMap = new HashMap<String, JavaClass>();
 
-        // try to get artifact with classifier sources
-        // extract somewhere then scan doclet for @since, @deprecated
+        // try to get artifact with sources classifier, extract somewhere then scan for @since, @deprecated
         for ( Artifact artifact : externalArtifacts )
         {
             // parameter for test-sources too ?? olamy I need that for it test only
@@ -192,26 +194,27 @@ public class JavaAnnotationsMojoDescriptorExtractor
                                                               artifact.getVersion(), artifact.getType(), classifier );
 
             artifactResolver.resolve( sourcesArtifact, request.getRemoteRepos(), request.getLocal() );
-            if ( sourcesArtifact.getFile() != null && sourcesArtifact.getFile().exists() )
-            {
-                File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
-                                                  "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
-                                                      + sourcesArtifact.getArtifactId() + "/"
-                                                      + sourcesArtifact.getVersion() + "/"
-                                                      + sourcesArtifact.getClassifier() );
-                if ( !extractDirectory.exists() )
-                {
-                    extractDirectory.mkdirs();
-                }
-                // extract sources in a directory
-                //target/maven-plugin-plugin/${groupId}/${artifact}/sources
-                UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
-                unArchiver.setSourceFile( sourcesArtifact.getFile() );
-                unArchiver.setDestDirectory( extractDirectory );
-                unArchiver.extract();
 
-                return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ) );
+            if ( sourcesArtifact.getFile() == null || !sourcesArtifact.getFile().exists() )
+            {
+                // could not get artifact sources
+                return Collections.emptyMap();
             }
+
+            // extract sources to target/maven-plugin-plugin-sources/${groupId}/${artifact}/sources
+            File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
+                                              "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
+                                                  + sourcesArtifact.getArtifactId() + "/"
+                                                  + sourcesArtifact.getVersion() + "/"
+                                                  + sourcesArtifact.getClassifier() );
+            extractDirectory.mkdirs();
+
+            UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
+            unArchiver.setSourceFile( sourcesArtifact.getFile() );
+            unArchiver.setDestDirectory( extractDirectory );
+            unArchiver.extract();
+
+            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ) );
         }
         catch ( ArtifactResolutionException e )
         {
@@ -222,14 +225,14 @@ public class JavaAnnotationsMojoDescriptorExtractor
             //throw new ExtractionException( e.getMessage(), e );
             getLogger().debug( "skip ArtifactNotFoundException:" + e.getMessage() );
             getLogger().warn(
-                "Impossible to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
+                "Unable to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
                     + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
+            return Collections.emptyMap();
         }
         catch ( NoSuchArchiverException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
-        return Collections.emptyMap();
     }
 
     /**
@@ -245,71 +248,87 @@ public class JavaAnnotationsMojoDescriptorExtractor
         for ( Map.Entry<String, MojoAnnotatedClass> entry : mojoAnnotatedClasses.entrySet() )
         {
             JavaClass javaClass = javaClassesMap.get( entry.getKey() );
-            if ( javaClass != null )
+            if ( javaClass == null )
             {
-                MojoAnnotationContent mojoAnnotationContent = entry.getValue().getMojo();
-                if ( mojoAnnotationContent != null )
-                {
-                    mojoAnnotationContent.setDescription( javaClass.getComment() );
-                    DocletTag since = findInClassHierarchy( javaClass, "since" );
-                    if ( since != null )
-                    {
-                        mojoAnnotationContent.setSince( since.getValue() );
-                    }
-
-                    DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
-                    if ( deprecated != null )
-                    {
-                        mojoAnnotationContent.setDeprecated( deprecated.getValue() );
-                    }
-                }
-                Map<String, JavaField> fieldsMap =
-                    extractFieldParameterTags( javaClass, javaClassesMap, mojoAnnotatedClasses );
-                Map<String, ParameterAnnotationContent> parameters =
-                    getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
-                                                  mojoAnnotatedClasses );
-                for ( Map.Entry<String, ParameterAnnotationContent> parameter : new TreeMap<String, ParameterAnnotationContent>(
-                    parameters ).entrySet() )
-                {
-                    JavaField javaField = fieldsMap.get( parameter.getKey() );
-                    if ( javaField != null )
-                    {
-                        ParameterAnnotationContent parameterAnnotationContent = parameter.getValue();
-                        DocletTag deprecated = javaField.getTagByName( "deprecated" );
-                        if ( deprecated != null )
-                        {
-                            parameterAnnotationContent.setDeprecated( deprecated.getValue() );
-                        }
-                        DocletTag since = javaField.getTagByName( "since" );
-                        if ( since != null )
-                        {
-                            parameterAnnotationContent.setSince( since.getValue() );
-                        }
-                        parameterAnnotationContent.setDescription( javaField.getComment() );
-                    }
-                }
-
-                for ( Map.Entry<String, ComponentAnnotationContent> component : entry.getValue().getComponents().entrySet() )
-                {
-                    JavaField javaField = fieldsMap.get( component.getKey() );
-                    if ( javaField != null )
-                    {
-                        ComponentAnnotationContent componentAnnotationContent = component.getValue();
-                        DocletTag deprecated = javaField.getTagByName( "deprecated" );
-                        if ( deprecated != null )
-                        {
-                            componentAnnotationContent.setDeprecated( deprecated.getValue() );
-                        }
-                        DocletTag since = javaField.getTagByName( "since" );
-                        if ( since != null )
-                        {
-                            componentAnnotationContent.setSince( since.getValue() );
-                        }
-                        componentAnnotationContent.setDescription( javaField.getComment() );
-                    }
-                }
-
+                continue;
             }
+
+            // populate class-level content
+            MojoAnnotationContent mojoAnnotationContent = entry.getValue().getMojo();
+            if ( mojoAnnotationContent != null )
+            {
+                mojoAnnotationContent.setDescription( javaClass.getComment() );
+
+                DocletTag since = findInClassHierarchy( javaClass, "since" );
+                if ( since != null )
+                {
+                    mojoAnnotationContent.setSince( since.getValue() );
+                }
+
+                DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
+                if ( deprecated != null )
+                {
+                    mojoAnnotationContent.setDeprecated( deprecated.getValue() );
+                }
+            }
+
+            Map<String, JavaField> fieldsMap =
+                            extractFieldParameterTags( javaClass, javaClassesMap, mojoAnnotatedClasses );
+
+            // populate parameters
+            Map<String, ParameterAnnotationContent> parameters =
+                getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
+                                              mojoAnnotatedClasses );
+            for ( Map.Entry<String, ParameterAnnotationContent> parameter : new TreeMap<String, ParameterAnnotationContent>(
+                                                                                                                             parameters ).entrySet() )
+            {
+                JavaField javaField = fieldsMap.get( parameter.getKey() );
+                if ( javaField == null )
+                {
+                    continue;
+                }
+
+                ParameterAnnotationContent parameterAnnotationContent = parameter.getValue();
+                parameterAnnotationContent.setDescription( javaField.getComment() );
+
+                DocletTag deprecated = javaField.getTagByName( "deprecated" );
+                if ( deprecated != null )
+                {
+                    parameterAnnotationContent.setDeprecated( deprecated.getValue() );
+                }
+
+                DocletTag since = javaField.getTagByName( "since" );
+                if ( since != null )
+                {
+                    parameterAnnotationContent.setSince( since.getValue() );
+                }
+            }
+
+            // populate components
+            for ( Map.Entry<String, ComponentAnnotationContent> component : entry.getValue().getComponents().entrySet() )
+            {
+                JavaField javaField = fieldsMap.get( component.getKey() );
+                if ( javaField == null )
+                {
+                    continue;
+                }
+
+                ComponentAnnotationContent componentAnnotationContent = component.getValue();
+                componentAnnotationContent.setDescription( javaField.getComment() );
+
+                DocletTag deprecated = javaField.getTagByName( "deprecated" );
+                if ( deprecated != null )
+                {
+                    componentAnnotationContent.setDeprecated( deprecated.getValue() );
+                }
+
+                DocletTag since = javaField.getTagByName( "since" );
+                if ( since != null )
+                {
+                    componentAnnotationContent.setSince( since.getValue() );
+                }
+            }
+
         }
 
     }
@@ -606,7 +625,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         return parameterAnnotationContents;
     }
-
 
     protected Map<String, ComponentAnnotationContent> getComponentsParentHierarchy(
         MojoAnnotatedClass mojoAnnotatedClass, Map<String, ComponentAnnotationContent> components,
