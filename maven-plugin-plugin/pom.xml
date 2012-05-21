@@ -21,12 +21,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-plugins</artifactId>
-    <version>22</version>
-    <relativePath />
+    <artifactId>maven-plugin-tools</artifactId>
+    <groupId>org.apache.maven.plugin-tools</groupId>
+    <version>3.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-plugin-plugin</artifactId>
   <version>3.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
@@ -52,94 +52,13 @@
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MPLUGIN</url>
   </issueManagement>
-  <distributionManagement>
-    <site>
-      <id>apache.website</id>
-      <url>${siteDeployUrlPlugin}</url>
-    </site>
-  </distributionManagement>
 
   <properties>
     <doxiaVersion>1.2</doxiaVersion>
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
-    <mavenVersion>2.0.6</mavenVersion>
     <it.debug>true</it.debug>
-    <siteDeployUrlPlugin>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin/</siteDeployUrlPlugin>
-    <siteUrlPlugin>http://maven.apache.org/plugins/maven-plugin-plugin/</siteUrlPlugin>
-    <antVersion>1.7.1</antVersion>
+    <mavenPluginPluginVersion>2.9</mavenPluginPluginVersion>
   </properties>
-
-  <!-- Copy from project up -->
-  <dependencyManagement>
-    <dependencies>
-      <!-- maven -->
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-generators</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-java</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-beanshell</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-descriptor</artifactId>
-        <version>${mavenVersion}</version>
-      </dependency>
-
-      <!-- plexus -->
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>2.0.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-archiver</artifactId>
-        <version>2.1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-velocity</artifactId>
-        <version>1.1.8</version>
-        <exclusions>
-          <exclusion>
-            <groupId>velocity</groupId>
-            <artifactId>velocity</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- other -->
-      <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.7</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- doxia -->
@@ -168,12 +87,10 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -183,7 +100,6 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -211,7 +127,6 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
 
     <!-- shared -->
@@ -323,6 +238,23 @@
     </pluginManagement>
   </build>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>${mavenPluginPluginVersion}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <profiles>
     <profile>
       <id>reporting</id>
@@ -371,27 +303,38 @@
     <profile>
       <id>run-its</id>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-invoker-plugin</artifactId>
-              <version>1.5</version>
-              <configuration>
-                <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-                <debug>${it.debug}</debug>
-                <filterProperties>
-                  <sitePluginVersion>3.0</sitePluginVersion>
-                  <antVersion>${antVersion}</antVersion>
-                </filterProperties>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <version>1.5</version>
+            <configuration>
+              <debug>${it.debug}</debug>
+              <projectsDirectory>src/it</projectsDirectory>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+              <preBuildHookScript>setup</preBuildHookScript>
+              <postBuildHookScript>verify</postBuildHookScript>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+              <settingsFile>src/it/settings.xml</settingsFile>
+              <filterProperties>
+                <sitePluginVersion>3.0</sitePluginVersion>
+                <antVersion>${antVersion}</antVersion>
+              </filterProperties>
+            </configuration>
+            <executions>
+              <execution>
+                <id>integration-test</id>
                 <goals>
-                  <goal>verify</goal>
+                  <goal>install</goal>
+                  <goal>run</goal>
                 </goals>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
       <dependencies>
         <dependency>
@@ -401,13 +344,6 @@
           <classifier>tests</classifier>
         </dependency>
       </dependencies>
-    </profile>
-    <profile>
-      <id>snapshot-doc</id>
-      <properties>
-        <siteDeployUrlPlugin>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin-${project.version}/</siteDeployUrlPlugin>
-        <siteUrlPlugin>http://maven.apache.org/plugins/maven-plugin-plugin-${project.version}/</siteUrlPlugin>
-      </properties>
     </profile>
   </profiles>
 </project>
