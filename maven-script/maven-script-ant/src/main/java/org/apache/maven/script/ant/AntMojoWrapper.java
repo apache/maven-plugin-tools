@@ -50,17 +50,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 
 public class AntMojoWrapper
     extends AbstractMojo
     implements ContextEnabled, MapOrientedComponent, LogEnabled
 {
 
-    private Map pluginContext;
+    private Map<String, Object> pluginContext;
     
     private final AntScriptInvoker scriptInvoker;
 
@@ -76,7 +74,7 @@ public class AntMojoWrapper
 
     private Logger logger;
     
-    private transient List unconstructedParts = new ArrayList();
+    private transient List<String> unconstructedParts = new ArrayList<String>();
 
     public AntMojoWrapper( AntScriptInvoker scriptInvoker )
     {
@@ -91,24 +89,23 @@ public class AntMojoWrapper
             antProject = scriptInvoker.getProject();
         }
         
-        Map allConfig = new HashMap();
+        Map<String, Object> allConfig = new HashMap<String, Object>();
         if ( pluginContext != null && !pluginContext.isEmpty() )
         {
             allConfig.putAll( pluginContext );
         }
         
-        Map refs = scriptInvoker.getReferences();
+        @SuppressWarnings( "unchecked" )
+        Map<String, PathTranslator> refs = scriptInvoker.getReferences();
         if ( refs != null )
         {
             allConfig.putAll( refs );
             
-            for ( Iterator it = refs.entrySet().iterator(); it.hasNext(); )
+            for ( Map.Entry<String, PathTranslator> entry : refs.entrySet() )
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
-                if ( key.startsWith( PathTranslator.class.getName() ) )
+                if ( entry.getKey().startsWith( PathTranslator.class.getName() ) )
                 {
-                    pathTranslator = (PathTranslator) entry.getValue();
+                    pathTranslator = entry.getValue();
                 }
             }
         }
@@ -129,9 +126,8 @@ public class AntMojoWrapper
             
             buffer.append( "The following standard Maven Ant-mojo support objects could not be created:\n\n" );
             
-            for ( Iterator it = unconstructedParts.iterator(); it.hasNext(); )
+            for ( String part : unconstructedParts )
             {
-                String part = (String) it.next();
                 buffer.append( "\n-  " ).append( part );
             }
             
@@ -233,18 +229,22 @@ public class AntMojoWrapper
                 unconstructedParts.add( "Maven parameter expression evaluator for Ant properties." );
             }
 
+            @SuppressWarnings( "unchecked" )
+            Map<String, Object> references = scriptInvoker.getReferences();
+
             if ( mavenProject != null )
             {
+
                 // Compile classpath
                 Path p = new Path( antProject );
 
                 p.setPath( StringUtils.join( mavenProject.getCompileClasspathElements().iterator(), File.pathSeparator ) );
 
                 /* maven.dependency.classpath it's deprecated as it's equal to maven.compile.classpath */
-                scriptInvoker.getReferences().put( "maven.dependency.classpath", p );
+                references.put( "maven.dependency.classpath", p );
                 antProject.addReference( "maven.dependency.classpath", p );
                 
-                scriptInvoker.getReferences().put( "maven.compile.classpath", p );
+                references.put( "maven.compile.classpath", p );
                 antProject.addReference( "maven.compile.classpath", p );
 
                 // Runtime classpath
@@ -252,7 +252,7 @@ public class AntMojoWrapper
 
                 p.setPath( StringUtils.join( mavenProject.getRuntimeClasspathElements().iterator(), File.pathSeparator ) );
 
-                scriptInvoker.getReferences().put( "maven.runtime.classpath", p );
+                references.put( "maven.runtime.classpath", p );
                 antProject.addReference( "maven.runtime.classpath", p );
 
                 // Test classpath
@@ -260,7 +260,7 @@ public class AntMojoWrapper
 
                 p.setPath( StringUtils.join( mavenProject.getTestClasspathElements().iterator(), File.pathSeparator ) );
 
-                scriptInvoker.getReferences().put( "maven.test.classpath", p );
+                references.put( "maven.test.classpath", p );
                 antProject.addReference( "maven.test.classpath", p );
 
             }
@@ -275,7 +275,7 @@ public class AntMojoWrapper
 
                 Path p = getPathFromArtifacts( mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifacts(), antProject );
                 
-                scriptInvoker.getReferences().put( "maven.plugin.classpath", p );
+                references.put( "maven.plugin.classpath", p );
                 antProject.addReference( "maven.plugin.classpath", p );
             }
             else
@@ -289,16 +289,13 @@ public class AntMojoWrapper
         }
     }
 
-    public Path getPathFromArtifacts( Collection artifacts,
-                                      Project antProject )
+    public Path getPathFromArtifacts( Collection<Artifact> artifacts, Project antProject )
         throws DependencyResolutionRequiredException
     {
-        List list = new ArrayList( artifacts.size() );
+        List<String> list = new ArrayList<String>( artifacts.size() );
 
-        for ( Iterator i = artifacts.iterator(); i.hasNext(); )
+        for ( Artifact a : artifacts )
         {
-            Artifact a = (Artifact) i.next();
-
             File file = a.getFile();
 
             if ( file == null )

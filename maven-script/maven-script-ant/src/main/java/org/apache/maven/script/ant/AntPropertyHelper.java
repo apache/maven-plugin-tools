@@ -21,8 +21,7 @@ package org.apache.maven.script.ant;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +45,7 @@ public class AntPropertyHelper
     private Log log;
     private ExpressionEvaluator exprEvaluator;
     private MavenProject mavenProject;
-    private Map artifactMap = new Hashtable();
+    private Map<String, String> artifactMap = new HashMap<String, String>();
 
     /**
      * @deprecated use the other constructor
@@ -66,7 +65,7 @@ public class AntPropertyHelper
      */
     public AntPropertyHelper( ExpressionEvaluator exprEvaluator, Log l )
     {
-        this( exprEvaluator, Collections.EMPTY_SET, l );
+        this( exprEvaluator, Collections.<Artifact>emptySet(), l );
     }
 
     /**
@@ -74,16 +73,14 @@ public class AntPropertyHelper
      * @param artifacts
      * @param l
      */
-    public AntPropertyHelper( ExpressionEvaluator exprEvaluator, Set artifacts, Log l )
+    public AntPropertyHelper( ExpressionEvaluator exprEvaluator, Set<Artifact> artifacts, Log l )
     {
         this.mavenProject = null;
         this.exprEvaluator = exprEvaluator;
         this.log = l;
 
-        for ( Iterator it = artifacts.iterator(); it.hasNext(); )
+        for ( Artifact artifact : artifacts )
         {
-            Artifact artifact = (Artifact) it.next();
-
             String key = DEPENDENCY_PREFIX + artifact.getGroupId() + "." + artifact.getArtifactId()
                 + ( artifact.getClassifier() != null ? "." + artifact.getClassifier() : "" )
                 + ( artifact.getType() != null ? "." + artifact.getType() : "" ) + ".path";

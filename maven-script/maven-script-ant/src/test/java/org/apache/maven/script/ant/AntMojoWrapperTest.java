@@ -36,7 +36,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class AntMojoWrapperTest
     {
         String pluginXml = "META-INF/maven/plugin-2.1.xml";
 
-        List messages = run( pluginXml, true );
+        List<String> messages = run( pluginXml, true );
 
         assertPresence( messages, "Unpacked Ant build scripts (in Maven build directory).", false );
         assertPresence( messages, "Maven parameter expression evaluator for Ant properties.", false );
@@ -72,7 +71,7 @@ public class AntMojoWrapperTest
     {
         String pluginXml = "META-INF/maven/plugin-2.0.xml";
 
-        List messages = run( pluginXml, false );
+        List<String> messages = run( pluginXml, false );
 
         assertPresence( messages, "Unpacked Ant build scripts (in Maven build directory).", true );
         assertPresence( messages, "Maven parameter expression evaluator for Ant properties.", true );
@@ -85,31 +84,27 @@ public class AntMojoWrapperTest
         assertPresence( messages, "path-is-missing", true );
     }
 
-    private void assertPresence( List messages, String test, boolean shouldBePresent )
+    private void assertPresence( List<String> messages, String test, boolean shouldBePresent )
     {
-        boolean found = false;
-
-        for ( Iterator it = messages.iterator(); it.hasNext(); )
+        for ( String message : messages )
         {
-            String message = (String) it.next();
-            if ( message.indexOf( test ) > -1 )
+            if ( message.contains( test ) )
             {
-                found = true;
-                break;
+                if ( !shouldBePresent )
+                {
+                    fail( "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE." );
+                }
+                return;
             }
         }
 
-        if ( !shouldBePresent && found )
-        {
-            fail( "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE." );
-        }
-        else if ( shouldBePresent && !found )
+        if ( shouldBePresent )
         {
             fail( "Test string: '" + test + "' was NOT found in output, but SHOULD BE THERE." );
         }
     }
 
-    private List run( String pluginXml, boolean includeImplied )
+    private List<String> run( String pluginXml, boolean includeImplied )
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
         ComponentConfigurationException, ArchiverException
     {
@@ -135,7 +130,7 @@ public class AntMojoWrapperTest
             IOUtil.close( reader );
         }
 
-        Map config = new HashMap();
+        Map<String, Object> config = new HashMap<String, Object>();
         config.put( "basedir", new File( "." ).getAbsoluteFile() );
         config.put( "messageLevel", "info" );
 
@@ -238,7 +233,7 @@ public class AntMojoWrapperTest
             pathTranslatorCtl.verify();
         }
 
-        List messages = new ArrayList();
+        List<String> messages = new ArrayList<String>();
         if ( !tbl.messages.isEmpty() )
         {
             messages.addAll( tbl.messages );
@@ -252,7 +247,7 @@ public class AntMojoWrapperTest
     private static final class TestBuildListener
         implements BuildListener
     {
-        private List messages = new ArrayList();
+        private List<String> messages = new ArrayList<String>();
 
         public void buildFinished( BuildEvent arg0 )
         {
