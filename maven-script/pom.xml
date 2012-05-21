@@ -29,7 +29,8 @@ under the License.
   <artifactId>maven-script</artifactId>
   <packaging>pom</packaging>
 
-  <name>Maven Script Support Root</name>
+  <name>Maven Script Mojo Support</name>
+  <description>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</description>
 
   <modules>
     <module>maven-script-ant</module>
