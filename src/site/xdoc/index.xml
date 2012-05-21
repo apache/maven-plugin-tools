@@ -36,23 +36,28 @@
       <p>The Maven Plugin Tools contains the necessary tools to play with Maven Plugins.</p>
 
       <p>
-        <img src="images/plugin-tools-deps.png" width="708" height="384" border="0" usemap="#PluginTools_dependencies" />
+        <img src="images/plugin-tools-deps.png" width="826" height="491" border="0" usemap="#PluginTools_dependencies" />
         <map name="PluginTools_dependencies">
-          <area shape="rect" coords="238,0,436,32"    alt="maven-plugin-plugin"      href="/plugins/maven-plugin-plugin/" />
-          <area shape="rect" coords="25,86,191,119"   alt="plugin-tools-api"         href="./maven-plugin-tools-api"/>
-          <area shape="rect" coords="52,139,215,172"  alt="plugin-tools-java"        href="./maven-plugin-tools-java"/>
-          <area shape="rect" coords="234,140,428,172" alt="plugin-tools-javadoc"     href="./maven-plugin-tools-javadoc"/>
-          <area shape="rect" coords="53,193,273,225"  alt="plugin-tools-annotations" href="./maven-plugin-tools-annotations"/>
-          <area shape="rect" coords="291,193,462,225" alt="plugin-annotations"       href="./maven-plugin-annotations"/>
-          <area shape="rect" coords="53,245,273,277"  alt="plugin-tools-beanshell"   href="./maven-plugin-tools-beanshell"/>
-          <area shape="rect" coords="53,299,209,331"  alt="plugin-tools-ant"         href="./maven-plugin-tools-ant"/>
-          <area shape="rect" coords="38,352,224,383"  alt="plugin-tools-model"       href="./maven-plugin-tools-model"/>
-          <area shape="rect" coords="460,86,689,119"  alt="plugin-tools-generators"  href="./maven-plugin-tools-generators"/>
-          <area shape="rect" coords="487,26,663,58"   alt="maven-plugin-api"         href="/ref/current/maven-plugin-api/"/>
-          <area shape="rect" coords="442,139,508,172" alt="qdox"                     href="http://qdox.codehaus.org/"/>
-          <area shape="rect" coords="476,192,542,225" alt="asm"                      href="http://asm.ow2.org/"/>
-          <area shape="rect" coords="562,121,707,153" alt="Doxia"                    href="/doxia/"/>
-          <area shape="rect" coords="562,154,707,186" alt="plexus-velocity"          href="http://plexus.codehaus.org/plexus-components/plexus-velocity/"/>
+          <area shape="rect" coords="279,0,508,38"    alt="maven-plugin-plugin"      href="/plugins/maven-plugin-plugin/" />
+          <area shape="rect" coords="31,101,223,138"  alt="plugin-tools-api"         href="./maven-plugin-tools-api"/>
+          <area shape="rect" coords="62,163,251,200"  alt="plugin-tools-java"        href="./maven-plugin-tools-java"/>
+          <area shape="rect" coords="312,163,539,200" alt="plugin-tools-javadoc"     href="./maven-plugin-tools-javadoc"/>
+          <area shape="rect" coords="61,225,319,262"  alt="plugin-tools-annotations" href="./maven-plugin-tools-annotations"/>
+          <area shape="rect" coords="339,225,539,262" alt="plugin-annotations"       href="./maven-plugin-annotations"/>
+          <area shape="rect" coords="61,286,320,324"  alt="plugin-tools-beanshell"   href="./maven-plugin-tools-beanshell"/>
+          <area shape="rect" coords="348,286,605,324" alt="maven-script-beanshell"   href="./maven-script/maven-script-beanshell"/>
+          <area shape="rect" coords="61,348,244,386"  alt="plugin-tools-ant"         href="./maven-plugin-tools-ant"/>
+          <area shape="rect" coords="423,348,605,386" alt="maven-script-ant"         href="./maven-script/maven-script-ant"/>
+          <area shape="rect" coords="339,277,623,421" alt="maven-script"             href="./maven-script"/>
+          <area shape="rect" coords="43,410,261,447"  alt="plugin-tools-model"       href="./maven-plugin-tools-model"/>
+          <area shape="rect" coords="538,101,804,139" alt="plugin-tools-generators"  href="./maven-plugin-tools-generators"/>
+          <area shape="rect" coords="380,454,584,490" alt="maven-plugin-api"         href="/ref/current/maven-plugin-api/"/>
+          <area shape="rect" coords="556,163,633,200" alt="qdox"                     href="http://qdox.codehaus.org/"/>
+          <area shape="rect" coords="555,225,634,262" alt="asm"                      href="http://asm.ow2.org/"/>
+          <area shape="rect" coords="657,142,825,178" alt="Doxia"                    href="/doxia/"/>
+          <area shape="rect" coords="657,181,825,218" alt="plexus-velocity"          href="http://plexus.codehaus.org/plexus-components/plexus-velocity/"/>
+          <area shape="rect" coords="652,287,777,324" alt="beanshell"                href="http://www.beanshell.org/"/>
+          <area shape="rect" coords="651,348,730,386" alt="ant"                      href="http://ant.apache.maven/"/>
         </map>
       </p>
 
