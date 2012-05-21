@@ -409,7 +409,7 @@ public class PluginXdocGenerator
         @SuppressWarnings( "unchecked" )
         List<Parameter> parameterList = mojoDescriptor.getParameters();
 
-        //remove components and read-only parameters
+        // remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );
 
         if ( list != null && list.size() > 0 )
@@ -432,6 +432,8 @@ public class PluginXdocGenerator
     }
 
     /**
+     * Filter parameters to only retain those which must be documented, ie not components nor readonly.
+     *
      * @param parameterList not null
      * @return the parameters list without components.
      */
