@@ -66,6 +66,7 @@
     <it.debug>true</it.debug>
     <siteDeployUrlPlugin>scp://people.apache.org/www/maven.apache.org/plugins/maven-plugin-plugin/</siteDeployUrlPlugin>
     <siteUrlPlugin>http://maven.apache.org/plugins/maven-plugin-plugin/</siteUrlPlugin>
+    <antVersion>1.7.1</antVersion>
   </properties>
 
   <!-- Copy from project up -->
@@ -382,6 +383,7 @@
                 <debug>${it.debug}</debug>
                 <filterProperties>
                   <sitePluginVersion>3.0</sitePluginVersion>
+                  <antVersion>${antVersion}</antVersion>
                 </filterProperties>
                 <goals>
                   <goal>verify</goal>

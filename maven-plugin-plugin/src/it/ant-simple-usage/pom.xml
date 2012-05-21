@@ -33,9 +33,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>ant</groupId>
+        <groupId>org.apache.ant</groupId>
         <artifactId>ant</artifactId>
-        <version>1.6.5</version>
+        <version>@antVersion@</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

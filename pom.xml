@@ -161,6 +161,7 @@
     <siteDeployUrl>scp://people.apache.org/www/maven.apache.org/plugin-tools/</siteDeployUrl>
     <siteUrl>http://maven.apache.org/plugin-tools/</siteUrl>
     <mavenVersion>2.2.1</mavenVersion>
+    <antVersion>1.7.1</antVersion>
   </properties>
 
   <dependencyManagement>

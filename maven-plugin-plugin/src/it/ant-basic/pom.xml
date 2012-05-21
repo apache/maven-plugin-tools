@@ -31,14 +31,14 @@
   <description>Tests the simplest case of using an Ant script to drive a mojo.</description>
 
   <properties>
-    <pluginPluginVersion>@project.version@</pluginPluginVersion><!--  -->
+    <pluginPluginVersion>@project.version@</pluginPluginVersion>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>ant</groupId>
+      <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.6.5</version>
+      <version>@antVersion@</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
