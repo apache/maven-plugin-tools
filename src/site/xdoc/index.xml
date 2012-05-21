@@ -103,6 +103,18 @@
           <td><a href="./maven-plugin-tools-model/index.html">maven-plugin-tools-model</a></td>
           <td>API to play with the Maven Plugin Metadata Model for script-based plugins.</td>
         </tr>      
+        <tr>
+          <td><a href="./maven-script/index.html">maven-script</a></td>
+          <td>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</td>
+        </tr>      
+        <tr>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-beanshell/index.html">maven-script-beanshell</a></td>
+          <td>Maven Beanshell Mojo Support, ie write Maven plugins with Beanshell scripts.</td>
+        </tr>      
+        <tr>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
+          <td>Maven Ant Mojo Support, ie write Maven plugins with Ant script.</td>
+        </tr>      
       </table>
     </section>
 
