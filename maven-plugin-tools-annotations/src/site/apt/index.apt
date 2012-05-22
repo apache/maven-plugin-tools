@@ -85,7 +85,7 @@ public class MyMojo
      * @deprecated <deprecated-text>
      */
     @Component( role = MyComponentExtension.class,
-                roleHint = "..." )
+                hint = "..." )
     private MyComponent component;
 
     public void execute()
