@@ -45,17 +45,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Mojo Description. @Mojo( name = "<goalName>" ) is the minimal required annotation.
+ * Mojo Description. @Mojo( name = "<goal-name>" ) is the minimal required annotation.
  * @since <since-text>
  * @deprecated <deprecated-text>
  */
-@Mojo( name = "<goalName>",
+@Mojo( name = "<goal-name>",
        aggregator = <false|true>, 
-       configurator = "<roleHint>",
+       configurator = "<role hint>",
        executionStrategy = "<once-per-session|always>",
        inheritByDefault = <true|false>,
        instantiationStrategy = InstanciationStrategy.<strategy>,
-       defaultPhase = "<phaseName>",
+       defaultPhase = "<phase-name>",
        requiresDependencyResolution = ResolutionScope.<scope>,
        requiresDependencyCollection = ResolutionScope.<scope>, // (since Maven 3.0)
        requiresDirectInvocation = <false|true>,
@@ -63,9 +63,9 @@ import org.apache.maven.plugins.annotations.Parameter;
        requiresProject = <true|false>,
        requiresReports = <false|true>, // (unsupported since Maven 3.0)
        threadSafe = <false|true> ) // (since Maven 3.0)
-@Execute( goal = "<goalName>",
+@Execute( goal = "<goal-name>",
           phase = LifecyclePhase.<phase>
-          lifecycle = "<lifecycleId>" )
+          lifecycle = "<lifecycle-id>" )
 public class MyMojo
     extends AbstractMojo
 {
@@ -74,8 +74,8 @@ public class MyMojo
      * @deprecated <deprecated-text>
      */
     @Parameter( alias = "myAlias",
-                property = "aProperty",
-                defaultValue = "${anExpression}",
+                property = "a.property",
+                defaultValue = "an expression with ${variables} eventually",
                 readonly = <false|true>
                 required = <false|true> )
     private String parameter;
@@ -84,8 +84,8 @@ public class MyMojo
      * @since <since-text>
      * @deprecated <deprecated-text>
      */
-    @Component( role = "...",
-                roleHint="..." )
+    @Component( role = MyComponentExtension.class,
+                roleHint = "..." )
     private MyComponent component;
 
     public void execute()
