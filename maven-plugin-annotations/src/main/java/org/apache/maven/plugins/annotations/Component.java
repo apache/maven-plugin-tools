@@ -45,8 +45,8 @@ public @interface Component
     Class<?> role() default Object.class;
 
     /**
-     * role-hint of the component to inject.
-     * @return the role-hint
+     * hint of the component to inject.
+     * @return the hint
      */
-    String roleHint() default "";
+    String hint() default "";
 }

@@ -33,18 +33,18 @@ public class ComponentAnnotationContent
 {
     private String roleClassName;
 
-    private String roleHint;
+    private String hint;
 
     public ComponentAnnotationContent( String fieldName )
     {
         super( fieldName );
     }
 
-    public ComponentAnnotationContent( String fieldName, String role, String roleHint )
+    public ComponentAnnotationContent( String fieldName, String role, String hint )
     {
         this( fieldName );
         this.roleClassName = role;
-        this.roleHint = roleHint;
+        this.hint = hint;
     }
 
     public Class<?> role()
@@ -63,14 +63,14 @@ public class ComponentAnnotationContent
         return roleClassName;
     }
 
-    public String roleHint()
+    public String hint()
     {
-        return roleHint == null ? "" : roleHint;
+        return hint == null ? "" : hint;
     }
 
-    public void roleHint( String roleHint )
+    public void hint( String hint )
     {
-        this.roleHint = roleHint;
+        this.hint = hint;
     }
 
     public Class<? extends Annotation> annotationType()
@@ -85,7 +85,7 @@ public class ComponentAnnotationContent
         sb.append( super.toString() );
         sb.append( "ComponentAnnotationContent" );
         sb.append( "{role='" ).append( roleClassName ).append( '\'' );
-        sb.append( ", roleHint='" ).append( roleHint ).append( '\'' );
+        sb.append( ", hint='" ).append( hint ).append( '\'' );
         sb.append( '}' );
         return sb.toString();
     }

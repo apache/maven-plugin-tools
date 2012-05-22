@@ -546,7 +546,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                     new org.apache.maven.plugin.descriptor.Parameter();
                 parameter.setName( componentAnnotationContent.getFieldName() );
                 parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
-                                                           componentAnnotationContent.roleHint() ) );
+                                                           componentAnnotationContent.hint() ) );
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
 
