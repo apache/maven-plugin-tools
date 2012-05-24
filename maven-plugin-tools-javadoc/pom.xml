@@ -46,12 +46,26 @@
 
   <profiles>
     <profile>
-      <id>default-tools.jar</id>
+      <id>mac</id>
       <activation>
-        <property>
-          <name>java.vendor</name>
-          <value>Sun Microsystems Inc.</value>
-        </property>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../Classes/classes.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <dependencies>
         <dependency>
@@ -63,6 +77,7 @@
         </dependency>
       </dependencies>
     </profile>
+
     <profile>
       <id>run-its</id>
       <build>
