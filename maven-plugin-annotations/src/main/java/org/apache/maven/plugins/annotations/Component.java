@@ -27,7 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to configure injection of Plexus components.
+ * Used to configure injection of Plexus components by
+ * <a href="/ref/3.0.4/maven-core/apidocs/org/apache/maven/plugin/MavenPluginManager.html">
+ * <code>MavenPluginManager.getConfiguredMojo(...)</code></a>.
  *
  * @author Olivier Lamy
  * @since 3.0
