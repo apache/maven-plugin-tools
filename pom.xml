@@ -162,6 +162,7 @@
     <siteUrl>http://maven.apache.org/plugin-tools/</siteUrl>
     <mavenVersion>2.2.1</mavenVersion>
     <antVersion>1.7.1</antVersion>
+    <mavenInvokerPluginVersion>1.6</mavenInvokerPluginVersion>
   </properties>
 
   <dependencyManagement>

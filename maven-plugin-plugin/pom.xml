@@ -58,7 +58,6 @@
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
     <it.debug>true</it.debug>
     <mavenPluginPluginVersion>2.9</mavenPluginPluginVersion>
-    <mavenInvokerPluginVersion>1.6</mavenInvokerPluginVersion>
   </properties>
 
   <dependencies>
