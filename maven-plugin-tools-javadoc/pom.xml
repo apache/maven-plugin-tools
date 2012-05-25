@@ -45,7 +45,8 @@
   </dependencies>
 
   <profiles>
-    <profile>
+    <!-- olamy: this profile fail on osx so desactivate it -->
+    <!--profile>
       <id>mac</id>
       <activation>
         <os>
@@ -61,7 +62,7 @@
           <systemPath>${java.home}/../Classes/classes.jar</systemPath>
         </dependency>
       </dependencies>
-    </profile>
+    </profile-->
     <profile>
       <id>default</id>
       <activation>
