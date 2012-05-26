@@ -146,14 +146,8 @@ public class PluginDescriptorGenerator
             w.startElement( "plugin" );
 
             GeneratorUtils.element( w, "name", pluginDescriptor.getName() );
-            if ( helpDescriptor )
-            {
-                GeneratorUtils.element( w, "description", GeneratorUtils.toText( pluginDescriptor.getDescription() ) );
-            }
-            else
-            {
-                GeneratorUtils.element( w, "description", pluginDescriptor.getDescription() );
-            }
+
+            GeneratorUtils.element( w, "description", pluginDescriptor.getDescription(), helpDescriptor );
 
             GeneratorUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
 
@@ -475,17 +469,11 @@ public class PluginDescriptorGenerator
                     GeneratorUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
 
                     GeneratorUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
-                    if ( helpDescriptor )
-                    {
-                        GeneratorUtils.element( w, "description", GeneratorUtils.toText( parameter.getDescription() ) );
-                    }
-                    else
-                    {
-                        GeneratorUtils.element( w, "description", parameter.getDescription() );
-                    }
 
-                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) || StringUtils.isNotEmpty(
-                        parameter.getExpression() ) )
+                    GeneratorUtils.element( w, "description", parameter.getDescription(), helpDescriptor );
+
+                    if ( StringUtils.isNotEmpty( parameter.getDefaultValue() )
+                        || StringUtils.isNotEmpty( parameter.getExpression() ) )
                     {
                         configuration.add( parameter );
                     }

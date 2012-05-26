@@ -113,6 +113,11 @@ public final class GeneratorUtils
         w.endElement();
     }
 
+    public static void element( XMLWriter w, String name, String value, boolean asText )
+    {
+        element( w, name, asText ? GeneratorUtils.toText( value ) : value );
+    }
+    
     /**
      * @param dependencies not null list of <code>Dependency</code>
      * @return list of component dependencies
