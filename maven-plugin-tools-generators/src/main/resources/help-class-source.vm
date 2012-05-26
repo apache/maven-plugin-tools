@@ -152,54 +152,69 @@ public class HelpMojo
 
         if ( goal == null || goal.length() <= 0 )
         {
-
             append( sb, "This plugin has " + mojos.length + " goals:", 0 );
             append( sb, "", 0 );
         }
 
         for ( Xpp3Dom mojo : mojos )
         {
-            String mojoGoal = mojo.getChild( "goal" ).getValue();
-            Xpp3Dom configurationElement = mojo.getChild( "configuration" );
-            if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
-            {
-                append( sb, goalPrefix + ":" + mojoGoal, 0 );
-                append( sb, mojo.getChild( "description" ).getValue(), 1 );
-                append( sb, "", 0 );
-                if ( detail )
-                {
-                    Xpp3Dom[] parameters = mojo.getChild( "parameters" ).getChildren( "parameter" );
-                    append( sb, "Available parameters:", 1 );
-                    append( sb, "", 0 );
-
-                    append( sb, "goalPrefix", 2 );
-                    append( sb, "The prefix for the plugin goal.", 3 );
-                    append( sb, "", 0 );
-
-                    for ( Xpp3Dom parameter : parameters )
-                    {
-                        String name = parameter.getChild( "name" ).getValue();
-                        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name );
-                        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
-                        {
-                            append( sb, name + " (default: " + configurationElement.getChild( name ).getAttribute( "default-value" ) + ")", 2 );
-                        }
-
-                        append( sb, parameter.getChild( "description" ).getValue(), 3 );
-                        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
-                        {
-                            append( sb, fieldConfigurationElement.getValue(), 3 );
-                        }
-                        append( sb, "", 0 );
-                    }
-                }
-            }
+            writeGoal( sb, goalPrefix, mojo );
         }
 
         if ( getLog().isInfoEnabled() )
         {
             getLog().info( sb.toString() );
         }
+    }
+
+    private void writeGoal( StringBuilder sb, String goalPrefix, Xpp3Dom mojo )
+    {
+        String mojoGoal = mojo.getChild( "goal" ).getValue();
+        Xpp3Dom configurationElement = mojo.getChild( "configuration" );
+
+        if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
+        {
+            append( sb, goalPrefix + ":" + mojoGoal, 0 );
+            append( sb, mojo.getChild( "description" ).getValue(), 1 );
+            append( sb, "", 0 );
+
+            if ( detail )
+            {
+                Xpp3Dom[] parameters = mojo.getChild( "parameters" ).getChildren( "parameter" );
+                append( sb, "Available parameters:", 1 );
+                append( sb, "", 0 );
+
+                append( sb, "goalPrefix", 2 );
+                append( sb, "The prefix for the plugin goal.", 3 );
+                append( sb, "", 0 );
+
+                for ( Xpp3Dom parameter : parameters )
+                {
+                    writeParameter( sb, parameter, configurationElement );
+                }
+            }
+        }
+    }
+
+    private void writeParameter( StringBuilder sb, Xpp3Dom parameter, Xpp3Dom configurationElement )
+    {
+        String name = parameter.getChild( "name" ).getValue();
+
+        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name );
+
+        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
+        {
+            append( sb, name + " (default: " + configurationElement.getChild( name ).getAttribute( "default-value" ) + ")", 2 );
+        }
+
+        append( sb, parameter.getChild( "description" ).getValue(), 3 );
+
+        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
+        {
+            append( sb, fieldConfigurationElement.getValue(), 3 );
+        }
+
+        append( sb, "", 0 );
     }
 
     /**
