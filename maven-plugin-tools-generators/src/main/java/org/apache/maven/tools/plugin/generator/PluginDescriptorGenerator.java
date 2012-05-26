@@ -101,10 +101,10 @@ public class PluginDescriptorGenerator
 
             // write plugin-description.xml help-descriptor
             MavenProject mavenProject = request.getProject();
-            String pluginDescriptionFilePath =
+            String pluginHelpFilePath =
                 "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId()
-                    + "/plugin-description.xml";
-            f = new File( request.getProject().getBuild().getOutputDirectory(), pluginDescriptionFilePath );
+                    + "/plugin-help.xml";
+            f = new File( request.getProject().getBuild().getOutputDirectory(), pluginHelpFilePath );
             writeDescriptor( f, request, true );
         }
         catch ( IOException e )

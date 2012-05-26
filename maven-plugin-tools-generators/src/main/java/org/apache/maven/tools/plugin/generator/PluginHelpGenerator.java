@@ -201,7 +201,7 @@ public class PluginHelpGenerator
         {
             properties.put( "helpPackageName", "" );
         }
-        properties.put( "pluginDescriptionPath", propertiesFilePath + "/plugin-description.xml" );
+        properties.put( "pluginHelpPath", propertiesFilePath + "/plugin-help.xml" );
         // FIXME encoding !
 
         StringWriter stringWriter = new StringWriter();
