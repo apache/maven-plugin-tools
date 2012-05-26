@@ -84,14 +84,14 @@ public class HelpMojo
     private int indentSize;
 
     // groupId/artifactId/plugin-help.xml
-    private String pluginHelpPath = "/${pluginHelpPath}";
+    private static final String PLUGIN_HELP_PATH = "/${pluginHelpPath}";
 
     private Xpp3Dom build()
         throws MojoExecutionException
     {
         // olamy more than one pluginDescriptor in the classloader possible ?
-        getLog().debug( "load plugin-help.xml: " + pluginHelpPath );
-        InputStream is = getClass().getResourceAsStream( pluginHelpPath );
+        getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
+        InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH );
         try
         {
             return Xpp3DomBuilder.build( ReaderFactory.newXmlReader( is ) );
