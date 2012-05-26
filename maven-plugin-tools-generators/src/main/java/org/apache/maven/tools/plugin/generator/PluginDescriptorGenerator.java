@@ -157,9 +157,12 @@ public class PluginDescriptorGenerator
 
             GeneratorUtils.element( w, "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
-            GeneratorUtils.element( w, "isolatedRealm", String.valueOf( pluginDescriptor.isIsolatedRealm() ) );
+            if ( !helpDescriptor )
+            {
+                GeneratorUtils.element( w, "isolatedRealm", String.valueOf( pluginDescriptor.isIsolatedRealm() ) );
 
-            GeneratorUtils.element( w, "inheritedByDefault", String.valueOf( pluginDescriptor.isInheritedByDefault() ) );
+                GeneratorUtils.element( w, "inheritedByDefault", String.valueOf( pluginDescriptor.isInheritedByDefault() ) );
+            }
 
             w.startElement( "mojos" );
 
@@ -174,7 +177,10 @@ public class PluginDescriptorGenerator
 
             w.endElement();
 
-            GeneratorUtils.writeDependencies( w, pluginDescriptor );
+            if ( !helpDescriptor )
+            {
+                GeneratorUtils.writeDependencies( w, pluginDescriptor );
+            }
 
             w.endElement();
 
@@ -434,7 +440,7 @@ public class PluginDescriptorGenerator
                 {
                     requirements.put( parameter.getName(), parameter.getRequirement() );
                 }
-                else
+                else if ( !helpDescriptor || parameter.isEditable() ) // don't show readonly parameters in help
                 {
                     // treat it as a normal parameter.
 
@@ -496,6 +502,12 @@ public class PluginDescriptorGenerator
 
             for ( Parameter parameter : configuration )
             {
+                if ( helpDescriptor && !parameter.isEditable() )
+                {
+                    // don't show readonly parameters in help
+                    continue;
+                }
+
                 w.startElement( parameter.getName() );
 
                 String type = parameter.getType();
@@ -524,7 +536,7 @@ public class PluginDescriptorGenerator
         // Requirements
         // ----------------------------------------------------------------------
 
-        if ( !requirements.isEmpty() )
+        if ( !requirements.isEmpty() && !helpDescriptor )
         {
             w.startElement( "requirements" );
 
