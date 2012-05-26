@@ -182,7 +182,7 @@ public class HelpMojo
                         Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name.getValue() );
                         if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
                         {
-                            append( sb, name.getValue() + "(Default: " + configurationElement.getChild(
+                            append( sb, name.getValue() + " (default: " + configurationElement.getChild(
                                 name.getValue() ).getAttribute( "default-value" ) + ")", 2 );
                         }
 
