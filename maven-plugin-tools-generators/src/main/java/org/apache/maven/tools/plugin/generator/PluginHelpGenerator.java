@@ -141,7 +141,9 @@ public class PluginHelpGenerator
         catch ( IOException e )
         {
             throw new GeneratorException( e.getMessage(), e );
-        } finally {
+        }
+        finally
+        {
             IOUtil.close( fos );
         }
 
