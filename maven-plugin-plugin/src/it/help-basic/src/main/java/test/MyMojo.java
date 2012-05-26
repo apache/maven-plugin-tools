@@ -37,6 +37,14 @@ public class MyMojo
      */
     private String undocumentedParam;
 
+    /**
+     * Readonly parameter: should not be proposed for configuration.
+     *
+     * @parameter default-value="not for configuration"
+     * @readonly
+     */
+    private String readonly;
+
     public void execute()
     {
     }
