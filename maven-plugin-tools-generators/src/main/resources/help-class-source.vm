@@ -178,12 +178,11 @@ public class HelpMojo
 
                     for ( Xpp3Dom parameter : parameters )
                     {
-                        Xpp3Dom name = parameter.getChild( "name" );
-                        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name.getValue() );
+                        String name = parameter.getChild( "name" ).getValue();
+                        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name );
                         if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
                         {
-                            append( sb, name.getValue() + " (default: " + configurationElement.getChild(
-                                name.getValue() ).getAttribute( "default-value" ) + ")", 2 );
+                            append( sb, name + " (default: " + configurationElement.getChild( name ).getAttribute( "default-value" ) + ")", 2 );
                         }
 
                         append( sb, parameter.getChild( "description" ).getValue(), 3 );
@@ -234,9 +233,9 @@ public class HelpMojo
      */
     private void append( StringBuilder sb, String description, int indent )
     {
-        for ( Iterator it = toLines( description, indent, indentSize, lineLength ).iterator(); it.hasNext(); )
+        for ( String line : toLines( description, indent, indentSize, lineLength ) )
         {
-            sb.append( it.next().toString() ).append( '\n' );
+            sb.append( line ).append( '\n' );
         }
     }
 
@@ -250,15 +249,17 @@ public class HelpMojo
      * @return The sequence of display lines, never <code>null</code>.
      * @throws NegativeArraySizeException if <code>indent < 0</code>
      */
-    private static List toLines( String text, int indent, int indentSize, int lineLength )
+    private static List<String> toLines( String text, int indent, int indentSize, int lineLength )
     {
         List<String> lines = new ArrayList<String>();
 
         String ind = repeat( "\t", indent );
+
         String[] plainLines = text.split( "(\r\n)|(\r)|(\n)" );
-        for ( int i = 0; i < plainLines.length; i++ )
+
+        for ( String plainLine : plainLines )
         {
-            toLines( lines, ind + plainLines[i], indentSize, lineLength );
+            toLines( lines, ind + plainLine, indentSize, lineLength );
         }
 
         return lines;
@@ -276,11 +277,12 @@ public class HelpMojo
     {
         int lineIndent = getIndentLevel( line );
         StringBuilder buf = new StringBuilder( 256 );
+
         String[] tokens = line.split( " +" );
-        for ( int i = 0; i < tokens.length; i++ )
+
+        for ( String token : tokens )
         {
-            String token = tokens[i];
-            if ( i > 0 )
+            if ( buf.length() > 0 )
             {
                 if ( buf.length() + token.length() >= lineLength )
                 {
@@ -293,6 +295,7 @@ public class HelpMojo
                     buf.append( ' ' );
                 }
             }
+
             for ( int j = 0; j < token.length(); j++ )
             {
                 char c = token.charAt( j );
@@ -336,6 +339,4 @@ public class HelpMojo
         }
         return level;
     }
-
-
 }
