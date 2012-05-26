@@ -28,6 +28,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.PropertyUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -51,7 +52,8 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a>.
+ * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a> and
+ * corresponding help content.
  *
  * @version $Id$
  * @todo add example usage tag that can be shown in the doco
@@ -74,22 +76,10 @@ public class PluginDescriptorGenerator
 
         if ( tmpPropertiesFile.exists() )
         {
-            Properties properties = new Properties();
-            FileInputStream fis = null;
-            try
-            {
-                fis = new FileInputStream( tmpPropertiesFile );
-                properties.load( fis );
-            }
-            catch ( IOException e )
-            {
-                throw new GeneratorException( e.getMessage(), e );
-            }
-            finally
-            {
-                IOUtil.close( fis );
-            }
+            Properties properties = PropertyUtils.loadProperties( tmpPropertiesFile );
+
             String helpPackageName = properties.getProperty( "helpPackageName" );
+
             // if helpPackageName property is empty we have to rewrite the class with a better package name than empty
             if ( StringUtils.isEmpty( helpPackageName ) )
             {
@@ -105,8 +95,11 @@ public class PluginDescriptorGenerator
 
         try
         {
+            // write complete plugin.xml descriptor
             File f = new File( destinationDirectory, "plugin.xml" );
             writeDescriptor( f, request, false );
+
+            // write plugin-description.xml help-descriptor
             MavenProject mavenProject = request.getProject();
             String pluginDescriptionFilePath =
                 "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId()
@@ -124,7 +117,7 @@ public class PluginDescriptorGenerator
         }
     }
 
-    public void writeDescriptor( File destinationFile, PluginToolsRequest request, boolean cleanDescription )
+    public void writeDescriptor( File destinationFile, PluginToolsRequest request, boolean helpDescriptor )
         throws IOException, DuplicateMojoDescriptorException
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
@@ -153,7 +146,7 @@ public class PluginDescriptorGenerator
             w.startElement( "plugin" );
 
             GeneratorUtils.element( w, "name", pluginDescriptor.getName() );
-            if ( cleanDescription )
+            if ( helpDescriptor )
             {
                 GeneratorUtils.element( w, "description", GeneratorUtils.toText( pluginDescriptor.getDescription() ) );
             }
@@ -181,7 +174,7 @@ public class PluginDescriptorGenerator
                 @SuppressWarnings( "unchecked" ) List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
                 for ( MojoDescriptor descriptor : descriptors )
                 {
-                    processMojoDescriptor( descriptor, w, cleanDescription );
+                    processMojoDescriptor( descriptor, w, helpDescriptor );
                 }
             }
 
@@ -208,9 +201,9 @@ public class PluginDescriptorGenerator
     /**
      * @param mojoDescriptor   not null
      * @param w                not null
-     * @param cleanDescription will clean html content from description fields
+     * @param helpDescriptor will clean html content from description fields
      */
-    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, boolean cleanDescription )
+    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, boolean helpDescriptor )
     {
         w.startElement( "mojo" );
 
@@ -231,7 +224,7 @@ public class PluginDescriptorGenerator
         if ( description != null )
         {
             w.startElement( "description" );
-            if ( cleanDescription )
+            if ( helpDescriptor )
             {
                 w.writeText( GeneratorUtils.toText( mojoDescriptor.getDescription() ) );
             }
@@ -482,7 +475,7 @@ public class PluginDescriptorGenerator
                     GeneratorUtils.element( w, "required", Boolean.toString( parameter.isRequired() ) );
 
                     GeneratorUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
-                    if ( cleanDescription )
+                    if ( helpDescriptor )
                     {
                         GeneratorUtils.element( w, "description", GeneratorUtils.toText( parameter.getDescription() ) );
                     }
