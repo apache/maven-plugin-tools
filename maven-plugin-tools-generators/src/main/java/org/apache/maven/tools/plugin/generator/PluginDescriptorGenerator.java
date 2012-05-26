@@ -27,6 +27,7 @@ import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.PropertyUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -169,6 +170,12 @@ public class PluginDescriptorGenerator
             if ( pluginDescriptor.getMojos() != null )
             {
                 @SuppressWarnings( "unchecked" ) List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
+
+                if ( helpDescriptor )
+                {
+                    PluginUtils.sortMojos( descriptors );
+                }
+
                 for ( MojoDescriptor descriptor : descriptors )
                 {
                     processMojoDescriptor( descriptor, w, helpDescriptor );
@@ -412,6 +419,11 @@ public class PluginDescriptorGenerator
 
         if ( parameters != null )
         {
+            if ( helpDescriptor )
+            {
+                PluginUtils.sortMojoParameters( parameters );
+            }
+
             for ( Parameter parameter : parameters )
             {
                 String expression = getExpression( parameter );
