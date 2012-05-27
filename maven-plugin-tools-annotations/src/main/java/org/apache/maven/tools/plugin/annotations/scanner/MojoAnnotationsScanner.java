@@ -37,11 +37,9 @@ public interface MojoAnnotationsScanner
 {
     String ROLE = MojoAnnotationsScanner.class.getName();
 
-    static final List<String> CLASS_LEVEL_ANNOTATIONS =
-        Arrays.asList( Mojo.class.getName(), Execute.class.getName() );
+    final List<String> CLASS_LEVEL_ANNOTATIONS = Arrays.asList( Mojo.class.getName(), Execute.class.getName() );
 
-    static final List<String> FIELD_LEVEL_ANNOTATIONS =
-        Arrays.asList( Parameter.class.getName(), Component.class.getName() );
+    final List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(), Component.class.getName() );
 
     Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException;
