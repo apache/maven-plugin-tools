@@ -37,13 +37,6 @@
   <url>http://maven.apache.org/plugin-tools/</url>
   <inceptionYear>2004</inceptionYear>
 
-  <contributors>
-    <contributor>
-      <name>Robert Scholte</name>
-      <timezone>+1</timezone>
-    </contributor>
-  </contributors>
-
   <mailingLists>
     <mailingList>
       <name>Maven User List</name>
