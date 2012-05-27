@@ -278,7 +278,7 @@ public class JavaMojoDescriptorExtractor
         {
             getLogger().warn( "@" + JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in "
                                   + javaClass.getFullyQualifiedName() + " is deprecated: please use '@"
-                                  + JavaMojoAnnotation.EXECUTION_STATEGY + " always' instead.");
+                                  + JavaMojoAnnotation.EXECUTION_STATEGY + " always' instead." );
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
         }
         else

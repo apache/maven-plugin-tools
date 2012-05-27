@@ -22,7 +22,6 @@ package org.apache.maven.tools.plugin.generator;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Generate something, for instance a plugin report, from a plugin descriptor.

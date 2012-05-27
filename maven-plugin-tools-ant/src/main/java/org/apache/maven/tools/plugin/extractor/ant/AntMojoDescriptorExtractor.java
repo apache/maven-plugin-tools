@@ -46,7 +46,7 @@ import org.codehaus.plexus.util.StringUtils;
  *
  * @version $Id$
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "ant")
+@Component( role = MojoDescriptorExtractor.class, hint = "ant" )
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor
@@ -59,7 +59,7 @@ public class AntMojoDescriptorExtractor
     
     /** {@inheritDoc} */
     protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesKeyedByBasedir,
-                                                       PluginToolsRequest request )
+                                                                       PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
