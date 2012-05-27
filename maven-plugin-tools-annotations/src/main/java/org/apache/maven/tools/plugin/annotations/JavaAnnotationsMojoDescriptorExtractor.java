@@ -47,6 +47,7 @@ import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
@@ -545,8 +546,19 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
                 parameter.setName( componentAnnotationContent.getFieldName() );
-                parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
-                                                           componentAnnotationContent.hint() ) );
+
+                String expression = PluginUtils.MAVEN_COMPONENTS.get( componentAnnotationContent.getRoleClassName() );
+                if ( expression == null )
+                {
+                    parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
+                                                               componentAnnotationContent.hint() ) );
+                }
+                else
+                {
+                    parameter.setDefaultValue( expression );
+                    parameter.setImplementation( componentAnnotationContent.getRoleClassName() );
+                    parameter.setType( componentAnnotationContent.getRoleClassName() );
+                }
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
 
@@ -562,7 +574,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         return mojoDescriptors;
     }
-
 
     protected ExecuteAnnotationContent findExecuteInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
                                                                      Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )

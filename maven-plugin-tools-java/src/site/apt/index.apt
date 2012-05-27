@@ -35,7 +35,12 @@ Maven Plugin Tool for Java Annotated with Mojo Javadoc Tags
 * Supported Mojo Javadoc Tags
 
 +---------+
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 
 /**
  * Mojo Description: goal is the only required annotation.
@@ -76,6 +81,31 @@ public class MyMojo
      * @deprecated <deprecated-text>
      */
     private Component component;
+
+    /**
+     * @component
+     */
+    private MavenSession session;
+
+    /**
+     * @component
+     */
+    private MavenProject project;
+
+    /**
+     * @component
+     */
+    private MojoExecution mojo;
+
+    /**
+     * @component
+     */
+    private PluginDescriptor plugin;
+
+    /**
+     * @component
+     */
+    private Settings settings;
 
     public void execute()
     {

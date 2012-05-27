@@ -32,37 +32,105 @@ assert mojo.configuration.touchFile[0].text() == '${first.touchFile}'
 assert mojo.configuration.touchFile[0].'@implementation' == 'java.io.File'
 assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.directory}/touch.txt'
 
+assert mojo.configuration.session[0].text() == ''
+assert mojo.configuration.session[0].'@implementation' == 'org.apache.maven.execution.MavenSession'
+assert mojo.configuration.session[0].'@default-value' == '${session}'
+
+assert mojo.configuration.project[0].text() == ''
+assert mojo.configuration.project[0].'@implementation' == 'org.apache.maven.project.MavenProject'
+assert mojo.configuration.project[0].'@default-value' == '${project}'
+
+assert mojo.configuration.mojo[0].text() == ''
+assert mojo.configuration.mojo[0].'@implementation' == 'org.apache.maven.plugin.MojoExecution'
+assert mojo.configuration.mojo[0].'@default-value' == '${mojo}'
+
+assert mojo.configuration.plugin[0].text() == ''
+assert mojo.configuration.plugin[0].'@implementation' == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
+assert mojo.configuration.plugin[0].'@default-value' == '${plugin}'
+
+assert mojo.configuration.settings[0].text() == ''
+assert mojo.configuration.settings[0].'@implementation' == 'org.apache.maven.settings.Settings'
+assert mojo.configuration.settings[0].'@default-value' == '${settings}'
+
 assert mojo.requirements.requirement.size() == 1
 
 assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.project.MavenProjectHelper'
 assert mojo.requirements.requirement[0].'role-hint'.text() == 'test'
 assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
 
-assert mojo.parameters.parameter.size() == 3
+assert mojo.parameters.parameter.size() == 8
 
-assert mojo.parameters.parameter[0].name.text() == 'aliasedParam'
-assert mojo.parameters.parameter[0].alias.text() == 'alias'
-assert mojo.parameters.parameter[0].type.text() == 'java.lang.String'
-assert mojo.parameters.parameter[0].deprecated.text() == 'As of 0.2'
-assert mojo.parameters.parameter[0].required.text() == 'false'
-assert mojo.parameters.parameter[0].editable.text() == 'true'
-assert mojo.parameters.parameter[0].description.text() == ''
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam" }[0]
+assert parameter.name.text() == 'aliasedParam'
+assert parameter.alias.text() == 'alias'
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.deprecated.text() == 'As of 0.2'
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == ''
 
-assert mojo.parameters.parameter[1].name.text() == 'basedir'
-assert mojo.parameters.parameter[1].alias.isEmpty()
-assert mojo.parameters.parameter[1].type.text() == 'java.io.File'
-assert mojo.parameters.parameter[1].deprecated.isEmpty()
-assert mojo.parameters.parameter[1].required.text() == 'false'
-assert mojo.parameters.parameter[1].editable.text() == 'false'
-assert mojo.parameters.parameter[1].description.text() == 'Project directory.'
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir" }[0]
+assert parameter.name.text() == 'basedir'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.io.File'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == 'Project directory.'
 
-assert mojo.parameters.parameter[2].name.text() == 'touchFile'
-assert mojo.parameters.parameter[2].alias.isEmpty()
-assert mojo.parameters.parameter[2].type.text() == 'java.io.File'
-assert mojo.parameters.parameter[2].deprecated.isEmpty()
-assert mojo.parameters.parameter[2].required.text() == 'true'
-assert mojo.parameters.parameter[2].editable.text() == 'true'
-assert mojo.parameters.parameter[2].description.text() == ''
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "mojo" }[0]
+assert parameter.name.text() == 'mojo'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.plugin.MojoExecution'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "plugin" }[0]
+assert parameter.name.text() == 'plugin'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "project" }[0]
+assert parameter.name.text() == 'project'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.project.MavenProject'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "session" }[0]
+assert parameter.name.text() == 'session'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.execution.MavenSession'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "settings" }[0]
+assert parameter.name.text() == 'settings'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.settings.Settings'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == ''
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
+assert parameter.name.text() == 'touchFile'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.io.File'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'true'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == ''
 
 mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
 

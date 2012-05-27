@@ -35,7 +35,10 @@ Maven Plugin Tool for Annotations
 * Supported Annotations
 
 +---------+
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -43,6 +46,8 @@ import org.apache.maven.plugins.annotations.InstanciationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 
 /**
  * Mojo Description. @Mojo( name = "<goal-name>" ) is the minimal required annotation.
@@ -87,6 +92,21 @@ public class MyMojo
     @Component( role = MyComponentExtension.class,
                 hint = "..." )
     private MyComponent component;
+
+    @Component
+    private MavenSession session;
+
+    @Component
+    private MavenProject project;
+
+    @Component
+    private MojoExecution mojo;
+
+    @Component
+    private PluginDescriptor plugin;
+
+    @Component
+    private Settings settings;
 
     public void execute()
     {

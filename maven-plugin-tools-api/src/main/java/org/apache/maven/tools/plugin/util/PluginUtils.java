@@ -21,7 +21,9 @@ package org.apache.maven.tools.plugin.util;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -40,6 +42,23 @@ public final class PluginUtils
     private PluginUtils()
     {
         // nop
+    }
+
+    /**
+     * Expression associated with class types to recognize Maven objects as components.
+     */
+    public static final Map<String, String> MAVEN_COMPONENTS;
+    static
+    {
+        Map<String, String> mavenComponents = new HashMap<String, String>();
+
+        mavenComponents.put( "org.apache.maven.execution.MavenSession", "${session}" );
+        mavenComponents.put( "org.apache.maven.project.MavenProject", "${project}" );
+        mavenComponents.put( "org.apache.maven.plugin.MojoExecution", "${mojo}" );
+        mavenComponents.put( "org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}" );
+        mavenComponents.put( "org.apache.maven.settings.Settings", "${settings}" );
+        
+        MAVEN_COMPONENTS = Collections.unmodifiableMap( mavenComponents );
     }
 
     /**

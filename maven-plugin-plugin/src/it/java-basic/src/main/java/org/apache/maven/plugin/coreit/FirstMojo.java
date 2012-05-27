@@ -19,8 +19,13 @@ package org.apache.maven.plugin.coreit;
  * under the License.
  */
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +68,31 @@ public class FirstMojo
      * @component role="org.apache.maven.project.MavenProjectHelper" roleHint="test"
      */
     private Object projectHelper;
+
+    /**
+     * @component
+     */
+    private MavenSession session;
+
+    /**
+     * @component
+     */
+    private MavenProject project;
+
+    /**
+     * @component
+     */
+    private MojoExecution mojo;
+
+    /**
+     * @component
+     */
+    private PluginDescriptor plugin;
+
+    /**
+     * @component
+     */
+    private Settings settings;
 
     public void execute()
         throws MojoExecutionException

@@ -37,6 +37,7 @@ import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -513,7 +514,18 @@ public class JavaMojoDescriptorExtractor
                     roleHint = componentTag.getNamedParameter( "role-hint" );
                 }
 
-                pd.setRequirement( new Requirement( role, roleHint ) );
+                String expression = PluginUtils.MAVEN_COMPONENTS.get( role );
+
+                if ( expression == null )
+                {
+                    pd.setRequirement( new Requirement( role, roleHint ) );
+                }
+                else
+                {
+                    pd.setDefaultValue( expression );
+                    pd.setImplementation( role );
+                    pd.setType( role );
+                }
 
                 pd.setEditable( false );
                 /* TODO: or better like this? Need @component fields be editable for the user?
