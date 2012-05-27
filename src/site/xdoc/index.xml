@@ -38,7 +38,7 @@
       <p>
         <img src="images/plugin-tools-deps.png" width="826" height="491" border="0" usemap="#PluginTools_dependencies" />
         <map name="PluginTools_dependencies">
-          <area shape="rect" coords="279,0,508,38"    alt="maven-plugin-plugin"      href="/plugins/maven-plugin-plugin/" />
+          <area shape="rect" coords="279,0,508,38"    alt="maven-plugin-plugin"      href="./maven-plugin-plugin" />
           <area shape="rect" coords="31,101,223,138"  alt="plugin-tools-api"         href="./maven-plugin-tools-api"/>
           <area shape="rect" coords="62,163,251,200"  alt="plugin-tools-java"        href="./maven-plugin-tools-java"/>
           <area shape="rect" coords="312,163,539,200" alt="plugin-tools-javadoc"     href="./maven-plugin-tools-javadoc"/>
@@ -64,7 +64,7 @@
       <table>
         <tr><th><b>Module</b></th><th><b>Overview</b></th></tr>
         <tr>
-          <td><b><a href="../plugins/maven-plugin-plugin/index.html">maven-plugin-plugin</a></b></td>
+          <td><b><a href="./maven-plugin-plugin/index.html">maven-plugin-plugin</a></b></td>
           <td>Create a Maven plugin descriptor for any mojos found in the source tree, generate reports, create help goal.</td>
         </tr> 
         <tr>
