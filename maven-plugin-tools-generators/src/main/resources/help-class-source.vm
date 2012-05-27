@@ -5,6 +5,7 @@ package ${helpPackageName};
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -89,7 +90,6 @@ public class HelpMojo
     private Xpp3Dom build()
         throws MojoExecutionException
     {
-        // olamy more than one pluginDescriptor in the classloader possible ?
         getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
         InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH );
         try
@@ -126,22 +126,25 @@ public class HelpMojo
         Xpp3Dom pluginElement = build();
 
         StringBuilder sb = new StringBuilder();
-        /**
-         *  <groupId>org.apache.maven.plugins</groupId>
-         *  <artifactId>maven-plugin-plugin</artifactId>
-         *  <version>3.0-SNAPSHOT</version>
-         */
-        //append( sb, "org.apache.maven.plugins:maven-plugin-plugin:3.0-SNAPSHOT", 0 );
-        append( sb,
-                pluginElement.getChild( "groupId" ).getValue() + ":" + pluginElement.getChild( "artifactId" ).getValue()
-                    + ":" + pluginElement.getChild( "version" ).getValue(), 0 );
-        append( sb, "", 0 );
-
-        //append( sb, "Maven Plugin Plugin", 0 );
-        append( sb, pluginElement.getChild( "name" ).getValue(), 0 );
-        //append( sb,
-        //        "The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo\'s found in the source tree, to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the plugin registry, the artifact metadata and a generic help goal.",
-        //        1 );
+        String name = pluginElement.getChild( "name" ).getValue();
+        String version = pluginElement.getChild( "version" ).getValue();
+        String id = pluginElement.getChild( "groupId" ).getValue() + ":" + pluginElement.getChild( "artifactId" ).getValue()
+                    + ":" + version;
+        if ( StringUtils.isNotEmpty( name ) && !name.contains( id ) )
+        {
+            append( sb, name + " " + version, 0 );
+        }
+        else
+        {
+            if ( StringUtils.isNotEmpty( name ) )
+            {
+                append( sb, name, 0 );
+            }
+            else
+            {
+                append( sb, id, 0 );
+            }
+        }
         append( sb, pluginElement.getChild( "description" ).getValue(), 1 );
         append( sb, "", 0 );
 
@@ -152,7 +155,7 @@ public class HelpMojo
 
         if ( goal == null || goal.length() <= 0 )
         {
-            append( sb, "This plugin has " + mojos.length + " goals:", 0 );
+            append( sb, "This plugin has " + mojos.length + ( mojos.length > 1 ? " goals:" : " goal:" ) , 0 );
             append( sb, "", 0 );
         }
 
@@ -175,17 +178,26 @@ public class HelpMojo
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
-            append( sb, mojo.getChild( "description" ).getValue(), 1 );
+            Xpp3Dom deprecated = mojo.getChild( "deprecated" );
+            if ( ( deprecated != null ) && StringUtils.isNotEmpty( deprecated.getValue() ) )
+            {
+                append( sb, "Deprecated. " + deprecated, 1 );
+                if ( detail )
+                {
+                    append( sb, "", 0 );
+                    append( sb, mojo.getChild( "description" ).getValue(), 1 );
+                }
+            }
+            else
+            {
+                append( sb, mojo.getChild( "description" ).getValue(), 1 );
+            }
             append( sb, "", 0 );
 
             if ( detail )
             {
                 Xpp3Dom[] parameters = mojo.getChild( "parameters" ).getChildren( "parameter" );
                 append( sb, "Available parameters:", 1 );
-                append( sb, "", 0 );
-
-                append( sb, "goalPrefix", 2 );
-                append( sb, "The prefix for the plugin goal.", 3 );
                 append( sb, "", 0 );
 
                 for ( Xpp3Dom parameter : parameters )
@@ -198,20 +210,32 @@ public class HelpMojo
 
     private void writeParameter( StringBuilder sb, Xpp3Dom parameter, Xpp3Dom configurationElement )
     {
-        String name = parameter.getChild( "name" ).getValue();
+        String parameterName = parameter.getChild( "name" ).getValue();
+        String parameterDescription = parameter.getChild( "description" ).getValue();
 
-        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( name );
+        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( parameterName );
 
+        String parameterDefaultValue = "";
         if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
         {
-            append( sb, name + " (default: " + configurationElement.getChild( name ).getAttribute( "default-value" ) + ")", 2 );
+            parameterDefaultValue = " (Default: " + fieldConfigurationElement.getAttribute( "default-value" ) + ")";
         }
-
-        append( sb, parameter.getChild( "description" ).getValue(), 3 );
-
-        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
+        append( sb, parameterName + parameterDefaultValue, 2 );
+        Xpp3Dom deprecated = parameter.getChild( "deprecated" );
+        if ( ( deprecated != null ) && StringUtils.isNotEmpty( deprecated.getValue() ) )
         {
-            append( sb, fieldConfigurationElement.getValue(), 3 );
+            append( sb, "Deprecated. " + deprecated.getValue(), 3 );
+            append( sb, "", 0 );
+        }
+        append( sb, parameterDescription, 3 );
+        if ( "true".equals( parameter.getChild( "required" ).getValue() ) )
+        {
+            append( sb, "Required: Yes", 3 );
+        }
+        Xpp3Dom expression = parameter.getChild( "expression" );
+        if ( ( expression != null ) && StringUtils.isNotEmpty( expression.getValue() ) )
+        {
+            append( sb, "Expression: " + expression.getValue(), 3 );
         }
 
         append( sb, "", 0 );
