@@ -28,7 +28,6 @@
 
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-plugin-plugin</artifactId>
-  <version>3.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Maven Plugin Plugin</name>
@@ -37,21 +36,10 @@
     to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as for updating the
     plugin registry, the artifact metadata and a generic help goal.
   </description>
-  <url>${siteUrlPlugin}</url>
 
   <prerequisites>
     <maven>2.0.6</maven>
   </prerequisites>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk/maven-plugin-plugin/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk/maven-plugin-plugin/</url>
-  </scm>
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MPLUGIN</url>
-  </issueManagement>
 
   <properties>
     <doxiaVersion>1.2</doxiaVersion>
