@@ -34,7 +34,7 @@
 
   <name>Maven Plugin Tools</name>
   <description>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in a variety of languages.</description>
-  <url>${siteUrl}</url>
+  <url>http://maven.apache.org/plugin-tools/</url>
   <inceptionYear>2004</inceptionYear>
 
   <contributors>
@@ -152,14 +152,12 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>${siteDeployUrl}</url>
+      <url>scp://people.apache.org/www/maven.apache.org/plugin-tools/</url>
     </site>
   </distributionManagement>
 
   <properties>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
-    <siteDeployUrl>scp://people.apache.org/www/maven.apache.org/plugin-tools/</siteDeployUrl>
-    <siteUrl>http://maven.apache.org/plugin-tools/</siteUrl>
     <mavenVersion>2.2.1</mavenVersion>
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>1.6</mavenInvokerPluginVersion>
@@ -338,6 +336,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
+          <version>3.1</version>
           <configuration>
             <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}</stagingSiteURL>
           </configuration>
@@ -437,13 +436,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-    <profile>
-      <id>snapshot-doc</id>
-      <properties>
-        <siteDeployUrl>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}/</siteDeployUrl>
-        <siteUrl>http://maven.apache.org/plugin-tools-${project.version}/</siteUrl>
-      </properties>
     </profile>
   </profiles>
 </project>
