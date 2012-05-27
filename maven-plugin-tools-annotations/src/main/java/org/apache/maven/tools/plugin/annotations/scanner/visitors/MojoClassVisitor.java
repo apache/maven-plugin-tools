@@ -114,7 +114,7 @@ public class MojoClassVisitor
     {
         logger.debug( "MojoClassVisitor#visitAnnotation" );
         String annotationClassName = Type.getType( desc ).getClassName();
-        if ( !MojoAnnotationsScanner.acceptedClassLevelAnnotationClasses.contains( annotationClassName ) )
+        if ( !MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {
             return null;
         }

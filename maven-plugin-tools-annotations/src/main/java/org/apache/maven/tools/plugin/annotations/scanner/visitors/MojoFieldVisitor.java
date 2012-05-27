@@ -62,7 +62,7 @@ public class MojoFieldVisitor
     {
         logger.debug( "MojoFieldVisitor#visitAnnotation:" + desc );
         String annotationClassName = Type.getType( desc ).getClassName();
-        if ( !MojoAnnotationsScanner.acceptedFieldLevelAnnotationClasses.contains( annotationClassName ) )
+        if ( !MojoAnnotationsScanner.FIELD_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {
             return null;
         }
