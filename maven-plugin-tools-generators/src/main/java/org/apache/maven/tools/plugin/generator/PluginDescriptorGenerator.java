@@ -102,7 +102,7 @@ public class PluginDescriptorGenerator
             File f = new File( destinationDirectory, "plugin.xml" );
             writeDescriptor( f, request, false );
 
-            // write plugin-description.xml help-descriptor
+            // write plugin-help.xml help-descriptor
             MavenProject mavenProject = request.getProject();
             String pluginHelpFilePath =
                 "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId()
