@@ -480,6 +480,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoDescriptor.setSince( mojo.getSince() );
             mojo.setDeprecated( mojo.getDeprecated() );
 
+            mojoDescriptor.setProjectRequired( mojo.requiresProject() );
+
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );
             mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection().id() );
