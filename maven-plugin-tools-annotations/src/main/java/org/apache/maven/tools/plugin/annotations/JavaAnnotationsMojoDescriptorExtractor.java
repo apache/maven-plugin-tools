@@ -498,6 +498,14 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setProjectRequired( mojo.requiresProject() );
 
+            mojoDescriptor.setRequiresReports( mojo.requiresReports() );
+
+            mojoDescriptor.setComponentConfigurator( mojo.configurator() );
+
+            mojoDescriptor.setInheritedByDefault( mojo.inheritByDefault() );
+
+            mojoDescriptor.setInstantiationStrategy( mojo.instantiationStrategy().id() );
+
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );
             mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection().id() );
