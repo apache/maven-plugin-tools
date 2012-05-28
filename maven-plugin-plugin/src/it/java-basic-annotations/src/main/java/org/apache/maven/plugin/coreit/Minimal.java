@@ -20,17 +20,21 @@ package org.apache.maven.plugin.coreit;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
-/**
- * Does nothing special.
- * 
- */
-@Mojo( name = "second", requiresDependencyCollection = ResolutionScope.COMPILE, threadSafe = true )
-public class SecondMojo
+// minimum annotations => default values
+@Mojo( name = "minimal" )
+public class Minimal
     extends AbstractMojo
 {
+    @Parameter
+    private String param;
+
+    @Component
+    private MavenProjectHelper projectHelper;
 
     public void execute()
     {
