@@ -72,12 +72,12 @@ public class MojoFieldVisitor
 
     public void visitAttribute( Attribute attribute )
     {
-        logger.debug( "MojoFieldVisitor#visitAttribute" );
+        // no op
     }
 
     public void visitEnd()
     {
-        logger.debug( "MojoFieldVisitor#visitEnd" );
+        // no op
     }
 
     public String getClassName()

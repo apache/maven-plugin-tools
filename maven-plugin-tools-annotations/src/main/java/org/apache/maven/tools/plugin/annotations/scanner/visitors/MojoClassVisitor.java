@@ -139,23 +139,27 @@ public class MojoClassVisitor
 
     public void visitAttribute( Attribute attr )
     {
+        // no op
     }
 
     public void visitSource( String source, String debug )
     {
+        // no op
     }
 
     public void visitOuterClass( String owner, String name, String desc )
     {
+        // no op
     }
 
     public void visitInnerClass( String name, String outerName, String innerName, int access )
     {
+        // no op
     }
 
     public void visitEnd()
     {
-        logger.debug( "MojoClassVisitor#visitEnd" );
+        // no op
     }
 
 }

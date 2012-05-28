@@ -75,7 +75,7 @@ public class MojoAnnotationVisitor
 
     public void visitEnd()
     {
-        logger.debug( "MojoAnnotationVisitor#visitEnd" );
+        // no op
     }
 
     public String getAnnotationClassName()
