@@ -143,7 +143,7 @@ public class DefaultMojoAnnotationsScanner
                     {
                         mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
                     }
-                    if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
+                    if ( isStoreClass( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
                         getLogger().debug(
                             "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
@@ -207,7 +207,7 @@ public class DefaultMojoAnnotationsScanner
                     {
                         mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
                     }
-                    if ( isMojoAnnnotatedClassCandidate( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
+                    if ( isStoreClass( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
                         getLogger().debug(
                             "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
@@ -228,19 +228,23 @@ public class DefaultMojoAnnotationsScanner
         return mojoAnnotatedClasses;
     }
 
-    private MojoAnnotatedClass isMojoAnnnotatedClassCandidate( MojoAnnotatedClass mojoAnnotatedClass )
+    private MojoAnnotatedClass isStoreClass( MojoAnnotatedClass mojoAnnotatedClass )
     {
         if ( mojoAnnotatedClass == null )
         {
             return null;
         }
-        if ( !mojoAnnotatedClass.getComponents().isEmpty() || !mojoAnnotatedClass.getParameters().isEmpty()
-            || mojoAnnotatedClass.getExecute() != null || mojoAnnotatedClass.getMojo() != null )
-        {
-            return mojoAnnotatedClass;
-        }
-        return null;
+        return mojoAnnotatedClass;
+        /**
+         if ( !mojoAnnotatedClass.getComponents().isEmpty() || !mojoAnnotatedClass.getParameters().isEmpty()
+         || mojoAnnotatedClass.getExecute() != null || mojoAnnotatedClass.getMojo() != null )
+         {
+         return mojoAnnotatedClass;
+         }
+         return null;
+         **/
     }
+
 
     protected void analyzeVisitors( MojoClassVisitor mojoClassVisitor )
         throws ExtractionException

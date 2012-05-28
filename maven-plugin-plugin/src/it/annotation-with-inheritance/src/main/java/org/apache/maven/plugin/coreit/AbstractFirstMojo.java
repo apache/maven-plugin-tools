@@ -32,7 +32,6 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import java.io.File;
 
 /**
- * Touches a test file.
  *
  */
 public abstract class AbstractFirstMojo

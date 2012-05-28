@@ -144,6 +144,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 continue;
             }
 
+            if ( !isMojoAnnnotatedClassCandidate( mojoAnnotatedClass ) )
+            {
+
+                continue;
+            }
+
             MavenProject mavenProject =
                 getFromProjectReferences( mojoAnnotatedClass.getArtifact(), request.getProject() );
 
@@ -184,6 +190,17 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return javaClassesMap;
     }
 
+    private boolean isMojoAnnnotatedClassCandidate( MojoAnnotatedClass mojoAnnotatedClass )
+    {
+        if ( mojoAnnotatedClass == null )
+        {
+            return false;
+        }
+        return ( !mojoAnnotatedClass.getComponents().isEmpty() || !mojoAnnotatedClass.getParameters().isEmpty()
+            || mojoAnnotatedClass.getExecute() != null || mojoAnnotatedClass.getMojo() != null );
+
+    }
+
     protected Map<String, JavaClass> discoverClassesFromSourcesJar( Artifact artifact, PluginToolsRequest request,
                                                                     String classifier )
         throws ExtractionException
@@ -205,9 +222,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             // extract sources to target/maven-plugin-plugin-sources/${groupId}/${artifact}/sources
             File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
                                               "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
-                                                  + sourcesArtifact.getArtifactId() + "/"
-                                                  + sourcesArtifact.getVersion() + "/"
-                                                  + sourcesArtifact.getClassifier() );
+                                                  + sourcesArtifact.getArtifactId() + "/" + sourcesArtifact.getVersion()
+                                                  + "/" + sourcesArtifact.getClassifier() );
             extractDirectory.mkdirs();
 
             UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
@@ -280,7 +296,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
             for ( Map.Entry<String, ParameterAnnotationContent> parameter : new TreeMap<String, ParameterAnnotationContent>(
-                                                                                                                             parameters ).entrySet() )
+                parameters ).entrySet() )
             {
                 JavaField javaField = fieldsMap.get( parameter.getKey() );
                 if ( javaField == null )
