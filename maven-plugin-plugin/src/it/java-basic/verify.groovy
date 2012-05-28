@@ -132,9 +132,76 @@ assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 
-mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
+// check default values
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "minimal"}[0]
 
-assert mojo.requiresDependencyCollection.text() == 'compile'
+assert mojo.goal.text() == 'minimal'
+assert mojo.implementation.text() == 'org.apache.maven.plugin.coreit.Minimal'
+assert mojo.language.text() == 'java'
+assert mojo.description.text() == ''
+assert mojo.deprecated.text() == ''
+assert mojo.requiresDependencyResolution.text() == ''
+assert mojo.requiresDependencyCollection.text() == ''
+assert mojo.requiresProject.text() == 'true'
+assert mojo.requiresOnline.text() == 'false'
+assert mojo.requiresDirectInvocation.text() == 'false'
+assert mojo.requiresReports.text() == 'false'
+assert mojo.aggregator.text() == 'false'
+assert mojo.threadSafe.text() == 'false'
+assert mojo.phase.text() == ''
+assert mojo.executePhase.text() == ''
+assert mojo.executeLifecycle.text() == ''
+assert mojo.executionStrategy.text() == 'once-per-session'
+assert mojo.inheritedByDefault.text() == 'true'
+assert mojo.instantiationStrategy.text() == 'per-lookup'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "param" }[0]
+assert parameter.name.text() == 'param'
+assert parameter.alias.text() == ''
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.deprecated.text() == ''
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == ''
+
+def requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
+assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
+
+// check values set by every annotation
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "maximal"}[0]
+
+assert mojo.goal.text() == 'maximal'
+assert mojo.implementation.text() == 'org.apache.maven.plugin.coreit.Maximal'
+assert mojo.language.text() == 'java'
+assert mojo.description.text() == 'Checks maximum annotations with non-default values.'
+assert mojo.deprecated.text() == 'deprecated-text'
+assert mojo.requiresDependencyResolution.text() == 'compile'
+assert mojo.requiresDependencyCollection.text() == 'test'
+assert mojo.requiresProject.text() == 'false'
+assert mojo.requiresOnline.text() == 'true'
+assert mojo.requiresDirectInvocation.text() == 'true'
+assert mojo.requiresReports.text() == 'true'
+assert mojo.aggregator.text() == 'true'
+assert mojo.configurator.text() == 'configurator-hint'
 assert mojo.threadSafe.text() == 'true'
+assert mojo.phase.text() == 'package'
+assert mojo.executePhase.text() == 'compile'
+assert mojo.executeLifecycle.text() == ''
+assert mojo.executionStrategy.text() == 'always'
+assert mojo.inheritedByDefault.text() == 'false'
+assert mojo.instantiationStrategy.text() == 'singleton'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "param" }[0]
+assert parameter.name.text() == 'param'
+assert parameter.alias.text() == 'myAlias'
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.since.text() == 'since-text'
+assert parameter.deprecated.text() == 'deprecated-text'
+assert parameter.required.text() == 'true'
+assert parameter.editable.text() == 'false'
+assert parameter.description.text() == 'Parameter description.'
+
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
+assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
 return true;

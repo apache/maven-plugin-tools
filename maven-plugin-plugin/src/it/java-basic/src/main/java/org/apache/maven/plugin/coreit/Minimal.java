@@ -20,17 +20,24 @@ package org.apache.maven.plugin.coreit;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.project.MavenProjectHelper;
 
+// minimum annotations => default values
 /**
- * Does nothing special.
- * 
- * @goal second
- * @requiresDependencyCollection compile
- * @threadSafe
+ * @goal minimal
  */
-public class SecondMojo
+public class Minimal
     extends AbstractMojo
 {
+    /**
+     * @parameter
+     */
+    private String param;
+
+    /**
+     * @component
+     */
+    private MavenProjectHelper projectHelper;
 
     public void execute()
     {
