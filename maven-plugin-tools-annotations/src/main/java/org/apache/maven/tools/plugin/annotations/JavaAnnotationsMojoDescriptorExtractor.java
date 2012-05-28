@@ -146,7 +146,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             if ( !isMojoAnnnotatedClassCandidate( mojoAnnotatedClass ) )
             {
-
+                // we don't scan sources for classes without mojo annotations
                 continue;
             }
 

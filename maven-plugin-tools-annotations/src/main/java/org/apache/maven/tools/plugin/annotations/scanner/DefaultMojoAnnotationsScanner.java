@@ -230,6 +230,7 @@ public class DefaultMojoAnnotationsScanner
 
     private MojoAnnotatedClass isStoreClass( MojoAnnotatedClass mojoAnnotatedClass )
     {
+        // see MPLUGIN-206 we can have intermediate classes without annotations
         if ( mojoAnnotatedClass == null )
         {
             return null;
