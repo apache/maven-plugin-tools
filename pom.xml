@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -130,9 +130,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-3.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-3.0</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/tags/maven-plugin-tools-3.0</url>
   </scm>
   <issueManagement>
     <system>jira</system>
