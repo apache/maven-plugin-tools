@@ -85,10 +85,6 @@ public class MyMojo
                 required = <false|true> )
     private String parameter;
 
-    /**
-     * @since <since-text>
-     * @deprecated <deprecated-text>
-     */
     @Component( role = MyComponentExtension.class,
                 hint = "..." )
     private MyComponent component;

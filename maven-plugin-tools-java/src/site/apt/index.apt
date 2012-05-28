@@ -77,8 +77,6 @@ public class MyMojo
 
     /**
      * @component role="..." roleHint="..."
-     * @since <since-text>
-     * @deprecated <deprecated-text>
      */
     private Component component;
 
