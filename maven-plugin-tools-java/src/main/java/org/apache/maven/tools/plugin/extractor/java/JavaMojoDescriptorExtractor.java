@@ -230,12 +230,13 @@ public class JavaMojoDescriptorExtractor
 
             if ( executePhase == null && executeGoal == null )
             {
-                throw new InvalidPluginDescriptorException( "@execute tag requires a 'phase' or 'goal' parameter" );
+                throw new InvalidPluginDescriptorException( javaClass.getFullyQualifiedName()
+                    + ": @execute tag requires either a 'phase' or 'goal' parameter" );
             }
             else if ( executePhase != null && executeGoal != null )
             {
-                throw new InvalidPluginDescriptorException(
-                    "@execute tag can have only one of a 'phase' or 'goal' parameter" );
+                throw new InvalidPluginDescriptorException( javaClass.getFullyQualifiedName()
+                    + ": @execute tag can have only one of a 'phase' or 'goal' parameter" );
             }
             mojoDescriptor.setExecutePhase( executePhase );
             mojoDescriptor.setExecuteGoal( executeGoal );
@@ -246,8 +247,8 @@ public class JavaMojoDescriptorExtractor
                 mojoDescriptor.setExecuteLifecycle( lifecycle );
                 if ( mojoDescriptor.getExecuteGoal() != null )
                 {
-                    throw new InvalidPluginDescriptorException(
-                        "@execute lifecycle requires a phase instead of a goal" );
+                    throw new InvalidPluginDescriptorException( javaClass.getFullyQualifiedName()
+                        + ": @execute lifecycle requires a phase instead of a goal" );
                 }
             }
         }
