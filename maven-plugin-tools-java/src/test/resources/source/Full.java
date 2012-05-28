@@ -72,10 +72,7 @@ public class Full
      * A component.
      * 
      * @component role="role" roleHint="hint"
-     * @readonly
      * @required
-     * @since tomorrow
-     * @deprecated after tomorrow
      */
     private MojoScanner component;
 

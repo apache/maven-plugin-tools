@@ -77,6 +77,7 @@
       <configurator>&quot;role-hint&quot;</configurator>
       <instantiationStrategy>singleton</instantiationStrategy>
       <executionStrategy>always</executionStrategy>
+      <since>now</since>
       <deprecated>deprecation text test</deprecated>
       <requiresDependencyCollection>test</requiresDependencyCollection>
       <threadSafe>true</threadSafe>
@@ -85,6 +86,7 @@
           <name>file</name>
           <alias>myAlias</alias>
           <type>java.io.File</type>
+          <since>tomorrow</since>
           <deprecated>after tomorrow</deprecated>
           <required>true</required>
           <editable>false</editable>

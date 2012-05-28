@@ -385,6 +385,26 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
+        if ( mojoDescriptor.getSince() != null )
+        {
+            w.startElement( "since" );
+
+            if ( StringUtils.isEmpty( mojoDescriptor.getSince() ) )
+            {
+                w.writeText( "No version given" );
+            }
+            else
+            {
+                w.writeText( mojoDescriptor.getSince() );
+            }
+
+            w.endElement();
+        }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
         if ( mojoDescriptor.getDeprecated() != null )
         {
             w.startElement( "deprecated" );
@@ -478,6 +498,22 @@ public class PluginDescriptorGenerator
                     }
 
                     GeneratorUtils.element( w, "type", parameter.getType() );
+
+                    if ( parameter.getSince() != null )
+                    {
+                        w.startElement( "since" );
+
+                        if ( StringUtils.isEmpty( parameter.getSince() ) )
+                        {
+                            w.writeText( "No version given" );
+                        }
+                        else
+                        {
+                            w.writeText( parameter.getSince() );
+                        }
+
+                        w.endElement();
+                    }
 
                     if ( parameter.getDeprecated() != null )
                     {
