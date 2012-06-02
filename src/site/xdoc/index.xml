@@ -116,6 +116,14 @@
           <td>Maven Ant Mojo Support, ie write Maven plugins with Ant script.</td>
         </tr>      
       </table>
+
+      <subsection name="See Also">
+        <ul>
+          <li><a href="/plugin-testing/">Maven Plugin Testing</a></li>
+          <li><a href="/ref/current/maven-plugin-api/">Maven Plugin API</a></li>
+        </ul>
+      </subsection>
+
     </section>
 
   </body>
