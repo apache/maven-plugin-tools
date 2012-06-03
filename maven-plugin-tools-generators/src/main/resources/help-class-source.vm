@@ -170,6 +170,12 @@ public class HelpMojo
         }
     }
 
+    private String getValue( Xpp3Dom mojo, String child )
+    {
+        Xpp3Dom elt = mojo.getChild( child );
+        return ( elt == null ) ? "" : elt.getValue();
+    }
+
     private void writeGoal( StringBuilder sb, String goalPrefix, Xpp3Dom mojo )
     {
         String mojoGoal = mojo.getChild( "goal" ).getValue();
@@ -185,12 +191,12 @@ public class HelpMojo
                 if ( detail )
                 {
                     append( sb, "", 0 );
-                    append( sb, mojo.getChild( "description" ).getValue(), 1 );
+                    append( sb, getValue( mojo, "description" ), 1 );
                 }
             }
             else
             {
-                append( sb, mojo.getChild( "description" ).getValue(), 1 );
+                append( sb, getValue( mojo, "description" ), 1 );
             }
             append( sb, "", 0 );
 
