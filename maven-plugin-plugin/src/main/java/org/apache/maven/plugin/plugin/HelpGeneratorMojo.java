@@ -20,6 +20,10 @@ package org.apache.maven.plugin.plugin;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
 import org.codehaus.plexus.velocity.VelocityComponent;
@@ -31,36 +35,31 @@ import java.io.File;
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
- * @goal helpmojo
- * @phase generate-sources
  * @since 2.4
  */
+@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true )
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
 {
     /**
      * The directory where the generated <code>HelpMojo</code> file will be put.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/plugin"
      */
+    @Parameter( defaultValue = "${project.build.directory}/generated-sources/plugin" )
     protected File outputDirectory;
 
     /**
      * The name of the package for the generated <code>HelpMojo</code>. By default, the package will be calculated based
      * on the packages of the other plugin goals.
      *
-     * @parameter
      * @since 2.6
      */
+    @Parameter
     private String helpPackageName;
 
     /**
      * Velocity component.
-     *
-     * @component
-     * @readonly
-     * @required
      */
+    @Component
     private VelocityComponent velocity;
 
     /**

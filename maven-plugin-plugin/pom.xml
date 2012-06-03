@@ -45,10 +45,16 @@
     <doxiaVersion>1.2</doxiaVersion>
     <doxia-sitetoolsVersion>1.2</doxia-sitetoolsVersion>
     <it.debug>true</it.debug>
-    <mavenPluginPluginVersion>2.9</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.0</mavenPluginPluginVersion>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-annotations</artifactId>
+      <version>${mavenPluginPluginVersion}</version>
+    </dependency>
+
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
@@ -238,7 +244,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <configuration>
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
         <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
           <execution>
             <id>generated-helpmojo</id>
             <goals>

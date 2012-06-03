@@ -28,6 +28,11 @@ import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
@@ -58,51 +63,44 @@ import java.util.Set;
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
- * @goal report
- * @execute phase="process-classes"
  * @since 2.0
  */
+@Mojo( name = "report", threadSafe = true )
+@Execute( phase = LifecyclePhase.PROCESS_CLASSES )
 public class PluginReport
     extends AbstractMavenReport
 {
     /**
      * Report output directory.
-     *
-     * @parameter default-value="${project.build.directory}/generated-site/xdoc"
      */
+    @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
     private File outputDirectory;
 
     /**
      * Doxia Site Renderer.
-     *
-     * @component
      */
+    @Component
     private Renderer siteRenderer;
 
     /**
      * The Maven Project.
-     *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
+    @Component
     private MavenProject project;
 
     /**
      * Mojo scanner tools.
-     *
-     * @component
      */
+    @Component
     protected MojoScanner mojoScanner;
 
     /**
      * The file encoding of the source files.
      *
-     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
      * @since 2.7
      */
+    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
     private String encoding;
-
 
     /**
      * Specify some requirements to execute this plugin.
@@ -121,9 +119,8 @@ public class PluginReport
      *   &lt;/others&gt;
      * &lt;/requirements&gt;
      * </pre>
-     *
-     * @parameter
      */
+    @Parameter
     private Requirements requirements;
 
     /**
@@ -140,55 +137,49 @@ public class PluginReport
      * (There is a special for maven-plugin-plugin; it is mapped to 'plugin'.
      * </p>
      *
-     * @parameter expression="${goalPrefix}"
      * @since 2.4
      */
+    @Parameter( property = "goalPrefix" )
     protected String goalPrefix;
 
     /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
-     * @parameter default-value="false" expression="${maven.plugin.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
     private boolean skip;
 
     /**
      * Set this to "true" to skip generating the report.
      *
-     * @parameter default-value="false" expression="${maven.plugin.report.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.report.skip" )
     private boolean skipReport;
 
     /**
      * The set of dependencies for the current project
      *
-     * @parameter default-value = "${project.artifacts}"
-     * @required
-     * @readonly
      * @since 3.0
      */
+    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
     protected Set<Artifact> dependencies;
 
     /**
      * List of Remote Repositories used by the resolver
      *
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
      * @since 3.0
      */
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
     protected List<ArtifactRepository> remoteRepos;
 
     /**
      * Location of the local repository.
      *
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
      * @since 3.0
      */
+    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     protected ArtifactRepository local;
 
     /**

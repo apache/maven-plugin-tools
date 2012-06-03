@@ -26,6 +26,10 @@ import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -42,35 +46,29 @@ import org.apache.maven.project.MavenProject;
  * @see GroupRepositoryMetadata
  * @version $Id$
  * @since 2.0
- * @phase package
- * @goal addPluginArtifactMetadata
- * @threadSafe
  */
+@Mojo( name = "addPluginArtifactMetadata", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true )
 public class AddPluginArtifactMetadataMojo
     extends AbstractMojo
 {
     /**
      * The project artifact, which should have the <code>latest</code> metadata added to it.
-     *
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
      */
+    @Component
     private MavenProject project;
 
     /**
      * The prefix for the plugin goal.
-     *
-     * @parameter
      */
+    @Parameter
     private String goalPrefix;
 
     /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
-     * @parameter default-value="false" expression="${maven.plugin.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
     private boolean skip;
 
     /** {@inheritDoc} */

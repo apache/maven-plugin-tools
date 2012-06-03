@@ -19,6 +19,8 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 
@@ -30,16 +32,15 @@ import java.io.File;
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id$
  * @since 2.0
- * @goal xdoc
  */
+@Mojo( name = "xdoc", threadSafe = true )
 public class XdocGeneratorMojo
     extends AbstractGeneratorMojo
 {
     /**
      * The directory where the generated Xdoc files will be put.
-     *
-     * @parameter default-value="${project.build.directory}/generated-site/xdoc"
      */
+    @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
     protected File outputDirectory;
 
     /** {@inheritDoc} */

@@ -25,6 +25,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -44,41 +46,34 @@ import java.util.Set;
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
- * @threadSafe
  */
 public abstract class AbstractGeneratorMojo
     extends AbstractMojo
 {
     /**
      * The project currently being built.
-     *
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
      */
+    @Component
     protected MavenProject project;
 
     /**
      * The component used for scanning the source tree for mojos.
-     *
-     * @component
-     * @required
      */
+    @Component
     protected MojoScanner mojoScanner;
 
     /**
      * The file encoding of the source files.
      *
-     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
      * @since 2.5
      */
+    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
     protected String encoding;
 
     /**
      * The goal prefix that will appear before the ":".
-     *
-     * @parameter
      */
+    @Parameter
     protected String goalPrefix;
 
     /**
@@ -86,9 +81,9 @@ public abstract class AbstractGeneratorMojo
      * descriptor generator mojo is bound to generate-resources phase.
      * But for annotations, the compiled classes are needed, so skip error
      *
-     * @parameter expression="${maven.plugin.skipErrorNoDescriptorsFound}" default-value="false"
      * @since 3.0
      */
+    @Parameter( property = "maven.plugin.skipErrorNoDescriptorsFound", defaultValue = "false" )
     protected boolean skipErrorNoDescriptorsFound;
 
     /**
@@ -113,47 +108,40 @@ public abstract class AbstractGeneratorMojo
      *      &lt;extractor&gt;bsh&lt;/extractor&gt;
      *  &lt;/extractors&gt;
      * </pre>
-     *
-     * @parameter
      */
+    @Parameter
     protected Set<String> extractors;
 
     /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
-     * @parameter default-value="false" expression="${maven.plugin.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
     protected boolean skip;
 
     /**
      * The set of dependencies for the current project
      *
-     * @parameter default-value = "${project.artifacts}"
-     * @required
-     * @readonly
      * @since 3.0
      */
+    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
     protected Set<Artifact> dependencies;
 
     /**
      * List of Remote Repositories used by the resolver
      *
-     * @parameter expression="${project.remoteArtifactRepositories}"
-     * @readonly
-     * @required
      * @since 3.0
      */
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
     protected List<ArtifactRepository> remoteRepos;
 
     /**
      * Location of the local repository.
      *
-     * @parameter expression="${localRepository}"
-     * @readonly
-     * @required
      * @since 3.0
      */
+    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     protected ArtifactRepository local;
 
     /**

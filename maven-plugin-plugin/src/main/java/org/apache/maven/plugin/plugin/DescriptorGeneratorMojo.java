@@ -20,6 +20,10 @@ package org.apache.maven.plugin.plugin;
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 
@@ -34,26 +38,24 @@ import java.io.File;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  * @since 2.0
- * @goal descriptor
- * @phase process-classes
- * @requiresDependencyResolution runtime
  */
+@Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
-     *
-     * @parameter default-value="${project.build.outputDirectory}/META-INF/maven"
      */
+    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven" )
     protected File outputDirectory;
 
     /**
      * A flag to disable generation of the <code>plugin.xml</code> in favor of a hand authored plugin descriptor.
      * 
-     * @parameter default-value="false"
      * @since 2.6
      */
+    @Parameter( defaultValue = "false" )
     private boolean skipDescriptor;
 
     /** {@inheritDoc} */

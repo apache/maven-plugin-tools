@@ -29,6 +29,10 @@ import org.apache.maven.plugin.registry.PluginRegistry;
 import org.apache.maven.plugin.registry.PluginRegistryUtils;
 import org.apache.maven.plugin.registry.TrackableBase;
 import org.apache.maven.plugin.registry.io.xpp3.PluginRegistryXpp3Writer;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.WriterFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -44,70 +48,56 @@ import java.util.Date;
  *
  * @version $Id$
  * @since 2.0
- * @goal updateRegistry
- * @phase install
  */
+@Mojo( name = "updateRegistry", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true )
 public class UpdatePluginRegistryMojo
     extends AbstractMojo
 {
     /**
      * Indicates whether the <code>plugin-registry.xml</code> file is used by Maven or not
      * to manage plugin versions.
-     *
-     * @parameter default-value="${settings.usePluginRegistry}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${settings.usePluginRegistry}", required = true, readonly = true )
     private boolean usePluginRegistry;
 
     /**
      * The group id of the project currently being built.
-     *
-     * @parameter default-value="${project.groupId}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.groupId}", required = true, readonly = true )
     private String groupId;
 
     /**
      * The artifact id of the project currently being built.
-     *
-     * @parameter default-value="${project.artifactId}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.artifactId}", required = true, readonly = true )
     private String artifactId;
 
     /**
      * The version of the project currently being built.
-     *
-     * @parameter default-value="${project.artifact.version}"
-     * @required
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.artifact.version}", required = true, readonly = true )
     private String version;
 
     /**
      * Plexus component for retrieving the plugin registry info.
-     *
-     * @component role="org.apache.maven.plugin.registry.MavenPluginRegistryBuilder"
      */
+    @Component
     private MavenPluginRegistryBuilder pluginRegistryBuilder;
 
     /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
-     * @parameter default-value="false" expression="${maven.plugin.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
     private boolean skip;
 
     /**
      * Set this to "true" to skip updating the plugin registry.
      *
-     * @parameter default-value="false" expression="${maven.plugin.update.registry.skip}"
      * @since 2.8
      */
+    @Parameter( defaultValue = "false", property = "maven.plugin.update.registry.skip" )
     private boolean skipUpdatePluginRegistry;
 
     /** {@inheritDoc} */
