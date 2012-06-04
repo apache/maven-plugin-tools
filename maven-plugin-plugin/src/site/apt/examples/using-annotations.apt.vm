@@ -1,5 +1,5 @@
  ------
- Using Java5 annotations
+ Using Plugin Tools Java5 Annotations
  ------
  Olivier Lamy
  ------
@@ -26,13 +26,13 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Using Java5 annotations
+Using Plugin Tools Java5 Annotations
 
  Since version 3.0, you can use {{{#Annotations}Java5 annotations}} to generate the plugin descriptor file.
 
- <<NOTE>> With annotations, it's not anymore mandatory to have your Mojos super classes in the same project. Super classe
- can now come from reactor projects or external dependencies. As javadoc doclet are still reading (for @since, @deprecated and comments),
- the sources are still scanned. So if you use an external dependency, you must still provide an artifact with sources (classifier sources) to
+ <<NOTE>> With annotations, it's not any more mandatory to have your Mojos super classes in the same project. Super classes
+ can now come from reactor projects or external dependencies. As javadoc doclet are still useful for <<<@since>>>, <<<@deprecated>>> and comments,
+ the sources are still scanned. So if you use an external dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to
  provide documentation (the tooling will skip error if this artifact sources is missing).
 
 * Pom configuration
@@ -46,7 +46,6 @@ Using Java5 annotations
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${project.version}</version>
-      <scope>compile</scope>
     </dependency>
     <!-- generated help mojo has a dependency to plexus-utils -->
     <dependency>
