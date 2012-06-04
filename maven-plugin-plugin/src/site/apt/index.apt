@@ -47,8 +47,7 @@ Maven Plugin Plugin
    * {{{./xdoc-mojo.html}plugin:xdoc}} generates Xdoc files for the project mojos or goals.
 
    * {{{./addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
-      metadata to the project's artifact, for subsequent installation and deployment. The first use-case for this
-      is to add the LATEST metadata (which is plugin-specific) for shipping alongside the plugin's artifact.
+      metadata to the project's artifact, for subsequent installation and deployment.
 
    * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all mojos in a plugin.
 
