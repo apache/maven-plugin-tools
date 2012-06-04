@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Display help information on maven-plugin-plugin.<br/>
- * Call <pre> mvn plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details.
+ * Call <code>mvn plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author
  * @version
  * @goal help
@@ -31,57 +31,33 @@ public class HelpMojo
     /**
      * If <code>true</code>, display all settable properties for each goal.
      *
+     * @parameter property="detail" default-value="false"
      */
-    //@Parameter( expression = "${detail}", defaultValue = "false" )
-    //private boolean detail;
-
-    /**
-     * The name of the goal for which to show help. If unspecified, all goals will be displayed.
-     *
-     */
-    //@Parameter( expression = "${goal}" )
-    //private java.lang.String goal;
-
-    /**
-     * The maximum length of a display line, should be positive.
-     *
-     */
-    //@Parameter( expression = "${lineLength}", defaultValue = "80" )
-    //private int lineLength;
-
-    /**
-     * The number of spaces per indentation level, should be positive.
-     *
-     */
-    //@Parameter( expression = "${indentSize}", defaultValue = "2" )
-    //private int indentSize;
-
-    /**
-     * If <code>true</code>, display all settable properties for each goal.
-     *
-     * @parameter expression="${detail}" default-value="false"
-     */
+    //@Parameter( property = "detail", defaultValue = "false" )
     private boolean detail;
 
     /**
      * The name of the goal for which to show help. If unspecified, all goals will be displayed.
      *
-     * @parameter expression="${goal}"
+     * @parameter property="goal"
      */
+    //@Parameter( property = "${goal}" )
     private java.lang.String goal;
 
     /**
      * The maximum length of a display line, should be positive.
      *
-     * @parameter expression="${lineLength}" default-value="80"
+     * @parameter property="lineLength" default-value="80"
      */
+    //@Parameter( property = "lineLength", defaultValue = "80" )
     private int lineLength;
 
     /**
      * The number of spaces per indentation level, should be positive.
      *
-     * @parameter expression="${indentSize}" default-value="2"
+     * @parameter property="indentSize" default-value="2"
      */
+    //@Parameter( property = "indentSize", defaultValue = "2" )
     private int indentSize;
 
     // groupId/artifactId/plugin-help.xml
