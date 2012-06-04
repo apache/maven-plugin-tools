@@ -78,7 +78,7 @@ Maven Plugin Plugin
 
    The following examples shows how to use the Plugin Plugin in more advanced usecases:
 
-   * {{{./examples/using-annotations.html}Use Java5 annotations for your Mojo}}
+   * {{{./examples/using-annotations.html}Using Plugin Tools Java5 annotations for your Mojo}}
 
    * {{{./examples/generate-descriptor.html}Configuring Generation of Plugin Descriptor}}
 
