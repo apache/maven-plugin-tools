@@ -112,3 +112,15 @@ Using Plugin Tools Java5 Annotations
     []
 
   []
+
+  Plugin Tools Java 5 Annotations ({{{../../maven-plugin-tools-annotations/index.html}see full example}})
+  are named after Plugin Tools Javadoc Tags ({{{../../maven-plugin-tools-java/index.html}see full example}}),
+  with following little differences:
+
+*-------------------------------+---------------+
+|| Plugin Tools Javadoc Tags    || Plugin Tools Java 5 Annotation ||
+*-------------------------------+---------------+
+| <<<@goal "goal-name">>>       | <<<@Mojo( name = "goal-name" )>>>
+*-------------------------------+---------------+
+| <<<@phase "\<phase-name\>">>> | <<<@Mojo( defaultPhase = "\<phase-name\>" )>>>
+*-------------------------------+---------------+
