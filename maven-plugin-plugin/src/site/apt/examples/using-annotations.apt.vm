@@ -106,7 +106,7 @@ Using Plugin Tools Java5 Annotations
     * <<<@Parameter>>>: Used to configure your Mojo parameters. See
       {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Parameter.html}javadoc}} for more information.
 
-    * <<<@Component>>>: Used to configure injection of Plexus components. See
+    * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components. See
       {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Component.html}javadoc}} for more information.
 
     []
