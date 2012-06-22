@@ -519,7 +519,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
             {
                 mojoDescriptor.setExecuteGoal( execute.goal() );
                 mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
-                mojoDescriptor.setExecutePhase( execute.phase().id() );
+                if ( execute.phase() != null )
+                {
+                    mojoDescriptor.setExecutePhase( execute.phase().id() );
+                }
             }
 
             mojoDescriptor.setExecutionStrategy( mojo.executionStrategy() );
