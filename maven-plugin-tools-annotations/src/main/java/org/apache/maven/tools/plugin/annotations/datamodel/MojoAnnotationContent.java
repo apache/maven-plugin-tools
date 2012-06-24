@@ -38,9 +38,9 @@ public class MojoAnnotationContent
 
     private LifecyclePhase defaultPhase = LifecyclePhase.NONE;
 
-    private ResolutionScope requiresDependencyResolution = ResolutionScope.RUNTIME;
+    private ResolutionScope requiresDependencyResolution = ResolutionScope.NONE;
 
-    private ResolutionScope requiresDependencyCollection = ResolutionScope.RUNTIME;
+    private ResolutionScope requiresDependencyCollection = ResolutionScope.NONE;
 
     private InstanciationStrategy instantiationStrategy = InstanciationStrategy.PER_LOOKUP;
 

@@ -31,6 +31,10 @@ import org.apache.maven.artifact.Artifact;
 public enum ResolutionScope
 {
     /**
+     * empty resolution scope
+     */
+    NONE( null ),
+    /**
      * <code>compile</code> resolution scope
      * = <code>compile</code> + <code>system</code> + <code>provided</code> dependencies
      */

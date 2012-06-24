@@ -20,7 +20,7 @@ assert mojo.language.text() == 'java'
 assert mojo.description.text() == 'Touches a test file.'
 assert mojo.deprecated.text() == "Don't use!"
 assert mojo.requiresDependencyResolution.text() == 'compile'
-assert mojo.requiresDependencyCollection.text() == 'runtime'
+assert mojo.requiresDependencyCollection.text() == ''
 assert mojo.requiresProject.text() == 'true'
 assert mojo.requiresOnline.text() == 'false'
 assert mojo.requiresDirectInvocation.text() == 'false'

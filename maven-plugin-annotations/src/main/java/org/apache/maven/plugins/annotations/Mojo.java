@@ -54,13 +54,13 @@ public @interface Mojo
      * the required dependency resolution scope.
      * @return 
      */
-    ResolutionScope requiresDependencyResolution() default ResolutionScope.RUNTIME;
+    ResolutionScope requiresDependencyResolution() default ResolutionScope.NONE;
 
     /**
      * the required dependency collection scope.
      * @return 
      */
-    ResolutionScope requiresDependencyCollection() default ResolutionScope.RUNTIME;
+    ResolutionScope requiresDependencyCollection() default ResolutionScope.NONE;
 
     /**
      * your Mojo instantiation strategy. (Only <code>per-lookup</code> and <code>singleton</code> are supported)
