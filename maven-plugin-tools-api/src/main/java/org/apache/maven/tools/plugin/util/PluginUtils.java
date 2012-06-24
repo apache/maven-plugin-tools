@@ -45,7 +45,10 @@ public final class PluginUtils
     }
 
     /**
-     * Expression associated with class types to recognize Maven objects as components.
+     * Expression associated with class types to recognize Maven objects (injected  in fact as parameters by
+     * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
+     * maven-core's PluginParameterExpressionEvaluator</a>)
+     * like components ("real" components are injected by Plexus).
      */
     public static final Map<String, String> MAVEN_COMPONENTS;
     static
