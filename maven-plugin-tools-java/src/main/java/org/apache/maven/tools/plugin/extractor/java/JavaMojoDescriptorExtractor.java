@@ -496,10 +496,24 @@ public class JavaMojoDescriptorExtractor
 
             pd.setDescription( field.getComment() );
 
+            DocletTag deprecationTag = field.getTagByName( JavaMojoAnnotation.DEPRECATED );
+
+            if ( deprecationTag != null )
+            {
+                pd.setDeprecated( deprecationTag.getValue() );
+            }
+
+            DocletTag sinceTag = field.getTagByName( JavaMojoAnnotation.SINCE );
+            if ( sinceTag != null )
+            {
+                pd.setSince( sinceTag.getValue() );
+            }
+
             DocletTag componentTag = field.getTagByName( JavaMojoAnnotation.COMPONENT );
 
             if ( componentTag != null )
             {
+                // Component tag
                 String role = componentTag.getNamedParameter( JavaMojoAnnotation.COMPONENT_ROLE );
 
                 if ( role == null )
@@ -515,17 +529,20 @@ public class JavaMojoDescriptorExtractor
                     roleHint = componentTag.getNamedParameter( "role-hint" );
                 }
 
+                // recognize Maven-injected objects as components annotations instead of parameters
                 String expression = PluginUtils.MAVEN_COMPONENTS.get( role );
 
                 if ( expression == null )
                 {
+                    // normal component
                     pd.setRequirement( new Requirement( role, roleHint ) );
                 }
                 else
                 {
+                    // not a component but a Maven object to be transformed into an expression/property
                     pd.setDefaultValue( expression );
-                    pd.setImplementation( role );
                     pd.setType( role );
+                    pd.setRequired( true );
                 }
 
                 pd.setEditable( false );
@@ -535,24 +552,12 @@ public class JavaMojoDescriptorExtractor
             }
             else
             {
+                // Parameter tag
                 DocletTag parameter = field.getTagByName( JavaMojoAnnotation.PARAMETER );
 
                 pd.setRequired( field.getTagByName( JavaMojoAnnotation.REQUIRED ) != null );
 
                 pd.setEditable( field.getTagByName( JavaMojoAnnotation.READONLY ) == null );
-
-                DocletTag deprecationTag = field.getTagByName( JavaMojoAnnotation.DEPRECATED );
-
-                if ( deprecationTag != null )
-                {
-                    pd.setDeprecated( deprecationTag.getValue() );
-                }
-
-                DocletTag sinceTag = field.getTagByName( JavaMojoAnnotation.SINCE );
-                if ( sinceTag != null )
-                {
-                    pd.setSince( sinceTag.getValue() );
-                }
 
                 String alias = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_ALIAS );
 

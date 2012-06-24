@@ -534,6 +534,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setPhase( mojo.defaultPhase().id() );
 
+            // Parameter annotations
             Map<String, ParameterAnnotationContent> parameters =
                 getParametersParentHierarchy( mojoAnnotatedClass, new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
@@ -565,6 +566,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 mojoDescriptor.addParameter( parameter );
             }
 
+            // Component annotations
             Map<String, ComponentAnnotationContent> components =
                 getComponentsParentHierarchy( mojoAnnotatedClass, new HashMap<String, ComponentAnnotationContent>(),
                                               mojoAnnotatedClasses );
@@ -576,17 +578,20 @@ public class JavaAnnotationsMojoDescriptorExtractor
                     new org.apache.maven.plugin.descriptor.Parameter();
                 parameter.setName( componentAnnotationContent.getFieldName() );
 
+                // recognize Maven-injected objects as components annotations instead of parameters
                 String expression = PluginUtils.MAVEN_COMPONENTS.get( componentAnnotationContent.getRoleClassName() );
                 if ( expression == null )
                 {
+                    // normal component
                     parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
                                                                componentAnnotationContent.hint() ) );
                 }
                 else
                 {
+                    // not a component but a Maven object to be transformed into an expression/property
                     parameter.setDefaultValue( expression );
-                    parameter.setImplementation( componentAnnotationContent.getRoleClassName() );
                     parameter.setType( componentAnnotationContent.getRoleClassName() );
+                    parameter.setRequired( true );
                 }
                 parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
                 parameter.setSince( componentAnnotationContent.getSince() );
@@ -594,6 +599,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 // same behaviour as JavaMojoDescriptorExtractor
                 //parameter.setRequired( ... );
                 parameter.setEditable( false );
+
                 mojoDescriptor.addParameter( parameter );
             }
 

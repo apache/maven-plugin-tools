@@ -83,7 +83,7 @@ assert parameter.name.text() == 'mojo'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'org.apache.maven.plugin.MojoExecution'
 assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'false'
+assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
@@ -92,7 +92,7 @@ assert parameter.name.text() == 'plugin'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
 assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'false'
+assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
@@ -101,7 +101,7 @@ assert parameter.name.text() == 'project'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'org.apache.maven.project.MavenProject'
 assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'false'
+assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
@@ -110,7 +110,7 @@ assert parameter.name.text() == 'session'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'org.apache.maven.execution.MavenSession'
 assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'false'
+assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
@@ -119,7 +119,7 @@ assert parameter.name.text() == 'settings'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'org.apache.maven.settings.Settings'
 assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'false'
+assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
