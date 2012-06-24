@@ -258,7 +258,7 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        if ( mojoDescriptor.isDependencyResolutionRequired() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.isDependencyResolutionRequired() ) )
         {
             GeneratorUtils.element( w, "requiresDependencyResolution", mojoDescriptor.isDependencyResolutionRequired() );
         }
@@ -303,7 +303,7 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        if ( mojoDescriptor.getPhase() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getPhase() ) )
         {
             GeneratorUtils.element( w, "phase", mojoDescriptor.getPhase() );
         }
@@ -312,17 +312,17 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        if ( mojoDescriptor.getExecutePhase() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getExecutePhase() ) )
         {
             GeneratorUtils.element( w, "executePhase", mojoDescriptor.getExecutePhase() );
         }
 
-        if ( mojoDescriptor.getExecuteGoal() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getExecuteGoal() ) )
         {
             GeneratorUtils.element( w, "executeGoal", mojoDescriptor.getExecuteGoal() );
         }
 
-        if ( mojoDescriptor.getExecuteLifecycle() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getExecuteLifecycle() ) )
         {
             GeneratorUtils.element( w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle() );
         }
@@ -347,7 +347,7 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        if ( mojoDescriptor.getComponentConfigurator() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getComponentConfigurator() ) )
         {
             w.startElement( "configurator" );
             w.writeText( mojoDescriptor.getComponentConfigurator() );
@@ -358,7 +358,7 @@ public class PluginDescriptorGenerator
         //
         // ----------------------------------------------------------------------
 
-        if ( mojoDescriptor.getComponentComposer() != null )
+        if ( StringUtils.isNotEmpty( mojoDescriptor.getComponentComposer() ) )
         {
             w.startElement( "composer" );
             w.writeText( mojoDescriptor.getComponentComposer() );
@@ -571,7 +571,7 @@ public class PluginDescriptorGenerator
                 w.startElement( parameter.getName() );
 
                 String type = parameter.getType();
-                if ( type != null )
+                if ( StringUtils.isNotEmpty( type ) )
                 {
                     w.addAttribute( "implementation", type );
                 }
@@ -581,7 +581,7 @@ public class PluginDescriptorGenerator
                     w.addAttribute( "default-value", parameter.getDefaultValue() );
                 }
 
-                if ( parameter.getExpression() != null )
+                if ( StringUtils.isNotEmpty( parameter.getExpression() ) )
                 {
                     w.writeText( parameter.getExpression() );
                 }
@@ -609,7 +609,7 @@ public class PluginDescriptorGenerator
 
                 GeneratorUtils.element( w, "role", requirement.getRole() );
 
-                if ( requirement.getRoleHint() != null )
+                if ( StringUtils.isNotEmpty( requirement.getRoleHint() ) )
                 {
                     GeneratorUtils.element( w, "role-hint", requirement.getRoleHint() );
                 }
