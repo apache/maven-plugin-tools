@@ -41,7 +41,7 @@ public class HelpMojo
      *
      * @parameter property="goal"
      */
-    //@Parameter( property = "${goal}" )
+    //@Parameter( property = "goal" )
     private java.lang.String goal;
 
     /**
