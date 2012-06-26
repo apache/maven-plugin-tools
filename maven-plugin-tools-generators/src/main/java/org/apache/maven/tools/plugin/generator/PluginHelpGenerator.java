@@ -155,7 +155,7 @@ public class PluginHelpGenerator
         try
         {
             writer = new OutputStreamWriter( new FileOutputStream( helpClass ), request.getEncoding() );
-            writer.write( getHelpClassSources( propertiesFilePath ) );
+            writer.write( getHelpClassSources( propertiesFilePath, pluginDescriptor ) );
             writer.flush();
         }
         catch ( IOException e )
@@ -189,7 +189,7 @@ public class PluginHelpGenerator
     // Private methods
     // ----------------------------------------------------------------------
 
-    protected String getHelpClassSources( String propertiesFilePath )
+    protected String getHelpClassSources( String propertiesFilePath, PluginDescriptor pluginDescriptor )
     {
         Properties properties = new Properties();
         VelocityContext context = new VelocityContext( properties );
@@ -202,6 +202,9 @@ public class PluginHelpGenerator
             properties.put( "helpPackageName", "" );
         }
         properties.put( "pluginHelpPath", propertiesFilePath + "/plugin-help.xml" );
+        properties.put( "artifactId", pluginDescriptor.getArtifactId());
+        properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix());
+
         // FIXME encoding !
 
         StringWriter stringWriter = new StringWriter();

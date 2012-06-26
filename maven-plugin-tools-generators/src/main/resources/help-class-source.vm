@@ -17,8 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Display help information on maven-plugin-plugin.<br/>
- * Call <code>mvn plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
+ * Display help information on ${artifactId}.<br/>
+ * Call <code>mvn ${goalPrefix}:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author
  * @version
  * @goal help
