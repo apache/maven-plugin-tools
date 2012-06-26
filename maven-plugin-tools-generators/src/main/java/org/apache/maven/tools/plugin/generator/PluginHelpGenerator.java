@@ -364,7 +364,7 @@ public class PluginHelpGenerator
 
     private static void updateHelpMojoDescriptor( PluginDescriptor pluginDescriptor, String helpMojoImplementation )
     {
-        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( "help" );
+        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( HELP_GOAL );
 
         if ( mojoDescriptor != null )
         {
