@@ -107,20 +107,18 @@ public class PluginHelpGenerator
         if ( mojoDescriptors != null )
         {
             // Verify that no help goal already exists
-            for ( MojoDescriptor descriptor : mojoDescriptors )
-            {
-                if ( HELP_GOAL.equals( descriptor.getGoal() )
-                    && !descriptor.getImplementation().equals( helpImplementation ) )
-                {
-                    if ( getLogger().isWarnEnabled() )
-                    {
-                        getLogger().warn( "\n\nA help goal (" + descriptor.getImplementation()
-                                              + ") already exists in this plugin. SKIPPED THE "
-                                              + helpImplementation + " GENERATION.\n" );
-                    }
+            MojoDescriptor descriptor = pluginDescriptor.getMojo( HELP_GOAL );
 
-                    return;
+            if ( ( descriptor != null ) && !descriptor.getImplementation().equals( helpImplementation ) )
+            {
+                if ( getLogger().isWarnEnabled() )
+                {
+                    getLogger().warn( "\n\nA help goal (" + descriptor.getImplementation()
+                                          + ") already exists in this plugin. SKIPPED THE " + helpImplementation
+                                          + " GENERATION.\n" );
                 }
+
+                return;
             }
         }
 
