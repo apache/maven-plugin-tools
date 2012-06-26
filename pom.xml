@@ -111,6 +111,12 @@
     </mailingList>
   </mailingLists>
 
+  <contributors>
+    <contributor>
+      <name>Tony Chemit</name>
+    </contributor>
+  </contributors>
+
   <prerequisites>
     <maven>2.2.1</maven>
   </prerequisites>
