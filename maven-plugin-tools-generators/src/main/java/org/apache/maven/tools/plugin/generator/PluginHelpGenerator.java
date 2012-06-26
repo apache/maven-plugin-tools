@@ -27,6 +27,7 @@ import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.velocity.VelocityComponent;
@@ -36,9 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
 
@@ -146,26 +145,22 @@ public class PluginHelpGenerator
             IOUtil.close( fos );
         }
 
-        String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";
-        File helpClass = new File( destinationDirectory, sourcePath );
-        helpClass.getParentFile().mkdirs();
-
-        Writer writer = null;
         try
         {
+            String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";
+
+            File helpClass = new File( destinationDirectory, sourcePath );
+            helpClass.getParentFile().mkdirs();
+
             String pluginResourcesPath = "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId();
 
-            writer = new OutputStreamWriter( new FileOutputStream( helpClass ), request.getEncoding() );
-            writer.write( getHelpClassSources( pluginResourcesPath, pluginDescriptor ) );
-            writer.flush();
+            String helpClassSources = getHelpClassSources( pluginResourcesPath, pluginDescriptor );
+
+            FileUtils.fileWrite( helpClass, request.getEncoding(), helpClassSources );
         }
         catch ( IOException e )
         {
             throw new GeneratorException( e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( writer );
         }
     }
 
