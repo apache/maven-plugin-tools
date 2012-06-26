@@ -78,7 +78,6 @@ public class PluginHelpGenerator
     // Public methods
     // ----------------------------------------------------------------------
 
-
     /**
      * {@inheritDoc}
      */
@@ -112,38 +111,7 @@ public class PluginHelpGenerator
             }
         }
 
-        Properties properties = new Properties();
-        properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
-
-        MavenProject mavenProject = request.getProject();
-
-        File tmpPropertiesFile =
-            new File( request.getProject().getBuild().getDirectory(), "maven-plugin-help.properties" );
-        if ( tmpPropertiesFile.exists() )
-        {
-            tmpPropertiesFile.delete();
-        }
-        else
-        {
-            if ( !tmpPropertiesFile.getParentFile().exists() )
-            {
-                tmpPropertiesFile.getParentFile().mkdirs();
-            }
-        }
-        FileOutputStream fos = null;
-        try
-        {
-            fos = new FileOutputStream( tmpPropertiesFile );
-            properties.store( fos, "maven plugin help generation informations" );
-        }
-        catch ( IOException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( fos );
-        }
+        writeHelpPropertiesFile( request );
 
         try
         {
@@ -152,6 +120,7 @@ public class PluginHelpGenerator
             File helpClass = new File( destinationDirectory, sourcePath );
             helpClass.getParentFile().mkdirs();
 
+            MavenProject mavenProject = request.getProject();
             String pluginResourcesPath = "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId();
 
             String helpClassSources = getHelpClassSources( pluginResourcesPath, pluginDescriptor );
@@ -185,7 +154,7 @@ public class PluginHelpGenerator
     // Private methods
     // ----------------------------------------------------------------------
 
-    protected String getHelpClassSources( String pluginResourcesPath, PluginDescriptor pluginDescriptor )
+    private String getHelpClassSources( String pluginResourcesPath, PluginDescriptor pluginDescriptor )
     {
         Properties properties = new Properties();
         VelocityContext context = new VelocityContext( properties );
@@ -212,7 +181,6 @@ public class PluginHelpGenerator
         return stringWriter.toString();
     }
 
-
     /**
      * @param pluginDescriptor The descriptor of the plugin for which to generate a help goal, must not be
      *                         <code>null</code>.
@@ -227,5 +195,39 @@ public class PluginHelpGenerator
         }
 
         return StringUtils.isEmpty( packageName ) ? HELP_MOJO_CLASS_NAME : packageName + '.' + HELP_MOJO_CLASS_NAME;
+    }
+
+    private void writeHelpPropertiesFile( PluginToolsRequest request )
+        throws GeneratorException
+    {
+        Properties properties = new Properties();
+        properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
+
+        File tmpPropertiesFile =
+            new File( request.getProject().getBuild().getDirectory(), "maven-plugin-help.properties" );
+
+        if ( tmpPropertiesFile.exists() )
+        {
+            tmpPropertiesFile.delete();
+        }
+        else if ( !tmpPropertiesFile.getParentFile().exists() )
+        {
+            tmpPropertiesFile.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = null;
+        try
+        {
+            fos = new FileOutputStream( tmpPropertiesFile );
+            properties.store( fos, "maven plugin help mojo generation informations" );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+        finally
+        {
+            IOUtil.close( fos );
+        }
     }
 }
