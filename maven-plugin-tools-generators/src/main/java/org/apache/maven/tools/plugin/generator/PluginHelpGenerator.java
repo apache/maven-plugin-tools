@@ -29,10 +29,18 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.PropertyUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.velocity.VelocityComponent;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.Remapper;
+import org.objectweb.asm.commons.RemappingClassAdapter;
+import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +64,11 @@ public class PluginHelpGenerator
      * Default generated class name
      */
     private static final String HELP_MOJO_CLASS_NAME = "HelpMojo";
+
+    /**
+     * Help properties file, to store data about generated source.
+     */
+    private static final String HELP_PROPERTIES_FILENAME = "maven-plugin-help.properties";
 
     /**
      * Default goal
@@ -197,6 +210,13 @@ public class PluginHelpGenerator
         return StringUtils.isEmpty( packageName ) ? HELP_MOJO_CLASS_NAME : packageName + '.' + HELP_MOJO_CLASS_NAME;
     }
 
+    /**
+     * Write help properties files for later use to eventually rewrite Help Mojo.
+     *
+     * @param request
+     * @throws GeneratorException
+     * @see {@link #rewriteHelpMojo(PluginToolsRequest)}
+     */
     private void writeHelpPropertiesFile( PluginToolsRequest request )
         throws GeneratorException
     {
@@ -204,7 +224,7 @@ public class PluginHelpGenerator
         properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
 
         File tmpPropertiesFile =
-            new File( request.getProject().getBuild().getDirectory(), "maven-plugin-help.properties" );
+            new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
 
         if ( tmpPropertiesFile.exists() )
         {
@@ -228,6 +248,127 @@ public class PluginHelpGenerator
         finally
         {
             IOUtil.close( fos );
+        }
+    }
+
+    /**
+     * Rewrite Help Mojo to match actual Mojos package name if it was not available at source generation
+     * time. This is used at descriptor generation time.
+     *
+     * @param request
+     * @throws GeneratorException
+     */
+    static void rewriteHelpMojo( PluginToolsRequest request )
+        throws GeneratorException
+    {
+        File tmpPropertiesFile =
+            new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
+
+        if ( !tmpPropertiesFile.exists() )
+        {
+            return;
+        }
+
+        Properties properties = PropertyUtils.loadProperties( tmpPropertiesFile );
+
+        String helpPackageName = properties.getProperty( "helpPackageName" );
+
+        // if helpPackageName property is empty, we have to rewrite the class with a better package name than empty
+        if ( StringUtils.isEmpty( helpPackageName ) )
+        {
+            String helpMojoImplementation = rewriteHelpClassToMojoPackage( request );
+
+            if ( helpMojoImplementation != null )
+            {
+                // rewrite plugin descriptor with new HelpMojo implementation class
+                updateHelpMojoDescriptor( request.getPluginDescriptor(), helpMojoImplementation );
+            }
+        }
+    }
+
+    private static String rewriteHelpClassToMojoPackage( PluginToolsRequest request )
+        throws GeneratorException
+    {
+        String destinationPackage = GeneratorUtils.discoverPackageName( request.getPluginDescriptor() );
+        if ( StringUtils.isEmpty( destinationPackage ) )
+        {
+            return null;
+        }
+        String packageAsDirectory = StringUtils.replace( destinationPackage, '.', '/' );
+
+        String outputDirectory = request.getProject().getBuild().getOutputDirectory();
+        File helpClassFile = new File( outputDirectory, HELP_MOJO_CLASS_NAME + ".class" );
+        if ( !helpClassFile.exists() )
+        {
+            return null;
+        }
+
+        File rewriteHelpClassFile =
+            new File( outputDirectory + '/' + packageAsDirectory, HELP_MOJO_CLASS_NAME + ".class" );
+        if ( !rewriteHelpClassFile.getParentFile().exists() )
+        {
+            rewriteHelpClassFile.getParentFile().mkdirs();
+        }
+
+        FileInputStream fileInputStream = null;
+        ClassReader cr = null;
+        try
+        {
+            fileInputStream = new FileInputStream( helpClassFile );
+            cr = new ClassReader( fileInputStream );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+        finally
+        {
+            IOUtil.close( fileInputStream );
+        }
+
+        ClassWriter cw = new ClassWriter( 0 );
+
+        Remapper packageRemapper =
+            new SimpleRemapper( HELP_MOJO_CLASS_NAME, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME );
+        ClassVisitor cv = new RemappingClassAdapter( cw, packageRemapper );
+
+        try
+        {
+            cr.accept( cv, ClassReader.EXPAND_FRAMES );
+        }
+        catch ( Throwable e )
+        {
+            throw new GeneratorException( "ASM issue processing class-file " + helpClassFile.getPath(), e );
+        }
+
+        byte[] renamedClass = cw.toByteArray();
+        FileOutputStream fos = null;
+        try
+        {
+            fos = new FileOutputStream( rewriteHelpClassFile );
+            fos.write( renamedClass );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( "Error rewriting help class: " + e.getMessage(), e );
+        }
+        finally
+        {
+            IOUtil.close( fos );
+        }
+
+        helpClassFile.delete();
+
+        return destinationPackage + ".HelpMojo";
+    }
+
+    private static void updateHelpMojoDescriptor( PluginDescriptor pluginDescriptor, String helpMojoImplementation )
+    {
+        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( "help" );
+
+        if ( mojoDescriptor != null )
+        {
+            mojoDescriptor.setImplementation( helpMojoImplementation );
         }
     }
 }
