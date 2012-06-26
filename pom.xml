@@ -123,7 +123,6 @@
 
   <modules>
     <module>maven-script</module>
-    <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-generators</module>
     <module>maven-plugin-tools-api</module>
     <module>maven-plugin-tools-java</module>
@@ -133,6 +132,7 @@
     <module>maven-plugin-tools-ant</module>
     <module>maven-plugin-tools-beanshell</module>
     <module>maven-plugin-tools-model</module>
+    <module>maven-plugin-plugin</module>
   </modules>
 
   <scm>
