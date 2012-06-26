@@ -112,12 +112,11 @@ public class PluginHelpGenerator
                 }
             }
         }
+
         Properties properties = new Properties();
         properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
 
         MavenProject mavenProject = request.getProject();
-
-        String propertiesFilePath = "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId();
 
         File tmpPropertiesFile =
             new File( request.getProject().getBuild().getDirectory(), "maven-plugin-help.properties" );
@@ -154,8 +153,10 @@ public class PluginHelpGenerator
         Writer writer = null;
         try
         {
+            String pluginResourcesPath = "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId();
+
             writer = new OutputStreamWriter( new FileOutputStream( helpClass ), request.getEncoding() );
-            writer.write( getHelpClassSources( propertiesFilePath, pluginDescriptor ) );
+            writer.write( getHelpClassSources( pluginResourcesPath, pluginDescriptor ) );
             writer.flush();
         }
         catch ( IOException e )
@@ -189,7 +190,7 @@ public class PluginHelpGenerator
     // Private methods
     // ----------------------------------------------------------------------
 
-    protected String getHelpClassSources( String propertiesFilePath, PluginDescriptor pluginDescriptor )
+    protected String getHelpClassSources( String pluginResourcesPath, PluginDescriptor pluginDescriptor )
     {
         Properties properties = new Properties();
         VelocityContext context = new VelocityContext( properties );
@@ -201,9 +202,9 @@ public class PluginHelpGenerator
         {
             properties.put( "helpPackageName", "" );
         }
-        properties.put( "pluginHelpPath", propertiesFilePath + "/plugin-help.xml" );
-        properties.put( "artifactId", pluginDescriptor.getArtifactId());
-        properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix());
+        properties.put( "pluginHelpPath", pluginResourcesPath + "/plugin-help.xml" );
+        properties.put( "artifactId", pluginDescriptor.getArtifactId() );
+        properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
         // FIXME encoding !
 
