@@ -64,6 +64,24 @@
       </dependencies>
     </profile>
     <profile>
+      <id>jdk1.7</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Oracle Corporation</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>run-its</id>
       <build>
         <plugins>
