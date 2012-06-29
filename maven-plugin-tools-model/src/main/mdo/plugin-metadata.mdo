@@ -202,6 +202,12 @@
         </field>
         <field>
           <version>1.0.0</version>
+          <name>since</name>
+          <type>String</type>
+          <description>Version when the mojo was added to the API.</description>
+        </field>
+        <field>
+          <version>1.0.0</version>
           <name>call</name>
           <type>String</type>
           <description>The target/method within the script to call when this mojo executes.</description>
@@ -338,6 +344,12 @@
           <version>1.0.0</version>
           <description>A deprecation message for this mojo parameter.</description>
           <type>String</type>
+        </field>
+        <field>
+          <version>1.0.0</version>
+          <name>since</name>
+          <type>String</type>
+          <description>Version when the parameter was added.</description>
         </field>
       </fields>
     </class>
