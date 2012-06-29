@@ -52,7 +52,6 @@
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-annotations</artifactId>
-      <version>${mavenPluginPluginVersion}</version>
     </dependency>
 
     <!-- doxia -->
