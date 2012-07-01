@@ -20,13 +20,12 @@ package org.apache.maven.plugins.annotations;
  */
 
 /**
- * Component instantiation strategy.
+ * Component instanciation strategy.
  *
  * @author Hervé Boutemy
  * @since 3.0
  */
-@Deprecated
-public enum InstanciationStrategy
+public enum InstantiationStrategy
 {
     PER_LOOKUP( "per-lookup" ),
     SINGLETON( "singleton" ),
@@ -35,7 +34,7 @@ public enum InstanciationStrategy
 
     private final String id;
 
-    InstanciationStrategy( String id )
+    InstantiationStrategy(String id)
     {
         this.id = id;
     }

@@ -66,7 +66,15 @@ public @interface Mojo
      * your Mojo instantiation strategy. (Only <code>per-lookup</code> and <code>singleton</code> are supported)
      * @return the instantiation strategy
      */
-    InstanciationStrategy instantiationStrategy() default InstanciationStrategy.PER_LOOKUP;
+    InstantiationStrategy instantiationStrategy() default InstantiationStrategy.PER_LOOKUP;
+
+    /**
+     * The original spelling of the instantiationStrategy attribute.
+     * @see #instantiationStrategy()
+     * @return the instantiation strategy
+     */
+    @Deprecated
+    InstanciationStrategy instanciationStrategy() default InstanciationStrategy.PER_LOOKUP;
 
     /**
      * execution strategy: <code>once-per-session</code> or <code>always</code>.

@@ -504,7 +504,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             mojoDescriptor.setInheritedByDefault( mojo.inheritByDefault() );
 
-            mojoDescriptor.setInstantiationStrategy( mojo.instantiationStrategy().id() );
+            String instantiationStrategy = mojo.instantiationStrategy().id();
+            if ( instantiationStrategy == null )
+            {
+                /* Perhaps the original spelling is there. */
+                instantiationStrategy = mojo.instanciationStrategy().id();
+            }
+            mojoDescriptor.setInstantiationStrategy(instantiationStrategy);
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );

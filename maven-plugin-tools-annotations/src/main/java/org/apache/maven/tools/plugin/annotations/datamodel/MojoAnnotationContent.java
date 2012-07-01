@@ -19,10 +19,10 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * under the License.
  */
 
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.plugins.annotations.InstanciationStrategy;
+import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.lang.annotation.Annotation;
 
@@ -30,6 +30,7 @@ import java.lang.annotation.Annotation;
  * @author Olivier Lamy
  * @since 3.0
  */
+@SuppressWarnings("deprecation")
 public class MojoAnnotationContent
     extends AnnotatedContent
     implements Mojo
@@ -42,7 +43,7 @@ public class MojoAnnotationContent
 
     private ResolutionScope requiresDependencyCollection = ResolutionScope.NONE;
 
-    private InstanciationStrategy instantiationStrategy = InstanciationStrategy.PER_LOOKUP;
+    private InstantiationStrategy instantiationStrategy = InstantiationStrategy.PER_LOOKUP;
 
     private String executionStrategy = "once-per-session";
 
@@ -97,14 +98,31 @@ public class MojoAnnotationContent
         this.requiresDependencyCollection = ResolutionScope.valueOf( requiresDependencyCollection );
     }
 
-    public InstanciationStrategy instantiationStrategy()
+    public InstantiationStrategy instantiationStrategy()
     {
         return instantiationStrategy;
     }
 
+    /**
+     * The original spelling of the instantiationStrategy attribute.
+     * This returns the value under the correct name, there's no separate
+     * field.
+     *
+     * @return the instantiation strategy
+     * @see #instantiationStrategy()
+     */
+    @SuppressWarnings("deprecation")
+    public org.apache.maven.plugins.annotations.InstanciationStrategy instanciationStrategy() {
+        if ( instantiationStrategy == null )
+        {
+            return null;
+        }
+        return org.apache.maven.plugins.annotations.InstanciationStrategy.valueOf(instanciationStrategy().name());
+    }
+
     public void instantiationStrategy( String instantiationStrategy )
     {
-        this.instantiationStrategy = InstanciationStrategy.valueOf( instantiationStrategy );
+        this.instantiationStrategy = InstantiationStrategy.valueOf(instantiationStrategy);
     }
 
     public String executionStrategy()
