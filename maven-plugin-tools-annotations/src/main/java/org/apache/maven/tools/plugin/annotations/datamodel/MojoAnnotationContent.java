@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
+import org.apache.maven.plugins.annotations.InstanciationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -111,18 +112,19 @@ public class MojoAnnotationContent
      * @return the instantiation strategy
      * @see #instantiationStrategy()
      */
-    @SuppressWarnings("deprecation")
-    public org.apache.maven.plugins.annotations.InstanciationStrategy instanciationStrategy() {
+    @SuppressWarnings( "deprecation" )
+    public InstanciationStrategy instanciationStrategy()
+    {
         if ( instantiationStrategy == null )
         {
             return null;
         }
-        return org.apache.maven.plugins.annotations.InstanciationStrategy.valueOf(instanciationStrategy().name());
+        return InstanciationStrategy.valueOf( instanciationStrategy().name() );
     }
 
     public void instantiationStrategy( String instantiationStrategy )
     {
-        this.instantiationStrategy = InstantiationStrategy.valueOf(instantiationStrategy);
+        this.instantiationStrategy = InstantiationStrategy.valueOf( instantiationStrategy );
     }
 
     public String executionStrategy()

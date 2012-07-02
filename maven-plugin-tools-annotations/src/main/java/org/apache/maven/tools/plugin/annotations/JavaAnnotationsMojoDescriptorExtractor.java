@@ -510,7 +510,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 /* Perhaps the original spelling is there. */
                 instantiationStrategy = mojo.instanciationStrategy().id();
             }
-            mojoDescriptor.setInstantiationStrategy(instantiationStrategy);
+            mojoDescriptor.setInstantiationStrategy( instantiationStrategy );
 
             mojoDescriptor.setAggregator( mojo.aggregator() );
             mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );
