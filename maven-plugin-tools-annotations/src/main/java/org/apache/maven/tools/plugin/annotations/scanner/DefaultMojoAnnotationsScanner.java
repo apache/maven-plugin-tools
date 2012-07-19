@@ -192,38 +192,39 @@ public class DefaultMojoAnnotationsScanner
 
         for ( String classFile : classFiles )
         {
+            if ( !classFile.endsWith( ".class" ) )
+            {
+                continue;
+            }
+
             InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) );
             try
             {
+                MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
+                ClassReader rdr = new ClassReader( is );
+                rdr.accept( mojoClassVisitor,
+                            ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
+                analyzeVisitors( mojoClassVisitor );
 
-                if ( classFile.endsWith( ".class" ) )
+                MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
+
+                if ( excludeMojo )
                 {
-                    MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
-                    ClassReader rdr = new ClassReader( is );
-                    rdr.accept( mojoClassVisitor,
-                                ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
-                    analyzeVisitors( mojoClassVisitor );
-                    if ( excludeMojo )
-                    {
-                        mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
-                    }
-                    if ( isStoreClass( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
-                    {
-                        getLogger().debug(
-                            "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
-                                + mojoClassVisitor.getMojoAnnotatedClass() );
-                        mojoClassVisitor.getMojoAnnotatedClass().setArtifact( artifact );
-                        mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
-                                                  mojoClassVisitor.getMojoAnnotatedClass() );
-                    }
+                    mojoAnnotatedClass.setMojo( null );
+                }
 
+                if ( isStoreClass( mojoAnnotatedClass ) != null )
+                {
+                    getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
+                                           + mojoAnnotatedClass );
+                    mojoAnnotatedClass.setArtifact( artifact );
+                    mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
                 }
             }
             finally
             {
                 IOUtil.close( is );
             }
-
         }
         return mojoAnnotatedClasses;
     }
