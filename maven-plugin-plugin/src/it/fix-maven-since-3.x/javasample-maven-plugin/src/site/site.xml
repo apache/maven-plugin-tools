@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="${artifactId}">
+  <publishDate position="right" format="dd/MM/yyyy, HH:mm" />
+  <version position="right"/>
+  <poweredBy>
+    <logo name="Maven" href="http://maven.apache.org/"
+      img="${project.url}/images/maven-feather.png" />
+  </poweredBy>
+  <body>
+    <menu name="Overview">
+      <item name="Introduction" href="index.html"/>
+      <item name="Goals" href="plugin-info.html"/>
+      <item name="Usage" href="usage.html"/>
+      <item name="FAQ" href="faq.html"/>
+    </menu>
+    ${reports}
+  </body>
+</project>
+

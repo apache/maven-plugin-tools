@@ -126,6 +126,7 @@ public class PluginMetadataParser
         descriptor.setRequiresReports( mojo.isRequiresReports() );
         descriptor.setDescription( mojo.getDescription() );
         descriptor.setDeprecated( mojo.getDeprecation() );
+        descriptor.setSince( mojo.getSince() );
 
         LifecycleExecution le = mojo.getExecution();
         if ( le != null )
@@ -147,6 +148,7 @@ public class PluginMetadataParser
                 dParam.setEditable( !param.isReadonly() );
                 dParam.setExpression( param.getExpression() );
                 dParam.setDefaultValue( param.getDefaultValue() );
+                dParam.setSince( param.getSince() );
 
                 String property = param.getProperty();
                 if ( StringUtils.isNotEmpty( property ) )

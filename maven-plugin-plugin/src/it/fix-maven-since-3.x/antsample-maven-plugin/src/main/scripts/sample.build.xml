@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-tasks">
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+  <!-- Global Properties -->
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+
+  <!-- taskdef resource="net/sf/antcontrib/antcontrib.properties"/-->
+
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+  <!-- Main task -->
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+  <target name="sample-task">
+
+    <echo message="${message}."/>
+
+  </target>
+</project>
