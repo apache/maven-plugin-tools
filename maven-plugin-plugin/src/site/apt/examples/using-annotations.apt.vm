@@ -46,6 +46,7 @@ Using Plugin Tools Java5 Annotations
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${project.version}</version>
+      <scope>compile</scope>
     </dependency>
     <!-- generated help mojo has a dependency to plexus-utils -->
     <dependency>
