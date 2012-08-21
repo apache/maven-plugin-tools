@@ -40,6 +40,8 @@ Using Plugin Tools Java5 Annotations
 +-----+
 <project>
   ...
+  <packaging>maven-plugin</packaging>
+  ...
   <dependencies>
     <!-- dependencies to annotations -->
     <dependency>
