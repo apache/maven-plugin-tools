@@ -27,5 +27,8 @@ under the License.
       <item name="Source Xref" href="xref/index.html"/>
       <!--item name="FAQ" href="faq.html"/-->
     </menu>
+    <menu name="Reference">
+      <item name="Plugin Descriptor" href="http://maven.apache.org/ref/current/maven-plugin-api/plugin.html"/>
+    </menu>
   </body>
 </project>
