@@ -138,10 +138,7 @@ public class PluginHelpGenerator
             File helpClass = new File( destinationDirectory, sourcePath );
             helpClass.getParentFile().mkdirs();
 
-            MavenProject mavenProject = request.getProject();
-            String pluginResourcesPath = "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId();
-
-            String helpClassSources = getHelpClassSources( pluginResourcesPath, pluginDescriptor );
+            String helpClassSources = getHelpClassSources( getPluginHelpPath( request.getProject() ), pluginDescriptor );
 
             FileUtils.fileWrite( helpClass, request.getEncoding(), helpClassSources );
         }
@@ -172,7 +169,7 @@ public class PluginHelpGenerator
     // Private methods
     // ----------------------------------------------------------------------
 
-    private String getHelpClassSources( String pluginResourcesPath, PluginDescriptor pluginDescriptor )
+    private String getHelpClassSources( String pluginHelpPath, PluginDescriptor pluginDescriptor )
     {
         Properties properties = new Properties();
         VelocityContext context = new VelocityContext( properties );
@@ -184,7 +181,7 @@ public class PluginHelpGenerator
         {
             properties.put( "helpPackageName", "" );
         }
-        properties.put( "pluginHelpPath", pluginResourcesPath + "/plugin-help.xml" );
+        properties.put( "pluginHelpPath", pluginHelpPath );
         properties.put( "artifactId", pluginDescriptor.getArtifactId() );
         properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
@@ -254,6 +251,11 @@ public class PluginHelpGenerator
         {
             IOUtil.close( fos );
         }
+    }
+
+    static String getPluginHelpPath( MavenProject mavenProject )
+    {
+        return "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId() + "/plugin-help.xml";
     }
 
     /**

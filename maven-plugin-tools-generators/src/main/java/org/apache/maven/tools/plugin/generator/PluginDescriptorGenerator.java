@@ -48,7 +48,7 @@ import java.util.Set;
 
 /**
  * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a> and
- * corresponding help content.
+ * corresponding <code>plugin-help.xml</code> help content for {@link PluginHelpGenerator}.
  *
  * @version $Id$
  * @todo add example usage tag that can be shown in the doco
@@ -76,10 +76,11 @@ public class PluginDescriptorGenerator
 
             // write plugin-help.xml help-descriptor
             MavenProject mavenProject = request.getProject();
-            String pluginHelpFilePath =
-                "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId() + "/plugin-help.xml";
 
-            f = new File( request.getProject().getBuild().getOutputDirectory(), pluginHelpFilePath );
+            f =
+                new File( mavenProject.getBuild().getOutputDirectory(),
+                          PluginHelpGenerator.getPluginHelpPath( mavenProject ) );
+
             writeDescriptor( f, request, true );
         }
         catch ( IOException e )
