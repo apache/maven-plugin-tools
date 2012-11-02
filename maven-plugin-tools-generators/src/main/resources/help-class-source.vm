@@ -4,12 +4,15 @@ package ${helpPackageName};
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -63,20 +66,26 @@ public class HelpMojo
     // groupId/artifactId/plugin-help.xml
     private static final String PLUGIN_HELP_PATH = "/${pluginHelpPath}";
 
-    private Xpp3Dom build()
+    private Document build()
         throws MojoExecutionException
     {
         getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
         InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH );
         try
         {
-            return Xpp3DomBuilder.build( ReaderFactory.newXmlReader( is ) );
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            return dBuilder.parse(is);
         }
-        catch ( XmlPullParserException e )
+        catch ( IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch ( IOException e )
+        catch (ParserConfigurationException e)
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+        catch (SAXException e)
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -99,20 +108,22 @@ public class HelpMojo
             indentSize = 2;
         }
 
-        Xpp3Dom pluginElement = build();
+        Document doc = build();
 
         StringBuilder sb = new StringBuilder();
-        String name = pluginElement.getChild( "name" ).getValue();
-        String version = pluginElement.getChild( "version" ).getValue();
-        String id = pluginElement.getChild( "groupId" ).getValue() + ":" + pluginElement.getChild( "artifactId" ).getValue()
-                    + ":" + version;
-        if ( StringUtils.isNotEmpty( name ) && !name.contains( id ) )
+        Node plugin = getSingleChild(doc, "plugin");
+
+
+        String name = getValue(plugin, "name");
+        String version = getValue(plugin, "version");
+        String id = getValue( plugin, "groupId" )+ ":" + getValue( plugin, "artifactId" ) + ":" + version;
+        if ( isNotEmpty( name ) && !name.contains( id ) )
         {
             append( sb, name + " " + version, 0 );
         }
         else
         {
-            if ( StringUtils.isNotEmpty( name ) )
+            if ( isNotEmpty( name ) )
             {
                 append( sb, name, 0 );
             }
@@ -121,23 +132,24 @@ public class HelpMojo
                 append( sb, id, 0 );
             }
         }
-        append( sb, pluginElement.getChild( "description" ).getValue(), 1 );
+        append( sb, getValue(plugin, "description"), 1 );
         append( sb, "", 0 );
 
         //<goalPrefix>plugin</goalPrefix>
-        String goalPrefix = pluginElement.getChild( "goalPrefix" ).getValue();
+        String goalPrefix = getValue(plugin, "goalPrefix");
 
-        Xpp3Dom[] mojos = pluginElement.getChild( "mojos" ).getChildren( "mojo" );
+        Node mojos1 = getSingleChild(plugin, "mojos");
+
+        List<Node> mojos = findNamedChild(mojos1, "mojo");
 
         if ( goal == null || goal.length() <= 0 )
         {
-            append( sb, "This plugin has " + mojos.length + ( mojos.length > 1 ? " goals:" : " goal:" ) , 0 );
+            append( sb, "This plugin has " + mojos.size() + ( mojos.size() > 1 ? " goals:" : " goal:" ) , 0 );
             append( sb, "", 0 );
         }
 
-        for ( Xpp3Dom mojo : mojos )
-        {
-            writeGoal( sb, goalPrefix, mojo );
+        for (Node mojo : mojos) {
+            writeGoal(sb, goalPrefix, (Element) mojo);
         }
 
         if ( getLog().isInfoEnabled() )
@@ -146,22 +158,65 @@ public class HelpMojo
         }
     }
 
-    private String getValue( Xpp3Dom mojo, String child )
+
+    private static boolean isNotEmpty( String string)
     {
-        Xpp3Dom elt = mojo.getChild( child );
-        return ( elt == null ) ? "" : elt.getValue();
+        return string != null && string.length() > 0;
     }
 
-    private void writeGoal( StringBuilder sb, String goalPrefix, Xpp3Dom mojo )
-    {
-        String mojoGoal = mojo.getChild( "goal" ).getValue();
-        Xpp3Dom configurationElement = mojo.getChild( "configuration" );
+    private String getValue(Node node, String elementName) throws MojoExecutionException {
+        return getSingleChild(node, elementName).getTextContent();
+    }
+
+    private Node getSingleChild(Node node, String elementName) throws MojoExecutionException {
+        List<Node> namedChild = findNamedChild(node, elementName);
+        if (namedChild.isEmpty())
+        {
+            throw new MojoExecutionException("Could not find " + elementName + "in plugin-help.xml");
+        }
+        if (namedChild.size() > 1)
+        {
+            throw new MojoExecutionException("Multiple " + elementName + "in plugin-help.xml");
+        }
+        Node node1 = namedChild.get(0);
+        return node1;
+    }
+
+    private List<Node> findNamedChild(Node node, String elementName){
+        List<Node> result = new ArrayList<Node>();
+        NodeList childNodes = node.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++){
+            Node item = childNodes.item(i);
+            if (elementName.equals(item.getNodeName())){
+                result.add( item);
+            }
+        }
+        return result;
+    }
+
+
+    private Node findSingleChild(Node node, String elementName) throws MojoExecutionException {
+        List<Node> elementsByTagName = findNamedChild(node, elementName);
+        if (elementsByTagName.isEmpty())
+        {
+            return null;
+        }
+        if (elementsByTagName.size() > 1)
+        {
+            throw new MojoExecutionException("Multiple " + elementName + "in plugin-help.xml");
+        }
+        return elementsByTagName.get(0);
+    }
+
+    private void writeGoal( StringBuilder sb, String goalPrefix, Element mojo ) throws MojoExecutionException {
+        String mojoGoal = getValue(mojo, "goal");
+        Node configurationElement = findSingleChild(mojo, "configuration");
 
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
-            Xpp3Dom deprecated = mojo.getChild( "deprecated" );
-            if ( ( deprecated != null ) && StringUtils.isNotEmpty( deprecated.getValue() ) )
+            Node deprecated = findSingleChild(mojo, "deprecated");
+            if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
             {
                 append( sb, "Deprecated. " + deprecated, 1 );
                 if ( detail )
@@ -178,46 +233,45 @@ public class HelpMojo
 
             if ( detail )
             {
-                Xpp3Dom[] parameters = mojo.getChild( "parameters" ).getChildren( "parameter" );
+                Node parametersNode = getSingleChild(mojo, "parameters");
+                List<Node> parameters = findNamedChild(parametersNode, "parameter");
                 append( sb, "Available parameters:", 1 );
                 append( sb, "", 0 );
 
-                for ( Xpp3Dom parameter : parameters )
-                {
-                    writeParameter( sb, parameter, configurationElement );
+                for (Node parameter : parameters) {
+                    writeParameter(sb, parameter, configurationElement);
                 }
             }
         }
     }
 
-    private void writeParameter( StringBuilder sb, Xpp3Dom parameter, Xpp3Dom configurationElement )
-    {
-        String parameterName = parameter.getChild( "name" ).getValue();
-        String parameterDescription = parameter.getChild( "description" ).getValue();
+    private void writeParameter( StringBuilder sb, Node parameter, Node configurationElement ) throws MojoExecutionException {
+        String parameterName = getValue(parameter, "name");
+        String parameterDescription = getValue(parameter, "description");
 
-        Xpp3Dom fieldConfigurationElement = configurationElement.getChild( parameterName );
+        Node fieldConfigurationElement = findSingleChild(configurationElement, parameterName);
 
         String parameterDefaultValue = "";
-        if ( fieldConfigurationElement != null && fieldConfigurationElement.getValue() != null )
+        if ( fieldConfigurationElement != null && fieldConfigurationElement.getNodeValue() != null )
         {
-            parameterDefaultValue = " (Default: " + fieldConfigurationElement.getAttribute( "default-value" ) + ")";
+            parameterDefaultValue = " (Default: " + ((Element)fieldConfigurationElement).getAttribute( "default-value" ) + ")";
         }
         append( sb, parameterName + parameterDefaultValue, 2 );
-        Xpp3Dom deprecated = parameter.getChild( "deprecated" );
-        if ( ( deprecated != null ) && StringUtils.isNotEmpty( deprecated.getValue() ) )
+        Node deprecated = findSingleChild(parameter, "deprecated");
+        if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
         {
-            append( sb, "Deprecated. " + deprecated.getValue(), 3 );
+            append( sb, "Deprecated. " + deprecated.getNodeValue(), 3 );
             append( sb, "", 0 );
         }
         append( sb, parameterDescription, 3 );
-        if ( "true".equals( parameter.getChild( "required" ).getValue() ) )
+        if ( "true".equals( getValue(parameter, "required")) )
         {
             append( sb, "Required: Yes", 3 );
         }
-        Xpp3Dom expression = parameter.getChild( "expression" );
-        if ( ( expression != null ) && StringUtils.isNotEmpty( expression.getValue() ) )
+        Node expression = findSingleChild(parameter, "expression");
+        if ( ( expression != null ) && isNotEmpty( expression.getNodeValue() ) )
         {
-            append( sb, "Expression: " + expression.getValue(), 3 );
+            append( sb, "Expression: " + expression.getNodeValue(), 3 );
         }
 
         append( sb, "", 0 );
