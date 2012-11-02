@@ -75,17 +75,17 @@ public class HelpMojo
         {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            return dBuilder.parse(is);
+            return dBuilder.parse( is );
         }
         catch ( IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch (ParserConfigurationException e)
+        catch ( ParserConfigurationException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch (SAXException e)
+        catch ( SAXException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -111,12 +111,12 @@ public class HelpMojo
         Document doc = build();
 
         StringBuilder sb = new StringBuilder();
-        Node plugin = getSingleChild(doc, "plugin");
+        Node plugin = getSingleChild( doc, "plugin" );
 
 
-        String name = getValue(plugin, "name");
-        String version = getValue(plugin, "version");
-        String id = getValue( plugin, "groupId" )+ ":" + getValue( plugin, "artifactId" ) + ":" + version;
+        String name = getValue( plugin, "name" );
+        String version = getValue( plugin, "version" );
+        String id = getValue( plugin, "groupId" ) + ":" + getValue( plugin, "artifactId" ) + ":" + version;
         if ( isNotEmpty( name ) && !name.contains( id ) )
         {
             append( sb, name + " " + version, 0 );
@@ -132,24 +132,25 @@ public class HelpMojo
                 append( sb, id, 0 );
             }
         }
-        append( sb, getValue(plugin, "description"), 1 );
+        append( sb, getValue( plugin, "description" ), 1 );
         append( sb, "", 0 );
 
         //<goalPrefix>plugin</goalPrefix>
-        String goalPrefix = getValue(plugin, "goalPrefix");
+        String goalPrefix = getValue( plugin, "goalPrefix" );
 
-        Node mojos1 = getSingleChild(plugin, "mojos");
+        Node mojos1 = getSingleChild( plugin, "mojos" );
 
-        List<Node> mojos = findNamedChild(mojos1, "mojo");
+        List<Node> mojos = findNamedChild( mojos1, "mojo" );
 
         if ( goal == null || goal.length() <= 0 )
         {
-            append( sb, "This plugin has " + mojos.size() + ( mojos.size() > 1 ? " goals:" : " goal:" ) , 0 );
+            append( sb, "This plugin has " + mojos.size() + ( mojos.size() > 1 ? " goals:" : " goal:" ), 0 );
             append( sb, "", 0 );
         }
 
-        for (Node mojo : mojos) {
-            writeGoal(sb, goalPrefix, (Element) mojo);
+        for ( Node mojo : mojos )
+        {
+            writeGoal( sb, goalPrefix, (Element) mojo );
         }
 
         if ( getLog().isInfoEnabled() )
@@ -159,63 +160,73 @@ public class HelpMojo
     }
 
 
-    private static boolean isNotEmpty( String string)
+    private static boolean isNotEmpty( String string )
     {
         return string != null && string.length() > 0;
     }
 
-    private String getValue(Node node, String elementName) throws MojoExecutionException {
-        return getSingleChild(node, elementName).getTextContent();
+    private String getValue( Node node, String elementName )
+        throws MojoExecutionException
+    {
+        return getSingleChild( node, elementName ).getTextContent();
     }
 
-    private Node getSingleChild(Node node, String elementName) throws MojoExecutionException {
-        List<Node> namedChild = findNamedChild(node, elementName);
-        if (namedChild.isEmpty())
+    private Node getSingleChild( Node node, String elementName )
+        throws MojoExecutionException
+    {
+        List<Node> namedChild = findNamedChild( node, elementName );
+        if ( namedChild.isEmpty() )
         {
-            throw new MojoExecutionException("Could not find " + elementName + "in plugin-help.xml");
+            throw new MojoExecutionException( "Could not find " + elementName + "in plugin-help.xml" );
         }
-        if (namedChild.size() > 1)
+        if ( namedChild.size() > 1 )
         {
-            throw new MojoExecutionException("Multiple " + elementName + "in plugin-help.xml");
+            throw new MojoExecutionException( "Multiple " + elementName + "in plugin-help.xml" );
         }
-        Node node1 = namedChild.get(0);
+        Node node1 = namedChild.get( 0 );
         return node1;
     }
 
-    private List<Node> findNamedChild(Node node, String elementName){
+    private List<Node> findNamedChild( Node node, String elementName )
+    {
         List<Node> result = new ArrayList<Node>();
         NodeList childNodes = node.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++){
-            Node item = childNodes.item(i);
-            if (elementName.equals(item.getNodeName())){
-                result.add( item);
+        for ( int i = 0; i < childNodes.getLength(); i++ )
+        {
+            Node item = childNodes.item( i );
+            if ( elementName.equals( item.getNodeName() ) )
+            {
+                result.add( item );
             }
         }
         return result;
     }
 
-
-    private Node findSingleChild(Node node, String elementName) throws MojoExecutionException {
-        List<Node> elementsByTagName = findNamedChild(node, elementName);
-        if (elementsByTagName.isEmpty())
+    private Node findSingleChild( Node node, String elementName )
+        throws MojoExecutionException
+    {
+        List<Node> elementsByTagName = findNamedChild( node, elementName );
+        if ( elementsByTagName.isEmpty() )
         {
             return null;
         }
-        if (elementsByTagName.size() > 1)
+        if ( elementsByTagName.size() > 1 )
         {
-            throw new MojoExecutionException("Multiple " + elementName + "in plugin-help.xml");
+            throw new MojoExecutionException( "Multiple " + elementName + "in plugin-help.xml" );
         }
-        return elementsByTagName.get(0);
+        return elementsByTagName.get( 0 );
     }
 
-    private void writeGoal( StringBuilder sb, String goalPrefix, Element mojo ) throws MojoExecutionException {
-        String mojoGoal = getValue(mojo, "goal");
-        Node configurationElement = findSingleChild(mojo, "configuration");
+    private void writeGoal( StringBuilder sb, String goalPrefix, Element mojo )
+        throws MojoExecutionException
+    {
+        String mojoGoal = getValue( mojo, "goal" );
+        Node configurationElement = findSingleChild( mojo, "configuration" );
 
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
-            Node deprecated = findSingleChild(mojo, "deprecated");
+            Node deprecated = findSingleChild( mojo, "deprecated" );
             if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
             {
                 append( sb, "Deprecated. " + deprecated, 1 );
@@ -233,23 +244,26 @@ public class HelpMojo
 
             if ( detail )
             {
-                Node parametersNode = getSingleChild(mojo, "parameters");
-                List<Node> parameters = findNamedChild(parametersNode, "parameter");
+                Node parametersNode = getSingleChild( mojo, "parameters" );
+                List<Node> parameters = findNamedChild( parametersNode, "parameter" );
                 append( sb, "Available parameters:", 1 );
                 append( sb, "", 0 );
 
-                for (Node parameter : parameters) {
-                    writeParameter(sb, parameter, configurationElement);
+                for ( Node parameter : parameters )
+                {
+                    writeParameter( sb, parameter, configurationElement );
                 }
             }
         }
     }
 
-    private void writeParameter( StringBuilder sb, Node parameter, Node configurationElement ) throws MojoExecutionException {
-        String parameterName = getValue(parameter, "name");
-        String parameterDescription = getValue(parameter, "description");
+    private void writeParameter( StringBuilder sb, Node parameter, Node configurationElement )
+        throws MojoExecutionException
+    {
+        String parameterName = getValue( parameter, "name" );
+        String parameterDescription = getValue( parameter, "description" );
 
-        Node fieldConfigurationElement = findSingleChild(configurationElement, parameterName);
+        Node fieldConfigurationElement = findSingleChild( configurationElement, parameterName );
 
         String parameterDefaultValue = "";
         if ( fieldConfigurationElement != null && fieldConfigurationElement.getNodeValue() != null )
@@ -257,18 +271,18 @@ public class HelpMojo
             parameterDefaultValue = " (Default: " + ((Element)fieldConfigurationElement).getAttribute( "default-value" ) + ")";
         }
         append( sb, parameterName + parameterDefaultValue, 2 );
-        Node deprecated = findSingleChild(parameter, "deprecated");
+        Node deprecated = findSingleChild( parameter, "deprecated" );
         if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
         {
             append( sb, "Deprecated. " + deprecated.getNodeValue(), 3 );
             append( sb, "", 0 );
         }
         append( sb, parameterDescription, 3 );
-        if ( "true".equals( getValue(parameter, "required")) )
+        if ( "true".equals( getValue( parameter, "required" ) ) )
         {
             append( sb, "Required: Yes", 3 );
         }
-        Node expression = findSingleChild(parameter, "expression");
+        Node expression = findSingleChild( parameter, "expression" );
         if ( ( expression != null ) && isNotEmpty( expression.getNodeValue() ) )
         {
             append( sb, "Expression: " + expression.getNodeValue(), 3 );
