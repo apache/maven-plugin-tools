@@ -50,6 +50,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Properties;
 
@@ -195,8 +196,12 @@ public class PluginHelpGenerator
         InputStreamReader isReader = null;
         try
         {
-            isReader = new InputStreamReader( is ); // FIXME platform encoding
+            isReader = new InputStreamReader( is, "UTF-8" ); // plugin-tools sources are UTF-8 (and even ASCII in this case)
             velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            // not supposed to happen since UTF-8 is supposed to be supported by any JVM
         }
         finally
         {
