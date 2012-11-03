@@ -204,4 +204,9 @@ assert parameter.description.text() == 'Parameter description.'
 requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
 assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
+// check help mojo source and class
+assert new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" ).isFile()
+assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/plugin/coreit/HelpMojo.java" ).isFile()
+assert !new File( basedir, "target/generated-sources/plugin/HelpMojo.java" ).isFile()
+
 return true;
