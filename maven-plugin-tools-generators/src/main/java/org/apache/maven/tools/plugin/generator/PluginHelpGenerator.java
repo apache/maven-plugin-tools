@@ -42,11 +42,10 @@ import org.objectweb.asm.commons.SimpleRemapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -338,8 +337,10 @@ public class PluginHelpGenerator
         PrintWriter sourceWriter = null;
         try
         {
-            sourceReader = new FileReader( helpSourceFile ); // FIXME platform encoding
-            sourceWriter = new PrintWriter( new FileWriter( helpSourceFileNew ) ); // FIXME platform encoding
+            sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), request.getEncoding() );
+            sourceWriter =
+                new PrintWriter( new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ),
+                                                         request.getEncoding() ) );
 
             sourceWriter.println( "package " + destinationPackage + ";" );
             IOUtil.copy( sourceReader, sourceWriter );
