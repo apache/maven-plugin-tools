@@ -214,7 +214,7 @@ public class PluginDescriptorGenerator
 
         String description = mojoDescriptor.getDescription();
 
-        if ( description != null )
+        if ( StringUtils.isNotEmpty( description ) )
         {
             w.startElement( "description" );
             if ( helpDescriptor )
