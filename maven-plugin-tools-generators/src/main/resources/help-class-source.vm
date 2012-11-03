@@ -209,8 +209,7 @@ public class HelpMojo
         {
             throw new MojoExecutionException( "Multiple " + elementName + " in plugin-help.xml" );
         }
-        Node node1 = namedChild.get( 0 );
-        return node1;
+        return namedChild.get( 0 );
     }
 
     private List<Node> findNamedChild( Node node, String elementName )
@@ -248,7 +247,7 @@ public class HelpMojo
     {
         String mojoGoal = getValue( mojo, "goal" );
         Node configurationElement = findSingleChild( mojo, "configuration" );
-
+		Node description = findSingleChild( mojo, "description" );
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
@@ -256,15 +255,15 @@ public class HelpMojo
             if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
             {
                 append( sb, "Deprecated. " + deprecated, 1 );
-                if ( detail )
+                if ( detail && description != null )
                 {
                     append( sb, "", 0 );
-                    append( sb, getValue( mojo, "description" ), 1 );
+                    append( sb, description.getTextContent(), 1 );
                 }
             }
-            else
+            else if (description != null )
             {
-                append( sb, getValue( mojo, "description" ), 1 );
+                append( sb, description.getTextContent(), 1 );
             }
             append( sb, "", 0 );
 
