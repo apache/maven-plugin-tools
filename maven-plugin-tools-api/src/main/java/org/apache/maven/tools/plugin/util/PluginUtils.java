@@ -57,7 +57,7 @@ public final class PluginUtils
 
         mavenComponents.put( "org.apache.maven.execution.MavenSession", "${session}" );
         mavenComponents.put( "org.apache.maven.project.MavenProject", "${project}" );
-        mavenComponents.put( "org.apache.maven.plugin.MojoExecution", "${mojo}" );
+        mavenComponents.put( "org.apache.maven.plugin.MojoExecution", "${mojoExecution}" );
         mavenComponents.put( "org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}" );
         mavenComponents.put( "org.apache.maven.settings.Settings", "${settings}" );
         

@@ -42,7 +42,7 @@ assert mojo.configuration.project[0].'@default-value' == '${project}'
 
 assert mojo.configuration.mojo[0].text() == ''
 assert mojo.configuration.mojo[0].'@implementation' == 'org.apache.maven.plugin.MojoExecution'
-assert mojo.configuration.mojo[0].'@default-value' == '${mojo}'
+assert mojo.configuration.mojo[0].'@default-value' == '${mojoExecution}'
 
 assert mojo.configuration.plugin[0].text() == ''
 assert mojo.configuration.plugin[0].'@implementation' == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
