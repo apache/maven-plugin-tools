@@ -34,33 +34,49 @@ public class HelpMojo
     /**
      * If <code>true</code>, display all settable properties for each goal.
      *
+#if ( !$useAnnotations )     
      * @parameter property="detail" default-value="false"
+#end
      */
-    //@Parameter( property = "detail", defaultValue = "false" )
+#if ( $useAnnotations )     
+    @Parameter( property = "detail", defaultValue = "false" )
+#end
     private boolean detail;
 
     /**
      * The name of the goal for which to show help. If unspecified, all goals will be displayed.
      *
+#if ( !$useAnnotations )     
      * @parameter property="goal"
+#end
      */
-    //@Parameter( property = "goal" )
+#if ( $useAnnotations )     
+    @Parameter( property = "goal" )
+#end    
     private java.lang.String goal;
 
     /**
      * The maximum length of a display line, should be positive.
      *
+#if ( !$useAnnotations )     
      * @parameter property="lineLength" default-value="80"
+#end
      */
-    //@Parameter( property = "lineLength", defaultValue = "80" )
+#if ( $useAnnotations )     
+    @Parameter( property = "lineLength", defaultValue = "80" )
+#end
     private int lineLength;
 
     /**
      * The number of spaces per indentation level, should be positive.
      *
+#if ( !$useAnnotations )     
      * @parameter property="indentSize" default-value="2"
+#end
      */
-    //@Parameter( property = "indentSize", defaultValue = "2" )
+#if ( $useAnnotations )     
+    @Parameter( property = "indentSize", defaultValue = "2" )
+#end
     private int indentSize;
 
     // groupId/artifactId/plugin-help.xml

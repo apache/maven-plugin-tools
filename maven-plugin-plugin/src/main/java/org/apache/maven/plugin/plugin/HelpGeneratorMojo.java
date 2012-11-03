@@ -32,12 +32,12 @@ import java.io.File;
 
 /**
  * Generates a <code>HelpMojo</code> class.
- *
+ * 
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
  * @since 2.4
  */
-@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true )
+@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true /*, requiresDependencyResolution = ResolutionScope.COMPILE */ )
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
 {
@@ -50,7 +50,7 @@ public class HelpGeneratorMojo
     /**
      * The name of the package for the generated <code>HelpMojo</code>. By default, the package will be calculated based
      * on the packages of the other plugin goals.
-     *
+     * 
      * @since 2.6
      */
     @Parameter
@@ -75,7 +75,7 @@ public class HelpGeneratorMojo
      */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setVelocityComponent( this.velocity );
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseAnnotations( project.getArtifactMap().containsKey( "org.apache.maven.plugin-tools:maven-plugin-annotations" ) ).setVelocityComponent( this.velocity );
     }
 
     /**

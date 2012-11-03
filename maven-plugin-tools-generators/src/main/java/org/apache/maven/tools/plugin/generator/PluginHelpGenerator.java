@@ -88,6 +88,8 @@ public class PluginHelpGenerator
 
     private String helpPackageName;
 
+    private boolean useAnnotations;
+
     private VelocityComponent velocityComponent;
 
     /**
@@ -157,6 +159,12 @@ public class PluginHelpGenerator
         this.helpPackageName = helpPackageName;
         return this;
     }
+    
+    public PluginHelpGenerator setUseAnnotations( boolean useAnnotations )
+    {
+        this.useAnnotations = useAnnotations;
+        return this;
+    }
 
     public VelocityComponent getVelocityComponent()
     {
@@ -188,6 +196,7 @@ public class PluginHelpGenerator
         properties.put( "pluginHelpPath", pluginHelpPath );
         properties.put( "artifactId", pluginDescriptor.getArtifactId() );
         properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
+        properties.put( "useAnnotations", useAnnotations );
 
         StringWriter stringWriter = new StringWriter();
 
