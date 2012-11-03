@@ -189,13 +189,20 @@ public class PluginHelpGenerator
         properties.put( "artifactId", pluginDescriptor.getArtifactId() );
         properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
 
-        // FIXME encoding !
-
         StringWriter stringWriter = new StringWriter();
 
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream( "help-class-source.vm" );
-        InputStreamReader isReader = new InputStreamReader( is ); // FIXME platform encoding
-        velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader ); // FIXME close reader
+        InputStreamReader isReader = null;
+        try
+        {
+            isReader = new InputStreamReader( is ); // FIXME platform encoding
+            velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
+        }
+        finally
+        {
+            IOUtil.close( is );
+            IOUtil.close( isReader );
+        }
 
         return stringWriter.toString();
     }
