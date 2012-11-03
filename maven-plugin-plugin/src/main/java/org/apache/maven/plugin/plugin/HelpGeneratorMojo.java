@@ -19,16 +19,17 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
 import org.codehaus.plexus.velocity.VelocityComponent;
-
-import java.io.File;
 
 /**
  * Generates a <code>HelpMojo</code> class.
@@ -37,7 +38,7 @@ import java.io.File;
  * @version $Id$
  * @since 2.4
  */
-@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true /*, requiresDependencyResolution = ResolutionScope.COMPILE */ )
+@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE )
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
 {

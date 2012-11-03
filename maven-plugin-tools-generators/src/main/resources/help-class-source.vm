@@ -4,6 +4,11 @@ package ${helpPackageName};
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+#if ( $useAnnotations )
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+#end
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,10 +29,15 @@ import java.util.List;
  * Call <code>mvn ${goalPrefix}:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author
  * @version
+#if ( !$useAnnotations )     
  * @goal help
  * @requiresProject false
  * @threadSafe
+#end
  */
+#if ( $useAnnotations )
+@Mojo( name = "help", requiresProject = false, threadSafe = true )
+#end
 public class HelpMojo
     extends AbstractMojo
 {
