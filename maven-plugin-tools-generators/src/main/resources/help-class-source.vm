@@ -177,11 +177,11 @@ public class HelpMojo
         List<Node> namedChild = findNamedChild( node, elementName );
         if ( namedChild.isEmpty() )
         {
-            throw new MojoExecutionException( "Could not find " + elementName + "in plugin-help.xml" );
+            throw new MojoExecutionException( "Could not find " + elementName + " in plugin-help.xml" );
         }
         if ( namedChild.size() > 1 )
         {
-            throw new MojoExecutionException( "Multiple " + elementName + "in plugin-help.xml" );
+            throw new MojoExecutionException( "Multiple " + elementName + " in plugin-help.xml" );
         }
         Node node1 = namedChild.get( 0 );
         return node1;
@@ -285,7 +285,8 @@ public class HelpMojo
         Node expression = findSingleChild( parameter, "expression" );
         if ( ( expression != null ) && isNotEmpty( expression.getNodeValue() ) )
         {
-            append( sb, "Expression: " + expression.getNodeValue(), 3 );
+        	String property = getPropertyFromExpression( expression.getNodeValue() );
+            append( sb, "User property: " + property, 3 );
         }
 
         append( sb, "", 0 );
@@ -427,5 +428,17 @@ public class HelpMojo
             }
         }
         return level;
+    }
+    
+    private String getPropertyFromExpression( String expression )
+    {
+        if ( expression != null && expression.startsWith( "${" ) && expression.endsWith( "}" )
+            && !expression.substring( 2 ).contains( "${" ) )
+        {
+            // expression="${xxx}" -> property="xxx"
+            return expression.substring( 2, expression.length() - 1 );
+        }
+        // no property can be extracted
+        return null;
     }
 }
