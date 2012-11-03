@@ -207,13 +207,12 @@ public class PluginHelpGenerator
      */
     private String getImplementation( PluginDescriptor pluginDescriptor )
     {
-        String packageName = helpPackageName;
-        if ( StringUtils.isEmpty( packageName ) )
+        if ( StringUtils.isEmpty( helpPackageName ) )
         {
-            packageName = GeneratorUtils.discoverPackageName( pluginDescriptor );
+            helpPackageName = GeneratorUtils.discoverPackageName( pluginDescriptor );
         }
 
-        return StringUtils.isEmpty( packageName ) ? HELP_MOJO_CLASS_NAME : packageName + '.' + HELP_MOJO_CLASS_NAME;
+        return StringUtils.isEmpty( helpPackageName ) ? HELP_MOJO_CLASS_NAME : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
     }
 
     /**
@@ -318,35 +317,32 @@ public class PluginHelpGenerator
 
         // rewrite help mojo source
         File helpSourceFile = new File( destinationDirectory, HELP_MOJO_CLASS_NAME + ".java" );
-        if ( helpSourceFile.exists() )
+        File helpSourceFileNew = new File( destinationDirectory, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME + ".java" );
+        if ( !helpSourceFileNew.getParentFile().exists() )
         {
-            File helpSourceFileNew = new File( destinationDirectory, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME + ".java" );
-            if ( !helpSourceFileNew.getParentFile().exists() )
-            {
-                helpSourceFileNew.getParentFile().mkdirs();
-            }
-            Reader sourceReader = null;
-            PrintWriter sourceWriter = null;
-            try
-            {
-                sourceReader = new FileReader( helpSourceFile ); // FIXME platform encoding
-                sourceWriter = new PrintWriter( new FileWriter( helpSourceFileNew ) ); // FIXME platform encoding
-    
-                sourceWriter.println( "package " + destinationPackage + ";" );
-                IOUtil.copy( sourceReader, sourceWriter );
-            }
-            catch ( IOException e )
-            {
-                throw new GeneratorException( e.getMessage(), e );
-            }
-            finally
-            {
-                IOUtil.close( sourceReader );
-                IOUtil.close( sourceWriter );
-            }
-            helpSourceFileNew.setLastModified( helpSourceFile.lastModified() );
-            helpSourceFile.delete();
+            helpSourceFileNew.getParentFile().mkdirs();
         }
+        Reader sourceReader = null;
+        PrintWriter sourceWriter = null;
+        try
+        {
+            sourceReader = new FileReader( helpSourceFile ); // FIXME platform encoding
+            sourceWriter = new PrintWriter( new FileWriter( helpSourceFileNew ) ); // FIXME platform encoding
+
+            sourceWriter.println( "package " + destinationPackage + ";" );
+            IOUtil.copy( sourceReader, sourceWriter );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
+        finally
+        {
+            IOUtil.close( sourceReader );
+            IOUtil.close( sourceWriter );
+        }
+        helpSourceFileNew.setLastModified( helpSourceFile.lastModified() );
+        helpSourceFile.delete();
 
         // rewrite help mojo .class
         File rewriteHelpClassFile =
