@@ -98,7 +98,7 @@ public class MyMojo
     @Component
     private MojoExecution mojo;
 
-    @Component
+    @Component // for Maven 3 only
     private PluginDescriptor plugin;
 
     @Component
