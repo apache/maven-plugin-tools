@@ -136,7 +136,7 @@ public class AntPropertyHelper
 
             if ( val == null )
             {
-                val = System.getProperty( name.toString() );
+                val = System.getProperty( name );
             }
         }
 
@@ -190,7 +190,7 @@ public class AntPropertyHelper
             val = super.getPropertyHook( ns, name, user );
             if ( val == null )
             {
-                val = System.getProperty( name.toString() );
+                val = System.getProperty( name );
             }
         }
 
