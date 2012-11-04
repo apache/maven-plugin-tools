@@ -445,7 +445,7 @@ public class PluginDescriptorGenerator
 
                     String roleHint = null;
 
-                    int posRoleHintSeparator = role.indexOf( "#" );
+                    int posRoleHintSeparator = role.indexOf( '#' );
                     if ( posRoleHintSeparator > 0 )
                     {
                         roleHint = role.substring( posRoleHintSeparator + 1 );

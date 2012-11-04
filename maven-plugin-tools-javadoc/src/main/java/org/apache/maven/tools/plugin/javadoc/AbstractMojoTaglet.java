@@ -149,7 +149,7 @@ public abstract class AbstractMojoTaglet
         {
             String nextToken = token.nextToken();
 
-            if ( nextToken.indexOf( "=" ) == -1 )
+            if ( nextToken.indexOf( '=' ) == -1 )
             {
                 // using pattern: @annotation <annotationValue>
                 tagValue = nextToken;
@@ -178,7 +178,7 @@ public abstract class AbstractMojoTaglet
         {
             String nextToken = token.nextToken();
 
-            if ( nextToken.indexOf( "=" ) == -1 )
+            if ( nextToken.indexOf( '=' ) == -1 )
             {
                 // using pattern: @annotation <annotationValue>
                 continue;
@@ -385,7 +385,7 @@ public abstract class AbstractMojoTaglet
      */
     private static List<String> getOnlyValues( String text )
     {
-        if ( text.indexOf( "|" ) == -1 )
+        if ( text.indexOf( '|' ) == -1 )
         {
             return Collections.emptyList();
         }
