@@ -31,7 +31,10 @@
   <artifactId>maven-plugin-tools-generators</artifactId>
 
   <name>Maven Plugin Tools Generators</name>
-  <description>The Maven Plugin Tools Generators provide content generation (XML descriptor, documentation, help goal) from plugin descriptor.</description>
+  <description>
+    The Maven Plugin Tools Generators provide content generation (XML descriptor, documentation, help goal) from
+    plugin descriptor extracted from plugin sources.
+  </description>
 
   <dependencies>
     <dependency>

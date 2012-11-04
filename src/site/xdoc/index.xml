@@ -33,7 +33,7 @@
 
     <section name="Maven Plugin Tools">
 
-      <p>The Maven Plugin Tools contains the necessary tools to play with Maven Plugins.</p>
+      <p>${project.description}</p>
 
       <p>
         <img src="images/plugin-tools-deps.png" width="826" height="491" border="0" usemap="#PluginTools_dependencies" />
@@ -69,7 +69,7 @@
         </tr> 
         <tr>
           <td><a href="./maven-plugin-tools-generators/index.html">maven-plugin-tools-generators</a></td>
-          <td>Generators (descriptor, help, documentation), used by maven-plugin-plugin to generate content from descriptor.</td>
+          <td>Generators (XML descriptor, help, documentation), used by maven-plugin-plugin to generate content from descriptor extracted from sources.</td>
         </tr>      
         <tr>
           <td><a href="./maven-plugin-tools-api/index.html">maven-plugin-tools-api</a></td>
