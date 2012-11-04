@@ -668,12 +668,9 @@ public class PluginReport
             {
                 jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap() );
             }
-            if ( jdk == null )
+            if ( jdk == null && project.getPluginManagement() != null )
             {
-                if ( project.getPluginManagement() != null )
-                {
                     jdk = discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap() );
-                }
             }
             if ( jdk == null )
             {
