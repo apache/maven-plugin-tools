@@ -136,6 +136,8 @@ public class PluginHelpGenerator
         }
 
         writeHelpPropertiesFile( request, destinationDirectory );
+        
+        useAnnotations = request.getProject().getArtifactMap().containsKey( "org.apache.maven.plugin-tools:maven-plugin-annotations" );
 
         try
         {
@@ -160,12 +162,6 @@ public class PluginHelpGenerator
         return this;
     }
     
-    public PluginHelpGenerator setUseAnnotations( boolean useAnnotations )
-    {
-        this.useAnnotations = useAnnotations;
-        return this;
-    }
-
     public VelocityComponent getVelocityComponent()
     {
         return velocityComponent;

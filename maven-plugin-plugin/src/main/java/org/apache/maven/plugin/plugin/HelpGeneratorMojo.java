@@ -76,7 +76,7 @@ public class HelpGeneratorMojo
      */
     protected Generator createGenerator()
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setUseAnnotations( project.getArtifactMap().containsKey( "org.apache.maven.plugin-tools:maven-plugin-annotations" ) ).setVelocityComponent( this.velocity );
+        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setVelocityComponent( this.velocity );
     }
 
     /**
