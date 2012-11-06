@@ -142,9 +142,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-3.2</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/tags/maven-plugin-tools-3.2</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/tags/maven-plugin-tools-3.2</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk</url>
   </scm>
   <issueManagement>
     <system>jira</system>
