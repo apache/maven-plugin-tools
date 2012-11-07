@@ -19,21 +19,6 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.descriptor.Requirement;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +31,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.descriptor.Requirement;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
 
 /**
  * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a> and
@@ -57,9 +56,15 @@ import java.util.Set;
  * get validation directives to help users in IDEs.
  */
 public class PluginDescriptorGenerator
-    extends AbstractLogEnabled
     implements Generator
 {
+
+    private final Logger log;
+
+    public PluginDescriptorGenerator( Logger log )
+    {
+        this.log = log;
+    }
 
     /**
      * {@inheritDoc}
@@ -68,7 +73,7 @@ public class PluginDescriptorGenerator
         throws GeneratorException
     {
         // eventually rewrite help mojo class to match actual package name
-        PluginHelpGenerator.rewriteHelpMojo( request, getLogger() );
+        PluginHelpGenerator.rewriteHelpMojo( request, log );
 
         try
         {
@@ -79,8 +84,7 @@ public class PluginDescriptorGenerator
             // write plugin-help.xml help-descriptor
             MavenProject mavenProject = request.getProject();
 
-            f =
-                new File( mavenProject.getBuild().getOutputDirectory(),
+            f = new File( mavenProject.getBuild().getOutputDirectory(),
                           PluginHelpGenerator.getPluginHelpPath( mavenProject ) );
 
             writeDescriptor( f, request, true );

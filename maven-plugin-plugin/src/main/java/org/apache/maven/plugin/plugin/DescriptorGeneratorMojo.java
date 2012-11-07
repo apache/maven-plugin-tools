@@ -19,15 +19,16 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
-
-import java.io.File;
+import org.codehaus.plexus.logging.Logger;
 
 /**
  * Generate a plugin descriptor.
@@ -43,7 +44,7 @@ import java.io.File;
  * @since 2.0
  */
 @Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-    requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
+       requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {
@@ -55,25 +56,35 @@ public class DescriptorGeneratorMojo
 
     /**
      * A flag to disable generation of the <code>plugin.xml</code> in favor of a hand authored plugin descriptor.
-     * 
+     *
      * @since 2.6
      */
     @Parameter( defaultValue = "false" )
     private boolean skipDescriptor;
 
-    /** {@inheritDoc} */
+    @Component
+    protected Logger logger;
+
+
+    /**
+     * {@inheritDoc}
+     */
     protected File getOutputDirectory()
     {
         return outputDirectory;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected Generator createGenerator()
     {
-        return new PluginDescriptorGenerator();
+        return new PluginDescriptorGenerator( logger );
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void execute()
         throws MojoExecutionException
     {

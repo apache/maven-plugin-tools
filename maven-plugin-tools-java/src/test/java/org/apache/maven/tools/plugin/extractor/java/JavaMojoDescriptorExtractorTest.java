@@ -19,7 +19,10 @@ package org.apache.maven.tools.plugin.extractor.java;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -36,14 +39,11 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
+
+import junit.framework.TestCase;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author jdcasey
@@ -79,13 +79,14 @@ public class JavaMojoDescriptorExtractorTest
         model.setArtifactId( "maven-unitTesting-plugin" );
 
         MavenProject project = new MavenProject( model );
-        project.setBuild( new Build(){
+        project.setBuild( new Build()
+        {
             @Override
             public String getOutputDirectory()
             {
                 return System.getProperty( "filePath" );
             }
-        });
+        } );
 
         project.setFile( new File( root, "pom.xml" ) );
         project.addCompileSourceRoot( new File( root, directory ).getPath() );
@@ -120,7 +121,7 @@ public class JavaMojoDescriptorExtractorTest
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
-        Generator descriptorGenerator = new PluginDescriptorGenerator();
+        Generator descriptorGenerator = new PluginDescriptorGenerator( new ConsoleLogger( 0, "A" ) );
 
         descriptorGenerator.execute( new File( root, directory ), request );
 
@@ -137,9 +138,9 @@ public class JavaMojoDescriptorExtractorTest
 
         XMLUnit.setIgnoreWhitespace( true );
         XMLUnit.setIgnoreComments( true );
-        
-        Document expected =
-            XMLUnit.buildControlDocument( FileUtils.fileRead( new File( testDirectory, "plugin-expected.xml" ), "UTF-8" ) );
+
+        Document expected = XMLUnit.buildControlDocument(
+            FileUtils.fileRead( new File( testDirectory, "plugin-expected.xml" ), "UTF-8" ) );
         Document actual =
             XMLUnit.buildTestDocument( FileUtils.fileRead( new File( testDirectory, "plugin.xml" ), "UTF-8" ) );
 
@@ -182,8 +183,7 @@ public class JavaMojoDescriptorExtractorTest
 
         MojoDescriptor mojoDescriptor = results.get( 0 );
 
-        @SuppressWarnings( "unchecked" )
-        List<Parameter> parameters = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" ) List<Parameter> parameters = mojoDescriptor.getParameters();
 
         assertEquals( 1, parameters.size() );
 
@@ -206,7 +206,7 @@ public class JavaMojoDescriptorExtractorTest
 
     /**
      * Check that the mojo descriptor extractor will ignore any annotations that are found.
-     * 
+     *
      * @throws Exception
      */
     public void testAnnotationInPlugin()
@@ -216,7 +216,7 @@ public class JavaMojoDescriptorExtractorTest
 
         assertNull( results );
     }
-    
+
     /**
      * Check that the mojo descriptor extractor will successfully parse sources with Java 1.5 language features like
      * generics.
