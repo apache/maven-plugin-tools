@@ -62,10 +62,6 @@ public class DescriptorGeneratorMojo
     @Parameter( defaultValue = "false" )
     private boolean skipDescriptor;
 
-    @Component
-    protected Logger logger;
-
-
     /**
      * {@inheritDoc}
      */
@@ -79,7 +75,7 @@ public class DescriptorGeneratorMojo
      */
     protected Generator createGenerator()
     {
-        return new PluginDescriptorGenerator( logger );
+        return new PluginDescriptorGenerator( getLog() );
     }
 
     /**

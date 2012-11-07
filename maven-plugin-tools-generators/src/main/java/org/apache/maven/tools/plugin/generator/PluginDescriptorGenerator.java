@@ -36,6 +36,7 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -59,9 +60,9 @@ public class PluginDescriptorGenerator
     implements Generator
 {
 
-    private final Logger log;
+    private final Log log;
 
-    public PluginDescriptorGenerator( Logger log )
+    public PluginDescriptorGenerator( Log log )
     {
         this.log = log;
     }

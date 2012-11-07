@@ -28,6 +28,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
@@ -121,7 +122,7 @@ public class JavaMojoDescriptorExtractorTest
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
-        Generator descriptorGenerator = new PluginDescriptorGenerator( new ConsoleLogger( 0, "A" ) );
+        Generator descriptorGenerator = new PluginDescriptorGenerator( new SystemStreamLog() );
 
         descriptorGenerator.execute( new File( root, directory ), request );
 
