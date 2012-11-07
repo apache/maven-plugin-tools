@@ -25,9 +25,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.maven.model.Build;
+import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.codehaus.plexus.PlexusTestCase;
@@ -137,11 +141,11 @@ public abstract class AbstractGeneratorTestCase
         {
             Class<?> generatorClass = Thread.currentThread().getContextClassLoader().loadClass( generatorClassName );
 
-            Logger logger = getContainer().getLogger();
+            Log log = new SystemStreamLog();
             try
             {
-                Constructor<?> constructor = generatorClass.getConstructor( Logger.class );
-                generator = (Generator) constructor.newInstance( logger );
+                Constructor<?> constructor = generatorClass.getConstructor( Log.class );
+                generator = (Generator) constructor.newInstance( log );
             }
             catch ( NoSuchMethodException ignore )
             {

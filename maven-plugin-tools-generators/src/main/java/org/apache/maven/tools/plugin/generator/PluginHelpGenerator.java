@@ -21,6 +21,7 @@ package org.apache.maven.tools.plugin.generator;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.velocity.VelocityContext;
@@ -60,7 +61,7 @@ import java.util.Properties;
  * <p>Notice that the help mojo source needs to be generated before compilation, but when Java 5 annotations are used,
  * plugin descriptor content is available only after compilation (detecting annotations in .class files):
  * help mojo source can be generated with empty package only (and no plugin descriptor available yet), then needs
- * to be updated after compilation - through {@link #rewriteHelpMojo(PluginToolsRequest)} which is called from plugin
+ * to be updated after compilation - through {@link #rewriteHelpMojo(PluginToolsRequest, Log)} which is called from plugin
  * descriptor XML generation.</p>
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -236,7 +237,7 @@ public class PluginHelpGenerator
      *
      * @param request
      * @throws GeneratorException
-     * @see {@link #rewriteHelpMojo(PluginToolsRequest)}
+     * @see {@link #rewriteHelpMojo(PluginToolsRequest, Log)}
      */
     private void writeHelpPropertiesFile( PluginToolsRequest request, File destinationDirectory )
         throws GeneratorException
@@ -285,7 +286,7 @@ public class PluginHelpGenerator
      * @param request
      * @throws GeneratorException
      */
-    static void rewriteHelpMojo( PluginToolsRequest request, Logger log )
+    static void rewriteHelpMojo( PluginToolsRequest request, Log log )
         throws GeneratorException
     {
         File tmpPropertiesFile =
@@ -329,7 +330,7 @@ public class PluginHelpGenerator
         }
     }
 
-    private static String rewriteHelpClassToMojoPackage( PluginToolsRequest request, File destinationDirectory, Logger log )
+    private static String rewriteHelpClassToMojoPackage( PluginToolsRequest request, File destinationDirectory, Log log )
         throws GeneratorException
     {
         String destinationPackage = GeneratorUtils.discoverPackageName( request.getPluginDescriptor() );
