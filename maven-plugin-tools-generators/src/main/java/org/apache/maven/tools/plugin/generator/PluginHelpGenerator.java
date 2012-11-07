@@ -311,6 +311,7 @@ public class PluginHelpGenerator
                 log.warn( "\n\nUnexpected situation: destinationDirectory not defined in " + HELP_PROPERTIES_FILENAME
                     + " during help mojo source generation but expected during XML descriptor generation." );
                 log.warn( "Please check helpmojo goal version used in previous build phase." );
+                log.warn("If you just upgraded to plugin-tools >= 3.2 you must run a clean build at least once");
                 destinationDirectory = new File( "target/generated-sources/plugin" );
                 log.warn( "Trying default location: " + destinationDirectory );
             }
