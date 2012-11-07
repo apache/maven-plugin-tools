@@ -19,6 +19,11 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -27,12 +32,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
@@ -136,7 +137,17 @@ public abstract class AbstractGeneratorTestCase
         {
             Class<?> generatorClass = Thread.currentThread().getContextClassLoader().loadClass( generatorClassName );
 
-            generator = (Generator) generatorClass.newInstance();
+            Logger logger = getContainer().getLogger();
+            try
+            {
+                Constructor<?> constructor = generatorClass.getConstructor( Logger.class );
+                generator = (Generator) constructor.newInstance( logger );
+            }
+            catch ( NoSuchMethodException ignore )
+            {
+                generator = (Generator) generatorClass.newInstance();
+
+            }
         }
         catch ( Exception e )
         {
