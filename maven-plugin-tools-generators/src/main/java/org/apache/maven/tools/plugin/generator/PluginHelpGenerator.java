@@ -285,7 +285,7 @@ public class PluginHelpGenerator
      * @param request
      * @throws GeneratorException
      */
-    static void rewriteHelpMojo( PluginToolsRequest request )
+    static void rewriteHelpMojo( PluginToolsRequest request, Logger log )
         throws GeneratorException
     {
         File tmpPropertiesFile =
@@ -303,8 +303,22 @@ public class PluginHelpGenerator
         // if helpPackageName property is empty, we have to rewrite the class with a better package name than empty
         if ( StringUtils.isEmpty( helpPackageName ) )
         {
-            File destinationDirectory = new File( properties.getProperty( "destinationDirectory" ) );
-            String helpMojoImplementation = rewriteHelpClassToMojoPackage( request, destinationDirectory );
+            String destDir = properties.getProperty( "destinationDirectory" );
+            File destinationDirectory;
+            if ( StringUtils.isEmpty( destDir ) )
+            {
+                // writeHelpPropertiesFile() creates 2 properties: find one without the other should not be possible
+                log.warn( "\n\nUnexpected situation: destinationDirectory not defined in " + HELP_PROPERTIES_FILENAME
+                    + " during help mojo source generation but expected during XML descriptor generation." );
+                log.warn( "Please check helpmojo goal version used in previous build phase." );
+                destinationDirectory = new File( "target/generated-sources/plugin" );
+                log.warn( "Trying default location: " + destinationDirectory );
+            }
+            else
+            {
+                destinationDirectory = new File( destDir );
+            }
+            String helpMojoImplementation = rewriteHelpClassToMojoPackage( request, destinationDirectory, log );
 
             if ( helpMojoImplementation != null )
             {
@@ -314,7 +328,7 @@ public class PluginHelpGenerator
         }
     }
 
-    private static String rewriteHelpClassToMojoPackage( PluginToolsRequest request, File destinationDirectory )
+    private static String rewriteHelpClassToMojoPackage( PluginToolsRequest request, File destinationDirectory, Logger log )
         throws GeneratorException
     {
         String destinationPackage = GeneratorUtils.discoverPackageName( request.getPluginDescriptor() );
@@ -333,34 +347,42 @@ public class PluginHelpGenerator
 
         // rewrite help mojo source
         File helpSourceFile = new File( destinationDirectory, HELP_MOJO_CLASS_NAME + ".java" );
-        File helpSourceFileNew = new File( destinationDirectory, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME + ".java" );
-        if ( !helpSourceFileNew.getParentFile().exists() )
+        if ( !helpSourceFile.exists() )
         {
-            helpSourceFileNew.getParentFile().mkdirs();
+            log.warn( "HelpMojo.java not found in default location: " + helpSourceFile.getAbsolutePath() );
+            log.warn( "Help goal source won't be moved to package: " + destinationPackage );
         }
-        Reader sourceReader = null;
-        PrintWriter sourceWriter = null;
-        try
+        else
         {
-            sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), request.getEncoding() );
-            sourceWriter =
-                new PrintWriter( new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ),
-                                                         request.getEncoding() ) );
-
-            sourceWriter.println( "package " + destinationPackage + ";" );
-            IOUtil.copy( sourceReader, sourceWriter );
+            File helpSourceFileNew = new File( destinationDirectory, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME + ".java" );
+            if ( !helpSourceFileNew.getParentFile().exists() )
+            {
+                helpSourceFileNew.getParentFile().mkdirs();
+            }
+            Reader sourceReader = null;
+            PrintWriter sourceWriter = null;
+            try
+            {
+                sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), request.getEncoding() );
+                sourceWriter =
+                    new PrintWriter( new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ),
+                                                             request.getEncoding() ) );
+    
+                sourceWriter.println( "package " + destinationPackage + ";" );
+                IOUtil.copy( sourceReader, sourceWriter );
+            }
+            catch ( IOException e )
+            {
+                throw new GeneratorException( e.getMessage(), e );
+            }
+            finally
+            {
+                IOUtil.close( sourceReader );
+                IOUtil.close( sourceWriter );
+            }
+            helpSourceFileNew.setLastModified( helpSourceFile.lastModified() );
+            helpSourceFile.delete();
         }
-        catch ( IOException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( sourceReader );
-            IOUtil.close( sourceWriter );
-        }
-        helpSourceFileNew.setLastModified( helpSourceFile.lastModified() );
-        helpSourceFile.delete();
 
         // rewrite help mojo .class
         File rewriteHelpClassFile =
