@@ -31,7 +31,6 @@ import java.lang.annotation.Annotation;
  * @author Olivier Lamy
  * @since 3.0
  */
-@SuppressWarnings("deprecation")
 public class MojoAnnotationContent
     extends AnnotatedContent
     implements Mojo
