@@ -33,7 +33,8 @@
 
     <section name="Maven Plugin Tools">
 
-      <p>${project.description}</p>
+      <p>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in scripting languages
+    and to generate rebarbative content like descriptor, help and documentation.</p>
 
       <p>
         <img src="images/plugin-tools-deps.png" width="826" height="491" border="0" usemap="#PluginTools_dependencies" />
