@@ -20,7 +20,7 @@ package org.apache.maven.plugins.annotations;
  */
 
 /**
- * Component instanciation strategy.
+ * Component instantiation strategy.
  *
  * @author Hervé Boutemy
  * @since 3.0
@@ -34,7 +34,7 @@ public enum InstantiationStrategy
 
     private final String id;
 
-    InstantiationStrategy(String id)
+    InstantiationStrategy( String id )
     {
         this.id = id;
     }
