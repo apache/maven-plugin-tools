@@ -69,14 +69,6 @@ public @interface Mojo
     InstantiationStrategy instantiationStrategy() default InstantiationStrategy.PER_LOOKUP;
 
     /**
-     * The original spelling of the instantiationStrategy attribute.
-     * @see #instantiationStrategy()
-     * @return the instantiation strategy
-     */
-    @Deprecated
-    InstanciationStrategy instanciationStrategy() default InstanciationStrategy.PER_LOOKUP;
-
-    /**
      * execution strategy: <code>once-per-session</code> or <code>always</code>.
      * @return <code>once-per-session</code> or <code>always</code>
      */
