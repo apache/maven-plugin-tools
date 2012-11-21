@@ -107,12 +107,10 @@ public class MojoClassVisitor
         mojoAnnotatedClass = new MojoAnnotatedClass();
         mojoAnnotatedClass.setClassName( Type.getObjectType( name ).getClassName() ).setParentClassName(
             Type.getObjectType( superName ).getClassName() );
-        logger.debug( "MojoClassVisitor#visit" );
     }
 
     public AnnotationVisitor visitAnnotation( String desc, boolean visible )
     {
-        logger.debug( "MojoClassVisitor#visitAnnotation" );
         String annotationClassName = Type.getType( desc ).getClassName();
         if ( !MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {
@@ -125,7 +123,6 @@ public class MojoClassVisitor
 
     public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
     {
-        logger.debug( "MojoClassVisitor#visitField" );
         MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( logger, name, Type.getType( desc ).getClassName() );
         fieldVisitors.add( mojoFieldVisitor );
         return mojoFieldVisitor;
