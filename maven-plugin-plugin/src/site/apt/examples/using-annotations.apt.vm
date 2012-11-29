@@ -52,12 +52,6 @@ Using Plugin Tools Java5 Annotations
            for execution with using provided scope -->
       <scope>provided</scope>
     </dependency>
-    <!-- generated help mojo has a dependency to plexus-utils -->
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.1</version>
-    </dependency>
   </dependencies>
   ...
   <build>
