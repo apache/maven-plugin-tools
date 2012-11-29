@@ -122,5 +122,5 @@ Using Plugin Tools Java5 Annotations
 *-------------------------------+---------------+
 | <<<@goal "goal-name">>>       | <<<@Mojo( name = "goal-name" )>>>
 *-------------------------------+---------------+
-| <<<@phase "\<phase-name\>">>> | <<<@Mojo( defaultPhase = "\<phase-name\>" )>>>
+| <<<@phase "\<phase-name\>">>> | <<<@Mojo( defaultPhase = LifecyclePhase.\<phase\> )>>>
 *-------------------------------+---------------+
