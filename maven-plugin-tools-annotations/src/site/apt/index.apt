@@ -80,7 +80,7 @@ public class MyMojo
      */
     @Parameter( alias = "myAlias",
                 property = "a.property",
-                defaultValue = "an expression with ${variables} eventually",
+                defaultValue = "an expression, possibly with ${variables}",
                 readonly = <false|true>,
                 required = <false|true> )
     private String parameter;
