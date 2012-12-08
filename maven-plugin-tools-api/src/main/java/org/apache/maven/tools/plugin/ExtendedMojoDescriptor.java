@@ -22,6 +22,7 @@ package org.apache.maven.tools.plugin;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 
 /**
+ * Extensions to MojoDescriptor added to Maven 3, then are not available when run under Maven2.
  * @author Kristian Rosenvold
  */
 public class ExtendedMojoDescriptor
