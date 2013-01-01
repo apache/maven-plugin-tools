@@ -39,13 +39,13 @@ import java.lang.annotation.Target;
 public @interface Execute
 {
     /**
-     * lifecycle phase to fork.
+     * lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
      * @return the phase
      */
     LifecyclePhase phase() default LifecyclePhase.NONE;
 
     /**
-     * goal to fork.
+     * goal to fork. Note that specifying a phase overrides specifying a goal.
      * @return the goal
      */
     String goal() default "";
