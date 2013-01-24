@@ -133,6 +133,7 @@ public class PluginMetadataParser
         {
             descriptor.setExecuteLifecycle( le.getLifecycle() );
             descriptor.setExecutePhase( le.getPhase() );
+            descriptor.setExecuteGoal( le.getGoal() );
         }
 
         List<org.apache.maven.plugin.tools.model.Parameter> parameters = mojo.getParameters();
