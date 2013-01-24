@@ -37,7 +37,7 @@
     The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in scripting languages
     and to generate rebarbative content like descriptor, help and documentation.
   </description>
-  <url>http://maven.apache.org/plugin-tools/</url>
+  <url>${maven.pluginTools.url}</url>
   <inceptionYear>2004</inceptionYear>
 
   <mailingLists>
@@ -166,6 +166,13 @@
     <mavenVersion>2.2.1</mavenVersion>
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>1.6</mavenInvokerPluginVersion>
+
+    <maven.pluginTools.siteFilePath>${maven.site.cache}/maven-scm-${project.version}</maven.pluginTools.siteFilePath>
+    <maven.pluginTools.siteUrlDeployment>file://${maven.pluginTools.siteFilePath}</maven.pluginTools.siteUrlDeployment>
+    <maven.pluginTools.scmPubCheckoutDirectory>${maven.site.cache}/maven-plugin-tools-site-content-${project.version}</maven.pluginTools.scmPubCheckoutDirectory>
+    <maven.pluginTools.scmPubUrl>https://svn.apache.org/repos/infra/websites/production/maven/content/plugin-tools-archives/plugin-tools-${project.version}</maven.pluginTools.scmPubUrl>
+    <maven.pluginTools.url>http://maven.apache.org/plugin-tools-archives/plugin-tools-${project.version}</maven.pluginTools.url>
+
   </properties>
 
   <dependencyManagement>
@@ -340,6 +347,17 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <checkoutDirectory>${maven.pluginTools.scmPubCheckoutDirectory}</checkoutDirectory>
+            <pubScmUrl>scm:svn:${maven.pluginTools.scmPubUrl}</pubScmUrl>
+            <checkinComment>Apache Maven Plugin Tools site deployment</checkinComment>
+            <content>${maven.pluginTools.siteFilePath}</content>
+            <tryUpdate>true</tryUpdate>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <configuration>
             <stagingSiteURL>scp://people.apache.org/www/maven.apache.org/plugin-tools-${project.version}</stagingSiteURL>
@@ -441,5 +459,16 @@
         </plugins>
       </reporting>
     </profile>
+
+    <profile>
+      <id>site-release</id>
+      <properties>
+        <maven.pluginTools.siteFilePath>${maven.site.cache}/maven-plugin-tools</maven.pluginTools.siteFilePath>
+        <maven.pluginTools.scmPubCheckoutDirectory>${maven.site.cache}/plugin-tools</maven.pluginTools.scmPubCheckoutDirectory>
+        <maven.pluginTools.scmPubUrl>https://svn.apache.org/repos/infra/websites/production/maven/content/plugin-tools</maven.pluginTools.scmPubUrl>
+        <maven.pluginTools.url>http://maven.apache.org/plugin-tools</maven.pluginTools.url>
+      </properties>
+    </profile>
+
   </profiles>
 </project>
