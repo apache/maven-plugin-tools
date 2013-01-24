@@ -157,7 +157,7 @@
   <distributionManagement>
     <site>
       <id>apache.website</id>
-      <url>scp://people.apache.org/www/maven.apache.org/plugin-tools/</url>
+      <url>${maven.pluginTools.siteUrlDeployment}</url>
     </site>
   </distributionManagement>
 
