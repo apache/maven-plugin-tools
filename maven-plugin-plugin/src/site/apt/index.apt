@@ -37,17 +37,18 @@ Maven Plugin Plugin
 
    The Plugin Plugin has six goals:
 
-   * {{{./descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor.
+   * {{{./descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor,
 
-   * {{{./report-mojo.html}plugin:report}} generates the plugin documentation report.
+   * {{{./report-mojo.html}plugin:report}} generates the plugin documentation report, listing each goal provided
+   and general configuration information (see {{{./plugin-info.html}example}}),
 
    * {{{./updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
-      reflect the version being installed.
+      reflect the version being installed,
 
-   * {{{./xdoc-mojo.html}plugin:xdoc}} generates Xdoc files for the project mojos or goals.
+   * {{{./xdoc-mojo.html}plugin:xdoc}} generates documentation (as xdoc files) for each mojo (goals),
 
    * {{{./addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
-      metadata to the project's artifact, for subsequent installation and deployment.
+      metadata to the project's artifact, for subsequent installation and deployment,
 
    * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all mojos in a plugin.
 
