@@ -28,14 +28,52 @@
 
 Using Plugin Tools Java5 Annotations
 
- Since version 3.0, you can use {{{#Annotations}Java5 annotations}} to generate the plugin descriptor file.
+ Since version 3.0, you can use Java5 annotations to generate the plugin descriptor file.
 
  <<NOTE>> With annotations, it's not any more mandatory to have your Mojos super classes in the same project. Super classes
  can now come from reactor projects or external dependencies. As javadoc doclet are still useful for <<<@since>>>, <<<@deprecated>>> and comments,
  the sources are still scanned. So if you use an external dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to
  provide documentation (the tooling will skip error if this artifact sources is missing).
 
-* Pom configuration
+* Annotations
+
+  Information for plugin descriptor generation is specified using 4 annotations:
+
+  * 2 class-level annotations:
+
+    * <<<@Mojo>>>: This annotation will mark your class as a Mojo,
+
+    * <<<@Execute>>>: Used if your Mojo needs to fork a lifecycle,
+
+    []
+
+  * 2 field-level annotations:
+
+    * <<<@Parameter>>>: Used to configure your Mojo parameters,
+
+    * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components.
+
+    []
+
+  []
+
+  For more information on these annotations, see the
+  {{{../../maven-plugin-tools-annotations/index.html#Supported_Annotations}corresponding documentation}}.
+
+  Notice that Plugin Tools Java 5 Annotations are named after Plugin Tools Javadoc Tags
+  with following little differences:
+
+*-------------------------------+---------------+
+|| {{{../../maven-plugin-tools-java/index.html}Plugin Tools Javadoc Tags}} || {{{../../maven-plugin-tools-annotations/index.html}Plugin Tools Java 5 Annotation}} ||
+*-------------------------------+---------------+
+| <<<@goal "goal-name">>>       | <<<@Mojo( name = "goal-name" )>>>
+*-------------------------------+---------------+
+| <<<@phase "\<phase-name\>">>> | <<<@Mojo( defaultPhase = LifecyclePhase.\<phase\> )>>>
+*-------------------------------+---------------+
+
+* POM configuration
+
+  To be able to use these Java 5 annotations, you need to add some configuration to your plugin POM:
 
 +-----+
 <project>
@@ -84,39 +122,3 @@ Using Plugin Tools Java5 Annotations
   ...
 </project>
 +-----+
-
-* Annotations
-
-  Information for plugin descriptor generation is specified using 4 annotations:
-
-  * 2 class-level annotations:
-
-    * <<<@Mojo>>>: This annotation will mark your class as a Mojo,
-
-    * <<<@Execute>>>: Used if your Mojo needs to fork a lifecycle,
-
-    []
-
-  * 2 field-level annotations:
-
-    * <<<@Parameter>>>: Used to configure your Mojo parameters,
-
-    * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components.
-
-    []
-
-  []
-
-  For more information on these annotations, see the
-  {{{../../maven-plugin-tools-annotations/index.html#Supported_Annotations}corresponding documentation}}.
-
-  Notice that Plugin Tools Java 5 Annotations are named after Plugin Tools Javadoc Tags
-  with following little differences:
-
-*-------------------------------+---------------+
-|| {{{../../maven-plugin-tools-java/index.html}Plugin Tools Javadoc Tags}} || {{{../../maven-plugin-tools-annotations/index.html}Plugin Tools Java 5 Annotation}} ||
-*-------------------------------+---------------+
-| <<<@goal "goal-name">>>       | <<<@Mojo( name = "goal-name" )>>>
-*-------------------------------+---------------+
-| <<<@phase "\<phase-name\>">>> | <<<@Mojo( defaultPhase = LifecyclePhase.\<phase\> )>>>
-*-------------------------------+---------------+
