@@ -48,9 +48,7 @@ Using Plugin Tools Java5 Annotations
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${project.version}</version>
-      <!-- annotations are not needed for plugin execution so you can remove this dependency
-           for execution with using provided scope -->
-      <scope>provided</scope>
+      <scope>provided</scope><!-- annotations are needed only to build the plugin -->
     </dependency>
   </dependencies>
   ...
@@ -93,32 +91,30 @@ Using Plugin Tools Java5 Annotations
 
   * 2 class-level annotations:
 
-    * <<<@Mojo>>>: This annotation will mark your class as a Mojo. See
-      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Mojo.html}javadoc}} for more information.
+    * <<<@Mojo>>>: This annotation will mark your class as a Mojo,
 
-    * <<<@Execute>>>: Used if your Mojo need to fork a lifecycle. See
-      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Execute.html}javadoc}} for more information.
+    * <<<@Execute>>>: Used if your Mojo needs to fork a lifecycle,
 
     []
 
   * 2 field-level annotations:
 
-    * <<<@Parameter>>>: Used to configure your Mojo parameters. See
-      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Parameter.html}javadoc}} for more information.
+    * <<<@Parameter>>>: Used to configure your Mojo parameters,
 
-    * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components. See
-      {{{/plugin-tools/maven-plugin-annotations/apidocs/org/apache/maven/plugins/annotations/Component.html}javadoc}} for more information.
+    * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components.
 
     []
 
   []
 
-  Plugin Tools Java 5 Annotations ({{{../../maven-plugin-tools-annotations/index.html}see full example}})
-  are named after Plugin Tools Javadoc Tags ({{{../../maven-plugin-tools-java/index.html}see full example}}),
+  For more information on these annotations, see the
+  {{{../../maven-plugin-tools-annotations/index.html#Supported_Annotations}corresponding documentation}}.
+
+  Notice that Plugin Tools Java 5 Annotations are named after Plugin Tools Javadoc Tags
   with following little differences:
 
 *-------------------------------+---------------+
-|| Plugin Tools Javadoc Tags    || Plugin Tools Java 5 Annotation ||
+|| {{{../../maven-plugin-tools-java/index.html}Plugin Tools Javadoc Tags}} || {{{../../maven-plugin-tools-annotations/index.html}Plugin Tools Java 5 Annotation}} ||
 *-------------------------------+---------------+
 | <<<@goal "goal-name">>>       | <<<@Mojo( name = "goal-name" )>>>
 *-------------------------------+---------------+
