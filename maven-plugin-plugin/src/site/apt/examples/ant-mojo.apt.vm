@@ -32,7 +32,8 @@ Writing an Ant Maven Plugin
 
 * Pom configuration
 
-+------------
++------------+
+<project>
   ...
   <dependencies>
     <dependency>
@@ -59,7 +60,8 @@ Writing an Ant Maven Plugin
     </plugins>
   </build>
   ...
-+------------
+</project>
++------------+
 
 * Files structure
 
