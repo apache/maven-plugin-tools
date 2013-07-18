@@ -19,8 +19,10 @@
   ~ under the License.
   -->
 <!-- START SNIPPET: ant-mojo -->
-<pluginMetadata xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/plugin-metadata-1.0.0.xsd">
+<pluginMetadata
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/PLUGIN-METADATA/1.0.0"
+    xsi:schemaLocation="http://maven.apache.org/PLUGIN-METADATA/1.0.0 http://maven.apache.org/xsd/plugin-metadata-1.0.0.xsd">
   <mojos>
     <mojo>
       <!-- target name to call in ant script -->
