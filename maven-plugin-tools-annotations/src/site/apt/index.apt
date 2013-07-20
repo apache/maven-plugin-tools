@@ -28,7 +28,7 @@
 
 Maven Plugin Tool for Annotations
 
- The Maven Plugin Tool for Annotations is the impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
+ The Maven Plugin Tool for Annotations is the implementation of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors from plugins written in Java with
  {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java 5 Annotations}}.
 
@@ -104,6 +104,13 @@ public class MyMojo
     @Component
     private Settings settings;
 
+    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+    @Parameter( defaultValue = "${basedir}", readonly = true )
+    private File basedir;
+
+    @Parameter( defaultValue = "${project.build.directory}", readonly = true )
+    private File target;
+
     public void execute()
     {
         ...
@@ -119,3 +126,6 @@ public class MyMojo
  * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
 
  * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
+
+ * {{{/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}PluginParameterExpressionEvaluator}},
+   used to evaluate plugin parameters values during Mojo configuration,

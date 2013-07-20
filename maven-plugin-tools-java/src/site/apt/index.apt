@@ -105,6 +105,19 @@ public class MyMojo
      */
     private Settings settings;
 
+    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+    /**
+    * @parameter default-value="${basedir}"
+    * @readonly
+    */
+    private File basedir;
+
+    /**
+    * @parameter default-value="${project.build.directory}"
+    * @readonly
+    */
+    private File target;
+
     public void execute()
     {
         ...
@@ -120,3 +133,6 @@ public class MyMojo
  * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
 
  * {{{/ref/current/maven-plugin-api/plugin.html}<<<META-INF/maven/plugin.xml>>> plugin descriptor}}
+
+ * {{{/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}PluginParameterExpressionEvaluator}},
+   used to evaluate plugin parameters values during Mojo configuration,
