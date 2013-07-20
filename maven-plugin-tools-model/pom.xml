@@ -60,7 +60,8 @@
           <models>
             <model>src/main/mdo/plugin-metadata.mdo</model>
           </models>
-          <version>1.0.0</version>
+          <version>1.1.0</version>
+          <firstVersion>1.0.0</firstVersion>
         </configuration>
         <executions>
           <execution>

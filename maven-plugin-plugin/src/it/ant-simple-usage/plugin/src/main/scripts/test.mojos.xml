@@ -21,7 +21,7 @@
 <pluginMetadata
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/PLUGIN-METADATA/1.0.0"
-    xsi:schemaLocation="http://maven.apache.org/PLUGIN-METADATA/1.0.0 ../../../../../../maven-plugin-tools-model/target/generated-site/xsd/plugin-metadata-1.0.0.xsd ">
+    xsi:schemaLocation="http://maven.apache.org/PLUGIN-METADATA/1.0.0 http://maven.apache.org/xsd/plugin-metadata-1.0.0.xsd">
   <mojos>
     <mojo>
       <call>test</call>
