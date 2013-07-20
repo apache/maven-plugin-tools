@@ -36,6 +36,6 @@ Maven Plugin Tool Model
 
   * A {{{./plugin-metadata.html}Descriptor Reference}}
 
-  * An {{{./plugin-metadata-1.0.0.xsd}XSD}}.
+  * An {{{./plugin-metadata-1.1.0.xsd}XSD}}.
 
   []
