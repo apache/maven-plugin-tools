@@ -44,14 +44,17 @@ if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( mojoType ).toLowerCase( Local
 }
 
 System.out.println( "Checking for documentation of mojo fields" );
-String mojoField = "<dl><dt><b>" + MojoParameterFieldTaglet.HEADER
-    + ":</b></dt><dd><dl><dt><b>default-value:</b></dt>"
-    + "<dd>value</dd><dt><b>expression:</b></dt><dd>${project.build.directory}</dd><dt><b>alias:</b>"
-    + "</dt><dd>myAlias</dd></dl></dd><dt><b>" + MojoReadOnlyFieldTaglet.HEADER + "</b></dt><dd></dd><dt><b>"
-    + MojoRequiredFieldTaglet.HEADER + "</b></dt><dd>" + "</dd></dl>";
-if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( mojoField ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+// order has changed between JDK7 and JDK8
+String mojoField = Pattern.quote("<dl><dt><b>"  + MojoParameterFieldTaglet.HEADER + ":</b></dt><dd><dl>" )
+    + "(" + Pattern.quote( "<dt><b>expression:</b></dt><dd>${project.build.directory}</dd>" )
+    + "|" + Pattern.quote( "<dt><b>default-value:</b></dt><dd>value</dd>" )
+    + "|" + Pattern.quote( "<dt><b>alias:</b></dt><dd>myAlias</dd>" )
+    + "){3}" + Pattern.quote("</dl></dd><dt><b>" + MojoReadOnlyFieldTaglet.HEADER + "</b></dt><dd>" )
+    + Pattern.quote( "</dd><dt><b>" + MojoRequiredFieldTaglet.HEADER + "</b></dt><dd></dd></dl>");
+if ( !Pattern.compile( mojoField, Pattern.CASE_INSENSITIVE ).matcher( html ).find() )
 {
-    throw new IllegalStateException( "Mojo field doc wrong" );
+    System.out.println( mojoField );
+    throw new IllegalStateException( "Mojo field doc wrong!!!" );
 }
 
 mojoField = "<dl><dt><b>" + MojoComponentFieldTaglet.HEADER + ":</b></dt><dd><dl><dt><b>role:</b>"
