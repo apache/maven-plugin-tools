@@ -163,10 +163,7 @@ public class PluginDescriptorGenerator
             {
                 @SuppressWarnings( "unchecked" ) List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 
-                if ( helpDescriptor )
-                {
-                    PluginUtils.sortMojos( descriptors );
-                }
+                PluginUtils.sortMojos( descriptors );
 
                 for ( MojoDescriptor descriptor : descriptors )
                 {
