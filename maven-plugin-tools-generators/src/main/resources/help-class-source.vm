@@ -95,9 +95,10 @@ public class HelpMojo
         throws MojoExecutionException
     {
         getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
-        InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH );
+        InputStream is = null;
         try
         {
+            is = getClass().getResourceAsStream( PLUGIN_HELP_PATH );
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             return dBuilder.parse( is );
@@ -113,6 +114,20 @@ public class HelpMojo
         catch ( SAXException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
+        }
+        finally
+        {
+            if ( is != null )
+            {
+                try
+                {
+                    is.close();
+                }
+                catch ( IOException e )
+                {
+                    throw new MojoExecutionException( e.getMessage(), e );
+                }
+            }
         }
     }
 
