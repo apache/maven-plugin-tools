@@ -38,6 +38,7 @@ import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -145,6 +146,14 @@ public abstract class AbstractGeneratorMojo
     protected ArtifactRepository local;
 
     /**
+     * Maven plugin packaging types. Default is single "maven-plugin".
+     * 
+     * @since 3.3
+     */
+    @Parameter
+    protected List<String> packagingTypes = Arrays.asList( "maven-plugin" );
+
+    /**
      * @return the output directory where files will be generated.
      */
     protected abstract File getOutputDirectory();
@@ -160,8 +169,9 @@ public abstract class AbstractGeneratorMojo
     public void execute()
         throws MojoExecutionException
     {
-        if ( !"maven-plugin".equals( project.getPackaging() ) )
+        if ( !packagingTypes.contains( project.getPackaging() ) )
         {
+            getLog().warn( "Unsupported packaging type " + project.getPackaging() + ", execution skipped" );
             return;
         }
         if ( skip )
