@@ -71,7 +71,7 @@ public class PluginReport
     extends AbstractMavenReport
 {
     /**
-     * Report output directory.
+     * Report output directory for mojo pages.
      */
     @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
     private File outputDirectory;
@@ -195,7 +195,8 @@ public class PluginReport
      */
     protected String getOutputDirectory()
     {
-        return outputDirectory.getPath();
+        // PLUGIN-191: output directory of plugin.html, not *-mojo.xml
+        return project.getReporting().getOutputDirectory();
     }
 
     /**
@@ -327,7 +328,7 @@ public class PluginReport
     {
         try
         {
-            File outputDir = new File( getOutputDirectory() );
+            File outputDir = outputDirectory;
             outputDir.mkdirs();
 
             PluginXdocGenerator generator = new PluginXdocGenerator( project, locale );
