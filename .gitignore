@@ -3,6 +3,7 @@ target
 #idea
 *.iml
 .idea
+out/
 
 #eclipse
 .classpath
@@ -10,3 +11,5 @@ target
 .settings
 
 .DS_Store
+
+.java-version
