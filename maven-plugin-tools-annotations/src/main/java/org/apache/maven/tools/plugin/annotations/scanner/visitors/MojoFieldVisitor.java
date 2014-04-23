@@ -24,6 +24,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 /**
@@ -31,7 +32,7 @@ import org.objectweb.asm.Type;
  * @since 3.0
  */
 public class MojoFieldVisitor
-    implements FieldVisitor
+    extends FieldVisitor
 {
     private Logger logger;
 
@@ -43,6 +44,7 @@ public class MojoFieldVisitor
 
     MojoFieldVisitor( Logger logger, String fieldName, String className )
     {
+    	super(Opcodes.ASM4);
         this.logger = logger;
         this.fieldName = fieldName;
         this.className = className;

@@ -28,6 +28,7 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.Map;
  * @since 3.0
  */
 public class MojoClassVisitor
-    implements ClassVisitor
+    extends ClassVisitor
 {
     private Logger logger;
 
@@ -52,6 +53,7 @@ public class MojoClassVisitor
 
     public MojoClassVisitor( Logger logger )
     {
+    	super(Opcodes.ASM4);
         this.logger = logger;
     }
 

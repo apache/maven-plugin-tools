@@ -19,18 +19,19 @@ package org.apache.maven.tools.plugin.annotations.scanner.visitors;
  * under the License.
  */
 
-import org.codehaus.plexus.logging.Logger;
-import org.objectweb.asm.AnnotationVisitor;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.plexus.logging.Logger;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
 public class MojoAnnotationVisitor
-    implements AnnotationVisitor
+    extends AnnotationVisitor
 {
     private Logger logger;
 
@@ -40,6 +41,7 @@ public class MojoAnnotationVisitor
 
     MojoAnnotationVisitor( Logger logger, String annotationClassName )
     {
+    	super(Opcodes.ASM4);
         this.logger = logger;
         this.annotationClassName = annotationClassName;
     }
