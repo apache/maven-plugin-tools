@@ -125,7 +125,7 @@ public class MyMojo
 }
 +---------+
 
-  <<Notice>>: before 3.0, <<<property>>> was replaced by <<<expression>>>, with <<<${ }>>> required (<<<expression="${aProperty}">>>),
+  <<Notice>>: before 3.0, <<<property>>> was replaced by <<<expression>>>, with <<<$\{ }>>> required (<<<expression="$\{aProperty}">>>),
   but starting with 3.0, you can omit it (<<<expression="aProperty">>>), or preferably use <<<property="aProperty">>>.
 
 * See also
