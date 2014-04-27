@@ -29,15 +29,7 @@ import java.lang.annotation.Target;
 /**
  * Used to configure injection of Plexus components by
  * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/MavenPluginManager.html">
- * <code>MavenPluginManager.getConfiguredMojo(...)</code></a> and special Maven
- * objects as well:
- * <dl>
- *   <dt>mojoExecution</dt>        <dd>org.apache.maven.plugin.MojoExecution</dd>
- *   <dt>project</dt>              <dd>org.apache.maven.project.MavenProject</dd>
- *   <dt>session</dt>              <dd>org.apache.maven.execution.MavenSession</dd>
- *   <dt>settings</dt>             <dd>org.apache.maven.settings.Settings</dd>
- *   <dt>plugin (Maven-3 only)</dt><dd>org.apache.maven.plugin.descriptor.PluginDescriptor</dd>
- * </dl>
+ * <code>MavenPluginManager.getConfiguredMojo(...)</code></a>.
  *
  * @author Olivier Lamy
  * @since 3.0

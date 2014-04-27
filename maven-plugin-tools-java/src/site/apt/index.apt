@@ -80,32 +80,38 @@ public class MyMojo
      */
     private Component component;
 
+    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+
     /**
-     * @component
+     * @parameter default-value="${session}"
+     * @readonly
      */
     private MavenSession session;
 
     /**
-     * @component
+     * @parameter default-value="${project}"
+     * @readonly
      */
     private MavenProject project;
 
     /**
-     * @component
+     * @parameter default-value="${mojoExecution}"
+     * @readonly
      */
     private MojoExecution mojo;
 
     /**
-     * @component
+     * @parameter default-value="${plugin}" // Maven 3 only
+     * @readonly
      */
     private PluginDescriptor plugin;
 
     /**
-     * @component
+     * @parameter default-value="${settings}"
+     * @readonly
      */
     private Settings settings;
 
-    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
     /**
     * @parameter default-value="${project.basedir}"
     * @readonly

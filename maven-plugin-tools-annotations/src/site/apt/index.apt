@@ -89,22 +89,23 @@ public class MyMojo
                 hint = "..." )
     private MyComponent component;
 
-    @Component
+    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+
+    @Parameter( defaultValue = "${session}", readonly = true )
     private MavenSession session;
 
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     private MavenProject project;
 
-    @Component
+    @Parameter( defaultValue = "${mojoExecution}", readonly = true )
     private MojoExecution mojo;
 
-    @Component // for Maven 3 only
+    @Parameter( defaultValue = "${plugin}", readonly = true ) // Maven 3 only
     private PluginDescriptor plugin;
 
-    @Component
+    @Parameter( defaultValue = "${settings}", readonly = true )
     private Settings settings;
 
-    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
     @Parameter( defaultValue = "${project.basedir}", readonly = true )
     private File basedir;
 

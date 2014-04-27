@@ -45,10 +45,12 @@ public final class PluginUtils
     }
 
     /**
-     * Expression associated with class types to recognize Maven objects (injected  in fact as parameters by
-     * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
-     * maven-core's PluginParameterExpressionEvaluator</a>)
-     * like components ("real" components are injected by Plexus).
+     * Expression associated with class types to recognize Maven objects (injected in fact as parameters by <a
+     * href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
+     * maven-core's PluginParameterExpressionEvaluator</a>) like components ("real" components are injected by Plexus).
+     * 
+     * @deprecated wrong approach (fake components), documented parameter default values instead to learn people how to
+     *             discover them
      */
     public static final Map<String, String> MAVEN_COMPONENTS;
     static
