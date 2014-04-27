@@ -46,7 +46,7 @@ public class MyMojo
      * This parameter is deprecated.
      * 
      * @parameter
-     * @deprecated As of version 1.0, us the {@link #defaultParam} instead.
+     * @deprecated As of version 1.0, use the {@link #defaultParam} instead.
      */
     private String deprecatedParam;
 
