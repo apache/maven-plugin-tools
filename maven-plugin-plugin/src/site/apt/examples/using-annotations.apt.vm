@@ -75,6 +75,15 @@ Using Plugin Tools Java5 Annotations
 
   To be able to use these Java 5 annotations, you need to add some configuration to your plugin POM:
 
+  * add <<<maven-plugin-annotations>>> dependency, preferably with <<<provided>>> scope,
+
+  * bind goals to <<<process-classes>>> phase,
+
+  * configure <<<skipErrorNoDescriptorsFound>>> parameter to avoid failure caused by
+    {{{http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_maven-plugin_packaging}default <<<descriptor>>> goal binding to <<<generate-resources>>> phase}}.
+
+  []
+
 +-----+
 <project>
   ...
