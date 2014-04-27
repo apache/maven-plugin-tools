@@ -105,7 +105,7 @@ public class MyMojo
     private Settings settings;
 
     // sample objects taken from Maven API through PluginParameterExpressionEvaluator
-    @Parameter( defaultValue = "${basedir}", readonly = true )
+    @Parameter( defaultValue = "${project.basedir}", readonly = true )
     private File basedir;
 
     @Parameter( defaultValue = "${project.build.directory}", readonly = true )

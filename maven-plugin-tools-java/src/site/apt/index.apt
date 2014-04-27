@@ -107,7 +107,7 @@ public class MyMojo
 
     // sample objects taken from Maven API through PluginParameterExpressionEvaluator
     /**
-    * @parameter default-value="${basedir}"
+    * @parameter default-value="${project.basedir}"
     * @readonly
     */
     private File basedir;
