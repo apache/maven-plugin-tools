@@ -282,16 +282,16 @@ public class HelpMojo
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
             Node deprecated = findSingleChild( mojo, "deprecated" );
-            if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
+            if ( ( deprecated != null ) && isNotEmpty( deprecated.getTextContent() ) )
             {
-                append( sb, "Deprecated. " + deprecated, 1 );
+                append( sb, "Deprecated. " + deprecated.getTextContent(), 1 );
                 if ( detail && description != null )
                 {
                     append( sb, "", 0 );
                     append( sb, description.getTextContent(), 1 );
                 }
             }
-            else if (description != null )
+            else if ( description != null )
             {
                 append( sb, description.getTextContent(), 1 );
             }
