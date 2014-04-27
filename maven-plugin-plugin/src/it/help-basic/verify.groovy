@@ -17,10 +17,12 @@
  * under the License.
  */
 
-log = new File( basedir, "help.log" ).text;
-log = log.substring( log.indexOf( "[INFO] help 1.0-SNAPSHOT" ) )
-log = log.substring( 0, log.indexOf( "[INFO]", 5 ) )
+expected = new File( basedir, "expected-help.txt" ).text.trim();
 
-println "$log";
+log = new File( basedir, "help.log" ).text;
+log = log.substring( log.indexOf( "[INFO] help 1.0-SNAPSHOT" ) );
+log = log.substring( 0, log.indexOf( "[INFO]", 5 ) ).trim();
+
+assert log == expected;
 
 return true;
