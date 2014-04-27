@@ -38,7 +38,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -319,18 +318,18 @@ public class HelpMojo
         String parameterName = getValue( parameter, "name" );
         String parameterDescription = getValue( parameter, "description" );
 
-        Node fieldConfigurationElement = findSingleChild( configurationElement, parameterName );
+        Element fieldConfigurationElement = (Element)findSingleChild( configurationElement, parameterName );
 
         String parameterDefaultValue = "";
-        if ( fieldConfigurationElement != null && fieldConfigurationElement.getNodeValue() != null )
+        if ( fieldConfigurationElement != null && fieldConfigurationElement.hasAttribute( "default-value" ) )
         {
-            parameterDefaultValue = " (Default: " + ((Element)fieldConfigurationElement).getAttribute( "default-value" ) + ")";
+            parameterDefaultValue = " (Default: " + fieldConfigurationElement.getAttribute( "default-value" ) + ")";
         }
         append( sb, parameterName + parameterDefaultValue, 2 );
         Node deprecated = findSingleChild( parameter, "deprecated" );
-        if ( ( deprecated != null ) && isNotEmpty( deprecated.getNodeValue() ) )
+        if ( ( deprecated != null ) && isNotEmpty( deprecated.getTextContent() ) )
         {
-            append( sb, "Deprecated. " + deprecated.getNodeValue(), 3 );
+            append( sb, "Deprecated. " + deprecated.getTextContent(), 3 );
             append( sb, "", 0 );
         }
         append( sb, parameterDescription, 3 );
@@ -338,10 +337,9 @@ public class HelpMojo
         {
             append( sb, "Required: Yes", 3 );
         }
-        Node expression = findSingleChild( parameter, "expression" );
-        if ( ( expression != null ) && isNotEmpty( expression.getNodeValue() ) )
+        if ( ( fieldConfigurationElement != null ) && isNotEmpty( fieldConfigurationElement.getTextContent() ) )
         {
-        	String property = getPropertyFromExpression( expression.getNodeValue() );
+        	String property = getPropertyFromExpression( fieldConfigurationElement.getTextContent() );
             append( sb, "User property: " + property, 3 );
         }
 

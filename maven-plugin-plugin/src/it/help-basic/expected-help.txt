@@ -8,13 +8,16 @@ help:test
 
   Available parameters:
 
-    defaultParam
+    defaultParam (Default: escape\backslash)
       This parameter uses 'quotation' marks and backslashes '\\' in its
       description. Those characters must be escaped in Java string literals.
 
     deprecatedParam
+      Deprecated. As of version 1.0, use the {@link #defaultParam} instead.
+
       This parameter is deprecated.
 
     undocumentedParam
       
       Required: Yes
+      User property: test.undocumented
