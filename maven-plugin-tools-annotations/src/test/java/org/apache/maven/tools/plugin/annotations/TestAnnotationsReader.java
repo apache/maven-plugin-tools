@@ -87,4 +87,16 @@ public class TestAnnotationsReader
             new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
                                             String.class.getName() ) );
     }
+
+    public void testReadingJavaLangObject()
+        throws Exception
+    {
+        MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
+        request.setClassesDirectories( Collections.singletonList( new File( "target/test-classes" ) ) );
+        request.setIncludePatterns( Collections.singletonList( "java/lang/Object.class" ) );
+        request.setProject( new MavenProject() );
+
+        MojoAnnotationsScanner scanner = (MojoAnnotationsScanner) lookup( MojoAnnotationsScanner.ROLE );
+        scanner.scan( request );
+    }
 }
