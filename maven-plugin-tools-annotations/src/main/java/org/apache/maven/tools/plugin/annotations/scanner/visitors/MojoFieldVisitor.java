@@ -44,7 +44,7 @@ public class MojoFieldVisitor
 
     MojoFieldVisitor( Logger logger, String fieldName, String className )
     {
-    	super(Opcodes.ASM4);
+        super( Opcodes.ASM4 );
         this.logger = logger;
         this.fieldName = fieldName;
         this.className = className;
@@ -62,7 +62,6 @@ public class MojoFieldVisitor
 
     public AnnotationVisitor visitAnnotation( String desc, boolean visible )
     {
-        logger.debug( "MojoFieldVisitor#visitAnnotation:" + desc );
         String annotationClassName = Type.getType( desc ).getClassName();
         if ( !MojoAnnotationsScanner.FIELD_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {

@@ -145,9 +145,12 @@ public class DefaultMojoAnnotationsScanner
                     }
                     if ( isStoreClass( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
                     {
-                        getLogger().debug(
-                            "found MojoAnnotatedClass:" + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
-                                + mojoClassVisitor.getMojoAnnotatedClass() );
+                        if ( getLogger().isDebugEnabled() )
+                        {
+                            getLogger().debug( "found MojoAnnotatedClass:"
+                                                   + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
+                                                   + mojoClassVisitor.getMojoAnnotatedClass() );
+                        }
                         mojoClassVisitor.getMojoAnnotatedClass().setArtifact( artifact );
                         mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
                                                   mojoClassVisitor.getMojoAnnotatedClass() );
@@ -215,8 +218,11 @@ public class DefaultMojoAnnotationsScanner
 
                 if ( isStoreClass( mojoAnnotatedClass ) != null )
                 {
-                    getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
-                                           + mojoAnnotatedClass );
+                    if ( getLogger().isDebugEnabled() )
+                    {
+                        getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
+                                               + mojoAnnotatedClass );
+                    }
                     mojoAnnotatedClass.setArtifact( artifact );
                     mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
                 }

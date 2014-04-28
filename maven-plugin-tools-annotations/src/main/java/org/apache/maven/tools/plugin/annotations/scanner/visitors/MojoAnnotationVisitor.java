@@ -41,7 +41,7 @@ public class MojoAnnotationVisitor
 
     MojoAnnotationVisitor( Logger logger, String annotationClassName )
     {
-    	super(Opcodes.ASM4);
+        super( Opcodes.ASM4 );
         this.logger = logger;
         this.annotationClassName = annotationClassName;
     }
@@ -54,24 +54,20 @@ public class MojoAnnotationVisitor
     public void visit( String name, Object value )
     {
         annotationValues.put( name, value );
-        logger.debug( "MojoAnnotationVisitor#visit:" + name + ":" + value );
     }
 
     public void visitEnum( String name, String desc, String value )
     {
         annotationValues.put( name, value );
-        logger.debug( "MojoAnnotationVisitor#visitEnum:" + name + ":" + desc + ":" + value );
     }
 
     public AnnotationVisitor visitAnnotation( String name, String desc )
     {
-        logger.debug( "MojoAnnotationVisitor#visitAnnotation:" + name + ":" + desc );
         return new MojoAnnotationVisitor( logger, this.annotationClassName );
     }
 
     public AnnotationVisitor visitArray( String s )
     {
-        logger.debug( "MojoAnnotationVisitor#visitArray" );
         return new MojoAnnotationVisitor( logger, this.annotationClassName );
     }
 
