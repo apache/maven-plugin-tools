@@ -107,8 +107,11 @@ public class MojoClassVisitor
     public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
     {
         mojoAnnotatedClass = new MojoAnnotatedClass();
-        mojoAnnotatedClass.setClassName( Type.getObjectType( name ).getClassName() ).setParentClassName(
-            Type.getObjectType( superName ).getClassName() );
+        mojoAnnotatedClass.setClassName( Type.getObjectType( name ).getClassName() );
+        if ( superName != null )
+        {
+            mojoAnnotatedClass.setParentClassName( Type.getObjectType( superName ).getClassName() );
+        }
     }
 
     public AnnotationVisitor visitAnnotation( String desc, boolean visible )
