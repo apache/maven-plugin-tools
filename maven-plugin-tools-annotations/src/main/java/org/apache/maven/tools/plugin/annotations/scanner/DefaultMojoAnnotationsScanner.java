@@ -255,9 +255,8 @@ public class DefaultMojoAnnotationsScanner
 
         try
         {
-            // @Mojo annotations
-            MojoAnnotationVisitor mojoAnnotationVisitor =
-                mojoClassVisitor.getAnnotationVisitorMap().get( Mojo.class.getName() );
+            // @Mojo annotation
+            MojoAnnotationVisitor mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Mojo.class );
             if ( mojoAnnotationVisitor != null )
             {
                 MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
@@ -265,8 +264,8 @@ public class DefaultMojoAnnotationsScanner
                 mojoAnnotatedClass.setMojo( mojoAnnotationContent );
             }
 
-            // @Execute annotations
-            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitorMap().get( Execute.class.getName() );
+            // @Execute annotation
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Execute.class );
             if ( mojoAnnotationVisitor != null )
             {
                 ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
@@ -275,8 +274,7 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Parameter annotations
-            List<MojoFieldVisitor> mojoFieldVisitors =
-                mojoClassVisitor.findFieldWithAnnotationClass( Parameter.class.getName() );
+            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Parameter.class );
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
@@ -290,7 +288,7 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Component annotations
-            mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotationClass( Component.class.getName() );
+            mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Component.class );
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ComponentAnnotationContent componentAnnotationContent =

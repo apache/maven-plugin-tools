@@ -72,6 +72,11 @@ public class MojoClassVisitor
         return annotationVisitorMap;
     }
 
+    public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
+    {
+        return annotationVisitorMap.get( annotation.getName() );
+    }
+
     public void setAnnotationVisitorMap( Map<String, MojoAnnotationVisitor> annotationVisitorMap )
     {
         this.annotationVisitorMap = annotationVisitorMap;
@@ -87,8 +92,10 @@ public class MojoClassVisitor
         this.fieldVisitors = fieldVisitors;
     }
 
-    public List<MojoFieldVisitor> findFieldWithAnnotationClass( String annotationClassName )
+    public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
     {
+        String annotationClassName = annotation.getName();
+
         List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
 
         for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
