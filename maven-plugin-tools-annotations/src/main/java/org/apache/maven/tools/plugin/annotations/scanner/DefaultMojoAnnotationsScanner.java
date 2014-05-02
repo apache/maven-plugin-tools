@@ -37,6 +37,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
+import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 
@@ -45,7 +46,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,63 +67,63 @@ public class DefaultMojoAnnotationsScanner
         throws ExtractionException
     {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+
         try
         {
-
             for ( Artifact dependency : request.getDependencies() )
             {
-                File dependencyFile = dependency.getFile();
-                if ( dependencyFile != null && dependencyFile.exists() )
-                {
-                    if ( dependencyFile.isDirectory() )
-                    {
-                        mojoAnnotatedClasses.putAll(
-                            scanDirectory( dependencyFile, request.getIncludePatterns(), dependency, true ) );
-                    }
-                    else
-                    {
-                        mojoAnnotatedClasses.putAll(
-                            scanFile( dependencyFile, request.getIncludePatterns(), dependency, true ) );
-                    }
-                }
+                scan( mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true );
             }
 
             for ( File classDirectory : request.getClassesDirectories() )
             {
-                if ( classDirectory.exists() && classDirectory.isDirectory() )
-                {
-                    mojoAnnotatedClasses.putAll(
-                        scanDirectory( classDirectory, request.getIncludePatterns(), request.getProject().getArtifact(),
-                                       false ) );
-                }
+                scan( mojoAnnotatedClasses, classDirectory, request.getIncludePatterns(),
+                      request.getProject().getArtifact(), false );
             }
-
-            return mojoAnnotatedClasses;
         }
         catch ( IOException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
+
+        return mojoAnnotatedClasses;
+    }
+
+    protected void scan( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, File source,
+                         List<String> includePatterns, Artifact artifact, boolean excludeMojo )
+        throws IOException, ExtractionException
+    {
+        if ( source == null || ! source.exists() )
+        {
+            return;
+        }
+
+        Map<String, MojoAnnotatedClass> scanResult;
+        if ( source.isDirectory() )
+        {
+            scanResult = scanDirectory( source, includePatterns, artifact, excludeMojo );
+        }
+        else
+        {
+            scanResult = scanArchive( source, artifact, excludeMojo );
+        }
+
+        mojoAnnotatedClasses.putAll( scanResult );
     }
 
     /**
      * @param archiveFile
-     * @param includePatterns
      * @param artifact
-     * @param excludeMojo     for dependencies we exclude Mojo annotations found
+     * @param excludeMojo     for dependencies, we exclude Mojo annotations found
      * @return
      * @throws IOException
      * @throws ExtractionException
      */
-    protected Map<String, MojoAnnotatedClass> scanFile( File archiveFile, List<String> includePatterns,
-                                                        Artifact artifact, boolean excludeMojo )
+    protected Map<String, MojoAnnotatedClass> scanArchive( File archiveFile, Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        if ( !archiveFile.exists() )
-        {
-            return Collections.emptyMap();
-        }
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+
         ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
 
         try
@@ -131,31 +131,12 @@ public class DefaultMojoAnnotationsScanner
             for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
                   zipEntry = archiveStream.getNextEntry() )
             {
-                if ( zipEntry.getName().endsWith( ".class" ) )
+                if ( !zipEntry.getName().endsWith( ".class" ) )
                 {
-                    MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
-
-                    ClassReader rdr = new ClassReader( archiveStream );
-                    rdr.accept( mojoClassVisitor,
-                                ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
-                    analyzeVisitors( mojoClassVisitor );
-                    if ( excludeMojo )
-                    {
-                        mojoClassVisitor.getMojoAnnotatedClass().setMojo( null );
-                    }
-                    if ( isStoreClass( mojoClassVisitor.getMojoAnnotatedClass() ) != null )
-                    {
-                        if ( getLogger().isDebugEnabled() )
-                        {
-                            getLogger().debug( "found MojoAnnotatedClass:"
-                                                   + mojoClassVisitor.getMojoAnnotatedClass().getClassName() + ":"
-                                                   + mojoClassVisitor.getMojoAnnotatedClass() );
-                        }
-                        mojoClassVisitor.getMojoAnnotatedClass().setArtifact( artifact );
-                        mojoAnnotatedClasses.put( mojoClassVisitor.getMojoAnnotatedClass().getClassName(),
-                                                  mojoClassVisitor.getMojoAnnotatedClass() );
-                    }
+                    continue;
                 }
+
+                analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo );
             }
         }
         finally
@@ -169,7 +150,7 @@ public class DefaultMojoAnnotationsScanner
      * @param classDirectory
      * @param includePatterns
      * @param artifact
-     * @param excludeMojo     for dependencies we exclude Mojo annotations found
+     * @param excludeMojo     for dependencies, we exclude Mojo annotations found
      * @return
      * @throws IOException
      * @throws ExtractionException
@@ -178,11 +159,8 @@ public class DefaultMojoAnnotationsScanner
                                                              Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        if ( !classDirectory.exists() )
-        {
-            return Collections.emptyMap();
-        }
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classDirectory );
         scanner.addDefaultExcludes();
@@ -203,29 +181,7 @@ public class DefaultMojoAnnotationsScanner
             InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) );
             try
             {
-                MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
-                ClassReader rdr = new ClassReader( is );
-                rdr.accept( mojoClassVisitor,
-                            ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
-                analyzeVisitors( mojoClassVisitor );
-
-                MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
-
-                if ( excludeMojo )
-                {
-                    mojoAnnotatedClass.setMojo( null );
-                }
-
-                if ( isStoreClass( mojoAnnotatedClass ) != null )
-                {
-                    if ( getLogger().isDebugEnabled() )
-                    {
-                        getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
-                                               + mojoAnnotatedClass );
-                    }
-                    mojoAnnotatedClass.setArtifact( artifact );
-                    mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
-                }
+                analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo );
             }
             finally
             {
@@ -233,6 +189,36 @@ public class DefaultMojoAnnotationsScanner
             }
         }
         return mojoAnnotatedClasses;
+    }
+
+    private void analyzeClassStream( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, InputStream is,
+                                     Artifact artifact, boolean excludeMojo )
+        throws IOException, ExtractionException
+    {
+        MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
+
+        ClassReader rdr = new ClassReader( is );
+        rdr.accept( mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
+
+        analyzeVisitors( mojoClassVisitor );
+
+        MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
+
+        if ( excludeMojo )
+        {
+            mojoAnnotatedClass.setMojo( null );
+        }
+
+        if ( isStoreClass( mojoAnnotatedClass ) != null )
+        {
+            if ( getLogger().isDebugEnabled() )
+            {
+                getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
+                                       + mojoAnnotatedClass );
+            }
+            mojoAnnotatedClass.setArtifact( artifact );
+            mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
+        }
     }
 
     private MojoAnnotatedClass isStoreClass( MojoAnnotatedClass mojoAnnotatedClass )
@@ -253,59 +239,58 @@ public class DefaultMojoAnnotationsScanner
          **/
     }
 
+    protected void populateAnnotationContent( Object content, MojoAnnotationVisitor mojoAnnotationVisitor )
+        throws ReflectorException
+    {
+        for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
+        {
+            reflector.invoke( content, entry.getKey(), new Object[] { entry.getValue() } );
+        }
+    }
 
     protected void analyzeVisitors( MojoClassVisitor mojoClassVisitor )
         throws ExtractionException
     {
+        final MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
 
         try
         {
+            // @Mojo annotations
             MojoAnnotationVisitor mojoAnnotationVisitor =
                 mojoClassVisitor.getAnnotationVisitorMap().get( Mojo.class.getName() );
             if ( mojoAnnotationVisitor != null )
             {
                 MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
-                for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
-                {
-                    reflector.invoke( mojoAnnotationContent, entry.getKey(), new Object[]{ entry.getValue() } );
-                }
-                mojoClassVisitor.getMojoAnnotatedClass().setMojo( mojoAnnotationContent );
+                populateAnnotationContent( mojoAnnotationContent, mojoAnnotationVisitor );
+                mojoAnnotatedClass.setMojo( mojoAnnotationContent );
             }
 
+            // @Execute annotations
             mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitorMap().get( Execute.class.getName() );
             if ( mojoAnnotationVisitor != null )
             {
                 ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
-
-                for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
-                {
-                    reflector.invoke( executeAnnotationContent, entry.getKey(), new Object[]{ entry.getValue() } );
-                }
-                mojoClassVisitor.getMojoAnnotatedClass().setExecute( executeAnnotationContent );
+                populateAnnotationContent( executeAnnotationContent, mojoAnnotationVisitor );
+                mojoAnnotatedClass.setExecute( executeAnnotationContent );
             }
 
+            // @Parameter annotations
             List<MojoFieldVisitor> mojoFieldVisitors =
                 mojoClassVisitor.findFieldWithAnnotationClass( Parameter.class.getName() );
-
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
                     new ParameterAnnotationContent( mojoFieldVisitor.getFieldName(), mojoFieldVisitor.getClassName() );
                 if ( mojoFieldVisitor.getMojoAnnotationVisitor() != null )
                 {
-                    for ( Map.Entry<String, Object> entry : mojoFieldVisitor.getMojoAnnotationVisitor().getAnnotationValues().entrySet() )
-                    {
-                        reflector.invoke( parameterAnnotationContent, entry.getKey(),
-                                          new Object[]{ entry.getValue() } );
-                    }
-
+                    populateAnnotationContent( parameterAnnotationContent, mojoFieldVisitor.getMojoAnnotationVisitor() );
                 }
-                mojoClassVisitor.getMojoAnnotatedClass().getParameters().put( parameterAnnotationContent.getFieldName(),
-                                                                              parameterAnnotationContent );
+                mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
+                                                        parameterAnnotationContent );
             }
 
+            // @Component annotations
             mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotationClass( Component.class.getName() );
-
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ComponentAnnotationContent componentAnnotationContent =
@@ -327,17 +312,17 @@ public class DefaultMojoAnnotationsScanner
                                               new Object[]{ entry.getValue() } );
                         }
                     }
+
                     if ( StringUtils.isEmpty( componentAnnotationContent.getRoleClassName() ) )
                     {
                         componentAnnotationContent.setRoleClassName( mojoFieldVisitor.getClassName() );
                     }
                 }
-                mojoClassVisitor.getMojoAnnotatedClass().getComponents().put( componentAnnotationContent.getFieldName(),
-                                                                              componentAnnotationContent );
+                mojoAnnotatedClass.getComponents().put( componentAnnotationContent.getFieldName(),
+                                                        componentAnnotationContent );
             }
-
         }
-        catch ( Exception e )
+        catch ( ReflectorException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
