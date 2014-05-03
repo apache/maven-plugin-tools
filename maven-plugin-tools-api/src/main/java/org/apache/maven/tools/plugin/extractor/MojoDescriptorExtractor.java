@@ -21,8 +21,6 @@ package org.apache.maven.tools.plugin.extractor;
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 import java.util.List;
@@ -36,20 +34,6 @@ public interface MojoDescriptorExtractor
     /** Plexus role for lookup */
     String ROLE = MojoDescriptorExtractor.class.getName();
 
-
-    /**
-     * Execute the mojo extraction.
-     *
-     * @return a list of mojo descriptors.
-     * @throws ExtractionException if any
-     * @throws InvalidPluginDescriptorException if any
-     * 
-     * @deprecated Use {@link MojoDescriptorExtractor#execute(PluginToolsRequest)} instead. 
-     *     Provided for backward compatibility with maven-plugin-plugin &lt; 2.5.
-     */
-    List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
-        throws ExtractionException, InvalidPluginDescriptorException;
-    
     /**
      * Execute the mojo extraction.
      *

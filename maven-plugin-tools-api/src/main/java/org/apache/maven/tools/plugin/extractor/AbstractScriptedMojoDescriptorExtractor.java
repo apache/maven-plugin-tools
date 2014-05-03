@@ -29,9 +29,7 @@ import java.util.TreeMap;
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -46,13 +44,6 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
-    /** {@inheritDoc} */
-    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
-        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
-    }
-    
     /** {@inheritDoc} */
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException

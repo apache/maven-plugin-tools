@@ -672,13 +672,6 @@ public class JavaMojoDescriptorExtractor
     }
 
     /** {@inheritDoc} */
-    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
-        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
-    }
-    
-    /** {@inheritDoc} */
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {

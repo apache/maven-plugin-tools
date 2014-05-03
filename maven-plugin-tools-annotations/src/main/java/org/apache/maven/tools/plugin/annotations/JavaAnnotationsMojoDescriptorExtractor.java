@@ -35,7 +35,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
@@ -91,12 +90,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     @org.codehaus.plexus.component.annotations.Requirement
     private ArchiverManager archiverManager;
-
-    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
-        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
-    }
 
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
