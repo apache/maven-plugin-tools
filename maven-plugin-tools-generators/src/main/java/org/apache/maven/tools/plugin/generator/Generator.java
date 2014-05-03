@@ -37,7 +37,7 @@ public interface Generator
      *
      * @param destinationDirectory required
      * @param request required
-     * @throws IOException if any
+     * @throws GeneratorException if any
      * 
      * @since 2.5
      */
