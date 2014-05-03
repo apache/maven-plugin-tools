@@ -27,7 +27,8 @@
 
   <artifactId>maven-plugin-tools-annotations</artifactId>
 
-  <name>Maven Plugin Tool for Annotations</name>
+  <name>Maven Plugin Tool for Java with Java 5 Annotations</name>
+  <description>Descriptor extractor for plugins written in Java with Java 5 annotations.</description>
 
   <dependencies>
 
