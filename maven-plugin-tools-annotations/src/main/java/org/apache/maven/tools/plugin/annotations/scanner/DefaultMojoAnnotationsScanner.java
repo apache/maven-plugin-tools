@@ -210,9 +210,9 @@ public class DefaultMojoAnnotationsScanner
             mojoAnnotatedClass.setMojo( null );
         }
 
-        if ( isStoreClass( mojoAnnotatedClass ) != null )
+        if ( mojoAnnotatedClass != null ) // see MPLUGIN-206 we can have intermediate classes without annotations
         {
-            if ( getLogger().isDebugEnabled() )
+            if ( getLogger().isDebugEnabled() && hasMojoAnnotations( mojoAnnotatedClass ) )
             {
                 getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
                                        + mojoAnnotatedClass );
@@ -222,22 +222,10 @@ public class DefaultMojoAnnotationsScanner
         }
     }
 
-    private MojoAnnotatedClass isStoreClass( MojoAnnotatedClass mojoAnnotatedClass )
+    private boolean hasMojoAnnotations( MojoAnnotatedClass mojoAnnotatedClass )
     {
-        // see MPLUGIN-206 we can have intermediate classes without annotations
-        if ( mojoAnnotatedClass == null )
-        {
-            return null;
-        }
-        return mojoAnnotatedClass;
-        /**
-         if ( !mojoAnnotatedClass.getComponents().isEmpty() || !mojoAnnotatedClass.getParameters().isEmpty()
-         || mojoAnnotatedClass.getExecute() != null || mojoAnnotatedClass.getMojo() != null )
-         {
-         return mojoAnnotatedClass;
-         }
-         return null;
-         **/
+        return !( mojoAnnotatedClass.getComponents().isEmpty() && mojoAnnotatedClass.getParameters().isEmpty()
+            && mojoAnnotatedClass.getExecute() == null && mojoAnnotatedClass.getMojo() == null );
     }
 
     protected void populateAnnotationContent( Object content, MojoAnnotationVisitor mojoAnnotationVisitor )
