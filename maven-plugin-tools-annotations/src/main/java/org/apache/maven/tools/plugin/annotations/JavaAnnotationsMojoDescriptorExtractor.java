@@ -69,6 +69,7 @@ import java.util.TreeSet;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
+ * Notice that source files are also parsed to get description, since and deprecation information.
  *
  * @author Olivier Lamy
  * @since 3.0
@@ -185,13 +186,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     private boolean isMojoAnnnotatedClassCandidate( MojoAnnotatedClass mojoAnnotatedClass )
     {
-        if ( mojoAnnotatedClass == null )
-        {
-            return false;
-        }
-        return ( !mojoAnnotatedClass.getComponents().isEmpty() || !mojoAnnotatedClass.getParameters().isEmpty()
-            || mojoAnnotatedClass.getExecute() != null || mojoAnnotatedClass.getMojo() != null );
-
+        return mojoAnnotatedClass != null
+            && !( mojoAnnotatedClass.getComponents().isEmpty() && mojoAnnotatedClass.getParameters().isEmpty()
+                && mojoAnnotatedClass.getExecute() == null && mojoAnnotatedClass.getMojo() == null );
     }
 
     protected Map<String, JavaClass> discoverClassesFromSourcesJar( Artifact artifact, PluginToolsRequest request,
@@ -612,7 +609,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
     protected ExecuteAnnotationContent findExecuteInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
                                                                      Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
-
         if ( mojoAnnotatedClass.getExecute() != null )
         {
             return mojoAnnotatedClass.getExecute();

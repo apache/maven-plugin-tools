@@ -143,6 +143,7 @@ public class DefaultMojoAnnotationsScanner
         {
             IOUtil.close( archiveStream );
         }
+
         return mojoAnnotatedClasses;
     }
 

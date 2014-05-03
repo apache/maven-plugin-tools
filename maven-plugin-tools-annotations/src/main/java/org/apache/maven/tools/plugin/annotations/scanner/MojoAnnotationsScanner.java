@@ -41,6 +41,13 @@ public interface MojoAnnotationsScanner
 
     final List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(), Component.class.getName() );
 
+    /**
+     * Scan classes for mojo annotations.
+     * 
+     * @param request
+     * @return map of mojo-annotated classes keyed by full class name
+     * @throws ExtractionException
+     */
     Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException;
 }
