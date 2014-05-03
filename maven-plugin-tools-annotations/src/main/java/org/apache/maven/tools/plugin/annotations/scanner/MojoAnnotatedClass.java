@@ -146,6 +146,11 @@ public class MojoAnnotatedClass
         this.artifact = artifact;
     }
 
+    public boolean hasAnnotations()
+    {
+        return !( getComponents().isEmpty() && getParameters().isEmpty() && execute == null && mojo == null );
+    }
+
     @Override
     public String toString()
     {

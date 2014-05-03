@@ -212,7 +212,7 @@ public class DefaultMojoAnnotationsScanner
 
         if ( mojoAnnotatedClass != null ) // see MPLUGIN-206 we can have intermediate classes without annotations
         {
-            if ( getLogger().isDebugEnabled() && hasMojoAnnotations( mojoAnnotatedClass ) )
+            if ( getLogger().isDebugEnabled() && mojoAnnotatedClass.hasAnnotations() )
             {
                 getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
                                        + mojoAnnotatedClass );
@@ -220,12 +220,6 @@ public class DefaultMojoAnnotationsScanner
             mojoAnnotatedClass.setArtifact( artifact );
             mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
         }
-    }
-
-    private boolean hasMojoAnnotations( MojoAnnotatedClass mojoAnnotatedClass )
-    {
-        return !( mojoAnnotatedClass.getComponents().isEmpty() && mojoAnnotatedClass.getParameters().isEmpty()
-            && mojoAnnotatedClass.getExecute() == null && mojoAnnotatedClass.getMojo() == null );
     }
 
     protected void populateAnnotationContent( Object content, MojoAnnotationVisitor mojoAnnotationVisitor )

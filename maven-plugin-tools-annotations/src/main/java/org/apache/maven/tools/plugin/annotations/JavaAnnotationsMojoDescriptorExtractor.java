@@ -186,9 +186,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     private boolean isMojoAnnnotatedClassCandidate( MojoAnnotatedClass mojoAnnotatedClass )
     {
-        return mojoAnnotatedClass != null
-            && !( mojoAnnotatedClass.getComponents().isEmpty() && mojoAnnotatedClass.getParameters().isEmpty()
-                && mojoAnnotatedClass.getExecute() == null && mojoAnnotatedClass.getMojo() == null );
+        return mojoAnnotatedClass != null && mojoAnnotatedClass.hasAnnotations();
     }
 
     protected Map<String, JavaClass> discoverClassesFromSourcesJar( Artifact artifact, PluginToolsRequest request,
