@@ -32,7 +32,7 @@ About ${project.name}
 
 * Usage
 
-  To be able to {{{../maven-plugin-tools-annotations/index.html}use Maven Plugin Java 5 Annotations}},
+  To be able to {{{../maven-plugin-tools-annotations/index.html}use Maven Plugin Tools Java 5 Annotations}},
   add this artifact to your project dependencies in <<<pom.xml>>>:
 
 +--------+
