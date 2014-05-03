@@ -58,7 +58,7 @@ public class FirstMojo
     private File touchFile;
 
     /**
-     * @parameter alias="alias"
+     * @parameter name="namedParam" alias="alias"
      * @deprecated As of 0.2
      * @since 0.1
      */

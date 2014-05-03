@@ -544,7 +544,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
-                parameter.setName( parameterAnnotationContent.getFieldName() );
+                String name =
+                    StringUtils.isEmpty( parameterAnnotationContent.name() ) ? parameterAnnotationContent.getFieldName()
+                                    : parameterAnnotationContent.name();
+                parameter.setName( name );
                 parameter.setAlias( parameterAnnotationContent.alias() );
                 parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );

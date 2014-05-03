@@ -283,6 +283,7 @@ public class DefaultMojoAnnotationsScanner
                 {
                     populateAnnotationContent( parameterAnnotationContent, mojoFieldVisitor.getMojoAnnotationVisitor() );
                 }
+
                 mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
                                                         parameterAnnotationContent );
             }

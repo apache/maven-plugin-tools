@@ -79,8 +79,8 @@ assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 8
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam" }[0]
-assert parameter.name.text() == 'aliasedParam'
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
+assert parameter.name.text() == 'namedParam'
 assert parameter.alias.text() == 'alias'
 assert parameter.type.text() == 'java.lang.String'
 assert parameter.deprecated.text() == 'As of 0.2'

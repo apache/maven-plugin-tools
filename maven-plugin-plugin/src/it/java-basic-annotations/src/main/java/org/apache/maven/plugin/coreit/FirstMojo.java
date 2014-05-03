@@ -62,7 +62,7 @@ public class FirstMojo
      * @since 0.1
      * @deprecated As of 0.2
      */
-    @Parameter( alias = "alias" )
+    @Parameter( name = "namedParam", alias = "alias" )
     private String aliasedParam;
 
     @Component( role = MavenProjectHelper.class, hint = "test" )

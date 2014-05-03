@@ -78,7 +78,8 @@ public class MyMojo
      * @since <since-text>
      * @deprecated <deprecated-text>
      */
-    @Parameter( alias = "myAlias",
+    @Parameter( name = "parameter",
+                alias = "myAlias",
                 property = "a.property",
                 defaultValue = "an expression, possibly with ${variables}",
                 readonly = <false|true>,

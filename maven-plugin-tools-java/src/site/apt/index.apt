@@ -67,7 +67,7 @@ public class MyMojo
     extends AbstractMojo
 {
     /**
-     * @parameter alias="myAlias" implementation="" property="aProperty" default-value="${anExpression}"
+     * @parameter name="parameter" alias="myAlias" implementation="" property="aProperty" default-value="${anExpression}"
      * @readonly
      * @required
      * @since <since-text>

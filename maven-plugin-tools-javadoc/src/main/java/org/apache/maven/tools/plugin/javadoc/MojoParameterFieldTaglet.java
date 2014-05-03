@@ -35,7 +35,7 @@ import com.sun.tools.doclets.Taglet;
  *   &#x2f;&#x2a;&#x2a;
  *   &#x20;&#x2a; Dummy parameter.
  *   &#x20;&#x2a;
- *   &#x20;&#x2a; &#64;parameter &lt;alias="..."&gt; &lt;default-value="..."&gt; &lt;expression="..."&gt;
+ *   &#x20;&#x2a; &#64;parameter &lt;name="..."&gt; &lt;alias="..."&gt; &lt;default-value="..."&gt; &lt;expression="..."&gt;
  *   &#x20;&#x2a; &lt;implementation="..."&gt; &lt;property="..."&gt;
  *   &#x20;&#x2a; ...
  *   &#x20;&#x2a;&#x2f;
@@ -59,6 +59,7 @@ public class MojoParameterFieldTaglet
     private static final String NAME = JavaMojoAnnotation.PARAMETER;
 
     private static final String[] PARAMETERS_NAME = {
+        JavaMojoAnnotation.PARAMETER_NAME,
         JavaMojoAnnotation.PARAMETER_ALIAS,
         JavaMojoAnnotation.PARAMETER_DEFAULT_VALUE,
         JavaMojoAnnotation.PARAMETER_EXPRESSION,

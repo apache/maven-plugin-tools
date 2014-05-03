@@ -41,6 +41,12 @@ import java.lang.annotation.Target;
 public @interface Parameter
 {
     /**
+     * name of the bean property used to get/set the field: by default, field name is used.
+     * @return the name of the bean property
+     */
+    String name() default "";
+
+    /**
      * alias supported to get parameter value.
      * @return the alias
      */

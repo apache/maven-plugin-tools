@@ -562,6 +562,13 @@ public class JavaMojoDescriptorExtractor
 
                 pd.setEditable( field.getTagByName( JavaMojoAnnotation.READONLY ) == null );
 
+                String name = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_NAME );
+
+                if ( !StringUtils.isEmpty( name ) )
+                {
+                    pd.setName( name );
+                }
+
                 String alias = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_ALIAS );
 
                 if ( !StringUtils.isEmpty( alias ) )

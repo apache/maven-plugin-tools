@@ -272,6 +272,15 @@ public interface JavaMojoAnnotation
     String PARAMETER = "parameter";
 
     /**
+     * This defines the name of the bean property used to get/set the field: by default, field name is used.
+     * <br/>
+     * Refer to <code>&#64;parameter name="..."</code>.
+     * <br/>
+     * <b>Note</b>: Should be defined in a Mojo Field.
+     */
+    String PARAMETER_NAME = "name";
+
+    /**
      * This defines an alias which can be used to configure a parameter. This is primarily useful to improve
      * user-friendliness.
      * <br/>

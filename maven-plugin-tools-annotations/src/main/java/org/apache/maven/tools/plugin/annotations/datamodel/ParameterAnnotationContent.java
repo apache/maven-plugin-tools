@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 
@@ -31,6 +32,8 @@ public class ParameterAnnotationContent
     extends AnnotatedField
     implements Parameter
 {
+
+    private String name;
 
     private String alias;
 
@@ -59,6 +62,16 @@ public class ParameterAnnotationContent
         this.defaultValue = defaultValue;
         this.required = required;
         this.readonly = readonly;
+    }
+
+    public String name()
+    {
+        return name;
+    }
+
+    public void name( String name )
+    {
+        this.name = name;
     }
 
     public String alias()
@@ -132,7 +145,8 @@ public class ParameterAnnotationContent
         final StringBuilder sb = new StringBuilder();
         sb.append( super.toString() );
         sb.append( "ParameterAnnotationContent" );
-        sb.append( "{alias='" ).append( alias ).append( '\'' );
+        sb.append( "{name='" ).append( name ).append( '\'' );
+        sb.append( ", alias='" ).append( alias ).append( '\'' );
         sb.append( ", property='" ).append( property ).append( '\'' );
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
         sb.append( ", required=" ).append( required );
