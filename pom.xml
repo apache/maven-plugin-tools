@@ -281,6 +281,7 @@
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
             <tagBase>https://svn.apache.org/repos/asf/maven/plugin-tools/tags</tagBase>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
         </plugin>
         <plugin>
