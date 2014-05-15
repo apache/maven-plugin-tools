@@ -33,17 +33,6 @@ About ${project.name}
 * Usage
 
   To be able to {{{../maven-plugin-tools-annotations/index.html}use Maven Plugin Tools Java 5 Annotations}},
-  add this artifact to your project dependencies in <<<pom.xml>>>:
-
-+--------+
-<project>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-</project>
-+--------+
+  some configuration has to be done in <<<pom.xml>>>: see
+  {{{../maven-plugin-plugin/examples/using-annotations.html#POM_configuration} Using Plugin Tools Java5 Annotations}}
+  example in {{{../maven-plugin-plugin} <<<maven-plugin-plugin>>>}} documentation.
