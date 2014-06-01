@@ -85,6 +85,9 @@ public class HelpGeneratorMojo
     public void execute()
         throws MojoExecutionException
     {
+        // force value for this plugin
+        skipErrorNoDescriptorsFound = true;
+
         super.execute();
 
         if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) && !skip )

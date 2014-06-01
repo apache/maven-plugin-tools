@@ -20,15 +20,17 @@ package test;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * MOJO-DESCRIPTION. Some "quotation" marks and backslashes '\\', some <strong>important</strong> javadoc<br> and an
  * inline link to {@link test.AnotherMojo}.
  * 
- * @goal test
  * @deprecated As of 1.0, use the "quoted" goal instead.
  * @since 2.1
  */
+@Mojo( name= "test" )
 public class MyMojo
     extends AbstractMojo
 {
@@ -37,31 +39,26 @@ public class MyMojo
      * This parameter uses "quotation" marks and backslashes '\\' in its description. Those characters <em>must</em> be
      * escaped in Java string literals.
      * 
-     * @parameter default-value="escape\\backslash"
      * @since 2.0
      */
+    @Parameter( defaultValue = "escape\\backslash" )
     private String defaultParam;
 
     /**
      * This parameter is deprecated.
      * 
-     * @parameter
      * @deprecated As of version 1.0, use the {@link #defaultParam} instead.
      */
+    @Parameter
     private String deprecatedParam;
 
-    /**
-     * @parameter expression="${test.undocumented}"
-     * @required
-     */
+    @Parameter( property = "test.undocumented", required = true )
     private String undocumentedParam;
 
     /**
      * Readonly parameter: should not be proposed for configuration.
-     *
-     * @parameter default-value="not for configuration"
-     * @readonly
      */
+    @Parameter( defaultValue = "not for configuration", readonly = true )
     private String readonly;
 
     public void execute()
