@@ -77,10 +77,7 @@ Using Plugin Tools Java5 Annotations
 
   * add <<<maven-plugin-annotations>>> dependency, preferably with <<<provided>>> scope,
 
-  * bind goals to <<<process-classes>>> phase,
-
-  * configure <<<skipErrorNoDescriptorsFound>>> parameter to avoid failure caused by
-    {{{http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_maven-plugin_packaging}default <<<descriptor>>> goal binding to <<<generate-resources>>> phase}}.
+  * override Maven core's <<<default-descriptor>>> execution phase to <<<process-classes>>>,
 
   []
 
@@ -105,16 +102,10 @@ Using Plugin Tools Java5 Annotations
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${project.version}</version>
-        <configuration>
-          <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
         <executions>
           <execution>
-            <id>mojo-descriptor</id>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
+            <id>default-descriptor</id>
+            <phase>process-classes</phase>
           </execution>
           <!-- if you want to generate help goal -->
           <execution>
