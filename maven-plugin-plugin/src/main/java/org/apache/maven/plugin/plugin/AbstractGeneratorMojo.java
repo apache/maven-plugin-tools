@@ -54,7 +54,7 @@ public abstract class AbstractGeneratorMojo
     /**
      * The project currently being built.
      */
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
     /**
