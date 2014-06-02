@@ -538,9 +538,9 @@ public class JavaMojoDescriptorExtractor
                 else
                 {
                     // not a component but a Maven object to be transformed into an expression/property
-                    getLogger().warn( "Deprecated @Component for " + pd.getName() + " field in "
-                                          + javaClass.getFullyQualifiedName() + ": replace with @Parameter( name = \""
-                                          + expression + "\", readonly = true )" );
+                    getLogger().warn(
+                        "Deprecated @Component for " + pd.getName() + " field in " + javaClass.getFullyQualifiedName() +
+                            ": replace with @Parameter( default-value = \"" + expression + "\", readonly = true )" );
                     pd.setDefaultValue( expression );
                     pd.setType( role );
                     pd.setRequired( true );
