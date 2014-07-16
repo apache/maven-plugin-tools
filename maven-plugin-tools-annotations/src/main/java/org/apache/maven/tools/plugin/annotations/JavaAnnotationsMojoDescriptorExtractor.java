@@ -580,9 +580,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 else
                 {
                     // not a component but a Maven object to be transformed into an expression/property: deprecated
-                    getLogger().warn( "Deprecated @component for " + parameter.getName() + " field in " +
-                                          mojoAnnotatedClass.getClassName() + "." +
-                                          ": replace with @parameter default-value=\"" + expression + "\" @readonly" );
+                    getLogger().warn( "Deprecated @Component annotation for '" + parameter.getName() + "' field in " +
+                                          mojoAnnotatedClass.getClassName() +
+                                          ": replace with @Parameter( default-value = \"" + expression + "\", readonly = true )" );
                     parameter.setDefaultValue( expression );
                     parameter.setType( componentAnnotationContent.getRoleClassName() );
                     parameter.setRequired( true );
