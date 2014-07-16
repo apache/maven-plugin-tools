@@ -51,33 +51,34 @@ assert mojo.configuration.touchFile[0].text() == '${first.touchFile}'
 assert mojo.configuration.touchFile[0].'@implementation' == 'java.io.File'
 assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.directory}/touch.txt'
 
-assert mojo.configuration.session[0].text() == ''
-assert mojo.configuration.session[0].'@implementation' == 'org.apache.maven.execution.MavenSession'
-assert mojo.configuration.session[0].'@default-value' == '${session}'
+assert mojo.requirements.requirement.size() == 6
 
-assert mojo.configuration.project[0].text() == ''
-assert mojo.configuration.project[0].'@implementation' == 'org.apache.maven.project.MavenProject'
-assert mojo.configuration.project[0].'@default-value' == '${project}'
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "session" }[0]
+assert requirement.role.text() == 'org.apache.maven.execution.MavenSession'
+assert requirement.'field-name'.text() == 'session'
 
-assert mojo.configuration.mojo[0].text() == ''
-assert mojo.configuration.mojo[0].'@implementation' == 'org.apache.maven.plugin.MojoExecution'
-assert mojo.configuration.mojo[0].'@default-value' == '${mojoExecution}'
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "project" }[0]
+assert requirement.role.text() == 'org.apache.maven.project.MavenProject'
+assert requirement.'field-name'.text() == 'project'
 
-assert mojo.configuration.plugin[0].text() == ''
-assert mojo.configuration.plugin[0].'@implementation' == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
-assert mojo.configuration.plugin[0].'@default-value' == '${plugin}'
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "mojo" }[0]
+assert requirement.role.text() == 'org.apache.maven.plugin.MojoExecution'
+assert requirement.'field-name'.text() == 'mojo'
 
-assert mojo.configuration.settings[0].text() == ''
-assert mojo.configuration.settings[0].'@implementation' == 'org.apache.maven.settings.Settings'
-assert mojo.configuration.settings[0].'@default-value' == '${settings}'
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "plugin" }[0]
+assert requirement.role.text() == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
+assert requirement.'field-name'.text() == 'plugin'
 
-assert mojo.requirements.requirement.size() == 1
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "settings" }[0]
+assert requirement.role.text() == 'org.apache.maven.settings.Settings'
+assert requirement.'field-name'.text() == 'settings'
 
-assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.project.MavenProjectHelper'
-assert mojo.requirements.requirement[0].'role-hint'.text() == 'test'
-assert mojo.requirements.requirement[0].'field-name'.text() == 'projectHelper'
+requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
+assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
+assert requirement.'role-hint'.text() == 'test'
+assert requirement.'field-name'.text() == 'projectHelper'
 
-assert mojo.parameters.parameter.size() == 8
+assert mojo.parameters.parameter.size() == 3
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
 assert parameter.name.text() == 'namedParam'
@@ -96,51 +97,6 @@ assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == 'Project directory.'
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "mojo" }[0]
-assert parameter.name.text() == 'mojo'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.plugin.MojoExecution'
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "plugin" }[0]
-assert parameter.name.text() == 'plugin'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.plugin.descriptor.PluginDescriptor'
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "project" }[0]
-assert parameter.name.text() == 'project'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.project.MavenProject'
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "session" }[0]
-assert parameter.name.text() == 'session'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.execution.MavenSession'
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "settings" }[0]
-assert parameter.name.text() == 'settings'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.settings.Settings'
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
 assert parameter.name.text() == 'touchFile'

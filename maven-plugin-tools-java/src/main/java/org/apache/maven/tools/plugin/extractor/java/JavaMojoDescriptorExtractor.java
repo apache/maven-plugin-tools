@@ -528,9 +528,11 @@ public class JavaMojoDescriptorExtractor
                 }
 
                 // recognize Maven-injected objects as components annotations instead of parameters
-                String expression = PluginUtils.MAVEN_COMPONENTS.get( role );
+                // Note: the expressions we are looking for, i.e. "${project}", are in the values of the Map,
+                // so the lookup mechanism is different here than in maven-plugin-tools-annotations
+                boolean isDeprecated = PluginUtils.MAVEN_COMPONENTS.containsValue( role );
 
-                if ( expression == null )
+                if ( !isDeprecated )
                 {
                     // normal component
                     pd.setRequirement( new Requirement( role, roleHint ) );
@@ -540,9 +542,8 @@ public class JavaMojoDescriptorExtractor
                     // not a component but a Maven object to be transformed into an expression/property
                     getLogger().warn(
                         "Deprecated @component Javadoc tag for '" + pd.getName() + "' field in " + javaClass.getFullyQualifiedName() +
-                            ": replace with @Parameter( defaultValue = \"" + expression + "\", readonly = true )" );
-                    pd.setDefaultValue( expression );
-                    pd.setType( role );
+                            ": replace with @Parameter( defaultValue = \"" + role + "\", readonly = true )" );
+                    pd.setDefaultValue( role );
                     pd.setRequired( true );
                 }
 
