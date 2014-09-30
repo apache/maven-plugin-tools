@@ -105,7 +105,10 @@ public class HelpMojo
     private int indentSize;
 
     // groupId/artifactId/plugin-help.xml
-    private static final String PLUGIN_HELP_PATH = "/${pluginHelpPath}";
+    private static final String PLUGIN_HELP_PATH =
+                    "/${pluginHelpPath}";
+
+    private static final int DEFAULT_LINE_LENGTH = 80;
 
     private Document build()
         throws MojoExecutionException
@@ -156,7 +159,7 @@ public class HelpMojo
         if ( lineLength <= 0 )
         {
             getLog().warn( "The parameter 'lineLength' should be positive, using '80' as default." );
-            lineLength = 80;
+            lineLength = DEFAULT_LINE_LENGTH;
         }
         if ( indentSize <= 0 )
         {
@@ -277,7 +280,7 @@ public class HelpMojo
     {
         String mojoGoal = getValue( mojo, "goal" );
         Node configurationElement = findSingleChild( mojo, "configuration" );
-		Node description = findSingleChild( mojo, "description" );
+        Node description = findSingleChild( mojo, "description" );
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
             append( sb, goalPrefix + ":" + mojoGoal, 0 );
@@ -318,7 +321,7 @@ public class HelpMojo
         String parameterName = getValue( parameter, "name" );
         String parameterDescription = getValue( parameter, "description" );
 
-        Element fieldConfigurationElement = (Element)findSingleChild( configurationElement, parameterName );
+        Element fieldConfigurationElement = (Element) findSingleChild( configurationElement, parameterName );
 
         String parameterDefaultValue = "";
         if ( fieldConfigurationElement != null && fieldConfigurationElement.hasAttribute( "default-value" ) )
@@ -339,7 +342,7 @@ public class HelpMojo
         }
         if ( ( fieldConfigurationElement != null ) && isNotEmpty( fieldConfigurationElement.getTextContent() ) )
         {
-        	String property = getPropertyFromExpression( fieldConfigurationElement.getTextContent() );
+            String property = getPropertyFromExpression( fieldConfigurationElement.getTextContent() );
             append( sb, "User property: " + property, 3 );
         }
 
