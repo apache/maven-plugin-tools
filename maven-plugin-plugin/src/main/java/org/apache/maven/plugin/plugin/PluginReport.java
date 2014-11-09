@@ -671,7 +671,7 @@ public class PluginReport
             }
             if ( jdk == null && project.getPluginManagement() != null )
             {
-                    jdk = discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap() );
+                jdk = discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap() );
             }
             if ( jdk == null )
             {
@@ -685,8 +685,7 @@ public class PluginReport
          * @param pluginsAsMap could be null
          * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
          */
-        @SuppressWarnings( "rawtypes" )
-        private static String discoverJdkRequirementFromPlugins( Map pluginsAsMap )
+        private static String discoverJdkRequirementFromPlugins( Map<String, Object> pluginsAsMap )
         {
             if ( pluginsAsMap == null )
             {
@@ -695,16 +694,14 @@ public class PluginReport
 
             String jdk = null;
             String backupJdk = null;
-            for ( Iterator it = pluginsAsMap.keySet().iterator(); it.hasNext(); )
+            for ( Map.Entry<String, Object> entry : pluginsAsMap.entrySet() )
             {
-                String key = it.next().toString();
-
-                if ( !key.equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
+                if ( !entry.getKey().equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
                 {
                     continue;
                 }
 
-                Object value = pluginsAsMap.get( key );
+                Object value = entry.getValue();
                 Xpp3Dom pluginConf = null;
 
                 backupJdk = "Default version for maven-compiler-plugin";
@@ -727,22 +724,14 @@ public class PluginReport
                     continue;
                 }
 
-                if ( pluginConf.getChild( "target" ) == null )
+                Xpp3Dom target = pluginConf.getChild( "target" );
+                if ( target != null )
                 {
-                    continue;
+                    jdk = target.getValue();
                 }
-
-                jdk = pluginConf.getChild( "target" ).getValue();
             }
 
-            if ( jdk == null )
-            {
-                return backupJdk;
-            }
-            else
-            {
-                return jdk;
-            }
+            return ( jdk == null ) ? backupJdk : jdk;
         }
     }
 }
