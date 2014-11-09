@@ -695,7 +695,9 @@ public class PluginReport
                 return null;
             }
 
-            String jdk = null;
+            // default value
+            String jdk = props.getProperty( "maven.compiler.target" );
+
             String backupJdk = null;
             for ( Map.Entry<String, Object> entry : pluginsAsMap.entrySet() )
             {
@@ -706,9 +708,6 @@ public class PluginReport
 
                 Object value = entry.getValue();
                 Xpp3Dom pluginConf = null;
-
-                // default value
-                jdk = props.getProperty( "maven.compiler.target" );
 
                 backupJdk = "Default version for maven-compiler-plugin";
                 if ( value instanceof Plugin )
