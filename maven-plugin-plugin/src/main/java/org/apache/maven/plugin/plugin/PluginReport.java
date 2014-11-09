@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -667,11 +668,13 @@ public class PluginReport
             String jdk = requirements.getJdk();
             if ( jdk == null )
             {
-                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap() );
+                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap(), project.getProperties() );
             }
             if ( jdk == null && project.getPluginManagement() != null )
             {
-                jdk = discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap() );
+                jdk =
+                    discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap(),
+                                                       project.getProperties() );
             }
             if ( jdk == null )
             {
@@ -685,7 +688,7 @@ public class PluginReport
          * @param pluginsAsMap could be null
          * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
          */
-        private static String discoverJdkRequirementFromPlugins( Map<String, Object> pluginsAsMap )
+        private static String discoverJdkRequirementFromPlugins( Map<String, Object> pluginsAsMap, Properties props )
         {
             if ( pluginsAsMap == null )
             {
@@ -703,6 +706,9 @@ public class PluginReport
 
                 Object value = entry.getValue();
                 Xpp3Dom pluginConf = null;
+
+                // default value
+                jdk = props.getProperty( "maven.compiler.target" );
 
                 backupJdk = "Default version for maven-compiler-plugin";
                 if ( value instanceof Plugin )
