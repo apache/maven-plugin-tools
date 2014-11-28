@@ -21,7 +21,6 @@ package org.apache.maven.tools.plugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -33,7 +32,8 @@ import java.util.Set;
 
 /**
  * Default implementation of {@link PluginToolsRequest}, which is used to pass parameters to components used to extract
- * {@link MojoDescriptor} instances from different types of metadata for a given plugin.
+ * {@link org.apache.maven.plugin.descriptor.MojoDescriptor MojoDescriptor} instances from different types of metadata
+ * for a given plugin.
  *
  * @author jdcasey
  * @since 2.5

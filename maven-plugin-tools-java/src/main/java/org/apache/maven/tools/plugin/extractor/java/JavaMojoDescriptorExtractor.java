@@ -540,9 +540,10 @@ public class JavaMojoDescriptorExtractor
                 else
                 {
                     // not a component but a Maven object to be transformed into an expression/property
-                    getLogger().warn(
-                        "Deprecated @component Javadoc tag for '" + pd.getName() + "' field in " + javaClass.getFullyQualifiedName() +
-                            ": replace with @Parameter( defaultValue = \"" + role + "\", readonly = true )" );
+                    getLogger().warn( "Deprecated @component Javadoc tag for '" + pd.getName() + "' field in "
+                                          + javaClass.getFullyQualifiedName()
+                                          + ": replace with @Parameter( defaultValue = \"" + role
+                                          + "\", readonly = true )" );
                     pd.setDefaultValue( role );
                     pd.setRequired( true );
                 }

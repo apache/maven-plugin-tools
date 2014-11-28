@@ -24,6 +24,7 @@ import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
 
 import java.util.Map;
 
+//CHECKSTYLE_OFF: LineLength
 /**
  * The <tt>@requiresDependencyCollection</tt> tag is used to specify the required dependencies in the specified scope
  * and has parameter.
@@ -52,6 +53,7 @@ import java.util.Map;
  * @author Kristian Rosenvold
  * @version $Id$
  */
+//CHECKSTYLE_ON: LineLength
 public class MojoRequiresDependencyCollectionTypeTaglet
     extends AbstractMojoTypeTaglet
 {

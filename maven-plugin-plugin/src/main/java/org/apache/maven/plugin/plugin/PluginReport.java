@@ -45,6 +45,7 @@ import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -258,7 +259,8 @@ public class PluginReport
 
         try
         {
-            pluginDescriptor.setDependencies( GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
+            pluginDescriptor.setDependencies( deps );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
@@ -668,7 +670,8 @@ public class PluginReport
             String jdk = requirements.getJdk();
             if ( jdk == null )
             {
-                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap(), project.getProperties() );
+                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap(),
+                                                         project.getProperties() );
             }
             if ( jdk == null && project.getPluginManagement() != null )
             {

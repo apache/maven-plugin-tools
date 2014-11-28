@@ -25,6 +25,7 @@ import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
+// CHECKSTYLE_OFF: LineLength
 /**
  * The <tt>@parameter</tt> tag is used to define a Mojo parameter and has annotation parameter.
  * <br/>
@@ -52,6 +53,7 @@ import com.sun.tools.doclets.Taglet;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @version $Id$
  */
+//CHECKSTYLE_ON: LineLength
 public class MojoParameterFieldTaglet
     extends AbstractMojoFieldTaglet
 {

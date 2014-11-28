@@ -35,6 +35,7 @@ import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
@@ -231,7 +232,8 @@ public abstract class AbstractGeneratorMojo
 
         try
         {
-            pluginDescriptor.setDependencies( GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
+            pluginDescriptor.setDependencies( deps );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );

@@ -38,7 +38,8 @@ import org.codehaus.plexus.velocity.VelocityComponent;
  * @version $Id$
  * @since 2.4
  */
-@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE )
+@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true,
+                requiresDependencyResolution = ResolutionScope.COMPILE )
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
 {

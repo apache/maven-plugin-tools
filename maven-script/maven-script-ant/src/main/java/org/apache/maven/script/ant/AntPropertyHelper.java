@@ -59,7 +59,8 @@ public class AntPropertyHelper
     }
 
     /**
-     * @deprecated use {@link #AntPropertyHelper(ExpressionEvaluator, Set, Log)} to resolve maven.dependency.* properties
+     * @deprecated use {@link #AntPropertyHelper(ExpressionEvaluator, Set, Log)} to resolve maven.dependency.*
+     * properties
      * @param exprEvaluator
      * @param l
      */

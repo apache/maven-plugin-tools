@@ -359,7 +359,7 @@ public final class GeneratorUtils
          */
         class Counter
         {
-            public int value;
+            int value;
         }
 
         /**

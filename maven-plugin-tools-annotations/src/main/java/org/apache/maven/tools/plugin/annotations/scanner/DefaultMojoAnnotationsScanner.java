@@ -264,7 +264,8 @@ public class DefaultMojoAnnotationsScanner
                     new ParameterAnnotationContent( mojoFieldVisitor.getFieldName(), mojoFieldVisitor.getClassName() );
                 if ( mojoFieldVisitor.getMojoAnnotationVisitor() != null )
                 {
-                    populateAnnotationContent( parameterAnnotationContent, mojoFieldVisitor.getMojoAnnotationVisitor() );
+                    populateAnnotationContent( parameterAnnotationContent,
+                                               mojoFieldVisitor.getMojoAnnotationVisitor() );
                 }
 
                 mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
@@ -278,9 +279,10 @@ public class DefaultMojoAnnotationsScanner
                 ComponentAnnotationContent componentAnnotationContent =
                     new ComponentAnnotationContent( mojoFieldVisitor.getFieldName() );
 
-                if ( mojoFieldVisitor.getMojoAnnotationVisitor() != null )
+                MojoAnnotationVisitor annotationVisitor = mojoFieldVisitor.getMojoAnnotationVisitor();
+                if ( annotationVisitor != null )
                 {
-                    for ( Map.Entry<String, Object> entry : mojoFieldVisitor.getMojoAnnotationVisitor().getAnnotationValues().entrySet() )
+                    for ( Map.Entry<String, Object> entry : annotationVisitor.getAnnotationValues().entrySet() )
                     {
                         String methodName = entry.getKey();
                         if ( StringUtils.equals( "role", methodName ) )

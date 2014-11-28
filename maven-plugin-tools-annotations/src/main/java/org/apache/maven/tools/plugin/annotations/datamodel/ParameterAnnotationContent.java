@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.Parameter;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 

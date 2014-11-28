@@ -58,8 +58,9 @@ public class AntMojoDescriptorExtractor
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
     
     /** {@inheritDoc} */
-    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesKeyedByBasedir,
-                                                                       PluginToolsRequest request )
+    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata(
+                                                                  Map<String, Set<File>> metadataFilesKeyedByBasedir,
+                                                                  PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
@@ -136,7 +137,8 @@ public class AntMojoDescriptorExtractor
                             param.setName( "project" );
                             param.setDefaultValue( "${project}" );
                             param.setType( MavenProject.class.getName() );
-                            param.setDescription( "The current MavenProject instance, which contains classpath elements." );
+                            param.setDescription( "The current MavenProject instance, which contains classpath "
+                                + "elements." );
                             param.setEditable( false );
                             param.setRequired( true );
 
@@ -149,7 +151,8 @@ public class AntMojoDescriptorExtractor
                             param.setName( "session" );
                             param.setDefaultValue( "${session}" );
                             param.setType( "org.apache.maven.execution.MavenSession" );
-                            param.setDescription( "The current MavenSession instance, which is used for plugin-style expression resolution." );
+                            param.setDescription( "The current MavenSession instance, which is used for "
+                                + "plugin-style expression resolution." );
                             param.setEditable( false );
                             param.setRequired( true );
 
@@ -162,7 +165,8 @@ public class AntMojoDescriptorExtractor
                             param.setName( "mojoExecution" );
                             param.setDefaultValue( "${mojoExecution}" );
                             param.setType( "org.apache.maven.plugin.MojoExecution" );
-                            param.setDescription( "The current Maven MojoExecution instance, which contains information about the mojo currently executing." );
+                            param.setDescription( "The current Maven MojoExecution instance, which contains "
+                                + "information about the mojo currently executing." );
                             param.setEditable( false );
                             param.setRequired( true );
 
@@ -201,7 +205,8 @@ public class AntMojoDescriptorExtractor
                             else
                             {
                                 implementation =
-                                    relativePath + dImpl.substring( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length() );
+                                    relativePath
+                                        + dImpl.substring( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length() );
                             }
                         }
 

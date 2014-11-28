@@ -26,6 +26,9 @@ import org.codehaus.plexus.component.factory.ant.AntComponentFactory;
 import org.codehaus.plexus.component.factory.ant.AntScriptInvoker;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
+/**
+ * 
+ */
 public class AntMojoComponentFactory
     extends AntComponentFactory
 {

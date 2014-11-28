@@ -53,6 +53,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ */
 public class AntMojoWrapper
     extends AbstractMojo
     implements ContextEnabled, MapOrientedComponent, LogEnabled
@@ -131,7 +134,8 @@ public class AntMojoWrapper
                 buffer.append( "\n-  " ).append( part );
             }
             
-            buffer.append( "\n\nMaven project, session, mojo-execution, or path-translation parameter information is " );
+            buffer.append( "\n\nMaven project, session, mojo-execution, or path-translation parameter "
+                + "information is " );
             buffer.append( "\nmissing from this mojo's plugin descriptor." );
             buffer.append( "\n\nPerhaps this Ant-based mojo depends on maven-script-ant < 2.1.0, " );
             buffer.append( "or used maven-plugin-tools-ant < 2.2 during release?\n\n" );
@@ -218,8 +222,8 @@ public class AntMojoWrapper
             if ( mavenProject != null && session != null && pathTranslator != null )
             {
                 ExpressionEvaluator exprEvaluator =
-                    new PluginParameterExpressionEvaluator( session, mojoExecution, pathTranslator, logger, mavenProject,
-                                                            mavenProject.getProperties() );
+                    new PluginParameterExpressionEvaluator( session, mojoExecution, pathTranslator, logger,
+                                                            mavenProject, mavenProject.getProperties() );
                 
                 PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper( antProject );
                 propertyHelper.setNext( new AntPropertyHelper( exprEvaluator, mavenProject.getArtifacts(), getLog() ) );
@@ -238,7 +242,8 @@ public class AntMojoWrapper
                 // Compile classpath
                 Path p = new Path( antProject );
 
-                p.setPath( StringUtils.join( mavenProject.getCompileClasspathElements().iterator(), File.pathSeparator ) );
+                p.setPath( StringUtils.join( mavenProject.getCompileClasspathElements().iterator(),
+                                             File.pathSeparator ) );
 
                 /* maven.dependency.classpath it's deprecated as it's equal to maven.compile.classpath */
                 references.put( "maven.dependency.classpath", p );
@@ -250,7 +255,8 @@ public class AntMojoWrapper
                 // Runtime classpath
                 p = new Path( antProject );
 
-                p.setPath( StringUtils.join( mavenProject.getRuntimeClasspathElements().iterator(), File.pathSeparator ) );
+                p.setPath( StringUtils.join( mavenProject.getRuntimeClasspathElements().iterator(),
+                                             File.pathSeparator ) );
 
                 references.put( "maven.runtime.classpath", p );
                 antProject.addReference( "maven.runtime.classpath", p );
@@ -258,7 +264,8 @@ public class AntMojoWrapper
                 // Test classpath
                 p = new Path( antProject );
 
-                p.setPath( StringUtils.join( mavenProject.getTestClasspathElements().iterator(), File.pathSeparator ) );
+                p.setPath( StringUtils.join( mavenProject.getTestClasspathElements().iterator(),
+                                             File.pathSeparator ) );
 
                 references.put( "maven.test.classpath", p );
                 antProject.addReference( "maven.test.classpath", p );
@@ -272,8 +279,9 @@ public class AntMojoWrapper
             if ( mojoExecution != null )
             {
                 // Plugin dependency classpath
-
-                Path p = getPathFromArtifacts( mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifacts(), antProject );
+                Path p =
+                    getPathFromArtifacts( mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifacts(),
+                                          antProject );
                 
                 references.put( "maven.plugin.classpath", p );
                 antProject.addReference( "maven.plugin.classpath", p );
@@ -285,7 +293,7 @@ public class AntMojoWrapper
         }
         catch ( DependencyResolutionRequiredException e )
         {
-            throw new MojoExecutionException( "Error creating classpath references for Ant-based plugin scripts.", e  );
+            throw new MojoExecutionException( "Error creating classpath references for Ant-based plugin scripts.", e );
         }
     }
 

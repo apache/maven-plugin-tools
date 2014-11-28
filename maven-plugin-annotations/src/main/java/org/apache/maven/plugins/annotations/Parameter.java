@@ -53,7 +53,8 @@ public @interface Parameter
     String alias() default "";
 
     /**
-     * Property to use to retrieve a value. Can come from <code>-D</code> execution, setting properties or pom properties.
+     * Property to use to retrieve a value. Can come from <code>-D</code> execution, setting properties or pom
+     * properties.
      * @return property name
      */
     String property() default "";

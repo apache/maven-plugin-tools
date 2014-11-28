@@ -83,7 +83,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param outputDirectory not null
      * @throws ExtractionException if any
      */
-    protected void copyScriptsToOutputDirectory( Map<String, Set<File>> scriptFilesKeyedByBasedir, String outputDirectory, PluginToolsRequest request )
+    protected void copyScriptsToOutputDirectory( Map<String, Set<File>> scriptFilesKeyedByBasedir,
+                                                 String outputDirectory, PluginToolsRequest request )
         throws ExtractionException
     {
         File outputDir = new File( outputDirectory );
@@ -134,7 +135,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param scriptFileExtension not null
      * @return map with subdirs paths as key
      */
-    protected Map<String, Set<File>> gatherFilesByBasedir( File basedir, List<String> directories, String scriptFileExtension, PluginToolsRequest request )
+    protected Map<String, Set<File>> gatherFilesByBasedir( File basedir, List<String> directories,
+                                                           String scriptFileExtension, PluginToolsRequest request )
     {
         Map<String, Set<File>> sourcesByBasedir = new TreeMap<String, Set<File>>();
 
@@ -182,14 +184,14 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     /**
      * Should be implemented in the sub classes.
      *
-     * @param metadataFilesKeyedByBasedir could be null
+     * @param metadataFilesByBasedir could be null
      * @param request The plugin request, never <code>null</code>.
      * @return always null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      */
-    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesKeyedByBasedir,
-                                                       PluginToolsRequest request )
+    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesByBasedir,
+                                                                       PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return null;
@@ -214,7 +216,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      */
-    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir, PluginToolsRequest request )
+    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir,
+                                                           PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         return null;

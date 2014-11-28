@@ -283,8 +283,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             Map<String, ParameterAnnotationContent> parameters =
                 getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
-            for ( Map.Entry<String, ParameterAnnotationContent> parameter : new TreeMap<String, ParameterAnnotationContent>(
-                parameters ).entrySet() )
+            parameters = new TreeMap<String, ParameterAnnotationContent>( parameters );
+            for ( Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet() )
             {
                 JavaField javaField = fieldsMap.get( parameter.getKey() );
                 if ( javaField == null )
@@ -309,7 +309,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             }
 
             // populate components
-            for ( Map.Entry<String, ComponentAnnotationContent> component : entry.getValue().getComponents().entrySet() )
+            Map<String, ComponentAnnotationContent> components = entry.getValue().getComponents();
+            for ( Map.Entry<String, ComponentAnnotationContent> component : components.entrySet() )
             {
                 JavaField javaField = fieldsMap.get( component.getKey() );
                 if ( javaField == null )
@@ -580,9 +581,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 else
                 {
                     // not a component but a Maven object to be transformed into an expression/property: deprecated
-                    getLogger().warn( "Deprecated @Component annotation for '" + parameter.getName() + "' field in " +
-                                          mojoAnnotatedClass.getClassName() +
-                                          ": replace with @Parameter( default-value = \"" + expression + "\", readonly = true )" );
+                    getLogger().warn( "Deprecated @Component annotation for '" + parameter.getName() + "' field in "
+                                          + mojoAnnotatedClass.getClassName()
+                                          + ": replace with @Parameter( default-value = \"" + expression
+                                          + "\", readonly = true )" );
                     parameter.setDefaultValue( expression );
                     parameter.setType( componentAnnotationContent.getRoleClassName() );
                     parameter.setRequired( true );
@@ -605,7 +607,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     protected ExecuteAnnotationContent findExecuteInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
-                                                                     Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+                                                                 Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         if ( mojoAnnotatedClass.getExecute() != null )
         {
@@ -648,8 +650,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     protected List<ParameterAnnotationContent> getParametersParent( MojoAnnotatedClass mojoAnnotatedClass,
-                                                                    List<ParameterAnnotationContent> parameterAnnotationContents,
-                                                                    Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+                                                        List<ParameterAnnotationContent> parameterAnnotationContents,
+                                                        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         parameterAnnotationContents.addAll( mojoAnnotatedClass.getParameters().values() );
         String parentClassName = mojoAnnotatedClass.getParentClassName();
@@ -687,8 +689,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     protected List<ComponentAnnotationContent> getComponentParent( MojoAnnotatedClass mojoAnnotatedClass,
-                                                                   List<ComponentAnnotationContent> componentAnnotationContents,
-                                                                   Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+                                                       List<ComponentAnnotationContent> componentAnnotationContents,
+                                                       Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         componentAnnotationContents.addAll( mojoAnnotatedClass.getComponents().values() );
         String parentClassName = mojoAnnotatedClass.getParentClassName();

@@ -37,7 +37,8 @@ import org.apache.maven.project.MavenProject;
  * artifact, for subsequent installation and deployment.
  * It is used:
  * <ol>
- * <li>to add the <code>latest</code> metadata (which is plugin-specific) for shipping alongside the plugin's artifact</li>
+ * <li>to add the <code>latest</code> metadata (which is plugin-specific) for shipping alongside the plugin's
+ *     artifact</li>
  * <li>to define plugin mapping in the group</li>
  * </ol>
  *
