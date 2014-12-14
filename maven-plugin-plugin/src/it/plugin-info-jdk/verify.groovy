@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-assert new File( basedir, 'target/site' ).exists();
 
-content = new File( basedir, 'target/site/plugin-info.html' ).text;
-
-assert content.contains( '<td>1.5</td>' );
-assert !content.contains( '<td>Default target for maven-compiler-plugin version' );
+assert new File( basedir, 'property/target/site/plugin-info.html' ).text.contains( '<td>1.3</td>' )
+assert new File( basedir, 'pluginManagement/target/site/plugin-info.html' ).text.contains( '<td>1.4</td>' )
+assert new File( basedir, 'plugin/target/site/plugin-info.html' ).text.contains( '<td>1.5</td>' )
+assert new File( basedir, 'requirement/target/site/plugin-info.html' ).text.contains( '<td>1.8</td>' )
 
 return true;

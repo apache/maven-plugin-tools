@@ -663,10 +663,13 @@ public class PluginReport
         }
 
         /**
-         * Try to lookup on the <code>org.apache.maven.plugins:maven-compiler-plugin</code> plugin to
-         * find the value of the <code>target</code> option.
-         * If not specified, uses the value defined by the user.
-         * If not specified, uses the value of the system property <code>java.specification.version</code>.
+         * <ol>
+         * <li>use configured jdk requirement</li>
+         * <li>use <code>target</code> configuration of <code>org.apache.maven.plugins:maven-compiler-plugin</code></li>
+         * <li>use <code>target</code> configuration of <code>org.apache.maven.plugins:maven-compiler-plugin</code> in
+         * <code>pluginManagement</code></li>
+         * <li>use <code>maven.compiler.target</code> property</li>
+         * </ol>
          *
          * @param project      not null
          * @param requirements not null
@@ -675,23 +678,90 @@ public class PluginReport
         private static String discoverJdkRequirement( MavenProject project, Requirements requirements )
         {
             String jdk = requirements.getJdk();
-            if ( jdk == null )
+
+            if ( jdk != null )
             {
-                jdk = discoverJdkRequirementFromPlugins( project.getBuild().getPluginsAsMap(),
-                                                         project.getProperties() );
-            }
-            if ( jdk == null && project.getPluginManagement() != null )
-            {
-                jdk =
-                    discoverJdkRequirementFromPlugins( project.getPluginManagement().getPluginsAsMap(),
-                                                       project.getProperties() );
-            }
-            if ( jdk == null )
-            {
-                jdk = "Unknown";
+                return jdk;
             }
 
-            return jdk;
+            Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
+
+            jdk = getTarget( compiler );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
+            Plugin compilerManagement = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
+
+            jdk = getTarget( compilerManagement );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
+            // default value
+            jdk = project.getProperties().getProperty( "maven.compiler.target" );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
+            String version = getVersion( compiler );
+
+            if ( version == null )
+            {
+                version = getVersion( compilerManagement );
+            }
+
+            if ( version != null )
+            {
+                return "Default target for maven-compiler-plugin version " + version;
+            }
+
+            return "Unknown";
+        }
+
+        private static Plugin getCompilerPlugin( Map<String, Object> pluginsAsMap )
+        {
+            for ( Map.Entry<String, Object> entry : pluginsAsMap.entrySet() )
+            {
+                if ( entry.getKey().equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
+                {
+                    return (Plugin) entry.getValue();
+                }
+            }
+            return null;
+        }
+
+        private static String getTarget( Plugin plugin )
+        {
+            if ( plugin != null )
+            {
+                Xpp3Dom pluginConf = (Xpp3Dom) plugin.getConfiguration();
+
+                if ( pluginConf != null )
+                {
+                    Xpp3Dom target = pluginConf.getChild( "target" );
+
+                    if ( target != null )
+                    {
+                        return target.getValue();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static String getVersion( Plugin plugin )
+        {
+            if ( plugin != null )
+            {
+                return plugin.getVersion();
+            }
+
+            return null;
         }
 
         /**
