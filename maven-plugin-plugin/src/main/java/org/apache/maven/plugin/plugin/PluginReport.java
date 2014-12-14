@@ -60,7 +60,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * Generates the Plugin's documentation report.
+ * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
+ * and one <code><i>goal</i>-mojo.html</code> per goal.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -73,7 +74,7 @@ public class PluginReport
     extends AbstractMavenReport
 {
     /**
-     * Report output directory for mojo pages.
+     * Report output directory for mojos' documentation.
      */
     @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
     private File outputDirectory;
@@ -234,6 +235,20 @@ public class PluginReport
             return;
         }
 
+        PluginDescriptor pluginDescriptor = extractPluginDescriptor();
+
+        // Generate the mojos' documentation
+        generateMojosDocumentation( pluginDescriptor, locale );
+
+        // Write the overview
+        PluginOverviewRenderer r =
+            new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor, locale );
+        r.render();
+    }
+
+    private PluginDescriptor extractPluginDescriptor()
+        throws MavenReportException
+    {
         // Copy from AbstractGeneratorMojo#execute()
         String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
         if ( goalPrefix == null )
@@ -269,7 +284,6 @@ public class PluginReport
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
 
-
             try
             {
                 mojoScanner.populatePluginDescriptor( request );
@@ -278,23 +292,14 @@ public class PluginReport
             {
                 // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
                 getLog().debug( "Plugin without mojos.", e );
-
             }
-
-            // Generate the plugin's documentation
-            generatePluginDocumentation( pluginDescriptor, locale );
-
-            // Write the overview
-            PluginOverviewRenderer r =
-                new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor, locale );
-            r.render();
         }
-
         catch ( ExtractionException e )
         {
             throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                             e );
         }
+        return pluginDescriptor;
     }
 
     /**
@@ -322,11 +327,13 @@ public class PluginReport
     }
 
     /**
+     * Generate the mojos documentation, as xdoc files.
+     *
      * @param pluginDescriptor not null
      * @param locale           not null
      * @throws MavenReportException if any
      */
-    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Locale locale )
+    private void generateMojosDocumentation( PluginDescriptor pluginDescriptor, Locale locale )
         throws MavenReportException
     {
         try
