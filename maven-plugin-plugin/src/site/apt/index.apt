@@ -39,10 +39,8 @@ Maven Plugin Plugin
 
    * {{{./descriptor-mojo.html}plugin:descriptor}} generates a plugin descriptor,
 
-   * {{{./report-mojo.html}plugin:report}} generates the plugin documentation report, listing each goal provided
-   and general configuration information (see {{{./plugin-info.html}example}}),
-
-   * {{{./xdoc-mojo.html}plugin:xdoc}} generates documentation (as xdoc files) for each mojo (goals),
+   * {{{./report-mojo.html}plugin:report}} generates the plugin documentation: one overview report
+     (see {{{./plugin-info.html}example}}) and documentation for each plugin's goal (mojo),
 
    * {{{./updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
       reflect the version being installed,
