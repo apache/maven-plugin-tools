@@ -24,7 +24,6 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.ReportPlugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -55,7 +54,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -221,7 +219,6 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings( "unchecked" )
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -274,6 +271,7 @@ public class PluginReport
 
         try
         {
+            @SuppressWarnings( "unchecked" )
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
             pluginDescriptor.setDependencies( deps );
 
@@ -684,6 +682,7 @@ public class PluginReport
                 return jdk;
             }
 
+            @SuppressWarnings( "unchecked" )
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
 
             jdk = getTarget( compiler );
@@ -692,6 +691,7 @@ public class PluginReport
                 return jdk;
             }
 
+            @SuppressWarnings( "unchecked" )
             Plugin compilerManagement = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
 
             jdk = getTarget( compilerManagement );
@@ -762,61 +762,6 @@ public class PluginReport
             }
 
             return null;
-        }
-
-        /**
-         * @param pluginsAsMap could be null
-         * @return the value of the <code>target</code> in the configuration of <code>maven-compiler-plugin</code>.
-         */
-        private static String discoverJdkRequirementFromPlugins( Map<String, Object> pluginsAsMap, Properties props )
-        {
-            if ( pluginsAsMap == null )
-            {
-                return null;
-            }
-
-            // default value
-            String jdk = props.getProperty( "maven.compiler.target" );
-
-            String backupJdk = null;
-            for ( Map.Entry<String, Object> entry : pluginsAsMap.entrySet() )
-            {
-                if ( !entry.getKey().equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
-                {
-                    continue;
-                }
-
-                Object value = entry.getValue();
-                Xpp3Dom pluginConf = null;
-
-                backupJdk = "Default version for maven-compiler-plugin";
-                if ( value instanceof Plugin )
-                {
-                    Plugin plugin = (Plugin) value;
-                    backupJdk = "Default target for maven-compiler-plugin version " + plugin.getVersion();
-                    pluginConf = (Xpp3Dom) plugin.getConfiguration();
-                }
-
-                if ( value instanceof ReportPlugin )
-                {
-                    ReportPlugin reportPlugin = (ReportPlugin) value;
-                    backupJdk = "Default target for maven-compiler-plugin version " + reportPlugin.getVersion();
-                    pluginConf = (Xpp3Dom) reportPlugin.getConfiguration();
-                }
-
-                if ( pluginConf == null )
-                {
-                    continue;
-                }
-
-                Xpp3Dom target = pluginConf.getChild( "target" );
-                if ( target != null )
-                {
-                    jdk = target.getValue();
-                }
-            }
-
-            return ( jdk == null ) ? backupJdk : jdk;
         }
     }
 }
