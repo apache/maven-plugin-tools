@@ -684,17 +684,12 @@ public class PluginReport
 
             @SuppressWarnings( "unchecked" )
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
-
-            jdk = getTarget( compiler );
-            if ( jdk != null )
+            if ( compiler == null )
             {
-                return jdk;
+                compiler = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
             }
 
-            @SuppressWarnings( "unchecked" )
-            Plugin compilerManagement = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
-
-            jdk = getTarget( compilerManagement );
+            jdk = getPluginParameter( compiler, "target" );
             if ( jdk != null )
             {
                 return jdk;
@@ -707,12 +702,9 @@ public class PluginReport
                 return jdk;
             }
 
-            String version = getVersion( compiler );
+            // return "1.5" by default?
 
-            if ( version == null )
-            {
-                version = getVersion( compilerManagement );
-            }
+            String version = ( compiler == null ) ? null : compiler.getVersion();
 
             if ( version != null )
             {
@@ -724,17 +716,10 @@ public class PluginReport
 
         private static Plugin getCompilerPlugin( Map<String, Object> pluginsAsMap )
         {
-            for ( Map.Entry<String, Object> entry : pluginsAsMap.entrySet() )
-            {
-                if ( entry.getKey().equals( "org.apache.maven.plugins:maven-compiler-plugin" ) )
-                {
-                    return (Plugin) entry.getValue();
-                }
-            }
-            return null;
+            return (Plugin) pluginsAsMap.get( "org.apache.maven.plugins:maven-compiler-plugin" );
         }
 
-        private static String getTarget( Plugin plugin )
+        private static String getPluginParameter( Plugin plugin, String parameter )
         {
             if ( plugin != null )
             {
@@ -742,23 +727,13 @@ public class PluginReport
 
                 if ( pluginConf != null )
                 {
-                    Xpp3Dom target = pluginConf.getChild( "target" );
+                    Xpp3Dom target = pluginConf.getChild( parameter );
 
                     if ( target != null )
                     {
                         return target.getValue();
                     }
                 }
-            }
-
-            return null;
-        }
-
-        private static String getVersion( Plugin plugin )
-        {
-            if ( plugin != null )
-            {
-                return plugin.getVersion();
             }
 
             return null;
