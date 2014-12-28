@@ -59,97 +59,98 @@ import java.util.TreeMap;
  * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "java" )
-public class JavaMojoDescriptorExtractor
+@Component( role = MojoDescriptorExtractor.class, hint = "java-javadoc" )
+public class JavaJavadocMojoDescriptorExtractor
     extends AbstractLogEnabled
-    implements MojoDescriptorExtractor, JavaMojoAnnotation
+    implements MojoDescriptorExtractor, JavadocMojoAnnotation
 {
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#INSTANTIATION_STRATEGY} instead of. */
-    public static final String MAVEN_PLUGIN_INSTANTIATION = JavaMojoAnnotation.INSTANTIATION_STRATEGY;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#INSTANTIATION_STRATEGY} instead of. */
+    public static final String MAVEN_PLUGIN_INSTANTIATION = JavadocMojoAnnotation.INSTANTIATION_STRATEGY;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#CONFIGURATOR} instead of. */
-    public static final String CONFIGURATOR = JavaMojoAnnotation.CONFIGURATOR;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#CONFIGURATOR} instead of. */
+    public static final String CONFIGURATOR = JavadocMojoAnnotation.CONFIGURATOR;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER} instead of. */
-    public static final String PARAMETER = JavaMojoAnnotation.PARAMETER;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER} instead of. */
+    public static final String PARAMETER = JavadocMojoAnnotation.PARAMETER;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_EXPRESSION} instead of. */
-    public static final String PARAMETER_EXPRESSION = JavaMojoAnnotation.PARAMETER_EXPRESSION;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_EXPRESSION} instead of. */
+    public static final String PARAMETER_EXPRESSION = JavadocMojoAnnotation.PARAMETER_EXPRESSION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_DEFAULT_VALUE} instead of. */
-    public static final String PARAMETER_DEFAULT_VALUE = JavaMojoAnnotation.PARAMETER_DEFAULT_VALUE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_DEFAULT_VALUE} instead of. */
+    public static final String PARAMETER_DEFAULT_VALUE = JavadocMojoAnnotation.PARAMETER_DEFAULT_VALUE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_ALIAS} instead of. */
-    public static final String PARAMETER_ALIAS = JavaMojoAnnotation.PARAMETER_ALIAS;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_ALIAS} instead of. */
+    public static final String PARAMETER_ALIAS = JavadocMojoAnnotation.PARAMETER_ALIAS;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#SINCE} instead of. */
-    public static final String SINCE = JavaMojoAnnotation.SINCE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#SINCE} instead of. */
+    public static final String SINCE = JavadocMojoAnnotation.SINCE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PARAMETER_IMPLEMENTATION} instead of. */
-    public static final String PARAMETER_IMPLEMENTATION = JavaMojoAnnotation.PARAMETER_IMPLEMENTATION;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_IMPLEMENTATION} instead of. */
+    public static final String PARAMETER_IMPLEMENTATION = JavadocMojoAnnotation.PARAMETER_IMPLEMENTATION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRED} instead of. */
-    public static final String REQUIRED = JavaMojoAnnotation.REQUIRED;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRED} instead of. */
+    public static final String REQUIRED = JavadocMojoAnnotation.REQUIRED;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#DEPRECATED} instead of. */
-    public static final String DEPRECATED = JavaMojoAnnotation.DEPRECATED;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#DEPRECATED} instead of. */
+    public static final String DEPRECATED = JavadocMojoAnnotation.DEPRECATED;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#READONLY} instead of. */
-    public static final String READONLY = JavaMojoAnnotation.READONLY;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#READONLY} instead of. */
+    public static final String READONLY = JavadocMojoAnnotation.READONLY;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#GOAL} instead of. */
-    public static final String GOAL = JavaMojoAnnotation.GOAL;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#GOAL} instead of. */
+    public static final String GOAL = JavadocMojoAnnotation.GOAL;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#PHASE} instead of. */
-    public static final String PHASE = JavaMojoAnnotation.PHASE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PHASE} instead of. */
+    public static final String PHASE = JavadocMojoAnnotation.PHASE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#EXECUTE} instead of. */
-    public static final String EXECUTE = JavaMojoAnnotation.EXECUTE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE} instead of. */
+    public static final String EXECUTE = JavadocMojoAnnotation.EXECUTE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#EXECUTE_LIFECYCLE} instead of. */
-    public static final String EXECUTE_LIFECYCLE = JavaMojoAnnotation.EXECUTE_LIFECYCLE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_LIFECYCLE} instead of. */
+    public static final String EXECUTE_LIFECYCLE = JavadocMojoAnnotation.EXECUTE_LIFECYCLE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#EXECUTE_PHASE} instead of. */
-    public static final String EXECUTE_PHASE = JavaMojoAnnotation.EXECUTE_PHASE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_PHASE} instead of. */
+    public static final String EXECUTE_PHASE = JavadocMojoAnnotation.EXECUTE_PHASE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#EXECUTE_GOAL} instead of. */
-    public static final String EXECUTE_GOAL = JavaMojoAnnotation.EXECUTE_GOAL;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_GOAL} instead of. */
+    public static final String EXECUTE_GOAL = JavadocMojoAnnotation.EXECUTE_GOAL;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#DESCRIPTION} instead of. */
-    public static final String GOAL_DESCRIPTION = JavaMojoAnnotation.DESCRIPTION;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#DESCRIPTION} instead of. */
+    public static final String GOAL_DESCRIPTION = JavadocMojoAnnotation.DESCRIPTION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRES_DEPENDENCY_RESOLUTION} instead of. */
-    public static final String GOAL_REQUIRES_DEPENDENCY_RESOLUTION = JavaMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_DEPENDENCY_RESOLUTION} instead of. */
+    public static final String GOAL_REQUIRES_DEPENDENCY_RESOLUTION =
+        JavadocMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRES_PROJECT} instead of. */
-    public static final String GOAL_REQUIRES_PROJECT = JavaMojoAnnotation.REQUIRES_PROJECT;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_PROJECT} instead of. */
+    public static final String GOAL_REQUIRES_PROJECT = JavadocMojoAnnotation.REQUIRES_PROJECT;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRES_REPORTS} instead of. */
-    public static final String GOAL_REQUIRES_REPORTS = JavaMojoAnnotation.REQUIRES_REPORTS;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_REPORTS} instead of. */
+    public static final String GOAL_REQUIRES_REPORTS = JavadocMojoAnnotation.REQUIRES_REPORTS;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#AGGREGATOR} instead of. */
-    public static final String GOAL_IS_AGGREGATOR = JavaMojoAnnotation.AGGREGATOR;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#AGGREGATOR} instead of. */
+    public static final String GOAL_IS_AGGREGATOR = JavadocMojoAnnotation.AGGREGATOR;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRES_ONLINE} instead of. */
-    public static final String GOAL_REQUIRES_ONLINE = JavaMojoAnnotation.REQUIRES_ONLINE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_ONLINE} instead of. */
+    public static final String GOAL_REQUIRES_ONLINE = JavadocMojoAnnotation.REQUIRES_ONLINE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#INHERIT_BY_DEFAULT} instead of. */
-    public static final String GOAL_INHERIT_BY_DEFAULT = JavaMojoAnnotation.INHERIT_BY_DEFAULT;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#INHERIT_BY_DEFAULT} instead of. */
+    public static final String GOAL_INHERIT_BY_DEFAULT = JavadocMojoAnnotation.INHERIT_BY_DEFAULT;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#MULTI_EXECUTION_STRATEGY} instead of. */
-    public static final String GOAL_MULTI_EXECUTION_STRATEGY = JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#MULTI_EXECUTION_STRATEGY} instead of. */
+    public static final String GOAL_MULTI_EXECUTION_STRATEGY = JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#REQUIRES_DIRECT_INVOCATION} instead of. */
-    public static final String GOAL_REQUIRES_DIRECT_INVOCATION = JavaMojoAnnotation.REQUIRES_DIRECT_INVOCATION;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_DIRECT_INVOCATION} instead of. */
+    public static final String GOAL_REQUIRES_DIRECT_INVOCATION = JavadocMojoAnnotation.REQUIRES_DIRECT_INVOCATION;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#COMPONENT} instead of. */
-    public static final String COMPONENT = JavaMojoAnnotation.COMPONENT;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT} instead of. */
+    public static final String COMPONENT = JavadocMojoAnnotation.COMPONENT;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#COMPONENT_ROLE} instead of. */
-    public static final String COMPONENT_ROLE = JavaMojoAnnotation.COMPONENT_ROLE;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT_ROLE} instead of. */
+    public static final String COMPONENT_ROLE = JavadocMojoAnnotation.COMPONENT_ROLE;
 
-    /** @deprecated since 2.4, use {@link JavaMojoAnnotation#COMPONENT_ROLEHINT} instead of. */
-    public static final String COMPONENT_ROLEHINT = JavaMojoAnnotation.COMPONENT_ROLEHINT;
+    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT_ROLEHINT} instead of. */
+    public static final String COMPONENT_ROLEHINT = JavadocMojoAnnotation.COMPONENT_ROLEHINT;
 
     /**
      * @param parameter not null
@@ -206,25 +207,25 @@ public class JavaMojoDescriptorExtractor
         // ----------------------------------------------------------------------
 
         // Aggregator flag
-        DocletTag aggregator = findInClassHierarchy( javaClass, JavaMojoAnnotation.AGGREGATOR );
+        DocletTag aggregator = findInClassHierarchy( javaClass, JavadocMojoAnnotation.AGGREGATOR );
         if ( aggregator != null )
         {
             mojoDescriptor.setAggregator( true );
         }
 
         // Configurator hint
-        DocletTag configurator = findInClassHierarchy( javaClass, JavaMojoAnnotation.CONFIGURATOR );
+        DocletTag configurator = findInClassHierarchy( javaClass, JavadocMojoAnnotation.CONFIGURATOR );
         if ( configurator != null )
         {
             mojoDescriptor.setComponentConfigurator( configurator.getValue() );
         }
 
         // Additional phase to execute first
-        DocletTag execute = findInClassHierarchy( javaClass, JavaMojoAnnotation.EXECUTE );
+        DocletTag execute = findInClassHierarchy( javaClass, JavadocMojoAnnotation.EXECUTE );
         if ( execute != null )
         {
-            String executePhase = execute.getNamedParameter( JavaMojoAnnotation.EXECUTE_PHASE );
-            String executeGoal = execute.getNamedParameter( JavaMojoAnnotation.EXECUTE_GOAL );
+            String executePhase = execute.getNamedParameter( JavadocMojoAnnotation.EXECUTE_PHASE );
+            String executeGoal = execute.getNamedParameter( JavadocMojoAnnotation.EXECUTE_GOAL );
 
             if ( executePhase == null && executeGoal == null )
             {
@@ -239,7 +240,7 @@ public class JavaMojoDescriptorExtractor
             mojoDescriptor.setExecutePhase( executePhase );
             mojoDescriptor.setExecuteGoal( executeGoal );
 
-            String lifecycle = execute.getNamedParameter( JavaMojoAnnotation.EXECUTE_LIFECYCLE );
+            String lifecycle = execute.getNamedParameter( JavadocMojoAnnotation.EXECUTE_LIFECYCLE );
             if ( lifecycle != null )
             {
                 mojoDescriptor.setExecuteLifecycle( lifecycle );
@@ -252,7 +253,7 @@ public class JavaMojoDescriptorExtractor
         }
 
         // Goal name
-        DocletTag goal = findInClassHierarchy( javaClass, JavaMojoAnnotation.GOAL );
+        DocletTag goal = findInClassHierarchy( javaClass, JavadocMojoAnnotation.GOAL );
         if ( goal != null )
         {
             mojoDescriptor.setGoal( goal.getValue() );
@@ -260,38 +261,38 @@ public class JavaMojoDescriptorExtractor
 
         // inheritByDefault flag
         boolean value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.INHERIT_BY_DEFAULT,
+            getBooleanTagValue( javaClass, JavadocMojoAnnotation.INHERIT_BY_DEFAULT,
                                 mojoDescriptor.isInheritedByDefault() );
         mojoDescriptor.setInheritedByDefault( value );
 
         // instantiationStrategy
-        DocletTag tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.INSTANTIATION_STRATEGY );
+        DocletTag tag = findInClassHierarchy( javaClass, JavadocMojoAnnotation.INSTANTIATION_STRATEGY );
         if ( tag != null )
         {
             mojoDescriptor.setInstantiationStrategy( tag.getValue() );
         }
 
         // executionStrategy (and deprecated @attainAlways)
-        tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY );
+        tag = findInClassHierarchy( javaClass, JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY );
         if ( tag != null )
         {
-            getLogger().warn( "@" + JavaMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in "
+            getLogger().warn( "@" + JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in "
                                   + javaClass.getFullyQualifiedName() + " is deprecated: please use '@"
-                                  + JavaMojoAnnotation.EXECUTION_STATEGY + " always' instead." );
+                                  + JavadocMojoAnnotation.EXECUTION_STATEGY + " always' instead." );
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.MULTI_PASS_EXEC_STRATEGY );
         }
         else
         {
             mojoDescriptor.setExecutionStrategy( MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY );
         }
-        tag = findInClassHierarchy( javaClass, JavaMojoAnnotation.EXECUTION_STATEGY );
+        tag = findInClassHierarchy( javaClass, JavadocMojoAnnotation.EXECUTION_STATEGY );
         if ( tag != null )
         {
             mojoDescriptor.setExecutionStrategy( tag.getValue() );
         }
 
         // Phase name
-        DocletTag phase = findInClassHierarchy( javaClass, JavaMojoAnnotation.PHASE );
+        DocletTag phase = findInClassHierarchy( javaClass, JavadocMojoAnnotation.PHASE );
         if ( phase != null )
         {
             mojoDescriptor.setPhase( phase.getValue() );
@@ -299,7 +300,7 @@ public class JavaMojoDescriptorExtractor
 
         // Dependency resolution flag
         DocletTag requiresDependencyResolution =
-            findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION );
+            findInClassHierarchy( javaClass, JavadocMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION );
         if ( requiresDependencyResolution != null )
         {
             String v = requiresDependencyResolution.getValue();
@@ -314,7 +315,7 @@ public class JavaMojoDescriptorExtractor
 
         // Dependency collection flag
         DocletTag requiresDependencyCollection =
-            findInClassHierarchy( javaClass, JavaMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION );
+            findInClassHierarchy( javaClass, JavadocMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION );
         if ( requiresDependencyCollection != null )
         {
             String v = requiresDependencyCollection.getValue();
@@ -329,23 +330,23 @@ public class JavaMojoDescriptorExtractor
 
         // requiresDirectInvocation flag
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_DIRECT_INVOCATION,
+            getBooleanTagValue( javaClass, JavadocMojoAnnotation.REQUIRES_DIRECT_INVOCATION,
                                 mojoDescriptor.isDirectInvocationOnly() );
         mojoDescriptor.setDirectInvocationOnly( value );
 
         // Online flag
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_ONLINE, mojoDescriptor.isOnlineRequired() );
+            getBooleanTagValue( javaClass, JavadocMojoAnnotation.REQUIRES_ONLINE, mojoDescriptor.isOnlineRequired() );
         mojoDescriptor.setOnlineRequired( value );
 
         // Project flag
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
+            getBooleanTagValue( javaClass, JavadocMojoAnnotation.REQUIRES_PROJECT, mojoDescriptor.isProjectRequired() );
         mojoDescriptor.setProjectRequired( value );
 
         // requiresReports flag
         value =
-            getBooleanTagValue( javaClass, JavaMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
+            getBooleanTagValue( javaClass, JavadocMojoAnnotation.REQUIRES_REPORTS, mojoDescriptor.isRequiresReports() );
         mojoDescriptor.setRequiresReports( value );
 
         // ----------------------------------------------------------------------
@@ -353,14 +354,14 @@ public class JavaMojoDescriptorExtractor
         // ----------------------------------------------------------------------
 
         // Deprecation hint
-        DocletTag deprecated = javaClass.getTagByName( JavaMojoAnnotation.DEPRECATED );
+        DocletTag deprecated = javaClass.getTagByName( JavadocMojoAnnotation.DEPRECATED );
         if ( deprecated != null )
         {
             mojoDescriptor.setDeprecated( deprecated.getValue() );
         }
 
         // What version it was introduced in
-        DocletTag since = findInClassHierarchy( javaClass, JavaMojoAnnotation.SINCE );
+        DocletTag since = findInClassHierarchy( javaClass, JavadocMojoAnnotation.SINCE );
         if ( since != null )
         {
             mojoDescriptor.setSince( since.getValue() );
@@ -368,7 +369,7 @@ public class JavaMojoDescriptorExtractor
 
         // Thread-safe mojo 
 
-        value = getBooleanTagValue( javaClass, JavaMojoAnnotation.THREAD_SAFE, true, mojoDescriptor.isThreadSafe() );
+        value = getBooleanTagValue( javaClass, JavadocMojoAnnotation.THREAD_SAFE, true, mojoDescriptor.isThreadSafe() );
         mojoDescriptor.setThreadSafe( value );
 
         extractParameters( mojoDescriptor, javaClass );
@@ -494,32 +495,32 @@ public class JavaMojoDescriptorExtractor
 
             pd.setDescription( field.getComment() );
 
-            DocletTag deprecationTag = field.getTagByName( JavaMojoAnnotation.DEPRECATED );
+            DocletTag deprecationTag = field.getTagByName( JavadocMojoAnnotation.DEPRECATED );
 
             if ( deprecationTag != null )
             {
                 pd.setDeprecated( deprecationTag.getValue() );
             }
 
-            DocletTag sinceTag = field.getTagByName( JavaMojoAnnotation.SINCE );
+            DocletTag sinceTag = field.getTagByName( JavadocMojoAnnotation.SINCE );
             if ( sinceTag != null )
             {
                 pd.setSince( sinceTag.getValue() );
             }
 
-            DocletTag componentTag = field.getTagByName( JavaMojoAnnotation.COMPONENT );
+            DocletTag componentTag = field.getTagByName( JavadocMojoAnnotation.COMPONENT );
 
             if ( componentTag != null )
             {
                 // Component tag
-                String role = componentTag.getNamedParameter( JavaMojoAnnotation.COMPONENT_ROLE );
+                String role = componentTag.getNamedParameter( JavadocMojoAnnotation.COMPONENT_ROLE );
 
                 if ( role == null )
                 {
                     role = field.getType().toString();
                 }
 
-                String roleHint = componentTag.getNamedParameter( JavaMojoAnnotation.COMPONENT_ROLEHINT );
+                String roleHint = componentTag.getNamedParameter( JavadocMojoAnnotation.COMPONENT_ROLEHINT );
 
                 if ( roleHint == null )
                 {
@@ -556,28 +557,28 @@ public class JavaMojoDescriptorExtractor
             else
             {
                 // Parameter tag
-                DocletTag parameter = field.getTagByName( JavaMojoAnnotation.PARAMETER );
+                DocletTag parameter = field.getTagByName( JavadocMojoAnnotation.PARAMETER );
 
-                pd.setRequired( field.getTagByName( JavaMojoAnnotation.REQUIRED ) != null );
+                pd.setRequired( field.getTagByName( JavadocMojoAnnotation.REQUIRED ) != null );
 
-                pd.setEditable( field.getTagByName( JavaMojoAnnotation.READONLY ) == null );
+                pd.setEditable( field.getTagByName( JavadocMojoAnnotation.READONLY ) == null );
 
-                String name = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_NAME );
+                String name = parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_NAME );
 
                 if ( !StringUtils.isEmpty( name ) )
                 {
                     pd.setName( name );
                 }
 
-                String alias = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_ALIAS );
+                String alias = parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_ALIAS );
 
                 if ( !StringUtils.isEmpty( alias ) )
                 {
                     pd.setAlias( alias );
                 }
 
-                String expression = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_EXPRESSION );
-                String property = parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_PROPERTY );
+                String expression = parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_EXPRESSION );
+                String property = parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_PROPERTY );
 
                 if ( StringUtils.isNotEmpty( expression ) && StringUtils.isNotEmpty( property ) )
                 {
@@ -623,9 +624,9 @@ public class JavaMojoDescriptorExtractor
                     mojoDescriptor.setRequiresReports( true );
                 }
 
-                pd.setDefaultValue( parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_DEFAULT_VALUE ) );
+                pd.setDefaultValue( parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_DEFAULT_VALUE ) );
 
-                pd.setImplementation( parameter.getNamedParameter( JavaMojoAnnotation.PARAMETER_IMPLEMENTATION ) );
+                pd.setImplementation( parameter.getNamedParameter( JavadocMojoAnnotation.PARAMETER_IMPLEMENTATION ) );
             }
 
             mojoDescriptor.addParameter( pd );
@@ -661,8 +662,8 @@ public class JavaMojoDescriptorExtractor
         {
             for ( JavaField field : classFields )
             {
-                if ( field.getTagByName( JavaMojoAnnotation.PARAMETER ) != null
-                    || field.getTagByName( JavaMojoAnnotation.COMPONENT ) != null )
+                if ( field.getTagByName( JavadocMojoAnnotation.PARAMETER ) != null
+                    || field.getTagByName( JavadocMojoAnnotation.COMPONENT ) != null )
                 {
                     rawParams.put( field.getName(), field );
                 }

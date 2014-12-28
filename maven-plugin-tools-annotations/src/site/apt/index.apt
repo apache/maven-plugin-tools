@@ -28,7 +28,8 @@
 
 Maven Plugin Tool for Annotations
 
- The Maven Plugin Tool for Annotations is the implementation of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
+ The Maven Plugin Tool for Annotations is the <<<java-annotations>>> implementation of
+ {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors from plugins written in Java with
  {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java 5 Annotations}}.
 

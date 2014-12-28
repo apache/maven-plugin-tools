@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -56,7 +56,7 @@ public class MojoPhaseTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.PHASE;
+    private static final String NAME = JavadocMojoAnnotation.PHASE;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is bound to the specified phase of the standard build lifecycle";

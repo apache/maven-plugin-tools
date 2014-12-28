@@ -20,7 +20,7 @@ package org.apache.maven.tools.plugin.javadoc;
  */
 
 import com.sun.tools.doclets.Taglet;
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class MojoThreadSafeTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.THREAD_SAFE;
+    private static final String NAME = JavadocMojoAnnotation.THREAD_SAFE;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Mojo is thread safe";

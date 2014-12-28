@@ -27,7 +27,7 @@ package org.apache.maven.tools.plugin.extractor.java;
  * @since 2.4
  */
 @SuppressWarnings( "checkstyle:interfaceistype" )
-public interface JavaMojoAnnotation
+public interface JavadocMojoAnnotation
 {
     // ----------------------------------------------------------------------
     // Descriptor for type i.e. Mojo

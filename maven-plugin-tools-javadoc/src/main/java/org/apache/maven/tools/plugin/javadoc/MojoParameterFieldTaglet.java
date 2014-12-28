@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -58,15 +58,15 @@ public class MojoParameterFieldTaglet
     extends AbstractMojoFieldTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.PARAMETER;
+    private static final String NAME = JavadocMojoAnnotation.PARAMETER;
 
     private static final String[] PARAMETERS_NAME = {
-        JavaMojoAnnotation.PARAMETER_NAME,
-        JavaMojoAnnotation.PARAMETER_ALIAS,
-        JavaMojoAnnotation.PARAMETER_DEFAULT_VALUE,
-        JavaMojoAnnotation.PARAMETER_EXPRESSION,
-        JavaMojoAnnotation.PARAMETER_IMPLEMENTATION,
-        JavaMojoAnnotation.PARAMETER_PROPERTY };
+        JavadocMojoAnnotation.PARAMETER_NAME,
+        JavadocMojoAnnotation.PARAMETER_ALIAS,
+        JavadocMojoAnnotation.PARAMETER_DEFAULT_VALUE,
+        JavadocMojoAnnotation.PARAMETER_EXPRESSION,
+        JavadocMojoAnnotation.PARAMETER_IMPLEMENTATION,
+        JavadocMojoAnnotation.PARAMETER_PROPERTY };
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is defined by";

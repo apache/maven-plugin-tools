@@ -20,7 +20,7 @@ package org.apache.maven.tools.plugin.javadoc;
  */
 
 import com.sun.tools.doclets.Taglet;
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public class MojoRequiresDependencyCollectionTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION;
+    private static final String NAME = JavadocMojoAnnotation.REQUIRES_DEPENDENCY_COLLECTION;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Collects the dependencies in this specified scope";

@@ -105,7 +105,7 @@ public class JavaMojoDescriptorExtractorTest
     protected PluginDescriptor generate( String directory )
         throws Exception
     {
-        JavaMojoDescriptorExtractor extractor = new JavaMojoDescriptorExtractor();
+        JavaJavadocMojoDescriptorExtractor extractor = new JavaJavadocMojoDescriptorExtractor();
         extractor.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "test" ) );
         PluginToolsRequest request = createRequest( directory );
 

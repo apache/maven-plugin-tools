@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -56,7 +56,7 @@ public class MojoExecutionStrategyTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.EXECUTION_STATEGY;
+    private static final String NAME = JavadocMojoAnnotation.EXECUTION_STATEGY;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is executed with the strategy";

@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -60,7 +60,7 @@ public class MojoRequiredFieldTaglet
     extends AbstractMojoFieldTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.REQUIRED;
+    private static final String NAME = JavadocMojoAnnotation.REQUIRED;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is required.";

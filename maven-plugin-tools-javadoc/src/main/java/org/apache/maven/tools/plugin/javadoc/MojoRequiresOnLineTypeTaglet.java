@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -57,7 +57,7 @@ public class MojoRequiresOnLineTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.REQUIRES_ONLINE;
+    private static final String NAME = JavadocMojoAnnotation.REQUIRES_ONLINE;
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Requires to be online to run";

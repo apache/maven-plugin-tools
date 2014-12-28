@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavaMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 
@@ -56,12 +56,12 @@ public class MojoExecuteTypeTaglet
     extends AbstractMojoTypeTaglet
 {
     /** The Javadoc annotation */
-    private static final String NAME = JavaMojoAnnotation.EXECUTE;
+    private static final String NAME = JavadocMojoAnnotation.EXECUTE;
 
     private static final String[] PARAMETERS_NAME = {
-        JavaMojoAnnotation.EXECUTE_PHASE,
-        JavaMojoAnnotation.EXECUTE_LIFECYCLE,
-        JavaMojoAnnotation.EXECUTE_GOAL };
+        JavadocMojoAnnotation.EXECUTE_PHASE,
+        JavadocMojoAnnotation.EXECUTE_LIFECYCLE,
+        JavadocMojoAnnotation.EXECUTE_GOAL };
 
     /** The Javadoc text which will be added to the generated page. */
     protected static final String HEADER = "Is defined to be executed in";

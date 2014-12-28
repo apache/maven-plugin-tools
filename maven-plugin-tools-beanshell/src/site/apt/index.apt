@@ -28,5 +28,6 @@
 
 Maven Plugin Tool for Beanshell
 
- The Maven Plugin Tool for Beanshell is the Beanshell impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
+ The Maven Plugin Tool for Beanshell is the <<<bsh>>> implementation of
+ {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors for plugins written in Beanshell.

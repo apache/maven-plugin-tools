@@ -29,7 +29,8 @@
 
 Maven Plugin Tool for Java Annotated with Mojo Javadoc Tags
 
- The Maven Plugin Tool for Java is the Java impl of {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
+ The Maven Plugin Tool for Java is the <<<java-javadoc>>> implementation of
+ {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors for plugins written in Java annotated with Mojo Javadoc Tags.
 
 * Supported Mojo Javadoc Tags
