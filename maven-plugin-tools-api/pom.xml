@@ -30,8 +30,8 @@
 
   <artifactId>maven-plugin-tools-api</artifactId>
 
-  <name>Maven Plugin Tools APIs</name>
-  <description>The Maven Plugin Tools API provides an API to extract descriptor information from Maven Plugins.</description>
+  <name>Maven Plugin Tools Extractor API</name>
+  <description>The Maven Plugin Tools Extractor API provides an API to extract descriptor information from Maven Plugins.</description>
 
   <dependencies>
     <!-- maven -->

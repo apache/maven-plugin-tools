@@ -30,7 +30,7 @@
 
   <artifactId>maven-plugin-tools-java</artifactId>
 
-  <name>Maven Plugin Tool for Java with Mojo Javadoc Tags</name>
+  <name>Maven Plugin Tool for Java with Javadoc Tags</name>
   <description>Descriptor extractor for plugins written in Java annotated with Mojo Javadoc Tags.</description>
 
   <dependencies>

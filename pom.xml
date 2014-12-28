@@ -63,17 +63,17 @@
   </prerequisites>
 
   <modules>
-    <module>maven-script</module>
+    <module>maven-plugin-plugin</module>
     <module>maven-plugin-tools-generators</module>
     <module>maven-plugin-tools-api</module>
     <module>maven-plugin-tools-java</module>
+    <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-tools-javadoc</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-tools-ant</module>
     <module>maven-plugin-tools-beanshell</module>
     <module>maven-plugin-tools-model</module>
-    <module>maven-plugin-plugin</module>
+    <module>maven-script</module>
   </modules>
 
   <scm>

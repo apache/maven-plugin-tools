@@ -33,8 +33,9 @@
 
     <section name="Maven Plugin Tools">
 
-      <p>The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in scripting languages
-    and to generate rebarbative content like descriptor, help and documentation.</p>
+      <p>The Maven Plugin Tools contains the necessary tools to generate rebarbative content like descriptor,
+      help and documentation. In addition, it provides tools to write Maven Plugins in scripting languages
+      like Ant or Beanshell.</p>
 
       <p>
         <img src="images/plugin-tools-deps.png" width="826" height="491" border="0" usemap="#PluginTools_dependencies" />
@@ -82,7 +83,7 @@
         </tr>      
         <tr>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./maven-plugin-tools-javadoc/index.html">maven-plugin-tools-javadoc</a></td>
-          <td>Provides the support of Mojo Javadoc Tags in the Javadoc Tool.</td>
+          <td>Provides doclets to support Mojo Javadoc Tags in the Javadoc Tool.</td>
         </tr>      
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-annotations/index.html">maven-plugin-tools-annotations</a></td>
