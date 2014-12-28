@@ -140,16 +140,6 @@
       <artifactId>maven-plugin-tools-annotations</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-beanshell</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-model</artifactId>
-      <scope>runtime</scope>
-    </dependency>
 
     <!-- plexus -->
     <dependency>
