@@ -51,6 +51,13 @@ under the License.
       <classifier>tests</classifier>
     </dependency>
     <dependency>
+      <!-- dependency of  org.apache.maven.plugin-tools:maven-plugin-tools-annotations:@project.version@:jar:tests -->
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+    </dependency>
+    
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>@mavenVersion@</version>
