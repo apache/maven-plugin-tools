@@ -82,20 +82,20 @@ public class DefaultMojoScanner
 
         int numMojoDescriptors = 0;
 
-        for ( String language : activeExtractorsInternal )
+        for ( String extractorId : activeExtractorsInternal )
         {
-            MojoDescriptorExtractor extractor = mojoDescriptorExtractors.get( language );
+            MojoDescriptorExtractor extractor = mojoDescriptorExtractors.get( extractorId );
 
             if ( extractor == null )
             {
-                throw new ExtractionException( "No mojo extractor for language: " + language );
+                throw new ExtractionException( "No mojo extractor with id: " + extractorId );
             }
 
-            logger.info( "Applying mojo extractor for language: " + language );
+            logger.info( "Applying mojo extractor with id: " + extractorId );
 
             List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
 
-            logger.info( "Mojo extractor for language: " + language + " found " + extractorDescriptors.size()
+            logger.info( "Mojo extractor with id: " + extractorId + " found " + extractorDescriptors.size()
                              + " mojo descriptors." );
             numMojoDescriptors += extractorDescriptors.size();
 
