@@ -45,10 +45,40 @@
     <doxiaVersion>1.4</doxiaVersion>
     <doxia-sitetoolsVersion>1.4</doxia-sitetoolsVersion>
     <it.debug>true</it.debug>
+    <!-- use a previous release of maven-plugin-plugin to build this plugin -->
     <mavenPluginPluginVersion>3.3</mavenPluginPluginVersion>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-generators</artifactId>
+    </dependency>
+
+    <!-- runtime extractors used by default by plugin-tools -->
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-annotations</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- for source code annotations of the mojos -->
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <!-- not the version of plugin-tools actually building, but the version used to build the plugin -->
+      <version>${mavenPluginPluginVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- doxia -->
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
@@ -71,7 +101,7 @@
       </exclusions>
     </dependency>
 
-    <!-- maven -->
+    <!-- Maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
@@ -99,15 +129,6 @@
       <version>${mavenVersion}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-generators</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact-manager</artifactId>
       <version>${mavenVersion}</version>
@@ -127,18 +148,6 @@
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
       <version>3.0</version>
-    </dependency>
-
-    <!-- Maven runtime: extractors used by default -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-java</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-annotations</artifactId>
-      <scope>runtime</scope>
     </dependency>
 
     <!-- plexus -->
@@ -244,6 +253,7 @@
         </executions>
       </plugin>
       <plugin>
+        <!-- use previous maven-plugin-plugin release to build current maven-plugin-plugin -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${mavenPluginPluginVersion}</version>
