@@ -278,7 +278,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginToolsVersion}</version>
+        <version>3.3</version><!-- cannot use ${mavenPluginToolsVersion} property because release plugin would try to update -->
         <reportSets>
           <reportSet>
             <reports>
