@@ -376,14 +376,6 @@
           </plugin>
         </plugins>
       </build>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.maven.plugin-tools</groupId>
-          <artifactId>maven-plugin-tools-annotations</artifactId>
-          <version>${project.version}</version>
-          <classifier>tests</classifier>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
       <id>maven-2</id>
