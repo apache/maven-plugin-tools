@@ -19,10 +19,22 @@ package org.apache.maven.tools.plugin.annotations;
  * under the License.
  */
 
-import com.thoughtworks.qdox.JavaDocBuilder;
-import com.thoughtworks.qdox.model.DocletTag;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaField;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
@@ -54,18 +66,11 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
+import com.thoughtworks.qdox.model.DocletTag;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
@@ -219,7 +224,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             unArchiver.setDestDirectory( extractDirectory );
             unArchiver.extract();
 
-            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ) );
+            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ), 
+                                    request.getDependencies() );
         }
         catch ( ArtifactResolutionException e )
         {
@@ -377,7 +383,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         if ( superClass != null )
         {
-            if ( superClass.getFields().length > 0 )
+            if ( superClass.getFields().size() > 0 )
             {
                 rawParams = extractFieldParameterTags( superClass, javaClassesMap );
             }
@@ -394,15 +400,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
             rawParams = new TreeMap<String, JavaField>();
         }
 
-        JavaField[] classFields = javaClass.getFields();
-
-        if ( classFields != null )
+        for ( JavaField field : javaClass.getFields() )
         {
-            for ( JavaField field : classFields )
-            {
-                rawParams.put( field.getName(), field );
-            }
+            rawParams.put( field.getName(), field );
         }
+        
         return rawParams;
     }
 
@@ -429,27 +431,43 @@ public class JavaAnnotationsMojoDescriptorExtractor
             sources.add( generatedPlugin );
         }
 
-        return discoverClasses( encoding, sources );
+        return discoverClasses( encoding, sources,  project.getArtifacts() );
     }
 
-    protected Map<String, JavaClass> discoverClasses( final String encoding, List<File> sourceDirectories )
+    protected Map<String, JavaClass> discoverClasses( final String encoding, List<File> sourceDirectories,
+                                                      Set<Artifact> artifacts )
     {
-        JavaDocBuilder builder = new JavaDocBuilder();
+        JavaProjectBuilder builder = new JavaProjectBuilder( new SortedClassLibraryBuilder() );
         builder.setEncoding( encoding );
+
+        // Build isolated Classloader with only the artifacts of the project (none of this plugin) 
+        List<URL> urls = new ArrayList<URL>( artifacts.size() );
+        for ( Artifact artifact : artifacts )
+        {
+            try
+            {
+                urls.add( artifact.getFile().toURI().toURL() );
+            }
+            catch ( MalformedURLException e )
+            {
+                // noop
+            }
+        }
+        builder.addClassLoader( new URLClassLoader( urls.toArray( new URL[0] ), ClassLoader.getSystemClassLoader() ) );
 
         for ( File source : sourceDirectories )
         {
             builder.addSourceTree( source );
         }
 
-        JavaClass[] javaClasses = builder.getClasses();
+        Collection<JavaClass> javaClasses = builder.getClasses();
 
-        if ( javaClasses == null || javaClasses.length < 1 )
+        if ( javaClasses == null || javaClasses.size() < 1 )
         {
             return Collections.emptyMap();
         }
 
-        Map<String, JavaClass> javaClassMap = new HashMap<String, JavaClass>( javaClasses.length );
+        Map<String, JavaClass> javaClassMap = new HashMap<String, JavaClass>( javaClasses.size() );
 
         for ( JavaClass javaClass : javaClasses )
         {

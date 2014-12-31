@@ -19,12 +19,17 @@ package org.apache.maven.tools.plugin.extractor.java;
  * under the License.
  */
 
-import com.thoughtworks.qdox.JavaDocBuilder;
-import com.thoughtworks.qdox.model.DocletTag;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaField;
-import com.thoughtworks.qdox.model.Type;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -33,19 +38,19 @@ import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
+import com.thoughtworks.qdox.model.DocletTag;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
+import com.thoughtworks.qdox.model.JavaType;
 
 /**
  * Extracts Mojo descriptors from <a href="http://java.sun.com/">Java</a> sources.
@@ -469,29 +474,13 @@ public class JavaJavadocMojoDescriptorExtractor
         {
             JavaField field = entry.getValue();
 
-            Type type = field.getType();
+            JavaType type = field.getType();
 
             Parameter pd = new Parameter();
 
             pd.setName( entry.getKey() );
 
-            if ( !type.isArray() )
-            {
-                pd.setType( type.getValue() );
-            }
-            else
-            {
-                StringBuilder value = new StringBuilder( type.getValue() );
-
-                int remaining = type.getDimensions();
-
-                while ( remaining-- > 0 )
-                {
-                    value.append( "[]" );
-                }
-
-                pd.setType( value.toString() );
-            }
+            pd.setType( type.getFullyQualifiedName() );
 
             pd.setDescription( field.getComment() );
 
@@ -656,17 +645,12 @@ public class JavaJavadocMojoDescriptorExtractor
             rawParams = new TreeMap<String, JavaField>();
         }
 
-        JavaField[] classFields = javaClass.getFields();
-
-        if ( classFields != null )
+        for ( JavaField field : javaClass.getFields() )
         {
-            for ( JavaField field : classFields )
+            if ( field.getTagByName( JavadocMojoAnnotation.PARAMETER ) != null
+                || field.getTagByName( JavadocMojoAnnotation.COMPONENT ) != null )
             {
-                if ( field.getTagByName( JavadocMojoAnnotation.PARAMETER ) != null
-                    || field.getTagByName( JavadocMojoAnnotation.COMPONENT ) != null )
-                {
-                    rawParams.put( field.getName(), field );
-                }
+                rawParams.put( field.getName(), field );
             }
         }
         return rawParams;
@@ -676,7 +660,7 @@ public class JavaJavadocMojoDescriptorExtractor
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        JavaClass[] javaClasses = discoverClasses( request );
+        Collection<JavaClass> javaClasses = discoverClasses( request );
 
         List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
 
@@ -704,10 +688,25 @@ public class JavaJavadocMojoDescriptorExtractor
      * @return an array of java class
      */
     @SuppressWarnings( "unchecked" )
-    protected JavaClass[] discoverClasses( final PluginToolsRequest request )
+    protected Collection<JavaClass> discoverClasses( final PluginToolsRequest request )
     {
-        JavaDocBuilder builder = new JavaDocBuilder();
+        JavaProjectBuilder builder = new JavaProjectBuilder( new SortedClassLibraryBuilder() );
         builder.setEncoding( request.getEncoding() );
+        
+         // Build isolated Classloader with only the artifacts of the project (none of this plugin) 
+        List<URL> urls = new ArrayList<URL>( request.getDependencies().size() );
+        for ( Artifact artifact : request.getDependencies() )
+        {
+            try
+            {
+                urls.add( artifact.getFile().toURI().toURL() );
+            }
+            catch ( MalformedURLException e )
+            {
+                // noop
+            }
+        }
+        builder.addClassLoader( new URLClassLoader( urls.toArray( new URL[0] ), ClassLoader.getSystemClassLoader() ) );
         
         MavenProject project = request.getProject();
 
