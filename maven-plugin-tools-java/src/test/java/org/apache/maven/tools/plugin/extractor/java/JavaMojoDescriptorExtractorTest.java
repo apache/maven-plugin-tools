@@ -85,7 +85,7 @@ public class JavaMojoDescriptorExtractorTest
             @Override
             public String getOutputDirectory()
             {
-                return System.getProperty( "filePath" );
+                return new File( "target" ).getAbsolutePath();
             }
         } );
 
