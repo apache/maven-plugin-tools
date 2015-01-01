@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner.visitors;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,8 +19,8 @@ package org.apache.maven.tools.plugin.annotations.scanner.visitors;
  * under the License.
  */
 
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.objectweb.asm.AnnotationVisitor;

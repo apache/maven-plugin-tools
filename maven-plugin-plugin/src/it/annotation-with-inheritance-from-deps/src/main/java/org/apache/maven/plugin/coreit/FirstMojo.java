@@ -26,7 +26,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.tools.plugin.annotations.FooMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.apache.maven.project.MavenProjectHelper;
 
 /**

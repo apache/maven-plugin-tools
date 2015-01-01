@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations;
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -49,15 +49,15 @@ import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;

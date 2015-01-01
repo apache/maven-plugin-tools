@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations;
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,11 +24,11 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotatedClass;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScanner;
-import org.apache.maven.tools.plugin.annotations.scanner.MojoAnnotationsScannerRequest;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.codehaus.plexus.PlexusTestCase;
 import org.fest.assertions.Assertions;
 

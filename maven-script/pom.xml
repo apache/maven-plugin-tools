@@ -33,8 +33,11 @@ under the License.
   <description>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</description>
 
   <modules>
+    <module>maven-plugin-tools-ant</module>
     <module>maven-script-ant</module>
+    <module>maven-plugin-tools-beanshell</module>
     <module>maven-script-beanshell</module>
+    <module>maven-plugin-tools-model</module>
   </modules>
 
 

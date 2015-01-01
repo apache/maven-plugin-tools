@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.java;
+package org.apache.maven.tools.plugin.extractor.javadoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

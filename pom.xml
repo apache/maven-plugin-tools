@@ -69,9 +69,6 @@
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-tools-javadoc</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-plugin-tools-ant</module>
-    <module>maven-plugin-tools-beanshell</module>
-    <module>maven-plugin-tools-model</module>
     <module>maven-script</module>
     <module>maven-plugin-plugin</module><!-- keep at end since ITs require every extractors -->
   </modules>
@@ -313,11 +310,11 @@
                 </group>
                 <group>
                   <title>Java Annotations Support: Annotations + Extractor</title>
-                  <packages>org.apache.maven.plugins.annotations:org.apache.maven.tools.plugin.annotations*</packages>
+                  <packages>org.apache.maven.plugins.annotations:org.apache.maven.tools.plugin.extractor.annotations*</packages>
                 </group>
                 <group>
                   <title>Javadoc Support: Javadoc Tags Extractor + Taglets</title>
-                  <packages>org.apache.maven.tools.plugin.extractor.java:org.apache.maven.tools.plugin.javadoc</packages>
+                  <packages>org.apache.maven.tools.plugin.extractor.javadoc:org.apache.maven.tools.plugin.javadoc</packages>
                 </group>
                 <group>
                   <title>Beanshell Support: Extractor + Runtime</title>

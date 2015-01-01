@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner.visitors;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

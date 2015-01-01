@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

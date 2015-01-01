@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.datamodel;
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,43 +23,39 @@ package org.apache.maven.tools.plugin.annotations.datamodel;
  * @author Olivier Lamy
  * @since 3.0
  */
-public class AnnotatedContent
+public class AnnotatedField
+    extends AnnotatedContent
+    implements Comparable<AnnotatedField>
 {
+    private String fieldName;
 
-    private String description;
-
-    private String since;
-
-    private String deprecated;
-
-    public String getDescription()
+    public AnnotatedField( String fieldName )
     {
-        return description;
+        this.fieldName = fieldName;
     }
 
-    public void setDescription( String description )
+    public String getFieldName()
     {
-        this.description = description;
+        return fieldName;
     }
 
-    public String getSince()
+    public void setFieldName( String name )
     {
-        return since;
+        this.fieldName = name;
     }
 
-    public void setSince( String since )
+    @Override
+    public String toString()
     {
-        this.since = since;
+        final StringBuilder sb = new StringBuilder();
+        sb.append( "AnnotatedField" );
+        sb.append( "{fieldName='" ).append( fieldName ).append( '\'' );
+        sb.append( '}' );
+        return sb.toString();
     }
 
-    public String getDeprecated()
+    public int compareTo( AnnotatedField annotatedField )
     {
-        return deprecated;
+        return getFieldName().compareTo( annotatedField.getFieldName() );
     }
-
-    public void setDeprecated( String deprecated )
-    {
-        this.deprecated = deprecated;
-    }
-
 }

@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -24,14 +24,14 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoAnnotationVisitor;
-import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoClassVisitor;
-import org.apache.maven.tools.plugin.annotations.scanner.visitors.MojoFieldVisitor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoAnnotationVisitor;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoClassVisitor;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;

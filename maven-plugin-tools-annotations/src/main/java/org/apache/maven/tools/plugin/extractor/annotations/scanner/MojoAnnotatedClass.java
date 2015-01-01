@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.scanner;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,10 +20,10 @@ package org.apache.maven.tools.plugin.annotations.scanner;
  */
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.tools.plugin.annotations.datamodel.ComponentAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ExecuteAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.MojoAnnotationContent;
-import org.apache.maven.tools.plugin.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
 
 import java.util.HashMap;
 import java.util.Map;

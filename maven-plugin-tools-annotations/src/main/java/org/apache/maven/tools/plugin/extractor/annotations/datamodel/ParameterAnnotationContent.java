@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.annotations.datamodel;
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
