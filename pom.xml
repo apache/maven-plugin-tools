@@ -73,7 +73,7 @@
     <module>maven-plugin-tools-beanshell</module>
     <module>maven-plugin-tools-model</module>
     <module>maven-script</module>
-    <module>maven-plugin-plugin</module>
+    <module>maven-plugin-plugin</module><!-- keep at end since ITs require every extractors -->
   </modules>
 
   <scm>
@@ -298,9 +298,36 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
               <linksource>true</linksource>
-              <links combine.children="append">
-                <link>http://sonatype.github.com/sonatype-aether/apidocs/</link>
-              </links>
+              <groups>
+                <group>
+                  <title>Plugin Tools' Maven Plugin Plugin</title>
+                  <packages>org.apache.maven.plugin.plugin*</packages>
+                </group>
+                <group>
+                  <title>Plugin Tools Extractor API</title>
+                  <packages>org.apache.maven.tools.plugin:org.apache.maven.tools.plugin.extractor:org.apache.maven.tools.plugin.scanner:org.apache.maven.tools.plugin.util</packages>
+                </group>
+                <group>
+                  <title>Plugin Tools Generators</title>
+                  <packages>org.apache.maven.tools.plugin.generator</packages>
+                </group>
+                <group>
+                  <title>Java Annotations Support: Annotations + Extractor</title>
+                  <packages>org.apache.maven.plugins.annotations:org.apache.maven.tools.plugin.annotations*</packages>
+                </group>
+                <group>
+                  <title>Javadoc Support: Javadoc Tags Extractor + Taglets</title>
+                  <packages>org.apache.maven.tools.plugin.extractor.java:org.apache.maven.tools.plugin.javadoc</packages>
+                </group>
+                <group>
+                  <title>Beanshell Support: Extractor + Runtime</title>
+                  <packages>org.apache.maven.tools.plugin.extractor.beanshell:org.apache.maven.script.beanshell</packages>
+                </group>
+                <group>
+                  <title>Apache Ant Support : Metadata + Extractor + Runtime</title>
+                  <packages>org.apache.maven.tools.plugin.extractor.ant:org.apache.maven.script.ant:org.apache.maven.plugin.tools.model*</packages>
+                </group>
+              </groups>
             </configuration>
             <reportSets>
               <reportSet>
