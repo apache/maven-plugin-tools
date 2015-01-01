@@ -59,8 +59,6 @@ import com.thoughtworks.qdox.model.JavaType;
  * <a href="http://maven.apache.org/developers/mojo-api-specification.html">
  * http://maven.apache.org/developers/mojo-api-specification.html</a>
  *
- * @todo need to add validation directives so that systems embedding maven2 can
- * get validation directives to help users in IDEs.
  * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
@@ -69,94 +67,6 @@ public class JavaJavadocMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor, JavadocMojoAnnotation
 {
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#INSTANTIATION_STRATEGY} instead of. */
-    public static final String MAVEN_PLUGIN_INSTANTIATION = JavadocMojoAnnotation.INSTANTIATION_STRATEGY;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#CONFIGURATOR} instead of. */
-    public static final String CONFIGURATOR = JavadocMojoAnnotation.CONFIGURATOR;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER} instead of. */
-    public static final String PARAMETER = JavadocMojoAnnotation.PARAMETER;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_EXPRESSION} instead of. */
-    public static final String PARAMETER_EXPRESSION = JavadocMojoAnnotation.PARAMETER_EXPRESSION;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_DEFAULT_VALUE} instead of. */
-    public static final String PARAMETER_DEFAULT_VALUE = JavadocMojoAnnotation.PARAMETER_DEFAULT_VALUE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_ALIAS} instead of. */
-    public static final String PARAMETER_ALIAS = JavadocMojoAnnotation.PARAMETER_ALIAS;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#SINCE} instead of. */
-    public static final String SINCE = JavadocMojoAnnotation.SINCE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PARAMETER_IMPLEMENTATION} instead of. */
-    public static final String PARAMETER_IMPLEMENTATION = JavadocMojoAnnotation.PARAMETER_IMPLEMENTATION;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRED} instead of. */
-    public static final String REQUIRED = JavadocMojoAnnotation.REQUIRED;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#DEPRECATED} instead of. */
-    public static final String DEPRECATED = JavadocMojoAnnotation.DEPRECATED;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#READONLY} instead of. */
-    public static final String READONLY = JavadocMojoAnnotation.READONLY;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#GOAL} instead of. */
-    public static final String GOAL = JavadocMojoAnnotation.GOAL;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#PHASE} instead of. */
-    public static final String PHASE = JavadocMojoAnnotation.PHASE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE} instead of. */
-    public static final String EXECUTE = JavadocMojoAnnotation.EXECUTE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_LIFECYCLE} instead of. */
-    public static final String EXECUTE_LIFECYCLE = JavadocMojoAnnotation.EXECUTE_LIFECYCLE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_PHASE} instead of. */
-    public static final String EXECUTE_PHASE = JavadocMojoAnnotation.EXECUTE_PHASE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#EXECUTE_GOAL} instead of. */
-    public static final String EXECUTE_GOAL = JavadocMojoAnnotation.EXECUTE_GOAL;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#DESCRIPTION} instead of. */
-    public static final String GOAL_DESCRIPTION = JavadocMojoAnnotation.DESCRIPTION;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_DEPENDENCY_RESOLUTION} instead of. */
-    public static final String GOAL_REQUIRES_DEPENDENCY_RESOLUTION =
-        JavadocMojoAnnotation.REQUIRES_DEPENDENCY_RESOLUTION;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_PROJECT} instead of. */
-    public static final String GOAL_REQUIRES_PROJECT = JavadocMojoAnnotation.REQUIRES_PROJECT;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_REPORTS} instead of. */
-    public static final String GOAL_REQUIRES_REPORTS = JavadocMojoAnnotation.REQUIRES_REPORTS;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#AGGREGATOR} instead of. */
-    public static final String GOAL_IS_AGGREGATOR = JavadocMojoAnnotation.AGGREGATOR;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_ONLINE} instead of. */
-    public static final String GOAL_REQUIRES_ONLINE = JavadocMojoAnnotation.REQUIRES_ONLINE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#INHERIT_BY_DEFAULT} instead of. */
-    public static final String GOAL_INHERIT_BY_DEFAULT = JavadocMojoAnnotation.INHERIT_BY_DEFAULT;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#MULTI_EXECUTION_STRATEGY} instead of. */
-    public static final String GOAL_MULTI_EXECUTION_STRATEGY = JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#REQUIRES_DIRECT_INVOCATION} instead of. */
-    public static final String GOAL_REQUIRES_DIRECT_INVOCATION = JavadocMojoAnnotation.REQUIRES_DIRECT_INVOCATION;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT} instead of. */
-    public static final String COMPONENT = JavadocMojoAnnotation.COMPONENT;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT_ROLE} instead of. */
-    public static final String COMPONENT_ROLE = JavadocMojoAnnotation.COMPONENT_ROLE;
-
-    /** @deprecated since 2.4, use {@link JavadocMojoAnnotation#COMPONENT_ROLEHINT} instead of. */
-    public static final String COMPONENT_ROLEHINT = JavadocMojoAnnotation.COMPONENT_ROLEHINT;
-
     /**
      * @param parameter not null
      * @param i positive number

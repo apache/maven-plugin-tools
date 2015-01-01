@@ -85,7 +85,7 @@ public interface PluginToolsRequest
     PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound );
 
     /**
-     * @return
+     * @return <code>true</code> if no descriptor found should not cause a failure
      * @since 3.0
      */
     boolean isSkipErrorNoDescriptorsFound();
@@ -93,21 +93,21 @@ public interface PluginToolsRequest
     /**
      * Returns the list of {@link Artifact} used in class path scanning for annotations
      *
-     * @return
+     * @return the dependencies
      * @since 3.0
      */
     Set<Artifact> getDependencies();
 
     /**
      * @param dependencies
-     * @return
+     * @return This request.
      * @since 3.0
      */
     PluginToolsRequest setDependencies( Set<Artifact> dependencies );
 
     /**
      *
-     * @return
+     * @return the remote repositories
      * @since 3.0
      */
     List<ArtifactRepository> getRemoteRepos();
@@ -115,14 +115,14 @@ public interface PluginToolsRequest
     /**
      *
      * @param remoteRepos
-     * @return
+     * @return This request.
      * @since 3.0
      */
     PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos );
 
     /**
      *
-     * @return
+     * @return the local artifact repository
      * @since 3.0
      */
     ArtifactRepository getLocal();
@@ -130,7 +130,7 @@ public interface PluginToolsRequest
     /**
      *
      * @param local
-     * @return
+     * @return This request.
      * @since 3.0
      */
     PluginToolsRequest setLocal( ArtifactRepository local );

@@ -41,10 +41,6 @@ import java.util.Set;
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
  *
  * @version $Id$
- * @todo share constants
- * @todo add example usage tag that can be shown in the doco
- * @todo need to add validation directives so that systems embedding maven2 can
- * get validation directives to help users in IDEs.
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
 public class BeanshellMojoDescriptorExtractor

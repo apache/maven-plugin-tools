@@ -30,8 +30,6 @@ import org.codehaus.plexus.component.factory.bsh.BshComponent;
 /**
  * Mojo adapter for a Beanshell Mojo.
  *
- * @todo should log be passed in, or rely on getLog() ?
- *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id$
  */

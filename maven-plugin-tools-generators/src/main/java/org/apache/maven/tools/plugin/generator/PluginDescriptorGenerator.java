@@ -51,9 +51,6 @@ import org.codehaus.plexus.util.xml.XMLWriter;
  * corresponding <code>plugin-help.xml</code> help content for {@link PluginHelpGenerator}.
  *
  * @version $Id$
- * @todo add example usage tag that can be shown in the doco
- * @todo need to add validation directives so that systems embedding maven2 can
- * get validation directives to help users in IDEs.
  */
 public class PluginDescriptorGenerator
     implements Generator

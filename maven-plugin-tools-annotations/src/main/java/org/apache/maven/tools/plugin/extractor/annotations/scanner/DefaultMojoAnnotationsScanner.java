@@ -115,7 +115,7 @@ public class DefaultMojoAnnotationsScanner
      * @param archiveFile
      * @param artifact
      * @param excludeMojo     for dependencies, we exclude Mojo annotations found
-     * @return
+     * @return annotated classes found
      * @throws IOException
      * @throws ExtractionException
      */
@@ -152,7 +152,7 @@ public class DefaultMojoAnnotationsScanner
      * @param includePatterns
      * @param artifact
      * @param excludeMojo     for dependencies, we exclude Mojo annotations found
-     * @return
+     * @return annotated classes found
      * @throws IOException
      * @throws ExtractionException
      */
