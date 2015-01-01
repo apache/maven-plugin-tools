@@ -97,7 +97,7 @@
           <td>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</td>
         </tr>      
         <tr>
-          <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-beanshell/index.html">maven-plugin-tools-beanshell</a></td>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-beanshell/index.html">maven-plugin-tools-beanshell</a></td>
           <td>Extractor for plugins written in Beanshell.</td>
         </tr>      
         <tr>
@@ -109,11 +109,11 @@
           <td>Extractor for plugins written in Ant.</td>
         </tr>      
         <tr>
-          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
           <td>Maven Ant Mojo Support, ie write Maven plugins with Ant script.</td>
         </tr>      
         <tr>
-          <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-model/index.html">maven-plugin-tools-model</a></td>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-model/index.html">maven-plugin-tools-model</a></td>
           <td>Plugin Metadata Model for script-based plugins.</td>
         </tr>      
       </table>
