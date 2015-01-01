@@ -91,7 +91,7 @@ public class DefaultMojoScanner
                 throw new ExtractionException( "No mojo extractor with id: " + extractorId );
             }
 
-            logger.info( "Applying mojo extractor with id: " + extractorId );
+            logger.debug( "Applying mojo extractor with id: " + extractorId );
 
             List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
 

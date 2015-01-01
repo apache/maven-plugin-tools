@@ -21,7 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Map;
 
-import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
+import org.apache.maven.tools.plugin.extractor.javadoc.JavadocMojoAnnotation;
 
 import com.sun.tools.doclets.Taglet;
 

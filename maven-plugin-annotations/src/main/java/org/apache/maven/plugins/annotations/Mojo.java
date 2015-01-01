@@ -52,13 +52,13 @@ public @interface Mojo
 
     /**
      * the required dependency resolution scope.
-     * @return 
+     * @return the required dependency resolution scope
      */
     ResolutionScope requiresDependencyResolution() default ResolutionScope.NONE;
 
     /**
      * the required dependency collection scope.
-     * @return 
+     * @return the required dependency collection scope 
      */
     ResolutionScope requiresDependencyCollection() default ResolutionScope.NONE;
 
@@ -76,31 +76,31 @@ public @interface Mojo
 
     /**
      * does your mojo requires a project to be executed?
-     * @return
+     * @return requires a project
      */
     boolean requiresProject() default true;
 
     /**
      * does your mojo requires a reporting context to be executed?
-     * @return
+     * @return requires a reporting context
      */
     boolean requiresReports() default false;
 
     /**
      * if the Mojo uses the Maven project and its child modules.
-     * @return
+     * @return uses the Maven project and its child modules
      */
     boolean aggregator() default false;
 
     /**
      * can this Mojo be invoked directly only?
-     * @return
+     * @return invoked directly only
      */
     boolean requiresDirectInvocation() default false;
 
     /**
      * does this Mojo need to be online to be executed?
-     * @return
+     * @return need to be online
      */
     boolean requiresOnline() default false;
 
@@ -108,13 +108,13 @@ public @interface Mojo
 
     /**
      * own configurator class.
-     * @return
+     * @return own configurator class
      */
     String configurator() default "";
 
     /**
      * is your mojo thread safe (since Maven 3.x)?
-     * @return
+     * @return is thread safe
      */
     boolean threadSafe() default false;
 }

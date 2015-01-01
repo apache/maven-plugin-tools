@@ -20,7 +20,8 @@ package org.apache.maven.tools.plugin.javadoc;
  */
 
 import com.sun.tools.doclets.Taglet;
-import org.apache.maven.tools.plugin.extractor.java.JavadocMojoAnnotation;
+
+import org.apache.maven.tools.plugin.extractor.javadoc.JavadocMojoAnnotation;
 
 import java.util.Map;
 
