@@ -46,11 +46,11 @@
           <area shape="rect" coords="44,146,508,198"  alt="plugin-tools-java"        href="./maven-plugin-tools-java"/>
           <area shape="rect" coords="311,213,496,248" alt="plugin-annotations"       href="./maven-plugin-annotations"/>
           <area shape="rect" coords="44,204,508,256"  alt="plugin-tools-annotations" href="./maven-plugin-tools-annotations"/>
-          <area shape="rect" coords="55,270,293,306"  alt="plugin-tools-beanshell"   href="./maven-plugin-tools-beanshell"/>
+          <area shape="rect" coords="55,270,293,306"  alt="plugin-tools-beanshell"   href="./maven-script/maven-plugin-tools-beanshell"/>
           <area shape="rect" coords="319,271,557,306" alt="maven-script-beanshell"   href="./maven-script/maven-script-beanshell"/>
-          <area shape="rect" coords="56,329,223,365"  alt="plugin-tools-ant"         href="./maven-plugin-tools-ant"/>
+          <area shape="rect" coords="56,329,223,365"  alt="plugin-tools-ant"         href="./maven-script/maven-plugin-tools-ant"/>
           <area shape="rect" coords="388,329,557,365" alt="maven-script-ant"         href="./maven-script/maven-script-ant"/>
-          <area shape="rect" coords="48,388,231,424"  alt="plugin-tools-model"       href="./maven-plugin-tools-model"/>
+          <area shape="rect" coords="48,388,231,424"  alt="plugin-tools-model"       href="./maven-script/maven-plugin-tools-model"/>
           <area shape="rect" coords="514,95,759,131"  alt="plugin-tools-generators"  href="./maven-plugin-tools-generators"/>
           <area shape="rect" coords="44,263,570,432"  alt="maven-script"             href="./maven-script"/>
           <area shape="rect" coords="340,438,529,474" alt="maven-plugin-api"         href="/ref/current/maven-plugin-api/"/>
@@ -105,11 +105,11 @@
           <td>Maven Beanshell Mojo Support, ie write Maven plugins with Beanshell scripts.</td>
         </tr>      
         <tr>
-          <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-ant/index.html">maven-plugin-tools-ant</a></td>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-ant/index.html">maven-plugin-tools-ant</a></td>
           <td>Extractor for plugins written in Ant.</td>
         </tr>      
         <tr>
-          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
+          <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
           <td>Maven Ant Mojo Support, ie write Maven plugins with Ant script.</td>
         </tr>      
         <tr>
