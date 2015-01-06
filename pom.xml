@@ -322,7 +322,7 @@
                 </group>
                 <group>
                   <title>Apache Ant Support : Metadata + Extractor + Runtime</title>
-                  <packages>org.apache.maven.tools.plugin.extractor.ant:org.apache.maven.script.ant:org.apache.maven.plugin.tools.model*</packages>
+                  <packages>org.apache.maven.tools.plugin.extractor.ant:org.apache.maven.script.ant:org.apache.maven.tools.plugin.extractor.model*</packages>
                 </group>
               </groups>
             </configuration>
