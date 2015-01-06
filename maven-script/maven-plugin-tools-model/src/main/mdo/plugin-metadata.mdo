@@ -78,7 +78,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>org.apache.maven.plugin.tools.model</value>
+      <value>org.apache.maven.tools.plugin.extractor.model</value>
     </default>
   </defaults>
   <classes>

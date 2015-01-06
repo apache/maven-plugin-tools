@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.tools.model;
+package org.apache.maven.tools.plugin.extractor.model;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,6 +20,8 @@ package org.apache.maven.plugin.tools.model;
  */
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
+import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;

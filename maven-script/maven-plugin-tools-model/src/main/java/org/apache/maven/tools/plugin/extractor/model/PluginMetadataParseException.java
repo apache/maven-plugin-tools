@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.tools.model;
+package org.apache.maven.tools.plugin.extractor.model;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

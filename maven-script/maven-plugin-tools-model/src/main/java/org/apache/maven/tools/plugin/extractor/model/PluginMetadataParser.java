@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.tools.model;
+package org.apache.maven.tools.plugin.extractor.model;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.tools.model.io.xpp3.PluginMetadataXpp3Reader;
+import org.apache.maven.tools.plugin.extractor.model.io.xpp3.PluginMetadataXpp3Reader;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -136,11 +136,11 @@ public class PluginMetadataParser
             descriptor.setExecuteGoal( le.getGoal() );
         }
 
-        List<org.apache.maven.plugin.tools.model.Parameter> parameters = mojo.getParameters();
+        List<org.apache.maven.tools.plugin.extractor.model.Parameter> parameters = mojo.getParameters();
 
         if ( parameters != null && !parameters.isEmpty() )
         {
-            for ( org.apache.maven.plugin.tools.model.Parameter param : parameters )
+            for ( org.apache.maven.tools.plugin.extractor.model.Parameter param : parameters )
             {
                 Parameter dParam = new Parameter();
                 dParam.setAlias( param.getAlias() );
