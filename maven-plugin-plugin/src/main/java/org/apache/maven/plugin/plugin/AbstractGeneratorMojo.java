@@ -223,11 +223,11 @@ public abstract class AbstractGeneratorMojo
         if ( encoding == null || encoding.length() < 1 )
         {
             getLog().warn( "Using platform encoding (" + ReaderFactory.FILE_ENCODING
-                               + " actually) to read mojo metadata, i.e. build is platform dependent!" );
+                               + " actually) to read mojo source files, i.e. build is platform dependent!" );
         }
         else
         {
-            getLog().info( "Using '" + encoding + "' encoding to read mojo metadata." );
+            getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
         }
 
         try
