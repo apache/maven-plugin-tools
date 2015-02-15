@@ -88,15 +88,15 @@ public class DefaultMojoScanner
 
             if ( extractor == null )
             {
-                throw new ExtractionException( "No mojo extractor with id: " + extractorId );
+                throw new ExtractionException( "No mojo extractor with '" + extractorId + "' id." );
             }
 
-            logger.debug( "Applying mojo extractor with id: " + extractorId );
+            logger.debug( "Applying " + extractorId + " mojo extractor" );
 
             List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
 
-            logger.info( "Mojo extractor with id: " + extractorId + " found " + extractorDescriptors.size()
-                             + " mojo descriptors." );
+            logger.info( extractorId + " mojo extractor found " + extractorDescriptors.size()
+                             + " mojo descriptor" + ( extractorDescriptors.size() > 1 ? "s" : "" ) + "." );
             numMojoDescriptors += extractorDescriptors.size();
 
             for ( MojoDescriptor descriptor : extractorDescriptors )
