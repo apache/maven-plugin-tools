@@ -33,7 +33,7 @@ import org.codehaus.plexus.compiler.manager.CompilerManager;
 /**
  * @author Olivier Lamy
  */
-@Mojo( name = "foo", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true )
+@Mojo( name = "foo", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true, description = "This is a description.", since = "3.5", deprecated = "because I said so" )
 @Execute( goal = "compiler", lifecycle = "my-lifecycle", phase = LifecyclePhase.PACKAGE )
 public class FooMojo
     extends AbstractMojo
@@ -51,6 +51,10 @@ public class FooMojo
      */
     @Parameter( property = "thebeer", defaultValue = "coolbeer" )
     protected String beer;
+
+    @Parameter( description = "wine for french folks", since = "forever ago", deprecated = "beer is better" )
+    @Deprecated
+    protected String wine;
 
     /**
      * Plexus compiler manager.

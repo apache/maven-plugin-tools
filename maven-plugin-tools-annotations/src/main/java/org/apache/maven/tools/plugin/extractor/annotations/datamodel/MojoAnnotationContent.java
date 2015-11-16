@@ -207,6 +207,36 @@ public class MojoAnnotationContent
         this.name = name;
     }
 
+    public String deprecated()
+    {
+        return getDeprecated();
+    }
+
+    public void deprecated( String deprecated )
+    {
+        setDeprecated( deprecated );
+    }
+
+    public String description()
+    {
+        return getDescription();
+    }
+
+    public void description( String description )
+    {
+        setDescription( description );
+    }
+
+    public String since()
+    {
+        return getSince();
+    }
+
+    public void since( String since )
+    {
+        setSince( since );
+    }
+
     @Override
     public String toString()
     {
@@ -226,6 +256,9 @@ public class MojoAnnotationContent
         sb.append( ", inheritByDefault=" ).append( inheritByDefault );
         sb.append( ", configurator='" ).append( configurator ).append( '\'' );
         sb.append( ", threadSafe=" ).append( threadSafe );
+        sb.append( ", deprecated='" ).append( deprecated() ).append( '\'' );
+        sb.append( ", description='" ).append( description() ).append( '\'' );
+        sb.append( ", since='" ).append( since() ).append( '\'' );
         sb.append( '}' );
         return sb.toString();
     }

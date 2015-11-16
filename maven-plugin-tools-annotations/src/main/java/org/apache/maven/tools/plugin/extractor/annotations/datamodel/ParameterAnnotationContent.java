@@ -63,6 +63,16 @@ public class ParameterAnnotationContent
         this.readonly = readonly;
     }
 
+    public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
+                                       boolean required, boolean readonly, String className,
+                                       String deprecated, String description, String since )
+    {
+        this( fieldName, alias, property, defaultValue, required, readonly, className );
+        deprecated( deprecated );
+        description( description );
+        since( since );
+    }
+
     public String name()
     {
         return name;
@@ -123,6 +133,36 @@ public class ParameterAnnotationContent
         this.readonly = readonly;
     }
 
+    public String deprecated()
+    {
+        return getDeprecated();
+    }
+
+    public void deprecated( String deprecated )
+    {
+        setDeprecated( deprecated );
+    }
+
+    public String description()
+    {
+        return getDescription();
+    }
+
+    public void description( String description )
+    {
+        setDescription( description );
+    }
+
+    public String since()
+    {
+        return getSince();
+    }
+
+    public void since( String since )
+    {
+        setSince( since );
+    }
+
     public Class<? extends Annotation> annotationType()
     {
         return null;
@@ -150,6 +190,9 @@ public class ParameterAnnotationContent
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
         sb.append( ", required=" ).append( required );
         sb.append( ", readonly=" ).append( readonly );
+        sb.append( ", deprecated='" ).append( deprecated() ).append( '\'' );
+        sb.append( ", description='" ).append( description() ).append( '\'' );
+        sb.append( ", since='" ).append( since() ).append( '\'' );
         sb.append( '}' );
         return sb.toString();
     }
@@ -194,6 +237,18 @@ public class ParameterAnnotationContent
         {
             return false;
         }
+        if ( deprecated() != null ? !deprecated().equals( that.deprecated() ) : that.deprecated() != null )
+        {
+            return false;
+        }
+        if ( description() != null ? !description().equals( that.description() ) : that.description() != null )
+        {
+            return false;
+        }
+        if ( since() != null ? !since().equals( that.since() ) : that.since() != null )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -207,6 +262,9 @@ public class ParameterAnnotationContent
         result = 31 * result + ( defaultValue != null ? defaultValue.hashCode() : 0 );
         result = 31 * result + ( required ? 1 : 0 );
         result = 31 * result + ( readonly ? 1 : 0 );
+        result = 31 * result + ( deprecated() != null ? deprecated().hashCode() : 0 );
+        result = 31 * result + ( description() != null ? description().hashCode() : 0 );
+        result = 31 * result + ( since() != null ? since().hashCode() : 0 );
         return result;
     }
 }

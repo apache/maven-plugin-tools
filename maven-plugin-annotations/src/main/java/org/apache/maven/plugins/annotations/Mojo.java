@@ -117,4 +117,44 @@ public @interface Mojo
      * @return is thread safe
      */
     boolean threadSafe() default false;
+
+    /**
+     * Description for this Mojo. Has the same format as a Javadoc comment body (that is, HTML with Javadoc inline
+     * tags).
+     *
+     * <p>Ordinarily, this information is taken from Javadoc comments. This annotation is used when documenting a Maven
+     * plugin that is written in a language other than Java, but which supports Java annotations, such as Groovy or
+     * Scala.</p>
+     *
+     * @since 3.5
+     */
+    String description() default "";
+
+    /**
+     * The first version of the plugin when this Mojo was added.
+     *
+     * <p>Ordinarily, this information is taken from Javadoc comments. This annotation is used when documenting a Maven
+     * plugin that is written in a language other than Java, but which supports Java annotations, such as Groovy or
+     * Scala.</p>
+     *
+     * @since 3.5
+     */
+    String since() default "";
+
+    /**
+     * The reason why this Mojo is deprecated.
+     *
+     * <p>If this is given, then the Mojo should also be annotated with {@code @}{@link Deprecated}, like so:</p>
+     *
+     * <pre><code>@Deprecated
+&#64;Mojo(..., deprecated = "this Mojo is no longer used")
+public class ExampleMojo extends AbstractMojo { ... }</code></pre>
+     *
+     * <p>Ordinarily, this information is taken from Javadoc comments. This annotation is used when documenting a Maven
+     * plugin that is written in a language other than Java, but which supports Java annotations, such as Groovy or
+     * Scala.</p>
+     *
+     * @since 3.5
+     */
+    String deprecated() default "";
 }

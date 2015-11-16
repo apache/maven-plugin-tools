@@ -71,6 +71,9 @@ public class TestAnnotationsReader
         assertEquals( true, mojo.threadSafe() );
         assertEquals( false, mojo.aggregator() );
         assertEquals( LifecyclePhase.COMPILE, mojo.defaultPhase() );
+        assertEquals( "This is a description.", mojo.description() );
+        assertEquals( "3.5", mojo.since() );
+        assertEquals( "because I said so", mojo.deprecated() );
 
         Execute execute = mojoAnnotatedClass.getExecute();
 
@@ -82,9 +85,12 @@ public class TestAnnotationsReader
         Assertions.assertThat( components ).isNotNull().isNotEmpty().hasSize( 2 );
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
-        Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
+        Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 3 ).contains(
             new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false, String.class.getName() ),
             new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
-                                            String.class.getName() ) );
+                                            String.class.getName() ),
+            new ParameterAnnotationContent( "wine", null, null, null, false, false,
+                                            String.class.getName(), "beer is better", "wine for french folks",
+                                            "forever ago" ) );
     }
 }
