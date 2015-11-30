@@ -144,6 +144,32 @@ public class PluginReport
     protected String goalPrefix;
 
     /**
+     * The role names of mojo extractors to use.
+     * <p/>
+     * If not set, all mojo extractors will be used. If set to an empty extractor name, no mojo extractors
+     * will be used.
+     * <p/>
+     * Example:
+     * <p/>
+     * <pre>
+     *  &lt;!-- Use all mojo extractors --&gt;
+     *  &lt;extractors/&gt;
+     *
+     *  &lt;!-- Use no mojo extractors --&gt;
+     *  &lt;extractors&gt;
+     *      &lt;extractor/&gt;
+     *  &lt;/extractors&gt;
+     *
+     *  &lt;!-- Use only bsh mojo extractor --&gt;
+     *  &lt;extractors&gt;
+     *      &lt;extractor&gt;bsh&lt;/extractor&gt;
+     *  &lt;/extractors&gt;
+     * </pre>
+     */
+    @Parameter
+    protected Set<String> extractors;
+
+    /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
      * @since 2.8
@@ -257,6 +283,8 @@ public class PluginReport
             getLog().warn( "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
                                + defaultGoalPrefix + "'.\n" );
         }
+
+        mojoScanner.setActiveExtractors( extractors );
 
         // TODO: could use this more, eg in the writing of the plugin descriptor!
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
