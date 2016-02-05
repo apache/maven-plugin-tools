@@ -74,7 +74,10 @@
       <artifactId>maven-plugin-annotations</artifactId>
       <!-- from stricter view, should use ${mavenPluginToolsVersion} but this is causing problems with release plugin -->
       <!--version>${mavenPluginToolsVersion}</version-->
-      <scope>provided</scope>
+      <!--  
+        Do not use 'provided' scope here. The annotations are a transitive dependency of
+        'maven-plugin-tools-annotations' which fails to load at runtime when not available.
+      -->
     </dependency>
 
     <!-- doxia -->
