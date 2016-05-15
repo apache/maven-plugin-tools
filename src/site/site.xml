@@ -23,11 +23,11 @@ under the License.
 
   <bannerLeft>
     <name>${project.name}</name>
-    <src>http://maven.apache.org/images/apache-maven-project.png</src>
-    <href>http://maven.apache.org/</href>
+    <src>https://maven.apache.org/images/apache-maven-project.png</src>
+    <href>https://maven.apache.org/</href>
   </bannerLeft>
   <bannerRight>
-    <src>http://maven.apache.org/images/maventxt_logo_200.gif</src>
+    <src>https://maven.apache.org/images/maventxt_logo_200.gif</src>
   </bannerRight>
 
   <skin>
@@ -45,7 +45,7 @@ under the License.
 
   <body>
     <breadcrumbs>
-      <item name="Plugin Tools" href="http://maven.apache.org/plugin-tools/index.html" />
+      <item name="Plugin Tools" href="https://maven.apache.org/plugin-tools/index.html" />
     </breadcrumbs>
 
     <menu name="Overview">
@@ -53,8 +53,8 @@ under the License.
       <item name="JavaDocs" href="apidocs/index.html"/>
       <item name="Source Xref" href="xref/index.html"/>
       <!--item name="FAQ" href="faq.html"/-->
-      <!-- According to http://jira.codehaus.org/browse/MNGSITE-152 -->
-      <item name="License" href="http://www.apache.org/licenses/"/>
+      <!-- According to https://issues.apache.org/jira/browse/MNGSITE-152 -->
+      <item name="License" href="https://www.apache.org/licenses/"/>
       <item name="Download" href="download.html"/>
     </menu>
 
