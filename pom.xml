@@ -97,7 +97,7 @@
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
     <mavenVersion>2.2.1</mavenVersion>
     <antVersion>1.7.1</antVersion>
-    <mavenInvokerPluginVersion>1.8</mavenInvokerPluginVersion>
+    <mavenInvokerPluginVersion>1.10</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
   </properties>
 
