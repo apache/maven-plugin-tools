@@ -19,6 +19,18 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -41,17 +53,6 @@ import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 /**
  * @author Olivier Lamy
  * @since 3.0
@@ -61,6 +62,9 @@ public class DefaultMojoAnnotationsScanner
     extends AbstractLogEnabled
     implements MojoAnnotationsScanner
 {
+    // classes with a dash must be ignored
+    private static final Pattern SCANNABLE_CLASS = Pattern.compile( "[^-]+\\.class" );
+    
     private Reflector reflector = new Reflector();
 
     public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
@@ -126,18 +130,27 @@ public class DefaultMojoAnnotationsScanner
 
         ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
 
+        String zipEntryName = null;
         try
         {
+            
             for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
                   zipEntry = archiveStream.getNextEntry() )
             {
-                if ( !zipEntry.getName().endsWith( ".class" ) )
+                zipEntryName = zipEntry.getName();
+                if ( !SCANNABLE_CLASS.matcher( zipEntryName ).matches() )
                 {
                     continue;
                 }
-
                 analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo );
             }
+        }
+        catch ( IllegalArgumentException e )
+        {
+            // In case of a class with newer specs an IllegalArgumentException can be thrown
+            getLogger().error( "Failed to analyze " + archiveFile.getAbsolutePath() + "!/" + zipEntryName );
+            
+            throw e;
         }
         finally
         {
@@ -174,7 +187,7 @@ public class DefaultMojoAnnotationsScanner
 
         for ( String classFile : classFiles )
         {
-            if ( !classFile.endsWith( ".class" ) )
+            if ( !SCANNABLE_CLASS.matcher( classFile ).matches() )
             {
                 continue;
             }
