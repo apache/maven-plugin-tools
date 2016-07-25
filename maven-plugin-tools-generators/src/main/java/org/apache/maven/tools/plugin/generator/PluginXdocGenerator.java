@@ -543,6 +543,10 @@ public class PluginXdocGenerator
             addedUl = addUl( w, addedUl, parameter.getDefaultValue() );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ),
                          escapeXml( parameter.getDefaultValue() ), w );
+            
+            addedUl = addUl( w, addedUl, parameter.getAlias() );
+            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.alias" ), escapeXml( parameter.getAlias() ),
+                         w );
 
             if ( addedUl )
             {
@@ -719,6 +723,13 @@ public class PluginXdocGenerator
             if ( property != null )
             {
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.property.description", property ) );
+                w.writeMarkup( "<br/>" );
+            }
+            
+            if ( StringUtils.isNotEmpty( parameter.getAlias() ) )
+            {
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.alias.description",
+                                       escapeXml( parameter.getAlias() ) ) );
             }
 
             w.endElement(); //td

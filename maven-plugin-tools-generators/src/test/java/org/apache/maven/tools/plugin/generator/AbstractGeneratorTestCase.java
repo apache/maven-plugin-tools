@@ -77,6 +77,7 @@ public abstract class AbstractGeneratorTestCase
         param.setRequired( true );
         param.setType( "java.lang.String" );
         param.setDescription( "Test parameter description" );
+        param.setAlias( "some.alias" );
 
         params.add( param );
 

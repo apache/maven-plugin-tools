@@ -115,6 +115,7 @@ public class PluginDescriptorGeneratorTest
         assertEquals( "dir", parameter.getName() );
         assertEquals( String.class.getName(), parameter.getType() );
         assertTrue( parameter.isRequired() );
+        assertEquals( "some.alias", parameter.getAlias() );
     }
 
     private void checkDependency( String groupId, String artifactId, String version, ComponentDependency dependency )
