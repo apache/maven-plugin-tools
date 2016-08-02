@@ -21,6 +21,8 @@ package org.apache.maven.plugin.plugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -40,6 +42,7 @@ import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -129,6 +132,16 @@ public abstract class AbstractGeneratorMojo
      */
     @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
     protected Set<Artifact> dependencies;
+    
+    /**
+     * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos. 
+     * If none is specified, all dependencies are scanned.
+     * If an empty list is specified, no dependencies are scanned.
+     * 
+     * @since 3.5
+     */
+    @Parameter
+    private List<String> mojoDependencies;
 
     /**
      * List of Remote Repositories used by the resolver
@@ -230,6 +243,31 @@ public abstract class AbstractGeneratorMojo
             getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
         }
 
+        Set<Artifact> requestDependencies;
+        if ( mojoDependencies == null )
+        {
+            requestDependencies = dependencies;
+        }
+        else if ( mojoDependencies == null )
+        {
+            requestDependencies = null;
+        }
+        else
+        {
+            requestDependencies = new LinkedHashSet<Artifact>();
+            
+            ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
+
+            for ( Artifact artifact : dependencies )
+            {
+                if ( filter.include( artifact ) )
+                {
+                    requestDependencies.add( artifact );
+                }
+            }
+        }
+        
+        
         try
         {
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
@@ -238,7 +276,7 @@ public abstract class AbstractGeneratorMojo
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
             request.setSkipErrorNoDescriptorsFound( skipErrorNoDescriptorsFound );
-            request.setDependencies( dependencies );
+            request.setDependencies( requestDependencies );
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
 
