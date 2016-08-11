@@ -32,9 +32,10 @@ Using Plugin Tools Java5 Annotations
  plugin descriptor file.
 
  <<NOTE>> With annotations, your Mojo super class does not any more require to be in the same project. Provided that the super class also uses annotations, it
- can now come from reactor projects or external dependencies. As javadoc doclet are still useful for <<<@since>>>, <<<@deprecated>>> and comments,
- the sources are still scanned. So if you use an external dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to
- provide documentation (the tooling will skip error if this artifact sources is missing).
+ can now come from reactor projects or external dependencies. By default all dependencies are scanned, but this can be reduced with the <<<mojoDependencies>>>
+ parameter. As javadoc doclet are still useful for <<<@since>>>, <<<@deprecated>>> and comments, the sources are still scanned. So if you use an external 
+ dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to provide documentation (the tooling will skip error if this artifact 
+ sources is missing).
 
 * Annotations
 
