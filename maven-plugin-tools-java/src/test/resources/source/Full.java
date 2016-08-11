@@ -55,7 +55,7 @@ public class Full
     protected String[] parameter;
 
     /**
-     * @parameter alias="myAlias" expression="${aSystemProperty}" default-value="${anExpression}"
+     * @parameter alias="myAlias" property="aSystemProperty" default-value="${anExpression}"
      * @readonly
      * @required
      * @since tomorrow
