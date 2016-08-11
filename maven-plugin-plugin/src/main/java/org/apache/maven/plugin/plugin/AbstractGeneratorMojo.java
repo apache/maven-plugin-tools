@@ -134,9 +134,9 @@ public abstract class AbstractGeneratorMojo
     protected Set<Artifact> dependencies;
     
     /**
-     * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos. 
-     * If none is specified, all dependencies are scanned.
-     * If an empty list is specified, no dependencies are scanned.
+     * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos.
+     * If not specified in the configuration, this is {@code null} and all dependencies are scanned.
+     * If specified with no children, no dependencies are scanned.
      * 
      * @since 3.5
      */
