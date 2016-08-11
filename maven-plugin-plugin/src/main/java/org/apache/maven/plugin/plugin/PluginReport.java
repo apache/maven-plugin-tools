@@ -27,6 +27,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -45,10 +46,13 @@ import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -246,6 +250,21 @@ public class PluginReport
     private PluginDescriptor extractPluginDescriptor()
         throws MavenReportException
     {
+        PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
+        try
+        {
+            return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
+                                                            "META-INF/maven/plugin.xml" ) ) );
+        }
+        catch ( FileNotFoundException e )
+        {
+            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+        }
+
         // Copy from AbstractGeneratorMojo#execute()
         String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
         if ( goalPrefix == null )
