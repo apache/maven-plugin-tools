@@ -370,6 +370,10 @@
                 <sitePluginVersion>3.3</sitePluginVersion>
                 <antVersion>${antVersion}</antVersion>
               </filterProperties>
+              <properties>
+                <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
+                <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
+              </properties>
             </configuration>
             <executions>
               <execution>

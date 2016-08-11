@@ -59,6 +59,9 @@ under the License.
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>@project.version@</version>
+          <configuration>
+            <skipDescriptor>true</skipDescriptor>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
