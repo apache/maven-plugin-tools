@@ -321,7 +321,11 @@ public class HelpMojo
         String parameterName = getValue( parameter, "name" );
         String parameterDescription = getValue( parameter, "description" );
 
-        Element fieldConfigurationElement = (Element) findSingleChild( configurationElement, parameterName );
+        Element fieldConfigurationElement = null;
+        if ( configurationElement != null )
+        {
+          fieldConfigurationElement =  (Element) findSingleChild( configurationElement, parameterName );
+        }
 
         String parameterDefaultValue = "";
         if ( fieldConfigurationElement != null && fieldConfigurationElement.hasAttribute( "default-value" ) )
