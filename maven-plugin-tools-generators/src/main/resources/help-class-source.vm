@@ -359,7 +359,7 @@ public class HelpMojo
      * @param str    String to repeat
      * @param repeat number of times to repeat str
      * @return String with repeated String
-     * @throws NegativeArraySizeException if <code>repeat < 0</code>
+     * @throws NegativeArraySizeException if <code>repeat &lt; 0</code>
      * @throws NullPointerException       if str is <code>null</code>
      */
     private static String repeat( String str, int repeat )
