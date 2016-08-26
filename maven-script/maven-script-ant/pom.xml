@@ -68,7 +68,7 @@ under the License.
       <artifactId>maven-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>easymock</groupId>
+      <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
       <scope>test</scope>
     </dependency>

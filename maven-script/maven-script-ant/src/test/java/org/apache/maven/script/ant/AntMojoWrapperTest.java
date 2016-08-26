@@ -18,6 +18,23 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
@@ -43,20 +60,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
-import org.easymock.MockControl;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -160,8 +163,9 @@ public class AntMojoWrapperTest
 
         wrapper.enableLogging( new ConsoleLogger( Logger.LEVEL_DEBUG, "test" ) );
 
-        MockControl artifactCtl = null;
-        MockControl pathTranslatorCtl = null;
+        Artifact artifact = createMock( Artifact.class );
+        PathTranslator pt = createMock( PathTranslator.class );
+
         if ( includeImplied )
         {
             File pluginXmlFile = new File( StringUtils.replace( resource.getPath(), "%20", " " ) );
@@ -175,29 +179,12 @@ public class AntMojoWrapperTest
             archiver.addFile( pluginXmlFile, pluginXml );
             archiver.createArchive();
 
-            artifactCtl = MockControl.createControl( Artifact.class );
-            Artifact artifact = (Artifact) artifactCtl.getMock();
-
-            artifact.getFile();
-            artifactCtl.setReturnValue( jarFile, MockControl.ZERO_OR_MORE );
-
-            artifact.getGroupId();
-            artifactCtl.setReturnValue( "groupId", MockControl.ZERO_OR_MORE );
-
-            artifact.getArtifactId();
-            artifactCtl.setReturnValue( "artifactId", MockControl.ZERO_OR_MORE );
-
-            artifact.getVersion();
-            artifactCtl.setReturnValue( "1", MockControl.ZERO_OR_MORE );
-
-            artifact.getId();
-            artifactCtl.setReturnValue( "groupId:artifactId:jar:1", MockControl.ZERO_OR_MORE );
-
-            artifact.getClassifier();
-            artifactCtl.setReturnValue( null, MockControl.ZERO_OR_MORE );
-
-            pathTranslatorCtl = MockControl.createControl( PathTranslator.class );
-            PathTranslator pt = (PathTranslator) pathTranslatorCtl.getMock();
+            expect( artifact.getFile() ).andReturn( jarFile ).anyTimes();
+            expect( artifact.getGroupId() ).andReturn( "groupId" ).anyTimes();
+            expect( artifact.getArtifactId() ).andReturn( "artifactId" ).anyTimes();
+            expect( artifact.getVersion() ).andReturn( "1" ).anyTimes();
+            expect( artifact.getId() ).andReturn( "groupId:artifactId:jar:1" ).anyTimes();
+            expect( artifact.getClassifier() ).andReturn( null ).anyTimes();
 
             Model model = new Model();
 
@@ -209,8 +196,7 @@ public class AntMojoWrapperTest
             MavenProject project = new MavenProject( model );
             project.setFile( new File( "pom.xml" ).getAbsoluteFile() );
 
-            artifactCtl.replay();
-            pathTranslatorCtl.replay();
+            replay( artifact, pt );
 
             pd.setPluginArtifact( artifact );
             pd.setArtifacts( Collections.singletonList( artifact ) );
@@ -248,8 +234,7 @@ public class AntMojoWrapperTest
 
         if ( includeImplied )
         {
-            artifactCtl.verify();
-            pathTranslatorCtl.verify();
+            verify( artifact, pt );
         }
 
         List<String> messages = new ArrayList<String>();
