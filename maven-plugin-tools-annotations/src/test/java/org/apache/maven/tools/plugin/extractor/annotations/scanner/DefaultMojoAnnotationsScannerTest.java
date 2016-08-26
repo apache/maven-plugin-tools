@@ -19,8 +19,11 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import static org.easymock.EasyMock.*;
+
 import java.io.File;
 
+import org.codehaus.plexus.logging.Logger;
 import junit.framework.TestCase;
 
 public class DefaultMojoAnnotationsScannerTest
@@ -32,4 +35,14 @@ public class DefaultMojoAnnotationsScannerTest
     {
         scanner.scanArchive( new File( "src/test/resources/java9-module.jar"), null, false );
     }
+    
+    public void testJava8Annotations() throws Exception
+    {
+        Logger logger = createMock( Logger.class );
+        expect( logger.isDebugEnabled() ).andReturn( false );
+        replay( logger );
+        scanner.enableLogging( logger );
+        scanner.scanArchive( new File( "src/test/resources/java8-annotations.jar"), null, false );
+    }
+
 }
