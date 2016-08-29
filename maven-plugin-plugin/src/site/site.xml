@@ -29,7 +29,7 @@ under the License.
     <href>http://maven.apache.org/</href>
   </bannerLeft>
   <bannerRight>
-    <src>http://maven.apache.org/images/maventxt_logo_200.gif</src>
+    <src>https://maven.apache.org/images/maven-logo-black-on-white.png</src>
   </bannerRight>
 
   <skin>

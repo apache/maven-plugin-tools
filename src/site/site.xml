@@ -27,7 +27,7 @@ under the License.
     <href>https://maven.apache.org/</href>
   </bannerLeft>
   <bannerRight>
-    <src>https://maven.apache.org/images/maventxt_logo_200.gif</src>
+    <src>https://maven.apache.org/images/maven-logo-black-on-white.png</src>
   </bannerRight>
 
   <skin>
