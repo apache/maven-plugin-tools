@@ -398,33 +398,34 @@
       <activation>
         <jdk>[1.9,)</jdk>
       </activation>
-      <!-- chicken-egg problem. Can only be built with Java9 once maven-plugin-plugin 3.5 is available -->
-<!--       <build> -->
-<!--         <plugins> -->
-<!--           <plugin> -->
-<!--             <artifactId>maven-enforcer-plugin</artifactId> -->
-<!--             <executions> -->
-<!--               <execution> -->
-<!--                 <id>enforce-bytecode-version</id> -->
-<!--                 <configuration> -->
-<!--                   <rules> -->
-<!--                     <enforceBytecodeVersion> -->
-<!--                       <maxJdkVersion>1.9</maxJdkVersion> -->
-<!--                     </enforceBytecodeVersion> -->
-<!--                   </rules> -->
-<!--                 </configuration> -->
-<!--               </execution> -->
-<!--             </executions> -->
-<!--             <dependencies> -->
-<!--               <dependency> -->
-<!--                 <groupId>org.codehaus.mojo</groupId> -->
-<!--                 <artifactId>extra-enforcer-rules</artifactId> -->
-<!--                 <version>1.0-beta-5</version> -->
-<!--               </dependency> -->
-<!--             </dependencies> -->
-<!--           </plugin> -->
-<!--         </plugins> -->
-<!--       </build> -->
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-bytecode-version</id>
+                <configuration>
+                  <rules>
+                    <enforceBytecodeVersion>
+                      <ignoreClasses>
+                        <ignoreClass>module-info</ignoreClass>
+                      </ignoreClasses>
+                    </enforceBytecodeVersion>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>extra-enforcer-rules</artifactId>
+                <version>1.0-beta-5</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
       <dependencyManagement>
         <dependencies>
           <dependency>

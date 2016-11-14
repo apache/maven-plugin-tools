@@ -264,6 +264,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.5</version>
         <!-- will use previous maven-plugin-plugin release to build current maven-plugin-plugin as configured in parent -->
         <executions>
           <execution>
