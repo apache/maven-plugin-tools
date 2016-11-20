@@ -473,9 +473,9 @@ public class PluginXdocGenerator
         {
             Parameter parameter = parameters.next();
 
-            w.startElement( "p" );
+            w.startElement( "h4" );
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_internal", parameter.getName() ) );
-            w.endElement(); //p
+            w.endElement();
 
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
