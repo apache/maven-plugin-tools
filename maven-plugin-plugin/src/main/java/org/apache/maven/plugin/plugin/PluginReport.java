@@ -19,10 +19,24 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.execution.RuntimeInformation;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -49,17 +63,6 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
  * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
@@ -186,6 +189,19 @@ public class PluginReport
      */
     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
     protected ArtifactRepository local;
+    
+    /**
+     * @since 3.5.1
+     */
+    @Component
+    private RuntimeInformation rtInfo;
+    
+    /**
+     * By default pluginXml should be read with Maven-3.4.0+ (MNG-6109)
+     * For some integration-tests this is not an issue, they can reduce this spec.
+     */
+    @Parameter( readonly = true )
+    private String pluginXmlSpec = "(3.3.9,)";
 
     /**
      * {@inheritDoc}
@@ -250,19 +266,22 @@ public class PluginReport
     private PluginDescriptor extractPluginDescriptor()
         throws MavenReportException
     {
-        PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
-        try
+        if ( usePluginXml() )
         {
-            return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
-                                                            "META-INF/maven/plugin.xml" ) ) );
-        }
-        catch ( FileNotFoundException e )
-        {
-            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+            PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
+            try
+            {
+                return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
+                                                                "META-INF/maven/plugin.xml" ) ) );
+            }
+            catch ( FileNotFoundException e )
+            {
+                getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+            }
+            catch ( PlexusConfigurationException e )
+            {
+                getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+            }
         }
 
         // Copy from AbstractGeneratorMojo#execute()
@@ -317,6 +336,19 @@ public class PluginReport
                                             e );
         }
         return pluginDescriptor;
+    }
+
+    private boolean usePluginXml()
+    {
+        try
+        {
+            VersionRange versionRange = VersionRange.createFromVersionSpec( pluginXmlSpec );
+            return versionRange.containsVersion( rtInfo.getApplicationVersion() );
+        }
+        catch ( InvalidVersionSpecificationException e )
+        {
+            return false;
+        }
     }
 
     /**

@@ -90,6 +90,10 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <!-- ignore MNG-6109 issue -->
+          <pluginXmlSpec>[2.0,)</pluginXmlSpec>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
