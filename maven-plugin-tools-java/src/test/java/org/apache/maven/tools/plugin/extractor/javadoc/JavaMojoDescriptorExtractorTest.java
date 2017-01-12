@@ -233,4 +233,20 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( 1, results.size() );
     }
 
+    public void testSingleTypeImportWithFullyQualifiedClassName()
+        throws Exception
+    {
+        List<MojoDescriptor> results = extract( "MPLUGIN-314" );
+
+        assertEquals( 1, results.size() );
+    }
+
+    public void testMethodReferenceInEnumConstructor()
+        throws Exception
+    {
+        List<MojoDescriptor> results = extract( "MPLUGIN-320" );
+
+        assertNull( results );
+    }
+
 }
