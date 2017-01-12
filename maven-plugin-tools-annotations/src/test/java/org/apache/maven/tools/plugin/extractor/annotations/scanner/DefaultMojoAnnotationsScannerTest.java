@@ -23,17 +23,17 @@ import static org.easymock.EasyMock.*;
 
 import java.io.File;
 
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.logging.Logger;
-import junit.framework.TestCase;
 
 public class DefaultMojoAnnotationsScannerTest
-    extends TestCase
+    extends PlexusTestCase
 {
     private DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
     
     public void testSkipModuleInfoClassInArchive() throws Exception
     {
-        scanner.scanArchive( new File( "src/test/resources/java9-module.jar"), null, false );
+        scanner.scanArchive( new File( getBasedir(), "target/test-classes/java9-module.jar"), null, false );
     }
     
     public void testJava8Annotations() throws Exception
@@ -42,7 +42,7 @@ public class DefaultMojoAnnotationsScannerTest
         expect( logger.isDebugEnabled() ).andReturn( false );
         replay( logger );
         scanner.enableLogging( logger );
-        scanner.scanArchive( new File( "src/test/resources/java8-annotations.jar"), null, false );
+        scanner.scanArchive( new File( getBasedir(), "target/test-classes/java8-annotations.jar"), null, false );
     }
 
 }

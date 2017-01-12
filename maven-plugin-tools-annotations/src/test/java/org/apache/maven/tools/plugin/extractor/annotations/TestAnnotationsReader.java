@@ -50,7 +50,7 @@ public class TestAnnotationsReader
         MojoAnnotationsScanner mojoAnnotationsScanner = (MojoAnnotationsScanner) lookup( MojoAnnotationsScanner.ROLE );
 
         MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
-        request.setClassesDirectories( Collections.singletonList( new File( "target/test-classes" ) ) );
+        request.setClassesDirectories( Collections.singletonList( new File( getBasedir(), "target/test-classes" ) ) );
         request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );
         request.setProject( new MavenProject() );
 
