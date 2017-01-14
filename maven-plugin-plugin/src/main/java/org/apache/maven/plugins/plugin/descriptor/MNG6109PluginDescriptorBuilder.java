@@ -20,6 +20,7 @@ package org.apache.maven.plugins.plugin.descriptor;
  */
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -50,10 +51,10 @@ public class MNG6109PluginDescriptorBuilder extends PluginDescriptorBuilder
         for ( PlexusConfiguration d : parameterConfigurations )
         {
             String parameterName = d.getChild( "name" ).getValue();
+            Parameter pd = (Parameter) mojoDescriptor.getParameterMap().get( parameterName );
             
             String parameterSince = d.getChild( "since" ).getValue();
-            
-            mojoDescriptor.getParameterMap().get( parameterName ).setSince( parameterSince );
+            pd.setSince( parameterSince );
         }
         
         return mojoDescriptor;

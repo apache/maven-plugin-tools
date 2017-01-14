@@ -90,10 +90,6 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
-        <configuration>
-          <!-- ignore MNG-6109 issue, always use plugin.xml since there are no sources in this IT -->
-          <usePluginXmlMavenVersionRange>[2.0,)</usePluginXmlMavenVersionRange>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>
