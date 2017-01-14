@@ -197,14 +197,16 @@ public class PluginReport
     private RuntimeInformation rtInfo;
     
     /**
-     * <code>META-INF/maven/plugin.xml</code> should be used only with Maven-3.4.0+ to get accurate
-     * <code>since</code> (MNG-6109).
+     * Maven version range where <code>META-INF/maven/plugin.xml</code> should be used to get plugin info:
+     * when running with a Maven version not in the range, plugin info is extracted directly from plugin source.
+     * Reading <code>META-INF/maven/plugin.xml</code> gives accurate <code>since</code> only with Maven-3.4.0+
+     * (see MNG-6109).
      * For cases where missing <code>since</code> info is not an issue, this version range spec can be changed
-     * to avoid parsing code once again. (notice: should not mark readonly = true in this case...)
+     * to avoid extracting info from plugin source once again.
      * @since 3.5.1
      */
-    @Parameter( defaultValue = "(3.3.9,)", readonly = true )
-    private String pluginXmlSpec;
+    @Parameter( defaultValue = "(3.3.9,)" )
+    private String usePluginXmlMavenVersionRange;
 
     /**
      * {@inheritDoc}
@@ -348,7 +350,7 @@ public class PluginReport
     /**
      * Check if META-INF/maven/plugin.xml should be used (as expected initially) or not (because of Maven
      * MNG-6109 bug that won't give accurate since info when reading plugin.xml).
-     * @return true if runing Maven version is in configured pluginXmlSpec range
+     * @return true if runing Maven version is in configured usePluginXmlMavenVersionRange range
      * @see https://issues.apache.org/jira/browse/MNG-6109
      * @see https://issues.apache.org/jira/browse/MPLUGIN-319
      */
@@ -356,7 +358,7 @@ public class PluginReport
     {
         try
         {
-            VersionRange versionRange = VersionRange.createFromVersionSpec( pluginXmlSpec );
+            VersionRange versionRange = VersionRange.createFromVersionSpec( usePluginXmlMavenVersionRange );
             return versionRange.containsVersion( rtInfo.getApplicationVersion() );
         }
         catch ( InvalidVersionSpecificationException e )
