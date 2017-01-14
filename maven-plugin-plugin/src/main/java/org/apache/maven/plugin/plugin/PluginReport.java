@@ -271,7 +271,7 @@ public class PluginReport
     {
         if ( !usePluginXml() )
         {
-            getLog().debug( "Running a Maven version with MNG-6109 bug: fall back to mojoScanner to get accurate @since" );
+            getLog().debug( "Mojo configured to avoid plugin.xml (MNG-6109): fall back to mojoScanner" );
         }
         else
         {
@@ -346,9 +346,11 @@ public class PluginReport
     }
 
     /**
-     * Check if META-INF/maven/plugin.xml can be read accurately, or if it will trigger MNG-6109 bug
-     * @return true if running Maven version is fixed
+     * Check if META-INF/maven/plugin.xml should be used (as expected initially) or not (because of Maven
+     * MNG-6109 bug that won't give accurate since info when reading plugin.xml).
+     * @return true if runing Maven version is in configured pluginXmlSpec range
      * @see https://issues.apache.org/jira/browse/MNG-6109
+     * @see https://issues.apache.org/jira/browse/MPLUGIN-319
      */
     private boolean usePluginXml()
     {
