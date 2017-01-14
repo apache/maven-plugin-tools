@@ -197,10 +197,11 @@ public class PluginReport
     private RuntimeInformation rtInfo;
     
     /**
-     * <code>META-INF/maven/plugin.xml</code> should be read with Maven-3.4.0+ to get accurate
+     * <code>META-INF/maven/plugin.xml</code> should be used only with Maven-3.4.0+ to get accurate
      * <code>since</code> (MNG-6109).
      * For cases where missing <code>since</code> info is not an issue, this version range spec can be changed
      * to avoid parsing code once again. (notice: should not mark readonly = true in this case...)
+     * @since 3.5.1
      */
     @Parameter( defaultValue = "(3.3.9,)", readonly = true )
     private String pluginXmlSpec;
