@@ -197,11 +197,13 @@ public class PluginReport
     private RuntimeInformation rtInfo;
     
     /**
-     * By default pluginXml should be read with Maven-3.4.0+ (MNG-6109)
-     * For some integration-tests this is not an issue, they can reduce this spec.
+     * <code>META-INF/maven/plugin.xml</code> should be read with Maven-3.4.0+ to get accurate
+     * <code>since</code> (MNG-6109).
+     * For cases where missing <code>since</code> info is not an issue, this version range spec can be changed
+     * to avoid parsing code once again. (notice: should not mark readonly = true in this case...)
      */
-    @Parameter( readonly = true )
-    private String pluginXmlSpec = "(3.3.9,)";
+    @Parameter( defaultValue = "(3.3.9,)", readonly = true )
+    private String pluginXmlSpec;
 
     /**
      * {@inheritDoc}
@@ -266,7 +268,11 @@ public class PluginReport
     private PluginDescriptor extractPluginDescriptor()
         throws MavenReportException
     {
-        if ( usePluginXml() )
+        if ( !usePluginXml() )
+        {
+            getLog().debug( "Running a Maven version with MNG-6109 bug: fall back to mojoScanner to get accurate @since" );
+        }
+        else
         {
             PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
             try
@@ -338,6 +344,11 @@ public class PluginReport
         return pluginDescriptor;
     }
 
+    /**
+     * Check if META-INF/maven/plugin.xml can be read accurately, or if it will trigger MNG-6109 bug
+     * @return true if running Maven version is fixed
+     * @see https://issues.apache.org/jira/browse/MNG-6109
+     */
     private boolean usePluginXml()
     {
         try
