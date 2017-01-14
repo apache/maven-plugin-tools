@@ -47,6 +47,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.plugin.descriptor.MNG6109PluginDescriptorBuilder;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
@@ -195,18 +196,6 @@ public class PluginReport
      */
     @Component
     private RuntimeInformation rtInfo;
-    
-    /**
-     * Maven version range where <code>META-INF/maven/plugin.xml</code> should be used to get plugin info:
-     * when running with a Maven version not in the range, plugin info is extracted directly from plugin source.
-     * Reading <code>META-INF/maven/plugin.xml</code> gives accurate <code>since</code> only with Maven-3.4.0+
-     * (see MNG-6109).
-     * For cases where missing <code>since</code> info is not an issue, this version range spec can be changed
-     * to avoid extracting info from plugin source once again.
-     * @since 3.5.1
-     */
-    @Parameter( defaultValue = "(3.3.9,)" )
-    private String usePluginXmlMavenVersionRange;
 
     /**
      * {@inheritDoc}
@@ -271,26 +260,20 @@ public class PluginReport
     private PluginDescriptor extractPluginDescriptor()
         throws MavenReportException
     {
-        if ( !usePluginXml() )
+        PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
+        
+        try
         {
-            getLog().debug( "Mojo configured to avoid plugin.xml (MNG-6109): fall back to mojoScanner" );
+            return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
+                                                            "META-INF/maven/plugin.xml" ) ) );
         }
-        else
+        catch ( FileNotFoundException e )
         {
-            PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
-            try
-            {
-                return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
-                                                                "META-INF/maven/plugin.xml" ) ) );
-            }
-            catch ( FileNotFoundException e )
-            {
-                getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
-            }
-            catch ( PlexusConfigurationException e )
-            {
-                getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
-            }
+            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
         }
 
         // Copy from AbstractGeneratorMojo#execute()
@@ -348,23 +331,35 @@ public class PluginReport
     }
 
     /**
-     * Check if META-INF/maven/plugin.xml should be used (as expected initially) or not (because of Maven
-     * MNG-6109 bug that won't give accurate since info when reading plugin.xml).
-     * @return true if runing Maven version is in configured usePluginXmlMavenVersionRange range
+     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the 
+     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix 
+     * (because of Maven MNG-6109 bug that won't give accurate 'since' info when reading plugin.xml).
+     * 
+     * @return the proper pluginDescriptorBuilder
      * @see https://issues.apache.org/jira/browse/MNG-6109
      * @see https://issues.apache.org/jira/browse/MPLUGIN-319
      */
-    private boolean usePluginXml()
+    private PluginDescriptorBuilder getPluginDescriptorBuilder()
     {
+        PluginDescriptorBuilder pluginDescriptorBuilder;
         try
         {
-            VersionRange versionRange = VersionRange.createFromVersionSpec( usePluginXmlMavenVersionRange );
-            return versionRange.containsVersion( rtInfo.getApplicationVersion() );
+            VersionRange versionRange = VersionRange.createFromVersionSpec( "(3.3.9,)" );
+            if ( versionRange.containsVersion( rtInfo.getApplicationVersion() ) )
+            {
+                pluginDescriptorBuilder = new PluginDescriptorBuilder();
+            }
+            else
+            {
+                pluginDescriptorBuilder = new MNG6109PluginDescriptorBuilder();
+            }
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            return false;
+            return new MNG6109PluginDescriptorBuilder();
         }
+        
+        return pluginDescriptorBuilder;
     }
 
     /**
