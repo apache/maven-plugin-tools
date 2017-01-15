@@ -249,4 +249,12 @@ public class JavaMojoDescriptorExtractorTest
         assertNull( results );
     }
 
+    public void testEnumWithRegexPattern()
+        throws Exception
+    {
+        List<MojoDescriptor> results = extract( "MPLUGIN-290" );
+
+        assertNull( results );
+    }
+
 }
