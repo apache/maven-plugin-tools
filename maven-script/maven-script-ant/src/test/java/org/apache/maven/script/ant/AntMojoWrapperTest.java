@@ -18,10 +18,6 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,13 +25,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import junit.framework.TestCase;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
@@ -59,9 +56,10 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringUtils;
-
-import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 public class AntMojoWrapperTest
     extends TestCase
@@ -69,7 +67,7 @@ public class AntMojoWrapperTest
 
     public void test2xStylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
-        ComponentConfigurationException, ArchiverException
+        ComponentConfigurationException, ArchiverException, URISyntaxException
     {
         String pluginXml = "META-INF/maven/plugin-2.1.xml";
 
@@ -89,7 +87,7 @@ public class AntMojoWrapperTest
 
     public void test20StylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
-        ComponentConfigurationException, ArchiverException
+        ComponentConfigurationException, ArchiverException, URISyntaxException
     {
         String pluginXml = "META-INF/maven/plugin-2.0.xml";
 
@@ -128,7 +126,7 @@ public class AntMojoWrapperTest
 
     private List<String> run( String pluginXml, boolean includeImplied )
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
-        ComponentConfigurationException, ArchiverException
+        ComponentConfigurationException, ArchiverException, URISyntaxException
     {
         StackTraceElement stack = new Throwable().getStackTrace()[1];
         System.out.println( "\n\nRunning: " + stack.getMethodName() + "\n\n" );
@@ -146,6 +144,8 @@ public class AntMojoWrapperTest
         {
             reader = new InputStreamReader( resource.openStream() );
             pd = new PluginDescriptorBuilder().build( reader, pluginXml );
+            reader.close();
+            reader = null;
         }
         finally
         {
@@ -168,7 +168,8 @@ public class AntMojoWrapperTest
 
         if ( includeImplied )
         {
-            File pluginXmlFile = new File( StringUtils.replace( resource.getPath(), "%20", " " ) );
+            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
+            File pluginXmlFile = new File( resource.toURI() );
 
             File jarFile = File.createTempFile( "AntMojoWrapperTest.", ".test.jar" );
             jarFile.deleteOnExit();

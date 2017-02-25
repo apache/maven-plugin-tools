@@ -19,6 +19,16 @@ package org.apache.maven.tools.plugin.extractor.ant;
  * under the License.
  */
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -29,18 +39,6 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.util.StringUtils;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.TestCase;
 
 public class AntMojoDescriptorExtractorTest
     extends TestCase
@@ -100,39 +98,47 @@ public class AntMojoDescriptorExtractorTest
             assertEquals( "Mojo descriptor: " + desc.getGoal() + " is missing 'PathTranslator' component requirement.", PathTranslator.class.getName(), req.getRole() );
         }
     }
-    
+
     private Map buildTestMap( String resourceDirName )
     {
-        Map result = new HashMap();
-        
-        ClassLoader cloader = Thread.currentThread().getContextClassLoader();
-        URL mojosXmlUrl = cloader.getResource( resourceDirName + "/test.mojos.xml" );
-        
-        if ( mojosXmlUrl == null )
+        try
         {
-            fail( "No classpath resource named: '" + resourceDirName + "/test.mojos.xml' could be found." );
-        }
-        
-        File mojosXml = new File( StringUtils.replace( mojosXmlUrl.getPath(), "%20", " " ) );
-        File dir = mojosXml.getParentFile();
-        
-        Set scripts = new HashSet();
-        String[] listing = dir.list();
-        for ( int i = 0; listing != null && i < listing.length; i++ )
-        {
-            if ( listing[i].endsWith( ".mojos.xml" ) )
+            Map result = new HashMap();
+
+            ClassLoader cloader = Thread.currentThread().getContextClassLoader();
+            URL mojosXmlUrl = cloader.getResource( resourceDirName + "/test.mojos.xml" );
+
+            if ( mojosXmlUrl == null )
             {
-                File f = new File( dir, listing[i] ).getAbsoluteFile();
-                
-                scripts.add( f );
+                fail( "No classpath resource named: '" + resourceDirName + "/test.mojos.xml' could be found." );
             }
+
+            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
+            File mojosXml = new File( mojosXmlUrl.toURI() );
+            File dir = mojosXml.getParentFile();
+
+            Set scripts = new HashSet();
+            String[] listing = dir.list();
+            for ( int i = 0; listing != null && i < listing.length; i++ )
+            {
+                if ( listing[i].endsWith( ".mojos.xml" ) )
+                {
+                    File f = new File( dir, listing[i] ).getAbsoluteFile();
+
+                    scripts.add( f );
+                }
+            }
+
+            result.put( dir.getAbsolutePath(), scripts );
+
+            return result;
         }
-        
-        result.put( dir.getAbsolutePath(), scripts );
-        
-        return result;
+        catch ( final URISyntaxException e )
+        {
+            throw new AssertionError( e );
+        }
     }
-    
+
     // TODO
 
 }

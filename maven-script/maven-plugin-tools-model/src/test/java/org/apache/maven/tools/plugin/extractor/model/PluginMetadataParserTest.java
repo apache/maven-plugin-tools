@@ -19,16 +19,12 @@ package org.apache.maven.tools.plugin.extractor.model;
  * under the License.
  */
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
-import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
-
 import junit.framework.TestCase;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 
 public class PluginMetadataParserTest
     extends TestCase
@@ -59,16 +55,24 @@ public class PluginMetadataParserTest
         assertTrue( desc.getImplementation().endsWith( ":test2" ) );
         assertEquals( "test2", desc.getGoal() );
     }
-    
+
     private File getMetadataFile( String name )
     {
-        URL resource = Thread.currentThread().getContextClassLoader().getResource( name );
-        if ( resource == null )
+        try
         {
-            fail( "Cannot find classpath resource: '" + name + "'." );
+            URL resource = Thread.currentThread().getContextClassLoader().getResource( name );
+            if ( resource == null )
+            {
+                fail( "Cannot find classpath resource: '" + name + "'." );
+            }
+
+            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
+            return new File( resource.toURI() );
         }
-        
-        return new File( StringUtils.replace( resource.getPath(), "%20", " " ) );
+        catch ( final URISyntaxException e )
+        {
+            throw new AssertionError( e );
+        }
     }
 
 }
