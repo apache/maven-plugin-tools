@@ -78,6 +78,9 @@ public class PluginMetadataParser
                     descriptors.add( descriptor );
                 }
             }
+
+            reader.close();
+            reader = null;
         }
         catch ( IOException e )
         {
