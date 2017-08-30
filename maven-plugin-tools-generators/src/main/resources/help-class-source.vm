@@ -398,7 +398,7 @@ public class HelpMojo
      * @param indentSize The size of each indentation, must not be negative.
      * @param lineLength The length of the line, must not be negative.
      * @return The sequence of display lines, never <code>null</code>.
-     * @throws NegativeArraySizeException if <code>indent < 0</code>
+     * @throws NegativeArraySizeException if <code>indent &lt; 0</code>
      */
     private static List<String> toLines( String text, int indent, int indentSize, int lineLength )
     {
