@@ -74,9 +74,10 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugin-tools/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugin-tools/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugin-tools/trunk</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</developerConnection>
+    <url>https://github.com/apache/maven-plugin-tools/tree/${project.scm.tag}</url>
+    <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>jira</system>
