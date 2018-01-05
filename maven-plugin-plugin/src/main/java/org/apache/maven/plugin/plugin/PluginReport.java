@@ -208,6 +208,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Renderer getSiteRenderer()
     {
         return siteRenderer;
@@ -216,6 +217,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getOutputDirectory()
     {
         // PLUGIN-191: output directory of plugin.html, not *-mojo.xml
@@ -225,6 +227,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     protected MavenProject getProject()
     {
         return project;
@@ -233,6 +236,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canGenerateReport()
     {
         return pluginXmlFile != null && pluginXmlFile.isFile() && pluginXmlFile.canRead();
@@ -241,6 +245,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
@@ -372,6 +377,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.description" );
@@ -380,6 +386,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName( Locale locale )
     {
         return getBundle( locale ).getString( "report.plugin.name" );
@@ -388,6 +395,7 @@ public class PluginReport
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getOutputName()
     {
         return "plugin-info";
@@ -467,6 +475,7 @@ public class PluginReport
         /**
          * {@inheritDoc}
          */
+        @Override
         public String getTitle()
         {
             return getBundle( locale ).getString( "report.plugin.title" );
@@ -475,6 +484,7 @@ public class PluginReport
         /**
          * {@inheritDoc}
          */
+        @Override
         @SuppressWarnings( { "unchecked", "rawtypes" } )
         public void renderBody()
         {
