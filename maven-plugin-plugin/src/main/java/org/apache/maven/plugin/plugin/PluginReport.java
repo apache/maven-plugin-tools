@@ -198,6 +198,14 @@ public class PluginReport
     private RuntimeInformation rtInfo;
 
     /**
+     * Path to {@code plugin.xml} plugin descriptor to generate the report from.
+     *
+     * @since 3.5.1
+     */
+    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true )
+    private File pluginXmlFile;
+
+    /**
      * {@inheritDoc}
      */
     protected Renderer getSiteRenderer()
@@ -227,7 +235,7 @@ public class PluginReport
      */
     public boolean canGenerateReport()
     {
-        return "maven-plugin".equals( project.getPackaging() );
+        return pluginXmlFile != null && pluginXmlFile.isFile() && pluginXmlFile.canRead();
     }
 
     /**
@@ -264,16 +272,15 @@ public class PluginReport
         
         try
         {
-            return builder.build( new FileReader( new File( project.getBuild().getOutputDirectory(),
-                                                            "META-INF/maven/plugin.xml" ) ) );
+            return builder.build( new FileReader( pluginXmlFile ) );
         }
         catch ( FileNotFoundException e )
         {
-            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
         catch ( PlexusConfigurationException e )
         {
-            getLog().debug( "Failed to read META-INF/maven/plugin.xml, fall back to mojoScanner" );
+            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
 
         // Copy from AbstractGeneratorMojo#execute()
