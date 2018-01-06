@@ -134,9 +134,10 @@ public abstract class AbstractGeneratorMojo
     protected Set<Artifact> dependencies;
     
     /**
-     * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos.
-     * If not specified in the configuration, this is {@code null} and all dependencies are scanned.
-     * If specified with no children, no dependencies are scanned.
+     * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos, to filter
+     * dependencies scanned at runtime and focus on dependencies that are really useful to Mojo analysis.
+     * By default, the value is {@code null} and all dependencies are scanned (as before this parameter was added).
+     * If specified in the configuration with no children, no dependencies are scanned.
      * 
      * @since 3.5
      */
@@ -243,31 +244,6 @@ public abstract class AbstractGeneratorMojo
             getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
         }
 
-        Set<Artifact> requestDependencies;
-        if ( mojoDependencies == null )
-        {
-            requestDependencies = dependencies;
-        }
-        else if ( mojoDependencies.size() == 0 )
-        {
-            requestDependencies = null;
-        }
-        else
-        {
-            requestDependencies = new LinkedHashSet<Artifact>();
-            
-            ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
-
-            for ( Artifact artifact : dependencies )
-            {
-                if ( filter.include( artifact ) )
-                {
-                    requestDependencies.add( artifact );
-                }
-            }
-        }
-        
-        
         try
         {
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
@@ -276,7 +252,7 @@ public abstract class AbstractGeneratorMojo
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
             request.setSkipErrorNoDescriptorsFound( skipErrorNoDescriptorsFound );
-            request.setDependencies( requestDependencies );
+            request.setDependencies( filterMojoDependencies() );
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
 
@@ -307,4 +283,39 @@ public abstract class AbstractGeneratorMojo
         }
     }
 
+    /**
+     * Get dependencies filtered with mojoDependencies configuration.
+     * 
+     * @return eventually filtered dependencies, or even <code>null</code> if configured with empty mojoDependencies
+     * list
+     * @see #mojoDependencies
+     */
+    private Set<Artifact> filterMojoDependencies()
+    {
+        Set<Artifact> filteredDependencies;
+        if ( mojoDependencies == null )
+        {
+            filteredDependencies = dependencies;
+        }
+        else if ( mojoDependencies.size() == 0 )
+        {
+            filteredDependencies = null;
+        }
+        else
+        {
+            filteredDependencies = new LinkedHashSet<Artifact>();
+            
+            ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
+
+            for ( Artifact artifact : dependencies )
+            {
+                if ( filter.include( artifact ) )
+                {
+                    filteredDependencies.add( artifact );
+                }
+            }
+        }
+
+        return filteredDependencies;
+    }
 }
