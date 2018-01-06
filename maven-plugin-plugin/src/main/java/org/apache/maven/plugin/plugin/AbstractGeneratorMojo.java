@@ -248,7 +248,7 @@ public abstract class AbstractGeneratorMojo
         {
             requestDependencies = dependencies;
         }
-        else if ( mojoDependencies == null )
+        else if ( mojoDependencies.size() == 0 )
         {
             requestDependencies = null;
         }
