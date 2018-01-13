@@ -202,7 +202,8 @@ public class PluginReport
      *
      * @since 3.5.1
      */
-    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true )
+    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
+                    readonly = true )
     private File pluginXmlFile;
 
     /**
