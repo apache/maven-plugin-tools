@@ -30,6 +30,10 @@ import java.lang.annotation.Target;
  * Used to configure your Mojo parameters to be injected by
  * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/MavenPluginManager.html">
  * <code>MavenPluginManager.getConfiguredMojo(...)</code></a>.
+ * <p>
+ * Beans injected into Mojo parameters are prepared by <a href="https://www.eclipse.org/sisu/">Sisu</a> JSR330-based
+ * container: this annotation is only effective on fields of the Mojo class itself, nested bean injection
+ * requires Sisu or JSR330 annotations.
  *
  * @author Olivier Lamy
  * @since 3.0
