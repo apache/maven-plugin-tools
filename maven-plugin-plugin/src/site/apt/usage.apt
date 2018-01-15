@@ -67,28 +67,6 @@ mvn plugin:report
 
   If you add the plugin to the <<<reporting>>> section of your pom, you'll get the full report as html with <<<mvn site>>>.
 
-* The <<<plugin:updateRegistry>>> Goal
-
-  The <<<plugin:updateRegistry>>> goal is bound to the <<<install>>> phase of the build life cycle. This goal updates the
-  plugin registry to reflect the changes in the version of the plugin you're installing in your local repository.
-
-  So when you execute
-
-+-----+
-mvn install
-+-----+
-
-  you will see that the version of the plugin in the <<<plugin-registry.xml>>> is changed to the same version of the plugin
-  that you have just installed.
-
-  You can also explicitly execute the <<<plugin:updateRegistry>>> goal by executing
-
-+-----+
-mvn plugin:updateRegistry
-+-----+
-
-  from the command line.
-
 * The <<<plugin:addPluginArtifactMetadata>>> Goal
 
   The <<<plugin:addPluginArtifactMetadata>>> goal, on the other hand, is bound to the <<<package>>> phase of the build life cycle.

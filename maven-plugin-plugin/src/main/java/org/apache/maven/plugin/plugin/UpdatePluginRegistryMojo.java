@@ -46,8 +46,8 @@ import java.util.Date;
 /**
  * Update the user plugin registry (if it's in use) to reflect the version we're installing.
  *
- * @version $Id$
  * @since 2.0
+ * @deprecated plugin registry has been removed from Maven 3, this goal will be removed in next release
  */
 @Mojo( name = "updateRegistry", defaultPhase = LifecyclePhase.INSTALL, threadSafe = true )
 public class UpdatePluginRegistryMojo
