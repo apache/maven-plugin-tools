@@ -142,7 +142,14 @@ public class DefaultMojoAnnotationsScanner
                 {
                     continue;
                 }
-                analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo );
+                try
+                {
+                    analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo );
+                }
+                catch ( ArrayIndexOutOfBoundsException e )
+                {
+                    getLogger().warn( "Error analyzing class " + zipEntryName );
+                }
             }
         }
         catch ( IllegalArgumentException e )
