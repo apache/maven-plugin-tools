@@ -71,7 +71,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 2.0
  */
 @Mojo( name = "report", threadSafe = true )
@@ -128,6 +127,10 @@ public class PluginReport
      *   &lt;/others&gt;
      * &lt;/requirements&gt;
      * </pre>
+     * 
+     * If not is specified, Maven requirement is extracted from
+     * <code>&lt;project&gt;&lt;prerequisites&gt;&lt;maven&gt;</code>
+     * and JDK requirement is extracted from maven-compiler-plugin configuration.
      */
     @Parameter
     private Requirements requirements;
@@ -143,7 +146,7 @@ public class PluginReport
      * For example, horsefeature-maven-plugin becomes horsefeature.
      * </p>
      * <p>
-     * (There is a special for maven-plugin-plugin; it is mapped to 'plugin'.
+     * (There is a special case for maven-plugin-plugin: it is mapped to 'plugin')
      * </p>
      *
      * @since 2.4
