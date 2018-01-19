@@ -37,7 +37,7 @@
     The Maven Plugin Tools contains the necessary tools to be able to produce Maven Plugins in scripting languages
     and to generate rebarbative content like descriptor, help and documentation.
   </description>
-  <url>http://maven.apache.org/plugin-tools</url>
+  <url>https://maven.apache.org/plugin-tools</url>
   <inceptionYear>2004</inceptionYear>
 
   <contributors>
@@ -57,10 +57,6 @@
       <name>Mikolaj Izdebski</name>
     </contributor>
   </contributors>
-
-  <prerequisites>
-    <maven>2.2.1</maven>
-  </prerequisites>
 
   <modules>
     <module>maven-plugin-tools-generators</module>
@@ -262,6 +258,11 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
