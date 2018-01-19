@@ -133,7 +133,7 @@ public class DefaultMojoAnnotationsScanner
         String zipEntryName = null;
         try
         {
-            
+            String archiveFilename = archiveFile.getAbsolutePath();
             for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
                   zipEntry = archiveStream.getNextEntry() )
             {
@@ -142,7 +142,8 @@ public class DefaultMojoAnnotationsScanner
                 {
                     continue;
                 }
-                analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo );
+                analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo, archiveFilename,
+                                    zipEntry.getName() );
             }
         }
         catch ( IllegalArgumentException e )
@@ -184,6 +185,7 @@ public class DefaultMojoAnnotationsScanner
         }
         scanner.scan();
         String[] classFiles = scanner.getIncludedFiles();
+        String classDirname = classDirectory.getAbsolutePath();
 
         for ( String classFile : classFiles )
         {
@@ -195,7 +197,7 @@ public class DefaultMojoAnnotationsScanner
             InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) );
             try
             {
-                analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo );
+                analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo, classDirname, classFile );
             }
             finally
             {
@@ -206,13 +208,22 @@ public class DefaultMojoAnnotationsScanner
     }
 
     private void analyzeClassStream( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, InputStream is,
-                                     Artifact artifact, boolean excludeMojo )
+                                     Artifact artifact, boolean excludeMojo, String source, String file )
         throws IOException, ExtractionException
     {
         MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
 
-        ClassReader rdr = new ClassReader( is );
-        rdr.accept( mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
+        try
+        {
+            ClassReader rdr = new ClassReader( is );
+            rdr.accept( mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
+        }
+        catch ( ArrayIndexOutOfBoundsException aiooe )
+        {
+            getLogger().warn( "Error analyzing class " + file + " in " + source + ": ignoring class",
+                              getLogger().isDebugEnabled() ? aiooe : null );
+            return;
+        }
 
         analyzeVisitors( mojoClassVisitor );
 
