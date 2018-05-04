@@ -91,6 +91,7 @@
   </distributionManagement>
 
   <properties>
+    <surefire.version>2.21.0</surefire.version>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
     <mavenVersion>2.2.1</mavenVersion>
     <antVersion>1.7.1</antVersion>
