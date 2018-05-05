@@ -96,6 +96,7 @@
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>3.0.1</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
+    <asmVersion>5.0.2</asmVersion>
   </properties>
 
   <dependencyManagement>
@@ -217,10 +218,12 @@
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
+        <version>${asmVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-commons</artifactId>
+        <version>${asmVersion}</version>
       </dependency>
 
       <dependency>
@@ -426,20 +429,9 @@
           </plugin>
         </plugins>
       </build>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>6.1.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>6.1.1</version>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
+      <properties>
+        <asmVersion>6.1.1</asmVersion>
+      </properties>
     </profile>
   </profiles>
 </project>

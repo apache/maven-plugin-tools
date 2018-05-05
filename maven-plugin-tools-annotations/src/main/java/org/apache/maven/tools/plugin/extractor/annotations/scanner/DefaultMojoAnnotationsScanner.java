@@ -224,6 +224,19 @@ public class DefaultMojoAnnotationsScanner
                               getLogger().isDebugEnabled() ? aiooe : null );
             return;
         }
+        catch ( IllegalArgumentException iae )
+        {
+            if ( iae.getMessage() == null )
+            {
+                getLogger().warn( "Error analyzing class " + file + " in " + source + ": ignoring class",
+                        getLogger().isDebugEnabled() ? iae : null );
+                return;
+            }
+            else
+            {
+                throw iae;
+            }
+        }
 
         analyzeVisitors( mojoClassVisitor );
 
