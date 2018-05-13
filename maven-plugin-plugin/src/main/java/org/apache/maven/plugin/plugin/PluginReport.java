@@ -462,8 +462,8 @@ public class PluginReport
          * @param pluginDescriptor not null
          * @param locale           not null
          */
-        public PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
-                                       PluginDescriptor pluginDescriptor, Locale locale )
+        PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
+                                PluginDescriptor pluginDescriptor, Locale locale )
         {
             super( sink );
 

@@ -403,7 +403,7 @@ public final class GeneratorUtils
         /**
          * @param sb not null
          */
-        public MojoParserCallback( StringBuilder sb )
+        MojoParserCallback( StringBuilder sb )
         {
             this.sb = sb;
         }
