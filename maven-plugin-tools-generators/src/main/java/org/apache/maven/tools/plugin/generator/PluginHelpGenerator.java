@@ -36,8 +36,8 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.io.File;
@@ -421,7 +421,7 @@ public class PluginHelpGenerator
 
         Remapper packageRemapper =
             new SimpleRemapper( HELP_MOJO_CLASS_NAME, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME );
-        ClassVisitor cv = new RemappingClassAdapter( cw, packageRemapper );
+        ClassVisitor cv = new ClassRemapper( cw, packageRemapper );
 
         try
         {

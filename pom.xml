@@ -97,7 +97,7 @@
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>3.0.1</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
-    <asmVersion>5.0.2</asmVersion>
+    <asmVersion>6.2</asmVersion>
   </properties>
 
   <dependencyManagement>
@@ -291,6 +291,21 @@
     <plugins>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-bytecode-version</id>
+            <configuration>
+              <rules>
+                <enforceBytecodeVersion>
+                  <excludes>
+                    <!-- ASM supports Java 1.5+, see https://asm.ow2.io/faq.html#Q14 -->
+                    <exclude>org.ow2.asm:*</exclude>
+                  </excludes>
+                </enforceBytecodeVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
@@ -397,42 +412,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-    <profile>
-      <activation>
-        <jdk>[1.9,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce-bytecode-version</id>
-                <configuration>
-                  <rules>
-                    <enforceBytecodeVersion>
-                      <ignoreClasses>
-                        <ignoreClass>module-info</ignoreClass>
-                      </ignoreClasses>
-                    </enforceBytecodeVersion>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>extra-enforcer-rules</artifactId>
-                <version>1.0-beta-5</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <asmVersion>6.1.1</asmVersion>
-      </properties>
     </profile>
   </profiles>
 </project>
