@@ -70,7 +70,7 @@ public class DefaultMojoAnnotationsScanner
     public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         try
         {
@@ -126,12 +126,10 @@ public class DefaultMojoAnnotationsScanner
     protected Map<String, MojoAnnotatedClass> scanArchive( File archiveFile, Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
-
-        ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         String zipEntryName = null;
-        try
+        try(ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) ))
         {
             String archiveFilename = archiveFile.getAbsolutePath();
             for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
@@ -153,10 +151,6 @@ public class DefaultMojoAnnotationsScanner
             
             throw e;
         }
-        finally
-        {
-            IOUtil.close( archiveStream );
-        }
 
         return mojoAnnotatedClasses;
     }
@@ -174,7 +168,7 @@ public class DefaultMojoAnnotationsScanner
                                                              Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classDirectory );
@@ -194,14 +188,9 @@ public class DefaultMojoAnnotationsScanner
                 continue;
             }
 
-            InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) );
-            try
+            try(InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) ))
             {
                 analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo, classDirname, classFile );
-            }
-            finally
-            {
-                IOUtil.close( is );
             }
         }
         return mojoAnnotatedClasses;

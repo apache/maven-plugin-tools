@@ -303,7 +303,7 @@ public abstract class AbstractGeneratorMojo
         }
         else
         {
-            filteredDependencies = new LinkedHashSet<Artifact>();
+            filteredDependencies = new LinkedHashSet<>();
             
             ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
 

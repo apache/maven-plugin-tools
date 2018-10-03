@@ -283,11 +283,7 @@ public class PluginReport
         {
             return builder.build( new FileReader( pluginXmlFile ) );
         }
-        catch ( FileNotFoundException e )
-        {
-            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
-        }
-        catch ( PlexusConfigurationException e )
+        catch ( FileNotFoundException | PlexusConfigurationException e )
         {
             getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
@@ -528,7 +524,7 @@ public class PluginReport
                 tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
             }
 
-            List<MojoDescriptor> mojos = new ArrayList<MojoDescriptor>();
+            List<MojoDescriptor> mojos = new ArrayList<>();
             mojos.addAll( pluginDescriptor.getMojos() );
             PluginUtils.sortMojos( mojos );
             for ( MojoDescriptor mojo : mojos )
