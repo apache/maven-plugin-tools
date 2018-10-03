@@ -214,7 +214,7 @@
           <configuration>
             <excludes combine.children="append">
               <!-- This file should exactly match the output of this project -->
-              <exclude>src/it/help-basic/expected-help.txt</exclude>
+              <exclude>src/it/help-basic**/expected-help**.txt</exclude>
             </excludes>
           </configuration>
         </plugin>

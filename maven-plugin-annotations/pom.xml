@@ -28,8 +28,8 @@
 
   <artifactId>maven-plugin-annotations</artifactId>
 
-  <name>Maven Plugin Tools Java 5 Annotations</name>
-  <description>Java 5 annotations to use in Mojos</description>
+  <name>Maven Plugin Tools Java Annotations</name>
+  <description>Java annotations to use in Mojos</description>
 
   <dependencies>
     <dependency>
