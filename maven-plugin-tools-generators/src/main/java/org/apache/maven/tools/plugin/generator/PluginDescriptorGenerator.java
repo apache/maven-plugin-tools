@@ -417,9 +417,9 @@ public class PluginDescriptorGenerator
 
         w.startElement( "parameters" );
 
-        Map<String, Requirement> requirements = new LinkedHashMap<String, Requirement>();
+        Map<String, Requirement> requirements = new LinkedHashMap<>();
 
-        Set<Parameter> configuration = new LinkedHashSet<Parameter>();
+        Set<Parameter> configuration = new LinkedHashSet<>();
 
         if ( parameters != null )
         {

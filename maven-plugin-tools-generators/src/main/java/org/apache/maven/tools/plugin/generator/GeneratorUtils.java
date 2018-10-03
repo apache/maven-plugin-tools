@@ -123,7 +123,7 @@ public final class GeneratorUtils
      */
     public static List<ComponentDependency> toComponentDependencies( List<Dependency> dependencies )
     {
-        List<ComponentDependency> componentDeps = new LinkedList<ComponentDependency>();
+        List<ComponentDependency> componentDeps = new LinkedList<>();
 
         for ( Dependency dependency : dependencies )
         {
@@ -380,7 +380,7 @@ public final class GeneratorUtils
          * A stack of {@link Counter} objects corresponding to the nesting of (un-)ordered lists. A
          * <code>null</code> element denotes an unordered list.
          */
-        private Stack<Counter> numbering = new Stack<Counter>();
+        private Stack<Counter> numbering = new Stack<>();
 
         /**
          * A flag whether an implicit line break is pending in the output buffer. This flag is used to postpone the
@@ -596,7 +596,7 @@ public final class GeneratorUtils
      */
     public static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
-        Map<String, Integer> packageNames = new HashMap<String, Integer>();
+        Map<String, Integer> packageNames = new HashMap<>();
         @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
         if ( mojoDescriptors == null )

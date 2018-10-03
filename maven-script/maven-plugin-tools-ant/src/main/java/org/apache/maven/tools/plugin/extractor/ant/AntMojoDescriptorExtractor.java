@@ -62,7 +62,7 @@ public class AntMojoDescriptorExtractor
                                                                   PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
+        List<MojoDescriptor> descriptors = new ArrayList<>();
 
         PluginMetadataParser parser = new PluginMetadataParser();
 
@@ -174,7 +174,7 @@ public class AntMojoDescriptorExtractor
                         
                         @SuppressWarnings( "unchecked" )
                         List<ComponentRequirement> requirements = descriptor.getRequirements();
-                        Map<String, ComponentRequirement> reqMap = new HashMap<String, ComponentRequirement>();
+                        Map<String, ComponentRequirement> reqMap = new HashMap<>();
 
                         if ( requirements != null )
                         {

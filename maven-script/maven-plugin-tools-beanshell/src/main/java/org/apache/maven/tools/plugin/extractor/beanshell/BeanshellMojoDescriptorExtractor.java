@@ -61,7 +61,7 @@ public class BeanshellMojoDescriptorExtractor
                                                            PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
+        List<MojoDescriptor> descriptors = new ArrayList<>();
 
         for ( Map.Entry<String, Set<File>> entry : scriptFilesKeyedByBasedir.entrySet() )
         {

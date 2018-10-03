@@ -24,7 +24,6 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -44,7 +43,6 @@ import java.util.ResourceBundle;
 
 /**
  * Generate xdoc documentation for each mojo.
- *
  */
 public class PluginXdocGenerator
     implements Generator
@@ -108,8 +106,7 @@ public class PluginXdocGenerator
         {
             if ( request.getPluginDescriptor().getMojos() != null )
             {
-                @SuppressWarnings( "unchecked" )
-                List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
+                @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
 
                 for ( MojoDescriptor descriptor : mojos )
                 {
@@ -134,19 +131,13 @@ public class PluginXdocGenerator
     {
         File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
         String encoding = "UTF-8";
-        Writer writer = null;
-        try
+        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), encoding ) )
         {
-            writer = new OutputStreamWriter( new FileOutputStream( outputFile ), encoding );
 
             XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), encoding, null );
             writeBody( mojoDescriptor, w );
 
             writer.flush();
-        }
-        finally
-        {
-            IOUtil.close( writer );
         }
     }
 
@@ -404,8 +395,7 @@ public class PluginXdocGenerator
      */
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        @SuppressWarnings( "unchecked" )
-        List<Parameter> parameterList = mojoDescriptor.getParameters();
+        @SuppressWarnings( "unchecked" ) List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         // remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );
@@ -437,7 +427,7 @@ public class PluginXdocGenerator
      */
     private List<Parameter> filterParameters( List<Parameter> parameterList )
     {
-        List<Parameter> filtered = new ArrayList<Parameter>();
+        List<Parameter> filtered = new ArrayList<>();
 
         if ( parameterList != null )
         {
@@ -542,7 +532,7 @@ public class PluginXdocGenerator
             addedUl = addUl( w, addedUl, parameter.getDefaultValue() );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ),
                          escapeXml( parameter.getDefaultValue() ), w );
-            
+
             addedUl = addUl( w, addedUl, parameter.getAlias() );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.alias" ), escapeXml( parameter.getAlias() ),
                          w );
@@ -591,7 +581,7 @@ public class PluginXdocGenerator
         // no property can be extracted
         return null;
     }
-    
+
     /**
      * @param param not null
      * @param value could be null
@@ -724,7 +714,7 @@ public class PluginXdocGenerator
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.property.description", property ) );
                 w.writeMarkup( "<br/>" );
             }
-            
+
             if ( StringUtils.isNotEmpty( parameter.getAlias() ) )
             {
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.alias.description",
@@ -746,7 +736,7 @@ public class PluginXdocGenerator
      */
     private List<Parameter> getParametersByRequired( boolean required, List<Parameter> parameterList )
     {
-        List<Parameter> list = new ArrayList<Parameter>();
+        List<Parameter> list = new ArrayList<>();
 
         for ( Parameter parameter : parameterList )
         {

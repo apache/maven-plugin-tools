@@ -36,8 +36,8 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.io.File;
@@ -114,8 +114,7 @@ public class PluginHelpGenerator
 
         String helpImplementation = getImplementation( pluginDescriptor );
 
-        @SuppressWarnings( "unchecked" )
-        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+        @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
 
         if ( mojoDescriptors != null )
         {
@@ -136,10 +135,9 @@ public class PluginHelpGenerator
         }
 
         writeHelpPropertiesFile( request, destinationDirectory );
-        
-        useAnnotations =
-            request.getProject().getArtifactMap().containsKey(
-                                                          "org.apache.maven.plugin-tools:maven-plugin-annotations" );
+
+        useAnnotations = request.getProject().getArtifactMap().containsKey(
+            "org.apache.maven.plugin-tools:maven-plugin-annotations" );
 
         try
         {
@@ -148,8 +146,8 @@ public class PluginHelpGenerator
             File helpClass = new File( destinationDirectory, sourcePath );
             helpClass.getParentFile().mkdirs();
 
-            String helpClassSources = getHelpClassSources( getPluginHelpPath( request.getProject() ),
-                                                           pluginDescriptor );
+            String helpClassSources =
+                getHelpClassSources( getPluginHelpPath( request.getProject() ), pluginDescriptor );
 
             FileUtils.fileWrite( helpClass, request.getEncoding(), helpClassSources );
         }
@@ -164,7 +162,7 @@ public class PluginHelpGenerator
         this.helpPackageName = helpPackageName;
         return this;
     }
-    
+
     public VelocityComponent getVelocityComponent()
     {
         return velocityComponent;
@@ -181,6 +179,7 @@ public class PluginHelpGenerator
     // ----------------------------------------------------------------------
 
     private String getHelpClassSources( String pluginHelpPath, PluginDescriptor pluginDescriptor )
+        throws IOException
     {
         Properties properties = new Properties();
         VelocityContext context = new VelocityContext( properties );
@@ -199,24 +198,18 @@ public class PluginHelpGenerator
 
         StringWriter stringWriter = new StringWriter();
 
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream( "help-class-source.vm" );
-        InputStreamReader isReader = null;
-        try
+        // plugin-tools sources are UTF-8 (and even ASCII in this case))
+        try ( InputStream is = //
+                 Thread.currentThread().getContextClassLoader().getResourceAsStream( "help-class-source.vm" ); //
+             InputStreamReader isReader = new InputStreamReader( is, "UTF-8" ) )
         {
-            isReader = new InputStreamReader( is, "UTF-8" ); // plugin-tools sources are UTF-8 (and even ASCII in this
-                                                             // case)
+            //isReader =
             velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
         }
         catch ( UnsupportedEncodingException e )
         {
             // not supposed to happen since UTF-8 is supposed to be supported by any JVM
         }
-        finally
-        {
-            IOUtil.close( is );
-            IOUtil.close( isReader );
-        }
-
         return stringWriter.toString();
     }
 
@@ -232,8 +225,9 @@ public class PluginHelpGenerator
             helpPackageName = GeneratorUtils.discoverPackageName( pluginDescriptor );
         }
 
-        return StringUtils.isEmpty( helpPackageName ) ? HELP_MOJO_CLASS_NAME : helpPackageName + '.'
-            + HELP_MOJO_CLASS_NAME;
+        return StringUtils.isEmpty( helpPackageName )
+            ? HELP_MOJO_CLASS_NAME
+            : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
     }
 
     /**
@@ -250,8 +244,7 @@ public class PluginHelpGenerator
         properties.put( "helpPackageName", helpPackageName == null ? "" : helpPackageName );
         properties.put( "destinationDirectory", destinationDirectory.getAbsolutePath() );
 
-        File tmpPropertiesFile =
-            new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
+        File tmpPropertiesFile = new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
 
         if ( tmpPropertiesFile.exists() )
         {
@@ -262,19 +255,13 @@ public class PluginHelpGenerator
             tmpPropertiesFile.getParentFile().mkdirs();
         }
 
-        FileOutputStream fos = null;
-        try
+        try ( FileOutputStream fos = new FileOutputStream( tmpPropertiesFile ) )
         {
-            fos = new FileOutputStream( tmpPropertiesFile );
             properties.store( fos, "maven plugin help mojo generation informations" );
         }
         catch ( IOException e )
         {
             throw new GeneratorException( e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( fos );
         }
     }
 
@@ -293,8 +280,7 @@ public class PluginHelpGenerator
     static void rewriteHelpMojo( PluginToolsRequest request, Log log )
         throws GeneratorException
     {
-        File tmpPropertiesFile =
-            new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
+        File tmpPropertiesFile = new File( request.getProject().getBuild().getDirectory(), HELP_PROPERTIES_FILENAME );
 
         if ( !tmpPropertiesFile.exists() )
         {
@@ -314,7 +300,7 @@ public class PluginHelpGenerator
             {
                 // writeHelpPropertiesFile() creates 2 properties: find one without the other should not be possible
                 log.warn( "\n\nUnexpected situation: destinationDirectory not defined in " + HELP_PROPERTIES_FILENAME
-                    + " during help mojo source generation but expected during XML descriptor generation." );
+                              + " during help mojo source generation but expected during XML descriptor generation." );
                 log.warn( "Please check helpmojo goal version used in previous build phase." );
                 log.warn( "If you just upgraded to plugin-tools >= 3.2 you must run a clean build at least once." );
                 destinationDirectory = new File( "target/generated-sources/plugin" );
@@ -367,26 +353,18 @@ public class PluginHelpGenerator
             {
                 helpSourceFileNew.getParentFile().mkdirs();
             }
-            Reader sourceReader = null;
-            PrintWriter sourceWriter = null;
-            try
+            try ( Reader sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), //
+                                                              request.getEncoding() ); //
+                 PrintWriter sourceWriter = new PrintWriter(
+                     new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ), //
+                                             request.getEncoding() ) ) )
             {
-                sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), request.getEncoding() );
-                sourceWriter =
-                    new PrintWriter( new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ),
-                                                             request.getEncoding() ) );
-    
                 sourceWriter.println( "package " + destinationPackage + ";" );
                 IOUtil.copy( sourceReader, sourceWriter );
             }
             catch ( IOException e )
             {
                 throw new GeneratorException( e.getMessage(), e );
-            }
-            finally
-            {
-                IOUtil.close( sourceReader );
-                IOUtil.close( sourceWriter );
             }
             helpSourceFileNew.setLastModified( helpSourceFile.lastModified() );
             helpSourceFile.delete();
@@ -400,27 +378,21 @@ public class PluginHelpGenerator
             rewriteHelpClassFile.getParentFile().mkdirs();
         }
 
-        FileInputStream fileInputStream = null;
-        ClassReader cr = null;
-        try
+        ClassReader cr;
+        try ( FileInputStream fileInputStream = new FileInputStream( helpClassFile ) )
         {
-            fileInputStream = new FileInputStream( helpClassFile );
             cr = new ClassReader( fileInputStream );
         }
         catch ( IOException e )
         {
             throw new GeneratorException( e.getMessage(), e );
         }
-        finally
-        {
-            IOUtil.close( fileInputStream );
-        }
 
         ClassWriter cw = new ClassWriter( 0 );
 
         Remapper packageRemapper =
             new SimpleRemapper( HELP_MOJO_CLASS_NAME, packageAsDirectory + '/' + HELP_MOJO_CLASS_NAME );
-        ClassVisitor cv = new RemappingClassAdapter( cw, packageRemapper );
+        ClassVisitor cv = new ClassRemapper( cw, packageRemapper );
 
         try
         {
@@ -432,19 +404,13 @@ public class PluginHelpGenerator
         }
 
         byte[] renamedClass = cw.toByteArray();
-        FileOutputStream fos = null;
-        try
+        try ( FileOutputStream fos = new FileOutputStream( rewriteHelpClassFile ) )
         {
-            fos = new FileOutputStream( rewriteHelpClassFile );
             fos.write( renamedClass );
         }
         catch ( IOException e )
         {
             throw new GeneratorException( "Error rewriting help class: " + e.getMessage(), e );
-        }
-        finally
-        {
-            IOUtil.close( fos );
         }
 
         helpClassFile.delete();

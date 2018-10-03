@@ -59,7 +59,7 @@ public class DefaultMojoScannerTest
     protected void setUp()
         throws Exception
     {
-        extractors = new HashMap<String, MojoDescriptorExtractor>();
+        extractors = new HashMap<>();
         extractors.put( "one", new ScannerTestExtractor( "one" ) );
         extractors.put( "two", new ScannerTestExtractor( "two" ) );
         extractors.put( "three", new ScannerTestExtractor( "three" ) );
@@ -89,7 +89,7 @@ public class DefaultMojoScannerTest
     public void testSpecifiedExtractors()
         throws Exception
     {
-        Set<String> activeExtractors = new HashSet<String>();
+        Set<String> activeExtractors = new HashSet<>();
         activeExtractors.add( "one" );
         activeExtractors.add( "" );
         activeExtractors.add( null );
@@ -136,7 +136,7 @@ public class DefaultMojoScannerTest
     public void testUnknownExtractor()
         throws Exception
     {
-        Set<String> activeExtractors = new HashSet<String>();
+        Set<String> activeExtractors = new HashSet<>();
         activeExtractors.add( "four" );
 
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
@@ -175,7 +175,7 @@ public class DefaultMojoScannerTest
      */
     protected void checkResult( PluginDescriptor pluginDescriptor, Collection<String> expectedGoals )
     {
-        Set<String> remainingGoals = new HashSet<String>( expectedGoals );
+        Set<String> remainingGoals = new HashSet<>( expectedGoals );
         @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 

@@ -137,11 +137,11 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     protected Map<String, Set<File>> gatherFilesByBasedir( File basedir, List<String> directories,
                                                            String scriptFileExtension, PluginToolsRequest request )
     {
-        Map<String, Set<File>> sourcesByBasedir = new TreeMap<String, Set<File>>();
+        Map<String, Set<File>> sourcesByBasedir = new TreeMap<>();
 
         for ( String resourceDir : directories )
         {
-            Set<File> sources = new HashSet<File>();
+            Set<File> sources = new HashSet<>();
 
             getLogger().debug( "Scanning script dir: " + resourceDir + " with extractor: " + getClass().getName() );
             File dir = new File( resourceDir );

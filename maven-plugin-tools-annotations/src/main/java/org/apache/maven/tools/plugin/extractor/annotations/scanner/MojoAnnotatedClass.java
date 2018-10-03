@@ -99,7 +99,7 @@ public class MojoAnnotatedClass
     {
         if ( this.parameters == null )
         {
-            this.parameters = new HashMap<String, ParameterAnnotationContent>();
+            this.parameters = new HashMap<>();
         }
         return parameters;
     }
@@ -114,7 +114,7 @@ public class MojoAnnotatedClass
     {
         if ( this.components == null )
         {
-            this.components = new HashMap<String, ComponentAnnotationContent>();
+            this.components = new HashMap<>();
         }
         return components;
     }

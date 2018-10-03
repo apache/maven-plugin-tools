@@ -35,13 +35,13 @@ import java.util.Set;
  */
 public class MojoAnnotationsScannerRequest
 {
-    private List<File> classesDirectories = new ArrayList<File>();
+    private List<File> classesDirectories = new ArrayList<>();
 
-    private Set<Artifact> dependencies = new HashSet<Artifact>();
+    private Set<Artifact> dependencies = new HashSet<>();
 
     private List<String> includePatterns = Arrays.asList( "**/*.class" );
 
-    private List<File> sourceDirectories = new ArrayList<File>();
+    private List<File> sourceDirectories = new ArrayList<>();
 
     private MavenProject project;
 

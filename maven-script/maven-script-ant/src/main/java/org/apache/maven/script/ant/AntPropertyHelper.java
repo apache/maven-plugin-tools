@@ -113,7 +113,7 @@ public class AntPropertyHelper
 
         if ( name.startsWith( DEPENDENCY_PREFIX ) )
         {
-            val = (String) artifactMap.get( name );
+            val = artifactMap.get( name );
         }
 
         if ( val == null )
@@ -159,7 +159,7 @@ public class AntPropertyHelper
         {
             if ( name.startsWith( DEPENDENCY_PREFIX ) )
             {
-                val = (String) artifactMap.get( name );
+                val = artifactMap.get( name );
             }
             else if ( name.startsWith( "project." ) )
             {
