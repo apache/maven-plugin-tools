@@ -19,30 +19,26 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.apache.maven.model.Build;
-import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
- * @version $Id: AbstractGeneratorTestCase.java,v 1.1 2005/02/20 16:25:21
- *          jdcasey Exp $
  */
 public abstract class AbstractGeneratorTestCase
     extends PlexusTestCase

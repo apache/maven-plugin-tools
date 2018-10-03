@@ -50,7 +50,7 @@ import java.util.Set;
  * Abstract class for this Plugin.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id$
+ *
  */
 public abstract class AbstractGeneratorMojo
     extends AbstractMojo

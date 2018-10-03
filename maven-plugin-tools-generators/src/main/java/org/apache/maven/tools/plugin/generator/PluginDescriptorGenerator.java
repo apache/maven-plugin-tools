@@ -48,7 +48,6 @@ import org.codehaus.plexus.util.xml.XMLWriter;
  * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a> and
  * corresponding <code>plugin-help.xml</code> help content for {@link PluginHelpGenerator}.
  *
- * @version $Id$
  */
 public class PluginDescriptorGenerator
     implements Generator

@@ -38,7 +38,6 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
  * at generate-resources phase</a> in Maven core.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id$
  * @since 2.0
  */
 @Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,

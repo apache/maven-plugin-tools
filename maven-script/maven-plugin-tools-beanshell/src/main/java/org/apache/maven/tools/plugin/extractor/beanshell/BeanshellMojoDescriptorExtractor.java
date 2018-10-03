@@ -40,7 +40,6 @@ import java.util.Set;
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
  *
- * @version $Id$
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
 public class BeanshellMojoDescriptorExtractor

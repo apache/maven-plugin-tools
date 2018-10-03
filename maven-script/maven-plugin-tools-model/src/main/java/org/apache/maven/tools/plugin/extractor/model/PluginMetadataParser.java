@@ -38,8 +38,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  * Parser for plugin metadata.
- *
- * @version $Id$
  */
 public class PluginMetadataParser
 {

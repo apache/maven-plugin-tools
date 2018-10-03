@@ -59,7 +59,6 @@ import com.thoughtworks.qdox.model.JavaType;
  * <a href="http://maven.apache.org/developers/mojo-api-specification.html">
  * http://maven.apache.org/developers/mojo-api-specification.html</a>
  *
- * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "java-javadoc" )

@@ -27,7 +27,6 @@ import java.io.File;
  * Generate something, for instance a plugin report, from a plugin descriptor.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
- * @version $Id$
  */
 public interface Generator
 {

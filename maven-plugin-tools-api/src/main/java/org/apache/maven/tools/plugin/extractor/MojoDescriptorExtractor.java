@@ -27,7 +27,6 @@ import java.util.List;
 
 /**
  * @author jdcasey
- * @version $Id$
  */
 public interface MojoDescriptorExtractor
 {

@@ -23,7 +23,6 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  */
 public class PluginHelpGeneratorTest
     extends AbstractGeneratorTestCase

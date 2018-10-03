@@ -45,7 +45,6 @@ import java.util.ResourceBundle;
 /**
  * Generate xdoc documentation for each mojo.
  *
- * @version $Id$
  */
 public class PluginXdocGenerator
     implements Generator

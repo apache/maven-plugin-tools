@@ -57,7 +57,6 @@ import org.w3c.tidy.Tidy;
  * Convenience methods to play with Maven plugins.
  *
  * @author jdcasey
- * @version $Id$
  */
 public final class GeneratorUtils
 {

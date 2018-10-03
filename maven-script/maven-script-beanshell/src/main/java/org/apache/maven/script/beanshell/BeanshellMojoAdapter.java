@@ -31,7 +31,6 @@ import org.codehaus.plexus.component.factory.bsh.BshComponent;
  * Mojo adapter for a Beanshell Mojo.
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
- * @version $Id$
  */
 public class BeanshellMojoAdapter
     extends AbstractMojo

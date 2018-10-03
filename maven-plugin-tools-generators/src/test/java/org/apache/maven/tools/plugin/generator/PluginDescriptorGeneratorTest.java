@@ -36,8 +36,6 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
- * @version $Id: PluginDescriptorGeneratorTest.java,v 1.1.1.1 2004/08/09
- *          18:43:10 jvanzyl Exp $
  */
 public class PluginDescriptorGeneratorTest
     extends AbstractGeneratorTestCase

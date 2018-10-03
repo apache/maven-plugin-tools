@@ -44,7 +44,7 @@ import org.apache.maven.project.MavenProject;
  *
  * @see ArtifactRepositoryMetadata
  * @see GroupRepositoryMetadata
- * @version $Id$
+ *
  * @since 2.0
  */
 @Mojo( name = "addPluginArtifactMetadata", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true )

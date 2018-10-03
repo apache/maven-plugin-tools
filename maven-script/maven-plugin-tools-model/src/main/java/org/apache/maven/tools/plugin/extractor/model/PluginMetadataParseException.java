@@ -24,7 +24,6 @@ import java.io.File;
 /**
  * Exception when plugin metadata parsing occurred.
  *
- * @version $Id$
  */
 public class PluginMetadataParseException
     extends Exception

@@ -65,7 +65,6 @@ import java.util.Properties;
  * plugin descriptor XML generation.</p>
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 2.4
  */
 public class PluginHelpGenerator

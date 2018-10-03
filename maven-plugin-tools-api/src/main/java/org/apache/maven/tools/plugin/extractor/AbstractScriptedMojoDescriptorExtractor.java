@@ -38,7 +38,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author jdcasey
- * @version $Id$
  */
 public abstract class AbstractScriptedMojoDescriptorExtractor
     extends AbstractLogEnabled

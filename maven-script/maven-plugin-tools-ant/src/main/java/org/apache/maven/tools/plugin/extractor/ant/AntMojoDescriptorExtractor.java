@@ -44,7 +44,6 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
  *
- * @version $Id$
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "ant" )
 public class AntMojoDescriptorExtractor

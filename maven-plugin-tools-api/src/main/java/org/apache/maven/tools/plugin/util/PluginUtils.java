@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.StringUtils;
  * Convenience methods to play with Maven plugins.
  *
  * @author jdcasey
- * @version $Id$
+ *
  */
 public final class PluginUtils
 {
