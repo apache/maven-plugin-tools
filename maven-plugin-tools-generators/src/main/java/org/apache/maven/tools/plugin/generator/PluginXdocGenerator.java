@@ -400,7 +400,7 @@ public class PluginXdocGenerator
         // remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );
 
-        if ( list != null && list.size() > 0 )
+        if ( !list.isEmpty() )
         {
             writeParameterSummary( mojoDescriptor, list, w );
 
