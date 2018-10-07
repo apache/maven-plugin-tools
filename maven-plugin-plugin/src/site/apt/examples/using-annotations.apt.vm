@@ -26,7 +26,7 @@
 ~~ NOTE: For help with the syntax of this file, see:
 ~~ https://maven.apache.org/doxia/references/apt-format.html
 
-Using Plugin Tools Java5 Annotations
+Using Plugin Tools Java Annotations
 
  Since version 3.0 of the maven-plugin-plugin, you can use Java5 annotations to generate the 
  plugin descriptor file.
