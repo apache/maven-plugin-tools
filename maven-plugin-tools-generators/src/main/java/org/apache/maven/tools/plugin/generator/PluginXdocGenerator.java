@@ -395,7 +395,7 @@ public class PluginXdocGenerator
      */
     private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
-        @SuppressWarnings( "unchecked" ) List<Parameter> parameterList = mojoDescriptor.getParameters();
+        List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         // remove components and read-only parameters
         List<Parameter> list = filterParameters( parameterList );

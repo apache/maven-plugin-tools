@@ -65,7 +65,7 @@ public class PluginMetadataParser
 
             List<Mojo> mojos = pluginMetadata.getMojos();
 
-            if ( mojos != null && !mojos.isEmpty() )
+            if ( mojos != null )
             {
                 for ( Mojo mojo : mojos )
                 {
