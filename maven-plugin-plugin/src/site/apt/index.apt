@@ -30,8 +30,7 @@ Maven Plugin Plugin
 
  The Maven Plugin Plugin is used to create a {{{/ref/current/maven-plugin-api/plugin.html}Maven plugin descriptor}} for any
  {{{/general.html#What_is_a_Mojo}Mojo}}'s found in the source tree, to include in the JAR.
- It is also used to generate report files for the Mojos as well as for updating the plugin registry, the artifact
- metadata and generating a generic help goal.
+ It is also used to generate report files for the Mojos as well as the artifact metadata and generating a generic help goal.
 
 * Goals Overview
 
@@ -41,9 +40,6 @@ Maven Plugin Plugin
 
    * {{{./report-mojo.html}plugin:report}} generates the plugin documentation: one overview report
      (see {{{./plugin-info.html}example}}) and documentation for each plugin's goal (mojo),
-
-   * {{{./updateRegistry-mojo.html}plugin:updateRegistry}} updates the user plugin registry (if it's in use) to
-      reflect the version being installed,
 
    * {{{./addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
       metadata to the project's artifact, for subsequent installation and deployment,
