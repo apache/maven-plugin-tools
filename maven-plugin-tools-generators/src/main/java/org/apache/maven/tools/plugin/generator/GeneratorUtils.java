@@ -597,7 +597,7 @@ public final class GeneratorUtils
     public static String discoverPackageName( PluginDescriptor pluginDescriptor )
     {
         Map<String, Integer> packageNames = new HashMap<>();
-        @SuppressWarnings( "unchecked" )
+
         List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
         if ( mojoDescriptors == null )
         {
@@ -678,7 +678,7 @@ public final class GeneratorUtils
                 throw new IllegalArgumentException( e );
             }
 
-            List<URL> urls = new ArrayList<URL>( classPathStrings.size() );
+            List<URL> urls = new ArrayList<>( classPathStrings.size() );
             for ( String classPathString : classPathStrings )
             {
                 try

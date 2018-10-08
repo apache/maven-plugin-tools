@@ -37,7 +37,7 @@
     <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
+      <artifactId>maven-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -50,10 +50,6 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-descriptor</artifactId>
     </dependency>
 
     <!-- plexus -->

@@ -94,7 +94,7 @@
     <surefire.version>2.22.0</surefire.version>
     <javaVersion>7</javaVersion>
     <pluginTestingHarnessVersion>1.2</pluginTestingHarnessVersion>
-    <mavenVersion>2.2.1</mavenVersion>
+    <mavenVersion>3.0</mavenVersion>
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>3.0.1</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
@@ -146,17 +146,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
-        <artifactId>maven-project</artifactId>
-        <version>${mavenVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-descriptor</artifactId>
-        <version>${mavenVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>

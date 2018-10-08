@@ -313,7 +313,6 @@ public class PluginReport
 
         try
         {
-            @SuppressWarnings( "unchecked" )
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
             pluginDescriptor.setDependencies( deps );
 
@@ -761,7 +760,6 @@ public class PluginReport
                 return jdk;
             }
 
-            @SuppressWarnings( "unchecked" )
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
             if ( compiler == null )
             {
@@ -793,9 +791,9 @@ public class PluginReport
             return "Unknown";
         }
 
-        private static Plugin getCompilerPlugin( Map<String, Object> pluginsAsMap )
+        private static Plugin getCompilerPlugin( Map<String, Plugin> pluginsAsMap )
         {
-            return (Plugin) pluginsAsMap.get( "org.apache.maven.plugins:maven-compiler-plugin" );
+            return pluginsAsMap.get( "org.apache.maven.plugins:maven-compiler-plugin" );
         }
 
         private static String getPluginParameter( Plugin plugin, String parameter )
