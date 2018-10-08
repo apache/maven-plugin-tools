@@ -128,7 +128,7 @@ public class DefaultMojoScanner
 
         if ( result == null )
         {
-            result = new HashSet<String>( mojoDescriptorExtractors.keySet() );
+            result = new HashSet<>( mojoDescriptorExtractors.keySet() );
         }
 
         return result;
@@ -142,7 +142,7 @@ public class DefaultMojoScanner
         }
         else
         {
-            this.activeExtractors = new HashSet<String>();
+            this.activeExtractors = new HashSet<>();
 
             for ( String extractor : extractors )
             {

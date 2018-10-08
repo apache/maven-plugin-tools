@@ -86,11 +86,11 @@
         </tr>      
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-annotations/index.html">maven-plugin-tools-annotations</a></td>
-          <td>Extractor for plugins written in Java with Java 5 annotations.</td>
+          <td>Extractor for plugins written in Java with Java annotations.</td>
         </tr>      
         <tr>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./maven-plugin-annotations/index.html">maven-plugin-annotations</a></td>
-          <td>Provides the Java 5 annotations to use in Mojos.</td>
+          <td>Provides the Java annotations to use in Mojos.</td>
         </tr>      
         <tr>
           <td><a href="./maven-script/index.html">maven-script</a></td>

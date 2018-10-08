@@ -1,0 +1,25 @@
+[INFO] help-jdk11 1.0-SNAPSHOT
+  Tests generation and compilation of the help mojo.
+
+help-jdk11:test
+  Deprecated. As of 1.0, use the "quoted" goal instead.
+
+  MOJO-DESCRIPTION. Some 'quotation' marks and backslashes '\\', some important
+  javadoc
+  and an inline link to AnotherMojo.
+
+  Available parameters:
+
+    defaultParam (Default: escape\backslash)
+      This parameter uses 'quotation' marks and backslashes '\\' in its
+      description. Those characters must be escaped in Java string literals.
+
+    deprecatedParam
+      Deprecated. As of version 1.0, use the {@link #defaultParam} instead.
+
+      This parameter is deprecated.
+
+    undocumentedParam
+      
+      Required: Yes
+      User property: test.undocumented

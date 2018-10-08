@@ -31,14 +31,13 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 /**
  * Generate a plugin descriptor.
  * <br/>
- * <b>Note:</b> Since 3.0, for Java 5 plugin annotations support,
+ * <b>Note:</b> Since 3.0, for Java plugin annotations support,
  * default <a href="http://maven.apache.org/ref/current/maven-core/lifecycles.html">phase</a>
  * defined by this goal is after the "compilation" of any scripts. This doesn't override
  * <a href="/ref/current/maven-core/default-bindings.html#Bindings_for_maven-plugin_packaging">the default binding coded
  * at generate-resources phase</a> in Maven core.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id$
  * @since 2.0
  */
 @Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,

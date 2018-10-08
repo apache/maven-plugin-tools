@@ -130,10 +130,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
     {
         // found artifact from reactors to scan sources
         // we currently only scan sources from reactors
-        List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
+        List<MavenProject> mavenProjects = new ArrayList<>();
 
         // if we need to scan sources from external artifacts
-        Set<Artifact> externalArtifacts = new HashSet<Artifact>();
+        Set<Artifact> externalArtifacts = new HashSet<>();
 
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
         {
@@ -289,7 +289,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             Map<String, ParameterAnnotationContent> parameters =
                 getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
-            parameters = new TreeMap<String, ParameterAnnotationContent>( parameters );
+            parameters = new TreeMap<>( parameters );
             for ( Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet() )
             {
                 JavaField javaField = fieldsMap.get( parameter.getKey() );
@@ -397,7 +397,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         else
         {
 
-            rawParams = new TreeMap<String, JavaField>();
+            rawParams = new TreeMap<>();
         }
 
         for ( JavaField field : javaClass.getFields() )
@@ -416,7 +416,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     @SuppressWarnings( "unchecked" )
     protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
-        List<File> sources = new ArrayList<File>();
+        List<File> sources = new ArrayList<>();
 
         for ( String source : (List<String>) project.getCompileSourceRoots() )
         {
@@ -441,7 +441,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         builder.setEncoding( encoding );
 
         // Build isolated Classloader with only the artifacts of the project (none of this plugin) 
-        List<URL> urls = new ArrayList<URL>( artifacts.size() );
+        List<URL> urls = new ArrayList<>( artifacts.size() );
         for ( Artifact artifact : artifacts )
         {
             try
@@ -467,7 +467,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             return Collections.emptyMap();
         }
 
-        Map<String, JavaClass> javaClassMap = new HashMap<String, JavaClass>( javaClasses.size() );
+        Map<String, JavaClass> javaClassMap = new HashMap<>( javaClasses.size() );
 
         for ( JavaClass javaClass : javaClasses )
         {
@@ -481,7 +481,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                                                     PluginDescriptor pluginDescriptor )
         throws DuplicateParameterException, InvalidParameterException
     {
-        List<MojoDescriptor> mojoDescriptors = new ArrayList<MojoDescriptor>( mojoAnnotatedClasses.size() );
+        List<MojoDescriptor> mojoDescriptors = new ArrayList<>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
         {
             // no mojo so skip it
@@ -546,8 +546,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 getParametersParentHierarchy( mojoAnnotatedClass, new HashMap<String, ParameterAnnotationContent>(),
                                               mojoAnnotatedClasses );
 
-            for ( ParameterAnnotationContent parameterAnnotationContent : new TreeSet<ParameterAnnotationContent>(
-                parameters.values() ) )
+            for ( ParameterAnnotationContent parameterAnnotationContent : new TreeSet<>( parameters.values() ) )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -581,8 +580,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 getComponentsParentHierarchy( mojoAnnotatedClass, new HashMap<String, ComponentAnnotationContent>(),
                                               mojoAnnotatedClasses );
 
-            for ( ComponentAnnotationContent componentAnnotationContent : new TreeSet<ComponentAnnotationContent>(
-                components.values() ) )
+            for ( ComponentAnnotationContent componentAnnotationContent : new TreeSet<>( components.values() ) )
             {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
                     new org.apache.maven.plugin.descriptor.Parameter();
@@ -649,7 +647,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         MojoAnnotatedClass mojoAnnotatedClass, Map<String, ParameterAnnotationContent> parameters,
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
-        List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<ParameterAnnotationContent>();
+        List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<>();
 
         parameterAnnotationContents =
             getParametersParent( mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses );
@@ -657,8 +655,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         // move to parent first to build the Map
         Collections.reverse( parameterAnnotationContents );
 
-        Map<String, ParameterAnnotationContent> map =
-            new HashMap<String, ParameterAnnotationContent>( parameterAnnotationContents.size() );
+        Map<String, ParameterAnnotationContent> map = new HashMap<>( parameterAnnotationContents.size() );
 
         for ( ParameterAnnotationContent parameterAnnotationContent : parameterAnnotationContents )
         {
@@ -688,7 +685,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         MojoAnnotatedClass mojoAnnotatedClass, Map<String, ComponentAnnotationContent> components,
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
-        List<ComponentAnnotationContent> componentAnnotationContents = new ArrayList<ComponentAnnotationContent>();
+        List<ComponentAnnotationContent> componentAnnotationContents = new ArrayList<>();
 
         componentAnnotationContents =
             getComponentParent( mojoAnnotatedClass, componentAnnotationContents, mojoAnnotatedClasses );
@@ -696,8 +693,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         // move to parent first to build the Map
         Collections.reverse( componentAnnotationContents );
 
-        Map<String, ComponentAnnotationContent> map =
-            new HashMap<String, ComponentAnnotationContent>( componentAnnotationContents.size() );
+        Map<String, ComponentAnnotationContent> map = new HashMap<>( componentAnnotationContents.size() );
 
         for ( ComponentAnnotationContent componentAnnotationContent : componentAnnotationContents )
         {

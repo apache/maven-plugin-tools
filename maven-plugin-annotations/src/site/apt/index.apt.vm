@@ -32,7 +32,7 @@ About ${project.name}
 
 * Usage
 
-  To be able to {{{../maven-plugin-tools-annotations/index.html}use Maven Plugin Tools Java 5 Annotations}},
+  To be able to {{{../maven-plugin-tools-annotations/index.html}use Maven Plugin Tools Java Annotations}},
   some configuration has to be done in <<<pom.xml>>>: see
   {{{../maven-plugin-plugin/examples/using-annotations.html#POM_configuration} Using Plugin Tools Java5 Annotations}}
   example in {{{../maven-plugin-plugin} <<<maven-plugin-plugin>>>}} documentation.

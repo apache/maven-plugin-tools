@@ -283,11 +283,7 @@ public class PluginReport
         {
             return builder.build( new FileReader( pluginXmlFile ) );
         }
-        catch ( FileNotFoundException e )
-        {
-            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
-        }
-        catch ( PlexusConfigurationException e )
+        catch ( FileNotFoundException | PlexusConfigurationException e )
         {
             getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
@@ -317,7 +313,6 @@ public class PluginReport
 
         try
         {
-            @SuppressWarnings( "unchecked" )
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
             pluginDescriptor.setDependencies( deps );
 
@@ -528,7 +523,7 @@ public class PluginReport
                 tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
             }
 
-            List<MojoDescriptor> mojos = new ArrayList<MojoDescriptor>();
+            List<MojoDescriptor> mojos = new ArrayList<>();
             mojos.addAll( pluginDescriptor.getMojos() );
             PluginUtils.sortMojos( mojos );
             for ( MojoDescriptor mojo : mojos )
@@ -765,7 +760,6 @@ public class PluginReport
                 return jdk;
             }
 
-            @SuppressWarnings( "unchecked" )
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
             if ( compiler == null )
             {
@@ -797,9 +791,9 @@ public class PluginReport
             return "Unknown";
         }
 
-        private static Plugin getCompilerPlugin( Map<String, Object> pluginsAsMap )
+        private static Plugin getCompilerPlugin( Map<String, Plugin> pluginsAsMap )
         {
-            return (Plugin) pluginsAsMap.get( "org.apache.maven.plugins:maven-compiler-plugin" );
+            return pluginsAsMap.get( "org.apache.maven.plugins:maven-compiler-plugin" );
         }
 
         private static String getPluginParameter( Plugin plugin, String parameter )

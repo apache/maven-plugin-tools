@@ -23,7 +23,6 @@ package org.apache.maven.tools.plugin.extractor;
  * Wrap errors when extraction exception occurred.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  */
 public class ExtractionException
     extends Exception

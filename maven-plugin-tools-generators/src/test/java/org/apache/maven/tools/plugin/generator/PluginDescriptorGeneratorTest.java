@@ -36,8 +36,6 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
- * @version $Id: PluginDescriptorGeneratorTest.java,v 1.1.1.1 2004/08/09
- *          18:43:10 jvanzyl Exp $
  */
 public class PluginDescriptorGeneratorTest
     extends AbstractGeneratorTestCase
@@ -70,7 +68,7 @@ public class PluginDescriptorGeneratorTest
 
         assertEquals( 1, dependencies.size() );
 
-        ComponentDependency dependency = (ComponentDependency) dependencies.get( 0 );
+        ComponentDependency dependency = dependencies.get( 0 );
         assertEquals( "testGroup", dependency.getGroupId() );
         assertEquals( "testArtifact", dependency.getArtifactId() );
         assertEquals( "0.0.0", dependency.getVersion() );
@@ -80,17 +78,16 @@ public class PluginDescriptorGeneratorTest
         throws IOException
     {
         StringWriter sWriter = new StringWriter();
-        PrintWriter pWriter = new PrintWriter( sWriter );
 
-        BufferedReader reader = new BufferedReader( ReaderFactory.newXmlReader( pluginDescriptorFile ) );
-
-        String line = null;
-        while ( ( line = reader.readLine() ) != null )
+        try (PrintWriter pWriter = new PrintWriter( sWriter ); //
+             BufferedReader reader = new BufferedReader( ReaderFactory.newXmlReader( pluginDescriptorFile ) ))
         {
-            pWriter.println( line );
+            String line = null;
+            while ( ( line = reader.readLine() ) != null )
+            {
+                pWriter.println( line );
+            }
         }
-
-        reader.close();
 
         return sWriter.toString();
     }

@@ -47,9 +47,9 @@ public class MojoClassVisitor
 
     private MojoAnnotatedClass mojoAnnotatedClass;
 
-    private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<String, MojoAnnotationVisitor>();
+    private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<>();
 
-    private List<MojoFieldVisitor> fieldVisitors = new ArrayList<MojoFieldVisitor>();
+    private List<MojoFieldVisitor> fieldVisitors = new ArrayList<>();
 
     public MojoClassVisitor( Logger logger )
     {

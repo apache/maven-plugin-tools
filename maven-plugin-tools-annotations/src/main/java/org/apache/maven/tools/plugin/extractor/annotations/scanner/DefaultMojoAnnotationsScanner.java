@@ -19,18 +19,6 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -46,12 +34,23 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.Mojo
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
 import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * @author Olivier Lamy
@@ -70,7 +69,7 @@ public class DefaultMojoAnnotationsScanner
     public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         try
         {
@@ -126,12 +125,10 @@ public class DefaultMojoAnnotationsScanner
     protected Map<String, MojoAnnotatedClass> scanArchive( File archiveFile, Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
-
-        ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) );
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         String zipEntryName = null;
-        try
+        try ( ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) ) )
         {
             String archiveFilename = archiveFile.getAbsolutePath();
             for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
@@ -153,10 +150,6 @@ public class DefaultMojoAnnotationsScanner
             
             throw e;
         }
-        finally
-        {
-            IOUtil.close( archiveStream );
-        }
 
         return mojoAnnotatedClasses;
     }
@@ -174,7 +167,7 @@ public class DefaultMojoAnnotationsScanner
                                                              Artifact artifact, boolean excludeMojo )
         throws IOException, ExtractionException
     {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<String, MojoAnnotatedClass>();
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classDirectory );
@@ -194,14 +187,10 @@ public class DefaultMojoAnnotationsScanner
                 continue;
             }
 
-            InputStream is = new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) );
-            try
+            try ( InputStream is = //
+                    new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) ) )
             {
                 analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo, classDirname, classFile );
-            }
-            finally
-            {
-                IOUtil.close( is );
             }
         }
         return mojoAnnotatedClasses;

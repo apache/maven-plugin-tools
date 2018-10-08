@@ -77,7 +77,7 @@ public class AntMojoWrapper
 
     private Logger logger;
     
-    private transient List<String> unconstructedParts = new ArrayList<String>();
+    private transient List<String> unconstructedParts = new ArrayList<>();
 
     public AntMojoWrapper( AntScriptInvoker scriptInvoker )
     {
@@ -92,7 +92,7 @@ public class AntMojoWrapper
             antProject = scriptInvoker.getProject();
         }
         
-        Map<String, Object> allConfig = new HashMap<String, Object>();
+        Map<String, Object> allConfig = new HashMap<>();
         if ( pluginContext != null && !pluginContext.isEmpty() )
         {
             allConfig.putAll( pluginContext );
@@ -300,7 +300,7 @@ public class AntMojoWrapper
     public Path getPathFromArtifacts( Collection<Artifact> artifacts, Project antProject )
         throws DependencyResolutionRequiredException
     {
-        List<String> list = new ArrayList<String>( artifacts.size() );
+        List<String> list = new ArrayList<>( artifacts.size() );
 
         for ( Artifact a : artifacts )
         {

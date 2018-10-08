@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * @author jdcasey
- * @version $Id$
+ *
  */
 public interface MojoScanner
 {

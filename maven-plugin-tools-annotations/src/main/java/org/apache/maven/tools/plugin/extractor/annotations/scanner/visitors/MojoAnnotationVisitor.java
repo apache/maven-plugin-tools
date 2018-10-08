@@ -37,7 +37,7 @@ public class MojoAnnotationVisitor
 
     private String annotationClassName;
 
-    private Map<String, Object> annotationValues = new HashMap<String, Object>();
+    private Map<String, Object> annotationValues = new HashMap<>();
 
     MojoAnnotationVisitor( Logger logger, String annotationClassName )
     {

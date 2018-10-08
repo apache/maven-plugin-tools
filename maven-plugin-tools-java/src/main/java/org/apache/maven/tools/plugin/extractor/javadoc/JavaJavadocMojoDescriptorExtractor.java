@@ -59,7 +59,6 @@ import com.thoughtworks.qdox.model.JavaType;
  * <a href="http://maven.apache.org/developers/mojo-api-specification.html">
  * http://maven.apache.org/developers/mojo-api-specification.html</a>
  *
- * @version $Id$
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "java-javadoc" )
@@ -572,7 +571,7 @@ public class JavaJavadocMojoDescriptorExtractor
     {
         Collection<JavaClass> javaClasses = discoverClasses( request );
 
-        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
+        List<MojoDescriptor> descriptors = new ArrayList<>();
 
         for ( JavaClass javaClass : javaClasses )
         {
@@ -604,7 +603,7 @@ public class JavaJavadocMojoDescriptorExtractor
         builder.setEncoding( request.getEncoding() );
         
          // Build isolated Classloader with only the artifacts of the project (none of this plugin) 
-        List<URL> urls = new ArrayList<URL>( request.getDependencies().size() );
+        List<URL> urls = new ArrayList<>( request.getDependencies().size() );
         for ( Artifact artifact : request.getDependencies() )
         {
             try

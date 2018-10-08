@@ -144,7 +144,7 @@ public class DefaultPluginToolsRequest
     {
         if ( this.dependencies == null )
         {
-            this.dependencies = new HashSet<Artifact>();
+            this.dependencies = new HashSet<>();
         }
         return dependencies;
     }

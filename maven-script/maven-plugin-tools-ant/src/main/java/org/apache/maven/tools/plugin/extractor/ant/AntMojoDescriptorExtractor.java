@@ -44,7 +44,6 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
  *
- * @version $Id$
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "ant" )
 public class AntMojoDescriptorExtractor
@@ -63,7 +62,7 @@ public class AntMojoDescriptorExtractor
                                                                   PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
+        List<MojoDescriptor> descriptors = new ArrayList<>();
 
         PluginMetadataParser parser = new PluginMetadataParser();
 
@@ -175,7 +174,7 @@ public class AntMojoDescriptorExtractor
                         
                         @SuppressWarnings( "unchecked" )
                         List<ComponentRequirement> requirements = descriptor.getRequirements();
-                        Map<String, ComponentRequirement> reqMap = new HashMap<String, ComponentRequirement>();
+                        Map<String, ComponentRequirement> reqMap = new HashMap<>();
 
                         if ( requirements != null )
                         {

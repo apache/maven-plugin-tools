@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.StringUtils;
  * Convenience methods to play with Maven plugins.
  *
  * @author jdcasey
- * @version $Id$
+ *
  */
 public final class PluginUtils
 {
@@ -55,7 +55,7 @@ public final class PluginUtils
     public static final Map<String, String> MAVEN_COMPONENTS;
     static
     {
-        Map<String, String> mavenComponents = new HashMap<String, String>();
+        Map<String, String> mavenComponents = new HashMap<>();
 
         mavenComponents.put( "org.apache.maven.execution.MavenSession", "${session}" );
         mavenComponents.put( "org.apache.maven.project.MavenProject", "${project}" );

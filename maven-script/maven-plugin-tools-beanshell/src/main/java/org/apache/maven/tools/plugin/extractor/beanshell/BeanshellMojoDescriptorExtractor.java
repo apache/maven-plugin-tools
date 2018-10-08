@@ -40,7 +40,6 @@ import java.util.Set;
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
  *
- * @version $Id$
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
 public class BeanshellMojoDescriptorExtractor
@@ -62,7 +61,7 @@ public class BeanshellMojoDescriptorExtractor
                                                            PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
-        List<MojoDescriptor> descriptors = new ArrayList<MojoDescriptor>();
+        List<MojoDescriptor> descriptors = new ArrayList<>();
 
         for ( Map.Entry<String, Set<File>> entry : scriptFilesKeyedByBasedir.entrySet() )
         {

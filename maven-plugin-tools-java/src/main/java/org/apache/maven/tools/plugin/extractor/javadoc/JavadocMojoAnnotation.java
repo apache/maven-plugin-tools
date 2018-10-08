@@ -23,7 +23,6 @@ package org.apache.maven.tools.plugin.extractor.javadoc;
  * List of all Javadoc annotations used to describe a java Mojo.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @version $Id$
  * @since 2.4
  */
 @SuppressWarnings( "checkstyle:interfaceistype" )
