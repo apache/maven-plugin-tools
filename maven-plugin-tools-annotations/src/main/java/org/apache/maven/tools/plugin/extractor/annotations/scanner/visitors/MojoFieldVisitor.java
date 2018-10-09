@@ -44,7 +44,7 @@ public class MojoFieldVisitor
 
     MojoFieldVisitor( Logger logger, String fieldName, String className )
     {
-        super( Opcodes.ASM5 );
+        super( Opcodes.ASM7 );
         this.logger = logger;
         this.fieldName = fieldName;
         this.className = className;

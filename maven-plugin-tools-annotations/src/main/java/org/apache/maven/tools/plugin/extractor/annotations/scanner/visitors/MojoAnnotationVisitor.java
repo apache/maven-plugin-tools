@@ -41,7 +41,7 @@ public class MojoAnnotationVisitor
 
     MojoAnnotationVisitor( Logger logger, String annotationClassName )
     {
-        super( Opcodes.ASM5 );
+        super( Opcodes.ASM7 );
         this.logger = logger;
         this.annotationClassName = annotationClassName;
     }
