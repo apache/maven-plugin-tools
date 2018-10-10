@@ -772,6 +772,12 @@ public class PluginReport
                 return jdk;
             }
 
+            jdk = getPluginParameter( compiler, "release" );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
             // default value
             jdk = project.getProperties().getProperty( "maven.compiler.target" );
             if ( jdk != null )
