@@ -36,7 +36,7 @@ import org.codehaus.plexus.compiler.manager.CompilerManager;
 @Mojo( name = "foo", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true )
 @Execute( goal = "compiler", lifecycle = "my-lifecycle", phase = LifecyclePhase.PACKAGE )
 public class FooMojo
-    extends AbstractMojo
+    extends AbstractFooMojo
 {
     /**
      * the cool bar to go

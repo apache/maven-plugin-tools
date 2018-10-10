@@ -19,7 +19,6 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -63,7 +62,7 @@ public class TestAnnotationsReader
         MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.values().iterator().next();
 
         assertEquals( FooMojo.class.getName(), mojoAnnotatedClass.getClassName() );
-        assertEquals( AbstractMojo.class.getName(), mojoAnnotatedClass.getParentClassName() );
+        assertEquals( AbstractFooMojo.class.getName(), mojoAnnotatedClass.getParentClassName() );
 
         Mojo mojo = mojoAnnotatedClass.getMojo();
 
