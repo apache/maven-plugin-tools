@@ -136,12 +136,15 @@ public class PluginReport
     private Requirements requirements;
 
     /**
+     * <p>
      * The goal prefix that will appear before the ":".
      * By default, this plugin applies a heuristic to derive a heuristic from
      * the plugin's artifactId.
-     * <p/>
+     * </p>
+     * <p>
      * It removes any occurrences of the regular expression <strong>-?maven-?</strong>,
      * and then removes any occurrences of <strong>-?plugin-?</strong>.
+     * </p>
      * <p>
      * For example, horsefeature-maven-plugin becomes horsefeature.
      * </p>

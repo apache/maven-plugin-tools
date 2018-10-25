@@ -29,14 +29,16 @@ import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 
 /**
+ * <p>
  * Generate a plugin descriptor.
- * <br/>
+ * </p>
+ * <p>
  * <b>Note:</b> Since 3.0, for Java plugin annotations support,
  * default <a href="http://maven.apache.org/ref/current/maven-core/lifecycles.html">phase</a>
  * defined by this goal is after the "compilation" of any scripts. This doesn't override
  * <a href="/ref/current/maven-core/default-bindings.html#Bindings_for_maven-plugin_packaging">the default binding coded
  * at generate-resources phase</a> in Maven core.
- *
+ * </p>
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @since 2.0
  */

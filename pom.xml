@@ -63,7 +63,6 @@
     <module>maven-plugin-tools-api</module>
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
-    <!--module>maven-plugin-tools-javadoc</module-->
     <module>maven-plugin-annotations</module>
     <module>maven-script</module>
     <module>maven-plugin-plugin</module><!-- keep at end since ITs require every extractors -->
@@ -256,6 +255,14 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <!-- modello generate java sources with errors so do not fail -->
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>

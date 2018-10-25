@@ -33,205 +33,291 @@ public interface JavadocMojoAnnotation
     // ----------------------------------------------------------------------
 
     /**
+     * <p>
      * Flags this Mojo to run it in a multi module way, i.e. aggregate the build with the set of projects listed
      * as modules.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;aggregator</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String AGGREGATOR = "aggregator";
 
     /**
+     * <p>
      * The configurator type to use when injecting parameter values into this Mojo. The value is normally deduced
      * from the Mojo's implementation language, but can be specified to allow a custom ComponentConfigurator
      * implementation to be used.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;configurator &lt;roleHint&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String CONFIGURATOR = "configurator";
 
     /**
+     * <p>
      * The description for the Mojo.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;description</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Mojo's description is auto-detected.
+     * </p>
      */
     String DESCRIPTION = "description";
 
     /**
+     * <p>
      * Refer to <code>&#64;execute ...</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String EXECUTE = "execute";
 
     /**
+     * <p>
      * The Mojo goal will be executed in isolation.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;execute goal="&lt;goalName&gt;"</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String EXECUTE_GOAL = "goal";
 
     /**
+     * <p>
      * The Mojo will be invoked in a parallel lifecycle.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;execute lifecycle="&lt;lifecycleId&gt;"</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String EXECUTE_LIFECYCLE = "lifecycle";
 
     /**
+     * <p>
      * The Mojo will be invoked in a parallel lifecycle, ending at the given phase.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;execute phase="&lt;phaseName&gt;"</code>.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;execute lifecycle="&lt;lifecycleId&gt;" phase="&lt;phaseName&gt;"</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String EXECUTE_PHASE = "phase";
 
     /**
+     * <p>
      * Refer to <code>&#64;executionStrategy &lt;strategy&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String EXECUTION_STATEGY = "executionStrategy";
 
     /**
+     * <p>
      * The name for the Mojo that users will reference to execute it.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;goal &lt;goalName&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String GOAL = "goal";
 
     /**
+     * <p>
      * The Mojo's fully-qualified class name.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;implementation</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Mojo's implementation is auto-detected.
+     * </p>
      */
     String IMPLEMENTATION = "implementation";
 
     /**
+     * <p>
      * Allow Mojo inheritance.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;inheritByDefault &lt;true|false&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String INHERIT_BY_DEFAULT = "inheritByDefault";
 
     /**
+     * <p>
      * Refer to <code>&#64;instantiationStrategy &lt;per-lookup&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String INSTANTIATION_STRATEGY = "instantiationStrategy";
 
     /**
+     * <p>
      * The implementation language for the Mojo.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;language</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Mojo's implementation is auto-detected.
+     * </p>
      */
     String LANGUAGE = "language";
 
     /**
+     * <p>
      * Specifies the execution strategy.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;attainAlways</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
-     * @deprecated use <code>&#64executionStrategy always</code> instead
+     * </p>
+     * @deprecated use <code>&#64;executionStrategy always</code> instead
      */
     String MULTI_EXECUTION_STRATEGY = "attainAlways";
 
     /**
+     * <p>
      * Refer to <code>&#64;phase &lt;phaseName&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String PHASE = "phase";
 
     /**
+     * <p>
      * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be resolved
      * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>,
      * <code>compile+runtime</code> and <code>test</code> scopes.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;requiresDependencyResolution &lt;requiredScope&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_DEPENDENCY_RESOLUTION = "requiresDependencyResolution";
 
     /**
+     * <p>
      * Flags this Mojo as requiring the dependencies in the specified scope (or an implied scope) to be collected
      * before it can execute. Currently supports <code>compile</code>, <code>runtime</code>,
      * <code>compile+runtime</code> and <code>test</code> scopes.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;requiresDependencyCollection &lt;requiredScope&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_DEPENDENCY_COLLECTION = "requiresDependencyCollection";
 
 
     /**
+     * <p>
      * Refer to <code>&#64;requiresDirectInvocation &lt;true|false&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_DIRECT_INVOCATION = "requiresDirectInvocation";
 
     /**
+     * <p>
      * Flags this Mojo to run online.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;requiresOnline &lt;true|false&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_ONLINE = "requiresOnline";
 
     /**
+     * <p>
      * Flags this Mojo to run inside of a project.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;requiresProject &lt;true|false&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_PROJECT = "requiresProject";
 
     /**
+     * <p>
      * Flags this Mojo to run inside reports.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;requiresReports &lt;true|false&gt;</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String REQUIRES_REPORTS = "requiresReports";
 
     /**
+     * <p>
      * Indicates that this mojo is thread-safe and can be run in parallel.
-     *
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Type.
+     * </p>
      */
     String THREAD_SAFE = "threadSafe";
 
@@ -241,110 +327,155 @@ public interface JavadocMojoAnnotation
     // ----------------------------------------------------------------------
 
     /**
+     * <p>
      * Populate the field with an instance of a Plexus component. This is like declaring a requirement in a
      * Plexus component.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;component ...</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String COMPONENT = "component";
 
     /**
+     * <p>
      * Refer to <code>&#64;component role="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String COMPONENT_ROLE = "role";
 
     /**
+     * <p>
      * Refer to <code>&#64;component roleHint="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String COMPONENT_ROLEHINT = "roleHint";
 
     /**
+     * <p>
      * Refer to <code>&#64;parameter ...</code>
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER = "parameter";
 
     /**
+     * <p>
      * This defines the name of the bean property used to get/set the field: by default, field name is used.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter name="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER_NAME = "name";
 
     /**
+     * <p>
      * This defines an alias which can be used to configure a parameter. This is primarily useful to improve
      * user-friendliness.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter alias="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER_ALIAS = "alias";
 
     /**
+     * <p>
      * This defines the default value to be injected into this parameter of the Mojo at build time.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter default-value="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER_DEFAULT_VALUE = "default-value";
 
     /**
+     * <p>
      * This defines the expression used to calculate the value to be injected into this parameter of the
      * Mojo at build time.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter expression="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      * @deprecated use PARAMETER_PROPERTY instead
      */
     String PARAMETER_EXPRESSION = "expression";
 
     /**
+     * <p>
      * This defines the property used to calculate the value to be injected into this parameter of the
      * Mojo at build time, which can come from <code>-D</code> execution, setting properties or pom properties.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter property="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER_PROPERTY = "property";
 
     /**
+     * <p>
      * This defines the default implementation in the case the parameter type is an interface.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;parameter implementation="..."</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String PARAMETER_IMPLEMENTATION = "implementation";
 
     /**
+     * <p>
      * Specifies that this parameter cannot be configured directly by the user (as in the case of POM-specified
      * configuration).
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;readonly</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String READONLY = "readonly";
 
     /**
+     * <p>
      * Specifies that this parameter is required for the Mojo to function.
-     * <br/>
+     * </p>
+     * <p>
      * Refer to <code>&#64;required</code>.
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Should be defined in a Mojo Field.
+     * </p>
      */
     String REQUIRED = "required";
 
@@ -353,16 +484,22 @@ public interface JavadocMojoAnnotation
     // ----------------------------------------------------------------------
 
     /**
+     * <p>
      * Refer to <code>&#64;since &lt;deprecated-text&gt;</code>
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Could be defined in a Mojo Type or a Mojo Field.
+     * </p>
      */
     String SINCE = "since";
 
     /**
+     * <p>
      * Refer to <code>&#64;deprecated &lt;since-text&gt;</code>
-     * <br/>
+     * </p>
+     * <p>
      * <b>Note</b>: Could be defined in a Mojo Type or a Mojo Field.
+     * </p>
      */
     String DEPRECATED = "deprecated";
 

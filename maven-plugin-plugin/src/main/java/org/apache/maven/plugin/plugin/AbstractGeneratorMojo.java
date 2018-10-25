@@ -92,13 +92,14 @@ public abstract class AbstractGeneratorMojo
     protected boolean skipErrorNoDescriptorsFound;
 
     /**
+     * <p>
      * The role names of mojo extractors to use.
-     * <p/>
+     * </p>
+     * <p>
      * If not set, all mojo extractors will be used. If set to an empty extractor name, no mojo extractors
      * will be used.
-     * <p/>
+     * </p>
      * Example:
-     * <p/>
      * <pre>
      *  &lt;!-- Use all mojo extractors --&gt;
      *  &lt;extractors/&gt;
