@@ -44,10 +44,12 @@ public interface MojoScanner
         throws ExtractionException, InvalidPluginDescriptorException;
 
     /**
+     * <p>
      * Sets the active extractors.
-     * <p/>
+     * </p>
+     * <p>
      * Only the specified extractors will be used, all others will be skipped.
-     *
+     * </p>
      * @param extractors The names of the active extractors. If this parameter is <code>null</code>,
      * all the scanner's extractors are considered active. Set entries that are <code>null</code> or
      * empty ("") will be ignored.

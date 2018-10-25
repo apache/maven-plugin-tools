@@ -39,23 +39,27 @@ public interface PluginToolsRequest
 {
 
     /**
-     * Return the current {@link MavenProject} instance in use.
+     * @return Return the current {@link MavenProject} instance in use.
      */
     MavenProject getProject();
 
     /**
+     * @param project the current {@link MavenProject}
      * @see PluginToolsRequest#getProject()
+     * @return This request.
      */
     PluginToolsRequest setProject( MavenProject project );
 
     /**
-     * Return the {@link PluginDescriptor} currently being populated as part of the build of the
+     * @return Return the {@link PluginDescriptor} currently being populated as part of the build of the
      * current plugin project.
      */
     PluginDescriptor getPluginDescriptor();
 
     /**
      * @see PluginToolsRequest#getPluginDescriptor()
+     * @param pluginDescriptor the {@link PluginDescriptor}
+     * @return This request.
      */
     PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor );
 
@@ -79,7 +83,8 @@ public interface PluginToolsRequest
      * By default an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
      * descriptor generator mojo is bound to generate-resources phase.
      * But for annotations, the compiled classes are needed, so skip error
-     *
+     * @param skipErrorNoDescriptorsFound <code>true</code> to skip errors because of not found descriptors
+     * @return This request.
      * @since 3.0
      */
     PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound );
@@ -99,7 +104,7 @@ public interface PluginToolsRequest
     Set<Artifact> getDependencies();
 
     /**
-     * @param dependencies
+     * @param dependencies the dependencies
      * @return This request.
      * @since 3.0
      */
@@ -114,7 +119,7 @@ public interface PluginToolsRequest
 
     /**
      *
-     * @param remoteRepos
+     * @param remoteRepos the remote repositories
      * @return This request.
      * @since 3.0
      */
@@ -129,7 +134,7 @@ public interface PluginToolsRequest
 
     /**
      *
-     * @param local
+     * @param local the local repository
      * @return This request.
      * @since 3.0
      */

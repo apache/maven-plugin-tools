@@ -80,6 +80,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     /**
      * @param scriptFilesKeyedByBasedir not null
      * @param outputDirectory not null
+     * @param request the request
      * @throws ExtractionException if any
      */
     protected void copyScriptsToOutputDirectory( Map<String, Set<File>> scriptFilesKeyedByBasedir,
@@ -132,6 +133,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param basedir not null
      * @param directories not null
      * @param scriptFileExtension not null
+     * @param request the request
      * @return map with subdirs paths as key
      */
     protected Map<String, Set<File>> gatherFilesByBasedir( File basedir, List<String> directories,
@@ -198,7 +200,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
 
     /**
      * Should be implemented in the sub classes.
-     *
+     * @param request the request
      * @return always null
      */
     protected String getMetadataFileExtension( PluginToolsRequest request )
@@ -223,6 +225,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     }
 
     /**
+     * @param request the request
      * @return the file extension like <code>.bsh</code> for BeanShell.
      */
     protected abstract String getScriptFileExtension( PluginToolsRequest request );
