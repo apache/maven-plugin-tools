@@ -61,7 +61,6 @@ public class PluginDescriptorGeneratorTest
         // Dependencies
         // ----------------------------------------------------------------------
 
-        @SuppressWarnings( "unchecked" )
         List<ComponentDependency> dependencies = pluginDescriptor.getDependencies();
 
         checkDependency( "testGroup", "testArtifact", "0.0.0", dependencies.get( 0 ) );

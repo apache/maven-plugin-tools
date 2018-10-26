@@ -33,6 +33,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -94,8 +95,7 @@ public abstract class AbstractGeneratorTestCase
 
         pluginDescriptor.setDependencies( Collections.singletonList( dependency ) );
 
-        File destinationDirectory = new File( System.getProperty( "java.io.tmpdir" ), "testGenerator-outDir" );
-        FileUtils.deleteDirectory( destinationDirectory );
+        File destinationDirectory = Files.createTempDirectory( "testGenerator-outDir" ).toFile();
         destinationDirectory.mkdir();
 
         MavenProject mavenProject = new MavenProject();
