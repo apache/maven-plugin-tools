@@ -97,7 +97,7 @@
     <antVersion>1.7.1</antVersion>
     <mavenInvokerPluginVersion>3.0.1</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
-    <asmVersion>7.0-beta</asmVersion>
+    <asmVersion>7.0</asmVersion>
   </properties>
 
   <dependencyManagement>
