@@ -153,6 +153,7 @@ public class HelpMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {
@@ -224,13 +225,13 @@ public class HelpMojo
         return string != null && string.length() > 0;
     }
 
-    private String getValue( Node node, String elementName )
+    private static String getValue( Node node, String elementName )
         throws MojoExecutionException
     {
         return getSingleChild( node, elementName ).getTextContent();
     }
 
-    private Node getSingleChild( Node node, String elementName )
+    private static Node getSingleChild( Node node, String elementName )
         throws MojoExecutionException
     {
         List<Node> namedChild = findNamedChild( node, elementName );
@@ -245,7 +246,7 @@ public class HelpMojo
         return namedChild.get( 0 );
     }
 
-    private List<Node> findNamedChild( Node node, String elementName )
+    private static List<Node> findNamedChild( Node node, String elementName )
     {
         List<Node> result = new ArrayList<Node>();
         NodeList childNodes = node.getChildNodes();
@@ -260,7 +261,7 @@ public class HelpMojo
         return result;
     }
 
-    private Node findSingleChild( Node node, String elementName )
+    private static Node findSingleChild( Node node, String elementName )
         throws MojoExecutionException
     {
         List<Node> elementsByTagName = findNamedChild( node, elementName );
@@ -491,7 +492,7 @@ public class HelpMojo
         return level;
     }
     
-    private String getPropertyFromExpression( String expression )
+    private static String getPropertyFromExpression( String expression )
     {
         if ( expression != null && expression.startsWith( "${" ) && expression.endsWith( "}" )
             && !expression.substring( 2 ).contains( "${" ) )
