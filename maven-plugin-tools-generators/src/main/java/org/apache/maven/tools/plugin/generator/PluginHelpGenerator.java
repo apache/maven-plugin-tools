@@ -287,7 +287,15 @@ public class PluginHelpGenerator
             return;
         }
 
-        Properties properties = PropertyUtils.loadProperties( tmpPropertiesFile );
+        Properties properties;
+        try
+        {
+            properties = PropertyUtils.loadProperties( tmpPropertiesFile );
+        }
+        catch ( IOException e )
+        {
+            throw new GeneratorException( e.getMessage(), e );
+        }
 
         String helpPackageName = properties.getProperty( "helpPackageName" );
 
