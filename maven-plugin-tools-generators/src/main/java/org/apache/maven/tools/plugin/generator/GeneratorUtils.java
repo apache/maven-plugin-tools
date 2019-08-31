@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -284,7 +286,7 @@ public final class GeneratorUtils
         try
         {
             ByteArrayOutputStream out = new ByteArrayOutputStream( commentCleaned.length() + 256 );
-            tidy.parse( new ByteArrayInputStream( commentCleaned.getBytes( "UTF-8" ) ), out );
+            tidy.parse( new ByteArrayInputStream( commentCleaned.getBytes( UTF_8 ) ), out );
             commentCleaned = out.toString( "UTF-8" );
         }
         catch ( UnsupportedEncodingException e )

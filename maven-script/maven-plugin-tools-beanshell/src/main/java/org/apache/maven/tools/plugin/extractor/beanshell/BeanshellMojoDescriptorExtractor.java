@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.extractor.beanshell;
  * under the License.
  */
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import bsh.EvalError;
 import bsh.Interpreter;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -31,7 +33,6 @@ import org.codehaus.plexus.component.annotations.Component;
 
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -118,16 +119,11 @@ public class BeanshellMojoDescriptorExtractor
 
             interpreter.set( "encoding", "UTF-8" );
 
-            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), "UTF-8" ) );
+            interpreter.eval( new InputStreamReader( getClass().getResourceAsStream( "/extractor.bsh" ), UTF_8 ) );
         }
         catch ( EvalError evalError )
         {
             throw new InvalidPluginDescriptorException( "Error scanning beanshell script", evalError );
-        }
-        catch ( UnsupportedEncodingException uee )
-        {
-            // should not occur...
-            throw new InvalidPluginDescriptorException( "Unsupported encoding while reading beanshell script", uee );
         }
 
         return mojoDescriptor;

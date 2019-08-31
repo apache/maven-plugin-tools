@@ -125,7 +125,7 @@ public class AntMojoWrapper
         
         if ( logger.isDebugEnabled() && !unconstructedParts.isEmpty() )
         {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             
             buffer.append( "The following standard Maven Ant-mojo support objects could not be created:\n\n" );
             

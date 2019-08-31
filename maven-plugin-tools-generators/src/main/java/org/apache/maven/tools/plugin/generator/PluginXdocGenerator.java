@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -130,11 +132,9 @@ public class PluginXdocGenerator
         throws IOException
     {
         File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
-        String encoding = "UTF-8";
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), encoding ) )
+        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), UTF_8 ) )
         {
-
-            XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), encoding, null );
+            XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), UTF_8.name(), null );
             writeBody( mojoDescriptor, w );
 
             writer.flush();

@@ -138,18 +138,10 @@ public class AntMojoWrapperTest
             fail( "plugin descriptor not found: '" + pluginXml + "'." );
         }
 
-        Reader reader = null;
         PluginDescriptor pd;
-        try
+        try ( Reader reader = new InputStreamReader( resource.openStream() ) )
         {
-            reader = new InputStreamReader( resource.openStream() );
             pd = new PluginDescriptorBuilder().build( reader, pluginXml );
-            reader.close();
-            reader = null;
-        }
-        finally
-        {
-            IOUtil.close( reader );
         }
 
         Map<String, Object> config = new HashMap<String, Object>();
