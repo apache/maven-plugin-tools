@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.logging.Log;
@@ -50,7 +52,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -201,14 +203,10 @@ public class PluginHelpGenerator
         // plugin-tools sources are UTF-8 (and even ASCII in this case))
         try ( InputStream is = //
                  Thread.currentThread().getContextClassLoader().getResourceAsStream( "help-class-source.vm" ); //
-             InputStreamReader isReader = new InputStreamReader( is, "UTF-8" ) )
+             InputStreamReader isReader = new InputStreamReader( is, UTF_8 ) )
         {
             //isReader =
             velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
-        }
-        catch ( UnsupportedEncodingException e )
-        {
-            // not supposed to happen since UTF-8 is supposed to be supported by any JVM
         }
         return stringWriter.toString();
     }
@@ -361,11 +359,12 @@ public class PluginHelpGenerator
             {
                 helpSourceFileNew.getParentFile().mkdirs();
             }
+            Charset encoding = Charset.forName( request.getEncoding() );
             try ( Reader sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), //
-                                                              request.getEncoding() ); //
+                                                              encoding ); //
                  PrintWriter sourceWriter = new PrintWriter(
                      new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ), //
-                                             request.getEncoding() ) ) )
+                                             encoding ) ) )
             {
                 sourceWriter.println( "package " + destinationPackage + ";" );
                 IOUtil.copy( sourceReader, sourceWriter );
