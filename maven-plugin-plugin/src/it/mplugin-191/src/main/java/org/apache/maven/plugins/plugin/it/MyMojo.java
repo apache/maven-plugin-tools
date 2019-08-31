@@ -52,30 +52,14 @@ public class MyMojo
 
         File touch = new File( f, "touch.txt" );
 
-        FileWriter w = null;
-        try
+        try ( FileWriter w = new FileWriter( touch ) )
         {
-            w = new FileWriter( touch );
 
             w.write( "touch.txt" );
         }
         catch ( IOException e )
         {
             throw new MojoExecutionException( "Error creating file " + touch, e );
-        }
-        finally
-        {
-            if ( w != null )
-            {
-                try
-                {
-                    w.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
         }
     }
 }
