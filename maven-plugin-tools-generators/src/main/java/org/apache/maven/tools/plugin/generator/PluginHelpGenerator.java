@@ -116,7 +116,7 @@ public class PluginHelpGenerator
 
         String helpImplementation = getImplementation( pluginDescriptor );
 
-        @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
 
         if ( mojoDescriptors != null )
         {

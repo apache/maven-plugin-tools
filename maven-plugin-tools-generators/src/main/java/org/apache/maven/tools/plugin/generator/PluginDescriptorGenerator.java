@@ -85,11 +85,7 @@ public class PluginDescriptorGenerator
 
             writeDescriptor( f, request, true );
         }
-        catch ( IOException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
-        }
-        catch ( DuplicateMojoDescriptorException e )
+        catch ( IOException | DuplicateMojoDescriptorException e )
         {
             throw new GeneratorException( e.getMessage(), e );
         }
@@ -154,7 +150,7 @@ public class PluginDescriptorGenerator
 
             if ( pluginDescriptor.getMojos() != null )
             {
-                @SuppressWarnings( "unchecked" ) List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
+                List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 
                 PluginUtils.sortMojos( descriptors );
 
@@ -413,7 +409,7 @@ public class PluginDescriptorGenerator
         // Parameters
         // ----------------------------------------------------------------------
 
-        @SuppressWarnings( "unchecked" ) List<Parameter> parameters = mojoDescriptor.getParameters();
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         w.startElement( "parameters" );
 

@@ -71,7 +71,7 @@ public class BeanshellMojoDescriptorExtractor
 
             for ( File scriptFile : metadataFiles )
             {
-                String relativePath = null;
+                String relativePath;
 
                 if ( basedir.endsWith( "/" ) )
                 {

@@ -108,7 +108,7 @@ public class PluginXdocGenerator
         {
             if ( request.getPluginDescriptor().getMojos() != null )
             {
-                @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
+                List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
 
                 for ( MojoDescriptor descriptor : mojos )
                 {

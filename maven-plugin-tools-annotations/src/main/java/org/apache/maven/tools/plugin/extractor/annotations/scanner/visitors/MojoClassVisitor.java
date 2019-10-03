@@ -96,7 +96,7 @@ public class MojoClassVisitor
     {
         String annotationClassName = annotation.getName();
 
-        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
+        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<>();
 
         for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
         {

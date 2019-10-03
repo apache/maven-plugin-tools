@@ -309,7 +309,7 @@ public class JavaJavadocMojoDescriptorExtractor
 
             if ( StringUtils.isNotEmpty( value ) )
             {
-                defaultValue = Boolean.valueOf( value ).booleanValue();
+                defaultValue = Boolean.valueOf( value );
             }
         }
         return defaultValue;
@@ -334,7 +334,7 @@ public class JavaJavadocMojoDescriptorExtractor
 
             if ( StringUtils.isNotEmpty( value ) )
             {
-                return Boolean.valueOf( value ).booleanValue();
+                return Boolean.valueOf( value );
             }
             else
             {
@@ -552,7 +552,7 @@ public class JavaJavadocMojoDescriptorExtractor
         }
         else
         {
-            rawParams = new TreeMap<String, JavaField>();
+            rawParams = new TreeMap<>();
         }
 
         for ( JavaField field : javaClass.getFields() )
@@ -597,7 +597,6 @@ public class JavaJavadocMojoDescriptorExtractor
      * @param request The plugin request.
      * @return an array of java class
      */
-    @SuppressWarnings( "unchecked" )
     protected Collection<JavaClass> discoverClasses( final PluginToolsRequest request )
     {
         JavaProjectBuilder builder = new JavaProjectBuilder( new SortedClassLibraryBuilder() );
@@ -620,7 +619,7 @@ public class JavaJavadocMojoDescriptorExtractor
         
         MavenProject project = request.getProject();
 
-        for ( String source : (List<String>) project.getCompileSourceRoots() )
+        for ( String source : project.getCompileSourceRoots() )
         {
             builder.addSourceTree( new File( source ) );
         }
@@ -642,7 +641,6 @@ public class JavaJavadocMojoDescriptorExtractor
     protected void validate( MojoDescriptor mojoDescriptor )
         throws InvalidParameterException
     {
-        @SuppressWarnings( "unchecked" )
         List<Parameter> parameters = mojoDescriptor.getParameters();
 
         if ( parameters != null )

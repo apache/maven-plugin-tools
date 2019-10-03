@@ -65,7 +65,7 @@ public abstract class AbstractGeneratorTestCase
         mojoDescriptor.setImplementation( "org.apache.maven.tools.plugin.generator.TestMojo" );
         mojoDescriptor.setDependencyResolutionRequired( "compile" );
 
-        List<Parameter> params = new ArrayList<Parameter>();
+        List<Parameter> params = new ArrayList<>();
 
         Parameter param = new Parameter();
         param.setExpression( "${project.build.directory}" );

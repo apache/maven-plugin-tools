@@ -24,7 +24,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class MojoAnnotationsScannerRequest
 
     private Set<Artifact> dependencies = new HashSet<>();
 
-    private List<String> includePatterns = Arrays.asList( "**/*.class" );
+    private List<String> includePatterns = Collections.singletonList( "**/*.class" );
 
     private List<File> sourceDirectories = new ArrayList<>();
 

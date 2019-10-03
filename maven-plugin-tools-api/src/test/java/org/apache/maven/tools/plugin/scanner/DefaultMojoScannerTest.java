@@ -52,10 +52,6 @@ public class DefaultMojoScannerTest
 {
     private Map<String, MojoDescriptorExtractor> extractors;
 
-    private Build build;
-
-    private Model model;
-
     private MojoScanner scanner;
 
     private MavenProject project;
@@ -70,10 +66,10 @@ public class DefaultMojoScannerTest
 
         scanner = new DefaultMojoScanner( extractors );
 
-        build = new Build();
+        Build build = new Build();
         build.setSourceDirectory( "testdir" );
 
-        model = new Model();
+        Model model = new Model();
         model.setBuild( build );
 
         project = new MavenProject( model );
@@ -185,7 +181,6 @@ public class DefaultMojoScannerTest
     protected void checkResult( PluginDescriptor pluginDescriptor, Collection<String> expectedGoals )
     {
         Set<String> remainingGoals = new HashSet<>( expectedGoals );
-        @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 
         if ( descriptors == null )

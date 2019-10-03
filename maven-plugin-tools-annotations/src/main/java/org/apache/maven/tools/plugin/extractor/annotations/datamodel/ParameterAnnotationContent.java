@@ -22,6 +22,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 /**
  * @author Olivier Lamy
@@ -182,31 +183,20 @@ public class ParameterAnnotationContent
             return false;
         }
 
-        if ( alias != null ? !alias.equals( that.alias ) : that.alias != null )
+        if ( !Objects.equals( alias, that.alias ) )
         {
             return false;
         }
-        if ( defaultValue != null ? !defaultValue.equals( that.defaultValue ) : that.defaultValue != null )
+        if ( !Objects.equals( defaultValue, that.defaultValue ) )
         {
             return false;
         }
-        if ( property != null ? !property.equals( that.property ) : that.property != null )
-        {
-            return false;
-        }
-
-        return true;
+        return property != null ? property.equals( that.property ) : that.property == null;
     }
 
     @Override
     public int hashCode()
     {
-        int result = alias != null ? alias.hashCode() : 0;
-        result = 31 * result + ( getFieldName() != null ? getFieldName().hashCode() : 0 );
-        result = 31 * result + ( property != null ? property.hashCode() : 0 );
-        result = 31 * result + ( defaultValue != null ? defaultValue.hashCode() : 0 );
-        result = 31 * result + ( required ? 1 : 0 );
-        result = 31 * result + ( readonly ? 1 : 0 );
-        return result;
+        return Objects.hash( alias, getFieldName(), property, defaultValue, required, readonly );
     }
 }

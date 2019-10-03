@@ -155,6 +155,7 @@ public class AntMojoWrapper
         unconstructedParts.clear();
     }
 
+    @SuppressWarnings( "unchecked" )
     public void setPluginContext( Map pluginContext )
     {
         this.pluginContext = pluginContext;

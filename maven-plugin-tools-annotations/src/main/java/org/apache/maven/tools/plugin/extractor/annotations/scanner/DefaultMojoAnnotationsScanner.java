@@ -174,7 +174,7 @@ public class DefaultMojoAnnotationsScanner
         scanner.addDefaultExcludes();
         if ( includePatterns != null )
         {
-            scanner.setIncludes( includePatterns.toArray( new String[includePatterns.size()] ) );
+            scanner.setIncludes( includePatterns.toArray( new String[0] ) );
         }
         scanner.scan();
         String[] classFiles = scanner.getIncludedFiles();

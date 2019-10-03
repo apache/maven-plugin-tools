@@ -53,7 +53,7 @@ public class PluginDescriptorGeneratorTest
 
         assertEquals( 1, pluginDescriptor.getMojos().size() );
 
-        MojoDescriptor mojoDescriptor = (MojoDescriptor) pluginDescriptor.getMojos().get( 0 );
+        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().get( 0 );
 
         checkMojo( mojoDescriptor );
 
@@ -81,7 +81,7 @@ public class PluginDescriptorGeneratorTest
         try (PrintWriter pWriter = new PrintWriter( sWriter ); //
              BufferedReader reader = new BufferedReader( ReaderFactory.newXmlReader( pluginDescriptorFile ) ))
         {
-            String line = null;
+            String line;
             while ( ( line = reader.readLine() ) != null )
             {
                 pWriter.println( line );
@@ -103,7 +103,7 @@ public class PluginDescriptorGeneratorTest
         assertNotNull( mojoDescriptor.isDependencyResolutionRequired() );
 
         // check the parameter.
-        checkParameter( (Parameter) mojoDescriptor.getParameters().get( 0 ) );
+        checkParameter( mojoDescriptor.getParameters().get( 0 ) );
     }
 
     private void checkParameter( Parameter parameter )

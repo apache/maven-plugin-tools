@@ -97,7 +97,6 @@ public class AntMojoDescriptorExtractor
 
                     for ( MojoDescriptor descriptor : mojoDescriptors )
                     {
-                        @SuppressWarnings( "unchecked" )
                         Map<String, ?> paramMap = descriptor.getParameterMap();
 
                         if ( !paramMap.containsKey( "basedir" ) )
@@ -172,7 +171,6 @@ public class AntMojoDescriptorExtractor
                             descriptor.addParameter( param );
                         }
                         
-                        @SuppressWarnings( "unchecked" )
                         List<ComponentRequirement> requirements = descriptor.getRequirements();
                         Map<String, ComponentRequirement> reqMap = new HashMap<>();
 

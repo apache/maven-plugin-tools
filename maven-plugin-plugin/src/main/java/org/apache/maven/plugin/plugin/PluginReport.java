@@ -487,7 +487,7 @@ public class PluginReport
          * {@inheritDoc}
          */
         @Override
-        @SuppressWarnings( { "unchecked", "rawtypes" } )
+        @SuppressWarnings( { "rawtypes" } )
         public void renderBody()
         {
             startSection( getTitle() );
@@ -502,10 +502,8 @@ public class PluginReport
             paragraph( getBundle( locale ).getString( "report.plugin.goals.intro" ) );
 
             boolean hasMavenReport = false;
-            for ( Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); )
+            for ( MojoDescriptor mojo : pluginDescriptor.getMojos() )
             {
-                MojoDescriptor mojo = i.next();
-
                 if ( GeneratorUtils.isMavenReport( mojo.getImplementation(), project ) )
                 {
                     hasMavenReport = true;
@@ -526,8 +524,7 @@ public class PluginReport
                 tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
             }
 
-            List<MojoDescriptor> mojos = new ArrayList<>();
-            mojos.addAll( pluginDescriptor.getMojos() );
+            List<MojoDescriptor> mojos = new ArrayList<>( pluginDescriptor.getMojos() );
             PluginUtils.sortMojos( mojos );
             for ( MojoDescriptor mojo : mojos )
             {
@@ -654,9 +651,8 @@ public class PluginReport
             sb.append( "<project>" ).append( '\n' );
             sb.append( "  ..." ).append( '\n' );
             sb.append( "  <build>" ).append( '\n' );
-            sb.append(
-                "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) + " -->" ).append(
-                '\n' );
+            sb.append( "    <!-- " ).append( getBundle( locale ).getString( "report.plugin.usage.pluginManagement" ) )
+                    .append( " -->" ).append( '\n' );
             sb.append( "    <pluginManagement>" ).append( '\n' );
             sb.append( "      <plugins>" ).append( '\n' );
             sb.append( "        <plugin>" ).append( '\n' );
@@ -670,8 +666,8 @@ public class PluginReport
             sb.append( "        ..." ).append( '\n' );
             sb.append( "      </plugins>" ).append( '\n' );
             sb.append( "    </pluginManagement>" ).append( '\n' );
-            sb.append( "    <!-- " + getBundle( locale ).getString( "report.plugin.usage.plugins" ) + " -->" ).append(
-                '\n' );
+            sb.append( "    <!-- " ).append( getBundle( locale ).getString( "report.plugin.usage.plugins" ) )
+                    .append( " -->" ).append( '\n' );
             sb.append( "    <plugins>" ).append( '\n' );
             sb.append( "      <plugin>" ).append( '\n' );
             sb.append( "        <groupId>" ).append( pluginDescriptor.getGroupId() ).append( "</groupId>" ).append(
@@ -688,9 +684,8 @@ public class PluginReport
             if ( hasMavenReport )
             {
                 sb.append( "  ..." ).append( '\n' );
-                sb.append(
-                    "  <!-- " + getBundle( locale ).getString( "report.plugin.usage.reporting" ) + " -->" ).append(
-                    '\n' );
+                sb.append( "  <!-- " ).append( getBundle( locale ).getString( "report.plugin.usage.reporting" ) )
+                        .append( " -->" ).append( '\n' );
                 sb.append( "  <reporting>" ).append( '\n' );
                 sb.append( "    <plugins>" ).append( '\n' );
                 sb.append( "      <plugin>" ).append( '\n' );

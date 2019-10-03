@@ -41,7 +41,7 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -167,7 +167,7 @@ public abstract class AbstractGeneratorMojo
      * @since 3.3
      */
     @Parameter
-    protected List<String> packagingTypes = Arrays.asList( "maven-plugin" );
+    protected List<String> packagingTypes = Collections.singletonList( "maven-plugin" );
 
     /**
      * @return the output directory where files will be generated.
@@ -267,12 +267,7 @@ public abstract class AbstractGeneratorMojo
         {
             throw new MojoExecutionException( "Error writing plugin descriptor", e );
         }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                              e );
-        }
-        catch ( ExtractionException e )
+        catch ( InvalidPluginDescriptorException | ExtractionException e )
         {
             throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );

@@ -53,14 +53,12 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         
         MavenProject project = request.getProject();
 
-        @SuppressWarnings( "unchecked" )
         Map<String, Set<File>> scriptFilesKeyedByBasedir =
             gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), scriptExtension, request );
 
         List<MojoDescriptor> mojoDescriptors;
         if ( !StringUtils.isEmpty( metadataExtension ) )
         {
-            @SuppressWarnings( "unchecked" )
             Map<String, Set<File>> metadataFilesKeyedByBasedir =
                 gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension,
                                       request );

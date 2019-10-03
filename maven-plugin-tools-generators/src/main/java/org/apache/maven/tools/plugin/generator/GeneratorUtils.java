@@ -75,7 +75,6 @@ public final class GeneratorUtils
     {
         w.startElement( "dependencies" );
 
-        @SuppressWarnings( "unchecked" )
         List<ComponentDependency> deps = pluginDescriptor.getDependencies();
         for ( ComponentDependency dep : deps )
         {
@@ -143,48 +142,6 @@ public final class GeneratorUtils
     }
 
     /**
-     * Returns a literal replacement <code>String</code> for the specified <code>String</code>. This method
-     * produces a <code>String</code> that will work as a literal replacement <code>s</code> in the
-     * <code>appendReplacement</code> method of the {@link Matcher} class. The <code>String</code> produced will
-     * match the sequence of characters in <code>s</code> treated as a literal sequence. Slashes ('\') and dollar
-     * signs ('$') will be given no special meaning. TODO: copied from Matcher class of Java 1.5, remove once target
-     * platform can be upgraded
-     *
-     * @see <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Matcher.html">java.util.regex.Matcher</a>
-     * @param s The string to be literalized
-     * @return A literal string replacement
-     */
-    private static String quoteReplacement( String s )
-    {
-        if ( ( s.indexOf( '\\' ) == -1 ) && ( s.indexOf( '$' ) == -1 ) )
-        {
-            return s;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for ( int i = 0; i < s.length(); i++ )
-        {
-            char c = s.charAt( i );
-            if ( c == '\\' )
-            {
-                sb.append( '\\' );
-                sb.append( '\\' );
-            }
-            else if ( c == '$' )
-            {
-                sb.append( '\\' );
-                sb.append( '$' );
-            }
-            else
-            {
-                sb.append( c );
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * Decodes javadoc inline tags into equivalent HTML tags. For instance, the inline tag "{@code <A&B>}" should be
      * rendered as "<code>&lt;A&amp;B&gt;</code>".
      *
@@ -249,7 +206,7 @@ public final class GeneratorUtils
                     text = "<code>" + text + "</code>";
                 }
             }
-            matcher.appendReplacement( decoded, ( text != null ) ? quoteReplacement( text ) : "" );
+            matcher.appendReplacement( decoded, ( text != null ) ? Matcher.quoteReplacement( text ) : "" );
         }
         matcher.appendTail( decoded );
 
@@ -358,7 +315,7 @@ public final class GeneratorUtils
         /**
          * Holds the index of the current item in a numbered list.
          */
-        class Counter
+        static class Counter
         {
             int value;
         }
@@ -618,17 +575,17 @@ public final class GeneratorUtils
                 String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
                 if ( packageNames.get( name ) != null )
                 {
-                    int next = ( packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name,  Integer.valueOf( next ) );
+                    int next = packageNames.get( name ) + 1;
+                    packageNames.put( name, next );
                 }
                 else
                 {
-                    packageNames.put( name, Integer.valueOf( 1 ) );
+                    packageNames.put( name, 1 );
                 }
             }
             else
             {
-                packageNames.put( "", Integer.valueOf( 1 ) );
+                packageNames.put( "", 1 );
             }
         }
 
@@ -636,7 +593,7 @@ public final class GeneratorUtils
         int max = 0;
         for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
         {
-            int value = entry.getValue().intValue();
+            int value = entry.getValue();
             if ( value > max )
             {
                 max = value;
@@ -654,7 +611,6 @@ public final class GeneratorUtils
      * <code>false</code> otherwise.
      * @throws IllegalArgumentException if any
      */
-    @SuppressWarnings( "unchecked" )
     public static boolean isMavenReport( String impl, MavenProject project )
         throws IllegalArgumentException
     {
@@ -685,7 +641,7 @@ public final class GeneratorUtils
             {
                 try
                 {
-                    urls.add( new File( classPathString ).toURL() );
+                    urls.add( new File( classPathString ).toURI().toURL() );
                 }
                 catch ( MalformedURLException e )
                 {
@@ -693,7 +649,7 @@ public final class GeneratorUtils
                 }
             }
 
-            classLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ), classLoader );
+            classLoader = new URLClassLoader( urls.toArray( new URL[0] ), classLoader );
         }
 
         try

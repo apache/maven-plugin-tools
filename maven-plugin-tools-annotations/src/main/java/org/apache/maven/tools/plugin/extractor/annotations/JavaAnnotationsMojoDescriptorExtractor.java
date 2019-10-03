@@ -24,13 +24,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -115,7 +115,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
 
         File output = new File( request.getProject().getBuild().getOutputDirectory() );
-        mojoAnnotationsScannerRequest.setClassesDirectories( Arrays.asList( output ) );
+        mojoAnnotationsScannerRequest.setClassesDirectories( Collections.singletonList( output ) );
 
         mojoAnnotationsScannerRequest.setDependencies( request.getDependencies() );
 
@@ -137,7 +137,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
         {
-            if ( StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
+            if ( Objects.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
                                      request.getProject().getArtifact().getArtifactId() ) )
             {
                 continue;
@@ -162,7 +162,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             }
         }
 
-        Map<String, JavaClass> javaClassesMap = new HashMap<String, JavaClass>();
+        Map<String, JavaClass> javaClassesMap = new HashMap<>();
 
         // try to get artifact with sources classifier, extract somewhere then scan for @since, @deprecated
         for ( Artifact artifact : externalArtifacts )
@@ -224,10 +224,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
             unArchiver.setDestDirectory( extractDirectory );
             unArchiver.extract();
 
-            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ), 
+            return discoverClasses( request.getEncoding(), Collections.singletonList( extractDirectory ),
                                     request.getDependencies() );
         }
-        catch ( ArtifactResolutionException e )
+        catch ( ArtifactResolutionException | NoSuchArchiverException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
@@ -239,10 +239,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 "Unable to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
                     + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
             return Collections.emptyMap();
-        }
-        catch ( NoSuchArchiverException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
         }
     }
 
@@ -375,7 +371,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass,
                                                               Map<String, JavaClass> javaClassesMap )
     {
-        Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
+        Map<String, JavaField> rawParams = new TreeMap<>();
 
         // we have to add the parent fields first, so that they will be overwritten by the local fields if
         // that actually happens...
@@ -413,12 +409,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return discoverClasses( request.getEncoding(), request.getProject() );
     }
 
-    @SuppressWarnings( "unchecked" )
     protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
         List<File> sources = new ArrayList<>();
 
-        for ( String source : (List<String>) project.getCompileSourceRoots() )
+        for ( String source : project.getCompileSourceRoots() )
         {
             sources.add( new File( source ) );
         }
@@ -725,11 +720,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             return null;
         }
-        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
-            project.getProjectReferences().values();
+        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
-            if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )
+            if ( Objects.equals( mavenProject.getId(), artifact.getId() ) )
             {
                 return mavenProject;
             }

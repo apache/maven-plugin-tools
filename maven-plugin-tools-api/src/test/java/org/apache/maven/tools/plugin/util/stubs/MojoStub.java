@@ -19,12 +19,7 @@ package org.apache.maven.tools.plugin.util.stubs;
  * under the License.
  */
 
-import java.util.Map;
-
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 
 /**
  * Dummy Mojo.
@@ -35,64 +30,7 @@ public class MojoStub
     extends AbstractMojo
 {
     /** {@inheritDoc} */
-    public Log getLog()
-    {
-        return super.getLog();
-    }
-
-    /** {@inheritDoc} */
-    public Map getPluginContext()
-    {
-        return super.getPluginContext();
-    }
-
-    /** {@inheritDoc} */
-    public void setLog( Log log )
-    {
-        super.setLog( log );
-    }
-
-    /** {@inheritDoc} */
-    public void setPluginContext( Map pluginContext )
-    {
-        super.setPluginContext( pluginContext );
-    }
-
-    /** {@inheritDoc} */
-    protected Object clone()
-        throws CloneNotSupportedException
-    {
-        return super.clone();
-    }
-
-    /** {@inheritDoc} */
-    public boolean equals( Object obj )
-    {
-        return super.equals( obj );
-    }
-
-    /** {@inheritDoc} */
-    protected void finalize()
-        throws Throwable
-    {
-        super.finalize();
-    }
-
-    /** {@inheritDoc} */
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
-
-    /** {@inheritDoc} */
-    public String toString()
-    {
-        return super.toString();
-    }
-
-    /** {@inheritDoc} */
     public void execute()
-        throws MojoExecutionException, MojoFailureException
     {
 
     }

@@ -45,7 +45,7 @@ public class AntPropertyHelper
     private Log log;
     private ExpressionEvaluator exprEvaluator;
     private MavenProject mavenProject;
-    private Map<String, String> artifactMap = new HashMap<String, String>();
+    private Map<String, String> artifactMap = new HashMap<>();
 
     /**
      * @deprecated use the other constructor
