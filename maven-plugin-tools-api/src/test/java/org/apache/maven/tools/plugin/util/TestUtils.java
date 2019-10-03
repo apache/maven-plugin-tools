@@ -19,19 +19,21 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author jdcasey
  */
 public class TestUtils
-    extends TestCase
 {
 
+    @Test
     public void testDirnameFunction_METATEST() throws UnsupportedEncodingException
     {
         String classname = getClass().getName().replace( '.', '/' ) + ".class";

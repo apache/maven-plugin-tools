@@ -67,8 +67,8 @@ public class TestAnnotationsReader
         Mojo mojo = mojoAnnotatedClass.getMojo();
 
         assertEquals( "foo", mojo.name() );
-        assertEquals( true, mojo.threadSafe() );
-        assertEquals( false, mojo.aggregator() );
+        assertTrue( mojo.threadSafe() );
+        assertFalse( mojo.aggregator() );
         assertEquals( LifecyclePhase.COMPILE, mojo.defaultPhase() );
 
         Execute execute = mojoAnnotatedClass.getExecute();

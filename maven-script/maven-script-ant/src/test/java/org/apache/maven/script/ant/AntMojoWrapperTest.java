@@ -27,12 +27,12 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.TestCase;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
@@ -55,16 +55,18 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.IOUtil;
+import org.junit.Test;
+
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.fail;
 
 public class AntMojoWrapperTest
-    extends TestCase
 {
 
+    @Test
     public void test2xStylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
         ComponentConfigurationException, ArchiverException, URISyntaxException
@@ -85,6 +87,7 @@ public class AntMojoWrapperTest
         assertPresence( messages, "path-is-missing", false );
     }
 
+    @Test
     public void test20StylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
         ComponentConfigurationException, ArchiverException, URISyntaxException
@@ -144,7 +147,7 @@ public class AntMojoWrapperTest
             pd = new PluginDescriptorBuilder().build( reader, pluginXml );
         }
 
-        Map<String, Object> config = new HashMap<String, Object>();
+        Map<String, Object> config = new HashMap<>();
         config.put( "basedir", new File( "." ).getAbsoluteFile() );
         config.put( "messageLevel", "info" );
 
@@ -160,8 +163,7 @@ public class AntMojoWrapperTest
 
         if ( includeImplied )
         {
-            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
-            File pluginXmlFile = new File( resource.toURI() );
+            File pluginXmlFile = Paths.get( resource.toURI() ).toFile();
 
             File jarFile = File.createTempFile( "AntMojoWrapperTest.", ".test.jar" );
             jarFile.deleteOnExit();
@@ -230,7 +232,7 @@ public class AntMojoWrapperTest
             verify( artifact, pt );
         }
 
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         if ( !tbl.messages.isEmpty() )
         {
             messages.addAll( tbl.messages );
@@ -244,7 +246,7 @@ public class AntMojoWrapperTest
     private static final class TestBuildListener
         implements BuildListener
     {
-        private List<String> messages = new ArrayList<String>();
+        private List<String> messages = new ArrayList<>();
 
         public void buildFinished( BuildEvent arg0 )
         {
@@ -274,6 +276,5 @@ public class AntMojoWrapperTest
         public void taskStarted( BuildEvent arg0 )
         {
         }
-    };
-
+    }
 }

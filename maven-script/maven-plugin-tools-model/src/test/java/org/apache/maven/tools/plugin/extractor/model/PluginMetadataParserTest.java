@@ -22,27 +22,31 @@ package org.apache.maven.tools.plugin.extractor.model;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class PluginMetadataParserTest
-    extends TestCase
 {
     
+    @Test
     public void testBasicDeclarationWithoutCall()
         throws PluginMetadataParseException
     {
         File metadataFile = getMetadataFile( "test.mojos.xml" );
         Set<MojoDescriptor> descriptors = new PluginMetadataParser().parseMojoDescriptors( metadataFile );
         
-        assertEquals( 1, descriptors.size() );
+        assertEquals(1, descriptors.size());
         
         MojoDescriptor desc = descriptors.iterator().next();
-        assertTrue( desc.getImplementation().indexOf( ":" ) < 0 );
+        assertFalse( desc.getImplementation().contains( ":" ) );
         assertEquals( "test", desc.getGoal() );
     }
     
+    @Test
     public void testBasicDeclarationWithCall()
         throws PluginMetadataParseException
     {
@@ -65,9 +69,7 @@ public class PluginMetadataParserTest
             {
                 fail( "Cannot find classpath resource: '" + name + "'." );
             }
-
-            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
-            return new File( resource.toURI() );
+            return Paths.get( resource.toURI() ).toFile();
         }
         catch ( final URISyntaxException e )
         {

@@ -19,7 +19,6 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
-import junit.framework.TestCase;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -29,6 +28,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
@@ -40,11 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * @author jdcasey
  */
 public class DefaultMojoScannerTest
-    extends TestCase
 {
     private Map<String, MojoDescriptorExtractor> extractors;
 
@@ -56,8 +60,8 @@ public class DefaultMojoScannerTest
 
     private MavenProject project;
 
-    protected void setUp()
-        throws Exception
+    @Before
+    public void setUp()
     {
         extractors = new HashMap<>();
         extractors.put( "one", new ScannerTestExtractor( "one" ) );
@@ -76,6 +80,7 @@ public class DefaultMojoScannerTest
         project.setFile( new File( "." ) );
     }
 
+    @Test
     public void testUnspecifiedExtractors()
         throws Exception
     {
@@ -86,6 +91,7 @@ public class DefaultMojoScannerTest
         checkResult( pluginDescriptor, extractors.keySet() );
     }
 
+    @Test
     public void testSpecifiedExtractors()
         throws Exception
     {
@@ -100,9 +106,10 @@ public class DefaultMojoScannerTest
         scanner.setActiveExtractors( activeExtractors );
         scanner.populatePluginDescriptor( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
 
-        checkResult( pluginDescriptor, Arrays.asList( new String[]{"one", "three"} ) );
+        checkResult( pluginDescriptor, Arrays.asList( "one", "three" ) );
     }
 
+    @Test
     public void testAllExtractorsThroughNull()
         throws Exception
     {
@@ -114,6 +121,7 @@ public class DefaultMojoScannerTest
         checkResult( pluginDescriptor, extractors.keySet() );
     }
 
+    @Test
     public void testNoExtractorsThroughEmptySet()
         throws Exception
     {
@@ -133,6 +141,7 @@ public class DefaultMojoScannerTest
         checkResult( pluginDescriptor, Collections.<String>emptySet() );
     }
 
+    @Test
     public void testUnknownExtractor()
         throws Exception
     {
@@ -189,10 +198,10 @@ public class DefaultMojoScannerTest
         {
             assertEquals( pluginDescriptor, desc.getPluginDescriptor() );
             assertTrue( "Unexpected goal in PluginDescriptor: " + desc.getGoal(),
-                        remainingGoals.remove( desc.getGoal() ) );
+                    remainingGoals.remove( desc.getGoal() ) );
         }
 
-        assertTrue( "Expected goals missing from PluginDescriptor: " + remainingGoals, remainingGoals.size() == 0 );
+        assertEquals( "Expected goals missing from PluginDescriptor: " + remainingGoals, 0, remainingGoals.size() );
     }
 
 }

@@ -22,13 +22,12 @@ package org.apache.maven.tools.plugin.extractor.ant;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -39,15 +38,18 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class AntMojoDescriptorExtractorTest
-    extends TestCase
 {
     
+    @Test
     public void testBasicMojoExtraction_CheckInjectedParametersAndRequirements()
         throws InvalidPluginDescriptorException, ExtractionException
     {
-        Map scriptMap = buildTestMap( "basic" );
+        Map<String, Set<File>> scriptMap = buildTestMap( "basic" );
         
         PluginDescriptor pd = new PluginDescriptor();
         
@@ -58,53 +60,49 @@ public class AntMojoDescriptorExtractorTest
         
         PluginToolsRequest request = new DefaultPluginToolsRequest( new MavenProject(), pd );
         
-        List metadata = new AntMojoDescriptorExtractor().extractMojoDescriptorsFromMetadata( scriptMap, request );
+        List<MojoDescriptor> metadata = new AntMojoDescriptorExtractor().extractMojoDescriptorsFromMetadata( scriptMap, request );
         
         assertEquals( 2, metadata.size() );
-        
-        for ( Iterator it = metadata.iterator(); it.hasNext(); )
+
+        for ( MojoDescriptor desc : metadata )
         {
-            MojoDescriptor desc = (MojoDescriptor) it.next();
-            
             if ( "test".equals( desc.getGoal() ) )
             {
-                assertTrue( desc.getImplementation().indexOf( ":" ) < 0 );
+                assertFalse( desc.getImplementation().contains( ":" ) );
             }
             else if ( "test2".equals( desc.getGoal() ) )
             {
                 assertTrue( desc.getImplementation().endsWith( ":test2" ) );
             }
-            
-            List params = desc.getParameters();
-            Map paramMap = new HashMap();
-            for ( Iterator paramIterator = params.iterator(); paramIterator.hasNext(); )
+
+            List<Parameter> params = desc.getParameters();
+            Map<String, Parameter> paramMap = new HashMap<>();
+            for ( Parameter param : params )
             {
-                Parameter param = (Parameter) paramIterator.next();
                 paramMap.put( param.getName(), param );
             }
-            
+
             assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'basedir' parameter.", paramMap.get( "basedir" ) );
             assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'messageLevel' parameter.", paramMap.get( "messageLevel" ) );
             assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'project' parameter.", paramMap.get( "project" ) );
             assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'session' parameter.", paramMap.get( "session" ) );
             assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'mojoExecution' parameter.", paramMap.get( "mojoExecution" ) );
-            
-            List components = desc.getRequirements();
+
+            List<ComponentRequirement> components = desc.getRequirements();
 
             assertNotNull( components );
             assertEquals( 1, components.size() );
-            
-            ComponentRequirement req = (ComponentRequirement) components.get( 0 );
+
+            ComponentRequirement req = components.get( 0 );
             assertEquals( "Mojo descriptor: " + desc.getGoal() + " is missing 'PathTranslator' component requirement.", PathTranslator.class.getName(), req.getRole() );
         }
     }
 
-    private Map buildTestMap( String resourceDirName )
+    private Map<String, Set<File>> buildTestMap( String resourceDirName )
     {
         try
         {
-            Map result = new HashMap();
-
+            Map<String, Set<File>> result = new HashMap<>();
             ClassLoader cloader = Thread.currentThread().getContextClassLoader();
             URL mojosXmlUrl = cloader.getResource( resourceDirName + "/test.mojos.xml" );
 
@@ -113,11 +111,10 @@ public class AntMojoDescriptorExtractorTest
                 fail( "No classpath resource named: '" + resourceDirName + "/test.mojos.xml' could be found." );
             }
 
-            // TODO As of JDK 7, replace with Paths.get( resource.toURI() ).toFile()
-            File mojosXml = new File( mojosXmlUrl.toURI() );
+            File mojosXml = Paths.get( mojosXmlUrl.toURI() ).toFile();
             File dir = mojosXml.getParentFile();
 
-            Set scripts = new HashSet();
+            Set<File> scripts = new HashSet<>();
             String[] listing = dir.list();
             for ( int i = 0; listing != null && i < listing.length; i++ )
             {

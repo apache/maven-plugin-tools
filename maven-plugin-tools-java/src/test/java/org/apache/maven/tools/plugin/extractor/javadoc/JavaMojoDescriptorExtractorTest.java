@@ -34,7 +34,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.javadoc.JavaJavadocMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
@@ -43,21 +42,23 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 
-import junit.framework.TestCase;
-
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
+
+import static org.junit.Assert.*;
 
 /**
  * @author jdcasey
  */
 public class JavaMojoDescriptorExtractorTest
-    extends TestCase
 {
     private File root;
 
-    protected void setUp()
+    @Before
+    public void setUp()
     {
         File sourceFile = fileOf( "dir-flag.txt" );
         root = sourceFile.getParentFile();
@@ -159,7 +160,6 @@ public class JavaMojoDescriptorExtractorTest
     /**
      * extract plugin descriptor for test resources directory and check against plugin-expected.xml
      */
-    @SuppressWarnings( "unchecked" )
     protected List<MojoDescriptor> extract( String directory )
         throws Exception
     {
@@ -170,6 +170,7 @@ public class JavaMojoDescriptorExtractorTest
         return descriptor.getMojos();
     }
 
+    @Test
     public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
         throws Exception
     {
@@ -178,6 +179,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( "Extracted mojos", 2, results.size() );
     }
 
+    @Test
     public void testShouldPropagateImplementationParameter()
         throws Exception
     {
@@ -187,7 +189,7 @@ public class JavaMojoDescriptorExtractorTest
 
         MojoDescriptor mojoDescriptor = results.get( 0 );
 
-        @SuppressWarnings( "unchecked" ) List<Parameter> parameters = mojoDescriptor.getParameters();
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         assertEquals( 1, parameters.size() );
 
@@ -196,6 +198,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
     }
 
+    @Test
     public void testMaven30Parameters()
         throws Exception
     {
@@ -213,6 +216,7 @@ public class JavaMojoDescriptorExtractorTest
      *
      * @throws Exception
      */
+    @Test
     public void testAnnotationInPlugin()
         throws Exception
     {
@@ -225,6 +229,7 @@ public class JavaMojoDescriptorExtractorTest
      * Check that the mojo descriptor extractor will successfully parse sources with Java 1.5 language features like
      * generics.
      */
+    @Test
     public void testJava15SyntaxParsing()
         throws Exception
     {
@@ -233,6 +238,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( 1, results.size() );
     }
 
+    @Test
     public void testSingleTypeImportWithFullyQualifiedClassName()
         throws Exception
     {
@@ -241,6 +247,7 @@ public class JavaMojoDescriptorExtractorTest
         assertEquals( 1, results.size() );
     }
 
+    @Test
     public void testMethodReferenceInEnumConstructor()
         throws Exception
     {
@@ -249,6 +256,7 @@ public class JavaMojoDescriptorExtractorTest
         assertNull( results );
     }
 
+    @Test
     public void testEnumWithRegexPattern()
         throws Exception
     {
