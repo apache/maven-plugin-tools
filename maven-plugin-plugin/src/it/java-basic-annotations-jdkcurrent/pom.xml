@@ -36,10 +36,6 @@ under the License.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- pom properties values not taken into account since invoker defines properties -->
-    <!-- that override what's defined in pom -->
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -74,9 +70,7 @@ under the License.
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.0</version>
           <configuration>
-            <source>11</source><!-- avoid ${maven.compiler.source} since value is not as expected -->
-            <target>11</target><!-- avoid ${maven.compiler.target} since value is not as expected -->
-            <release>11</release>
+            <release>${java.specification.version}</release>
           </configuration>
         </plugin>
       </plugins>
