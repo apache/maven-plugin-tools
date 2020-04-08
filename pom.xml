@@ -98,6 +98,7 @@
     <mavenInvokerPluginVersion>3.0.1</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>8.0</asmVersion>
+    <project.build.outputTimestamp>2020-04-07T21:04:00Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
