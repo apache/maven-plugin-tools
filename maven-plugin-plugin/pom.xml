@@ -38,8 +38,8 @@
   </description>
 
   <properties>
-    <doxiaVersion>1.4</doxiaVersion>
-    <doxia-sitetoolsVersion>1.4</doxia-sitetoolsVersion>
+    <doxiaVersion>1.9.1</doxiaVersion>
+    <doxia-sitetoolsVersion>1.9.2</doxia-sitetoolsVersion>
     <it.debug>true</it.debug>
   </properties>
 
