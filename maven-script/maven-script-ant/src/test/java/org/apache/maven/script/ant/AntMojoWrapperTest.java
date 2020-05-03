@@ -19,6 +19,15 @@ package org.apache.maven.script.ant;
  * under the License.
  */
 
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
@@ -55,17 +65,21 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.junit.Before;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.fail;
+import org.mockito.ArgumentCaptor;
 
 public class AntMojoWrapperTest
 {
+    
+    private BuildListener buildListener;
 
+    @Before
+    public void setUp() 
+    {
+        buildListener = mock( BuildListener.class );
+    }
+    
     @Test
     public void test2xStylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
@@ -84,7 +98,12 @@ public class AntMojoWrapperTest
         assertPresence( messages, "maven-script-ant < 2.1.0, or used maven-plugin-tools-ant < 2.2 during release",
                         false );
 
-        assertPresence( messages, "path-is-missing", false );
+        ArgumentCaptor<BuildEvent> buildEvent = ArgumentCaptor.forClass(BuildEvent.class);
+        verify( buildListener, atLeastOnce() ).messageLogged( buildEvent.capture() );
+
+        // last message
+        assertThat( buildEvent.getValue().getMessage(), startsWith( "plugin classpath is: " ) );
+        assertThat( buildEvent.getValue().getMessage(), endsWith( ".test.jar" ) );
     }
 
     @Test
@@ -104,7 +123,12 @@ public class AntMojoWrapperTest
                         "Maven project, session, mojo-execution, or path-translation parameter information is", true );
         assertPresence( messages, "maven-script-ant < 2.1.0, or used maven-plugin-tools-ant < 2.2 during release", true );
 
-        assertPresence( messages, "path-is-missing", true );
+        ArgumentCaptor<BuildEvent> buildEvent = ArgumentCaptor.forClass(BuildEvent.class);
+        verify( buildListener, atLeastOnce() ).messageLogged( buildEvent.capture() );
+
+        // last message
+        assertThat( buildEvent.getValue().getMessage(), startsWith( "plugin classpath is: " ) );
+        assertThat( buildEvent.getValue().getMessage(), endsWith( "path-is-missing" ) );
     }
 
     private void assertPresence( List<String> messages, String test, boolean shouldBePresent )
@@ -158,8 +182,8 @@ public class AntMojoWrapperTest
 
         wrapper.enableLogging( new ConsoleLogger( Logger.LEVEL_DEBUG, "test" ) );
 
-        Artifact artifact = createMock( Artifact.class );
-        PathTranslator pt = createMock( PathTranslator.class );
+        Artifact artifact = mock( Artifact.class );
+        PathTranslator pt = mock( PathTranslator.class );
 
         if ( includeImplied )
         {
@@ -174,12 +198,7 @@ public class AntMojoWrapperTest
             archiver.addFile( pluginXmlFile, pluginXml );
             archiver.createArchive();
 
-            expect( artifact.getFile() ).andReturn( jarFile ).anyTimes();
-            expect( artifact.getGroupId() ).andReturn( "groupId" ).anyTimes();
-            expect( artifact.getArtifactId() ).andReturn( "artifactId" ).anyTimes();
-            expect( artifact.getVersion() ).andReturn( "1" ).anyTimes();
-            expect( artifact.getId() ).andReturn( "groupId:artifactId:jar:1" ).anyTimes();
-            expect( artifact.getClassifier() ).andReturn( null ).anyTimes();
+            when( artifact.getFile() ).thenReturn( jarFile );
 
             Model model = new Model();
 
@@ -190,8 +209,6 @@ public class AntMojoWrapperTest
 
             MavenProject project = new MavenProject( model );
             project.setFile( new File( "pom.xml" ).getAbsoluteFile() );
-
-            replay( artifact, pt );
 
             pd.setPluginArtifact( artifact );
             pd.setArtifacts( Collections.singletonList( artifact ) );
@@ -209,7 +226,8 @@ public class AntMojoWrapperTest
         wrapper.setComponentConfiguration( config );
 
         TestBuildListener tbl = new TestBuildListener();
-        wrapper.getAntProject().addBuildListener( tbl );
+        
+        wrapper.getAntProject().addBuildListener( buildListener );
         
         PrintStream oldOut = System.out;
         
@@ -226,11 +244,6 @@ public class AntMojoWrapperTest
         }
 
         System.out.println( "\n\n" + stack.getMethodName() + " executed; verifying...\n\n" );
-
-        if ( includeImplied )
-        {
-            verify( artifact, pt );
-        }
 
         List<String> messages = new ArrayList<>();
         if ( !tbl.messages.isEmpty() )
