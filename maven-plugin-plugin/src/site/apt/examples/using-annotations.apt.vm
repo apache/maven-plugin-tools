@@ -31,9 +31,9 @@ Using Plugin Tools Java Annotations
  Since version 3.0 of the maven-plugin-plugin, you can use Java5 annotations to generate the 
  plugin descriptor file.
 
- <<NOTE>> With annotations, your Mojo super class does not any more require to be in the same project. Provided that the super class also uses annotations, it
+ <<NOTE>> With annotations, your Mojo super class does not have to be in the same project. Provided that the super class also uses annotations, it
  can now come from reactor projects or external dependencies. By default all dependencies are scanned, but this can be reduced with the <<<mojoDependencies>>>
- parameter. As javadoc doclet are still useful for <<<@since>>>, <<<@deprecated>>> and comments, the sources are still scanned. So if you use an external 
+ parameter. As javadoc doclets are still useful for <<<@since>>>, <<<@deprecated>>> and comments, the sources are still scanned. So if you use an external 
  dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to provide documentation (the tooling will skip error if this artifact 
  sources is missing).
 
@@ -122,46 +122,5 @@ Using Plugin Tools Java Annotations
   ...
   </build>
   ...
-</project>
-+-----+
-
- <Notice>: this configuration will not work with Maven 2, which does not support execution phase overriding.
- If you absolutely need to build with Maven 2, you should use <<<skipErrorNoDescriptorsFound>>> parameter
- to avoid failure on default execution phase and add another execution:
- 
-+-----+
-<project>
-  ...
-  <profiles>
-    <profile>
-      <id>maven-2</id>
-      <activation>
-        <file>
-          <!--  This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
-          <missing>${basedir}</missing>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-plugin-plugin</artifactId>
-            <configuration>
-              <!-- see https://issues.apache.org/jira/browse/MNG-5346 -->
-              <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-            </configuration>
-            <executions>
-              <execution>
-                <id>mojo-descriptor</id>
-                <goals>
-                  <goal>descriptor</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>    
-  </profiles>
 </project>
 +-----+
