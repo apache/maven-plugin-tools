@@ -43,7 +43,12 @@
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-model</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <!-- plexus -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
