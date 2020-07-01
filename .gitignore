@@ -9,6 +9,7 @@ out/
 .classpath
 .project
 .settings
+.checkstyle
 
 .DS_Store
 
