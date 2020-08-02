@@ -334,7 +334,6 @@
             <artifactId>maven-invoker-plugin</artifactId>
             <version>${mavenInvokerPluginVersion}</version>
             <configuration>
-              <debug>${it.debug}</debug>
               <projectsDirectory>src/it</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <preBuildHookScript>setup</preBuildHookScript>

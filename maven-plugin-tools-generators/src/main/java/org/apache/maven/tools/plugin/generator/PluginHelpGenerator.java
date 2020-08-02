@@ -116,7 +116,7 @@ public class PluginHelpGenerator
 
         String helpImplementation = getImplementation( pluginDescriptor );
 
-        @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
+        List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
 
         if ( mojoDescriptors != null )
         {
@@ -208,7 +208,9 @@ public class PluginHelpGenerator
             //isReader =
             velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
         }
-        return stringWriter.toString();
+        // Apply OS lineSeparator instead of template's lineSeparator to have consistent separators for
+        // all source files.
+        return stringWriter.toString().replaceAll( "(\r\n|\n|\r)", System.lineSeparator() );
     }
 
     /**

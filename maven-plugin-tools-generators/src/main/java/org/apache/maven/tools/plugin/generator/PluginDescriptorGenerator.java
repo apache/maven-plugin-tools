@@ -413,7 +413,7 @@ public class PluginDescriptorGenerator
         // Parameters
         // ----------------------------------------------------------------------
 
-        @SuppressWarnings( "unchecked" ) List<Parameter> parameters = mojoDescriptor.getParameters();
+        List<Parameter> parameters = mojoDescriptor.getParameters();
 
         w.startElement( "parameters" );
 
