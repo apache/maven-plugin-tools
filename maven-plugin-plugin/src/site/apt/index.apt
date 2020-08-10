@@ -44,7 +44,9 @@ Maven Plugin Plugin
    * {{{./addPluginArtifactMetadata-mojo.html}plugin:addPluginArtifactMetadata}} injects any plugin-specific artifact
       metadata to the project's artifact, for subsequent installation and deployment,
 
-   * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all mojos in a plugin.
+   * {{{./helpmojo-mojo.html}plugin:helpmojo}} generates a help mojo which describes all mojos in a plugin,
+
+   * {{{./help-mojo.html}plugin:help}} display help information on maven-plugin-plugin.
 
    []
 
