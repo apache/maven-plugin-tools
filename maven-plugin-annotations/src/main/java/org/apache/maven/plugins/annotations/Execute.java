@@ -51,7 +51,8 @@ public @interface Execute
     String goal() default "";
 
     /**
-     * lifecycle id to fork.
+     * lifecycle id of the phase to fork. Only valid in combination with {@link #phase()}. If not specified, Maven will
+     * use the lifecycle of the current build.
      * @return the lifecycle id
      */
     String lifecycle() default "";
