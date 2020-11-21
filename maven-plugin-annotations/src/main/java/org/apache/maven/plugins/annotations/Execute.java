@@ -53,6 +53,8 @@ public @interface Execute
     /**
      * lifecycle id of the lifecycle that defines {@link #phase()}. Only valid in combination with {@link #phase()}. If
      * not specified, Maven will use the lifecycle of the current build.
+     *
+     * @see <a href="http://maven.apache.org/maven-plugin-api/lifecycle-mappings.html">Lifecycle Mappings</a>
      * @return the lifecycle id
      */
     String lifecycle() default "";
