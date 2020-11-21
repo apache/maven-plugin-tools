@@ -45,7 +45,8 @@ public @interface Execute
     LifecyclePhase phase() default LifecyclePhase.NONE;
 
     /**
-     * goal to fork. Note that specifying a phase overrides specifying a goal.
+     * goal to fork. Note that specifying a phase overrides specifying a goal. The specified <code>goal</code> must be
+     * another goal of the same plugin.
      * @return the goal
      */
     String goal() default "";
