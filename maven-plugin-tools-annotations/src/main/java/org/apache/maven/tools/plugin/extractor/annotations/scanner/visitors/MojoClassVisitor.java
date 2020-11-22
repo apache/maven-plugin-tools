@@ -53,7 +53,7 @@ public class MojoClassVisitor
 
     public MojoClassVisitor( Logger logger )
     {
-        super( Opcodes.ASM7 );
+        super( Opcodes.ASM9 );
         this.logger = logger;
     }
 
