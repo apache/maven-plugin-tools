@@ -196,9 +196,10 @@ public abstract class AbstractGeneratorMojo
             return;
         }
 
-        if ( project.getArtifactId().toLowerCase().startsWith( "maven-" )
-            && project.getArtifactId().toLowerCase().endsWith( "-plugin" ) && !"org.apache.maven.plugins".equals(
-            project.getGroupId() ) )
+        if ( !"maven-plugin".equalsIgnoreCase( project.getArtifactId() )
+            && project.getArtifactId().toLowerCase().startsWith( "maven-" )
+            && project.getArtifactId().toLowerCase().endsWith( "-plugin" ) 
+            && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
             getLog().error( "\n\nArtifact Ids of the format maven-___-plugin are reserved for \n"
                                 + "plugins in the Group Id org.apache.maven.plugins\n"
@@ -206,7 +207,8 @@ public abstract class AbstractGeneratorMojo
                                 + "In the future this error will break the build.\n\n" );
         }
 
-        String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        String defaultGoalPrefix = getDefaultGoalPrefix( project );
+          
         if ( goalPrefix == null )
         {
             goalPrefix = defaultGoalPrefix;
@@ -282,6 +284,20 @@ public abstract class AbstractGeneratorMojo
             throw new MojoExecutionException( "The API of the mojo scanner is not compatible with this plugin version."
                 + " Please check the plugin dependencies configured in the POM and ensure the versions match.", e );
         }
+    }
+
+    static String getDefaultGoalPrefix( MavenProject project )
+    {
+        String defaultGoalPrefix;
+        if ( "maven-plugin".equalsIgnoreCase( project.getArtifactId() ) )
+        {
+            defaultGoalPrefix = project.getGroupId().substring( project.getGroupId().lastIndexOf( '.' ) + 1 );
+        }
+        else
+        {
+            defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        }
+        return defaultGoalPrefix;
     }
 
     /**
