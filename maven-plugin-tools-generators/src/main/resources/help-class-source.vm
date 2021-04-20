@@ -103,9 +103,9 @@ public class HelpMojo
 #end
     private int indentSize;
 
-    // groupId/artifactId/plugin-help.xml
+    // /META-INF/maven/<groupId>/<artifactId>/plugin-help.xml
     private static final String PLUGIN_HELP_PATH =
-                    "/${pluginHelpPath}";
+                    "/META-INF/maven/${pluginHelpPath}";
 
     private static final int DEFAULT_LINE_LENGTH = 80;
 

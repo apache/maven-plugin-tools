@@ -267,7 +267,7 @@ public class PluginHelpGenerator
 
     static String getPluginHelpPath( MavenProject mavenProject )
     {
-        return "META-INF/maven/" + mavenProject.getGroupId() + "/" + mavenProject.getArtifactId() + "/plugin-help.xml";
+        return mavenProject.getGroupId() + "/" + mavenProject.getArtifactId() + "/plugin-help.xml";
     }
 
     /**

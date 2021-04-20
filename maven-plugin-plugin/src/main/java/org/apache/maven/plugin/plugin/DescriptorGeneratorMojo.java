@@ -50,7 +50,7 @@ public class DescriptorGeneratorMojo
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
      */
-    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven" )
+    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven", readonly = true )
     protected File outputDirectory;
 
     /**
