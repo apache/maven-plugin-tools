@@ -187,7 +187,7 @@ public abstract class AbstractGeneratorMojo
     {
         if ( !packagingTypes.contains( project.getPackaging() ) )
         {
-            getLog().warn( "Unsupported packaging type " + project.getPackaging() + ", execution skipped" );
+            getLog().info( "Unsupported packaging type " + project.getPackaging() + ", execution skipped" );
             return;
         }
         if ( skip )
