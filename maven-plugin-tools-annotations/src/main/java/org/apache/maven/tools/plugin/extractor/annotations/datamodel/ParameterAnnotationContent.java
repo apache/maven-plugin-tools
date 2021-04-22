@@ -63,6 +63,7 @@ public class ParameterAnnotationContent
         this.readonly = readonly;
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -73,6 +74,7 @@ public class ParameterAnnotationContent
         this.name = name;
     }
 
+    @Override
     public String alias()
     {
         return alias;
@@ -83,6 +85,7 @@ public class ParameterAnnotationContent
         this.alias = alias;
     }
 
+    @Override
     public String property()
     {
         return property;
@@ -93,6 +96,7 @@ public class ParameterAnnotationContent
         this.property = property;
     }
 
+    @Override
     public String defaultValue()
     {
         return defaultValue;
@@ -103,6 +107,7 @@ public class ParameterAnnotationContent
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public boolean required()
     {
         return required;
@@ -113,6 +118,7 @@ public class ParameterAnnotationContent
         this.required = required;
     }
 
+    @Override
     public boolean readonly()
     {
         return readonly;
@@ -123,6 +129,7 @@ public class ParameterAnnotationContent
         this.readonly = readonly;
     }
 
+    @Override
     public Class<? extends Annotation> annotationType()
     {
         return null;

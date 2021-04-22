@@ -50,6 +50,7 @@ public class ScannerTestExtractor
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
 
+    @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {

@@ -41,6 +41,7 @@ public class TestExtractor
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }
     
+    @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
     {
         MojoDescriptor desc = new MojoDescriptor();

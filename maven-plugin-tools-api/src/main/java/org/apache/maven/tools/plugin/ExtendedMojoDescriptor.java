@@ -32,21 +32,25 @@ public class ExtendedMojoDescriptor
 
     private String requiresDependencyCollection = null;
 
+    @Override
     public boolean isThreadSafe()
     {
         return threadSafe;
     }
 
+    @Override
     public void setThreadSafe( boolean threadSafe )
     {
         this.threadSafe = threadSafe;
     }
 
+    @Override
     public String getDependencyCollectionRequired()
     {
         return requiresDependencyCollection;
     }
 
+    @Override
     public void setDependencyCollectionRequired( String requiresDependencyCollection )
     {
         this.requiresDependencyCollection = requiresDependencyCollection;

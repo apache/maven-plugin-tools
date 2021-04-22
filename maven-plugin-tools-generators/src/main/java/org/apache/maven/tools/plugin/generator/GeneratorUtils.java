@@ -410,6 +410,7 @@ public final class GeneratorUtils
         }
 
         /** {@inheritDoc} */
+        @Override
         public void handleSimpleTag( HTML.Tag t, MutableAttributeSet a, int pos )
         {
             simpleTag = true;
@@ -420,6 +421,7 @@ public final class GeneratorUtils
         }
 
         /** {@inheritDoc} */
+        @Override
         public void handleStartTag( HTML.Tag t, MutableAttributeSet a, int pos )
         {
             simpleTag = false;
@@ -463,6 +465,7 @@ public final class GeneratorUtils
         }
 
         /** {@inheritDoc} */
+        @Override
         public void handleEndTag( HTML.Tag t, int pos )
         {
             if ( HTML.Tag.OL.equals( t ) || HTML.Tag.UL.equals( t ) )
@@ -498,6 +501,7 @@ public final class GeneratorUtils
         }
 
         /** {@inheritDoc} */
+        @Override
         public void handleText( char[] data, int pos )
         {
             /*
@@ -521,6 +525,7 @@ public final class GeneratorUtils
         }
 
         /** {@inheritDoc} */
+        @Override
         public void flush()
         {
             flushPendingNewline();

@@ -22,7 +22,6 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.util.StringUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Olivier Lamy
@@ -101,7 +101,7 @@ public class MojoClassVisitor
         for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
         {
             MojoAnnotationVisitor mojoAnnotationVisitor = mojoFieldVisitor.getMojoAnnotationVisitor();
-            if ( mojoAnnotationVisitor != null && StringUtils.equals( annotationClassName,
+            if ( mojoAnnotationVisitor != null && Objects.equals( annotationClassName,
                                                                       mojoAnnotationVisitor.getAnnotationClassName() ) )
             {
                 mojoFieldVisitors.add( mojoFieldVisitor );
@@ -111,6 +111,7 @@ public class MojoClassVisitor
         return mojoFieldVisitors;
     }
 
+    @Override
     public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
     {
         mojoAnnotatedClass = new MojoAnnotatedClass();
@@ -121,6 +122,7 @@ public class MojoClassVisitor
         }
     }
 
+    @Override
     public AnnotationVisitor visitAnnotation( String desc, boolean visible )
     {
         String annotationClassName = Type.getType( desc ).getClassName();
@@ -133,6 +135,7 @@ public class MojoClassVisitor
         return mojoAnnotationVisitor;
     }
 
+    @Override
     public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
     {
         MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( logger, name, Type.getType( desc ).getClassName() );
@@ -140,32 +143,38 @@ public class MojoClassVisitor
         return mojoFieldVisitor;
     }
 
+    @Override
     public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
     {
         // we don't need methods informations
         return null;
     }
 
+    @Override
     public void visitAttribute( Attribute attr )
     {
         // no op
     }
 
+    @Override
     public void visitSource( String source, String debug )
     {
         // no op
     }
 
+    @Override
     public void visitOuterClass( String owner, String name, String desc )
     {
         // no op
     }
 
+    @Override
     public void visitInnerClass( String name, String outerName, String innerName, int access )
     {
         // no op
     }
 
+    @Override
     public void visitEnd()
     {
         // no op

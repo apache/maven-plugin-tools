@@ -109,6 +109,7 @@ public class PluginHelpGenerator
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute( File destinationDirectory, PluginToolsRequest request )
         throws GeneratorException
     {

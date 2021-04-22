@@ -54,6 +54,7 @@ public class AnnotatedField
         return sb.toString();
     }
 
+    @Override
     public int compareTo( AnnotatedField annotatedField )
     {
         return getFieldName().compareTo( annotatedField.getFieldName() );

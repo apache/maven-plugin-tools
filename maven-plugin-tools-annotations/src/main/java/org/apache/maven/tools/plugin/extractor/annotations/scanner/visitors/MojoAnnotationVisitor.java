@@ -51,26 +51,31 @@ public class MojoAnnotationVisitor
         return annotationValues;
     }
 
+    @Override
     public void visit( String name, Object value )
     {
         annotationValues.put( name, value );
     }
 
+    @Override
     public void visitEnum( String name, String desc, String value )
     {
         annotationValues.put( name, value );
     }
 
+    @Override
     public AnnotationVisitor visitAnnotation( String name, String desc )
     {
         return new MojoAnnotationVisitor( logger, this.annotationClassName );
     }
 
+    @Override
     public AnnotationVisitor visitArray( String s )
     {
         return new MojoAnnotationVisitor( logger, this.annotationClassName );
     }
 
+    @Override
     public void visitEnd()
     {
         // no op

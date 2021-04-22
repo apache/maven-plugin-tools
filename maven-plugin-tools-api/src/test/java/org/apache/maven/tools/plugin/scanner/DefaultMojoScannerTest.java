@@ -185,7 +185,6 @@ public class DefaultMojoScannerTest
     protected void checkResult( PluginDescriptor pluginDescriptor, Collection<String> expectedGoals )
     {
         Set<String> remainingGoals = new HashSet<>( expectedGoals );
-        @SuppressWarnings( "unchecked" )
         List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
 
         if ( descriptors == null )

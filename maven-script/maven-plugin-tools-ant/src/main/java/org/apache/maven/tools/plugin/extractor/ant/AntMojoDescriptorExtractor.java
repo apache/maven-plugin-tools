@@ -57,6 +57,7 @@ public class AntMojoDescriptorExtractor
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
     
     /** {@inheritDoc} */
+    @Override
     protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata(
                                                                   Map<String, Set<File>> metadataFilesKeyedByBasedir,
                                                                   PluginToolsRequest request )
@@ -231,12 +232,14 @@ public class AntMojoDescriptorExtractor
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getScriptFileExtension( PluginToolsRequest request )
     {
         return SCRIPT_FILE_EXTENSION;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getMetadataFileExtension( PluginToolsRequest request )
     {
         return METADATA_FILE_EXTENSION;

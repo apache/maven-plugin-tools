@@ -44,6 +44,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor
 {
     /** {@inheritDoc} */
+    @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {

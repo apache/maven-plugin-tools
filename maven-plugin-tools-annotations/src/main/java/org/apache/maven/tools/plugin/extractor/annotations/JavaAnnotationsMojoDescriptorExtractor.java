@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -97,6 +98,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     @org.codehaus.plexus.component.annotations.Requirement
     private ArchiverManager archiverManager;
 
+    @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
@@ -137,7 +139,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
         {
-            if ( StringUtils.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
+            if ( Objects.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
                                      request.getProject().getArtifact().getArtifactId() ) )
             {
                 continue;
@@ -413,12 +415,11 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return discoverClasses( request.getEncoding(), request.getProject() );
     }
 
-    @SuppressWarnings( "unchecked" )
     protected Map<String, JavaClass> discoverClasses( final String encoding, final MavenProject project )
     {
         List<File> sources = new ArrayList<>();
 
-        for ( String source : (List<String>) project.getCompileSourceRoots() )
+        for ( String source : project.getCompileSourceRoots() )
         {
             sources.add( new File( source ) );
         }
@@ -725,11 +726,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             return null;
         }
-        @SuppressWarnings( "unchecked" ) Collection<MavenProject> mavenProjects =
-            project.getProjectReferences().values();
+        Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
         for ( MavenProject mavenProject : mavenProjects )
         {
-            if ( StringUtils.equals( mavenProject.getId(), artifact.getId() ) )
+            if ( Objects.equals( mavenProject.getId(), artifact.getId() ) )
             {
                 return mavenProject;
             }

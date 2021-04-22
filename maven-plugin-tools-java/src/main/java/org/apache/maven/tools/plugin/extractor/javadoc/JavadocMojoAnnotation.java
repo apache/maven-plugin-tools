@@ -219,6 +219,7 @@ public interface JavadocMojoAnnotation
      * </p>
      * @deprecated use <code>&#64;executionStrategy always</code> instead
      */
+    @Deprecated
     String MULTI_EXECUTION_STRATEGY = "attainAlways";
 
     /**
@@ -423,6 +424,7 @@ public interface JavadocMojoAnnotation
      * </p>
      * @deprecated use PARAMETER_PROPERTY instead
      */
+    @Deprecated
     String PARAMETER_EXPRESSION = "expression";
 
     /**

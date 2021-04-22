@@ -37,16 +37,19 @@ public class ExecuteAnnotationContent
 
     private LifecyclePhase phase;
 
+    @Override
     public LifecyclePhase phase()
     {
         return this.phase;
     }
 
+    @Override
     public String goal()
     {
         return this.goal;
     }
 
+    @Override
     public String lifecycle()
     {
         return this.lifecycle;
@@ -69,6 +72,7 @@ public class ExecuteAnnotationContent
     }
 
 
+    @Override
     public Class<? extends Annotation> annotationType()
     {
         return null;

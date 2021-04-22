@@ -566,7 +566,8 @@ public class JavaJavadocMojoDescriptorExtractor
         return rawParams;
     }
 
-    /** {@inheritDoc} */
+
+    @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
@@ -597,7 +598,6 @@ public class JavaJavadocMojoDescriptorExtractor
      * @param request The plugin request.
      * @return an array of java class
      */
-    @SuppressWarnings( "unchecked" )
     protected Collection<JavaClass> discoverClasses( final PluginToolsRequest request )
     {
         JavaProjectBuilder builder = new JavaProjectBuilder( new SortedClassLibraryBuilder() );
@@ -620,7 +620,7 @@ public class JavaJavadocMojoDescriptorExtractor
         
         MavenProject project = request.getProject();
 
-        for ( String source : (List<String>) project.getCompileSourceRoots() )
+        for ( String source : project.getCompileSourceRoots() )
         {
             builder.addSourceTree( new File( source ) );
         }
@@ -642,7 +642,6 @@ public class JavaJavadocMojoDescriptorExtractor
     protected void validate( MojoDescriptor mojoDescriptor )
         throws InvalidParameterException
     {
-        @SuppressWarnings( "unchecked" )
         List<Parameter> parameters = mojoDescriptor.getParameters();
 
         if ( parameters != null )

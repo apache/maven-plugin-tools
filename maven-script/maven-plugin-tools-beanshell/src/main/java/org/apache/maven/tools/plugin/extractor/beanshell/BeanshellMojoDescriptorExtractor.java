@@ -50,6 +50,7 @@ public class BeanshellMojoDescriptorExtractor
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String getScriptFileExtension( PluginToolsRequest request )
     {
         return ".bsh";
@@ -58,6 +59,7 @@ public class BeanshellMojoDescriptorExtractor
     /**
      * {@inheritDoc}
      */
+    @Override
     protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir,
                                                            PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException

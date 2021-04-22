@@ -48,6 +48,7 @@ public abstract class AbstractGeneratorTestCase
 
     protected String basedir;
 
+    @Override
     protected void setUp()
         throws Exception
     {

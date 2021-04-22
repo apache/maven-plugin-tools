@@ -67,6 +67,7 @@ public class HelpGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     protected File getOutputDirectory()
     {
         return outputDirectory;
@@ -75,6 +76,7 @@ public class HelpGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Generator createGenerator()
     {
         return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setVelocityComponent( this.velocity );
@@ -83,6 +85,7 @@ public class HelpGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {

@@ -52,6 +52,7 @@ public final class PluginUtils
      * @deprecated wrong approach (fake components), documented parameter default values instead to learn people how to
      *             discover them
      */
+    @Deprecated
     public static final Map<String, String> MAVEN_COMPONENTS;
     static
     {
@@ -114,6 +115,7 @@ public final class PluginUtils
             Collections.sort( mojoDescriptors, new Comparator<MojoDescriptor>()
             {
                 /** {@inheritDoc} */
+                @Override
                 public int compare( MojoDescriptor mojo0, MojoDescriptor mojo1 )
                 {
                     return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
@@ -136,6 +138,7 @@ public final class PluginUtils
             Collections.sort( parameters, new Comparator<Parameter>()
             {
                 /** {@inheritDoc} */
+                @Override
                 public int compare( Parameter parameter1, Parameter parameter2 )
                 {
                     return parameter1.getName().compareToIgnoreCase( parameter2.getName() );

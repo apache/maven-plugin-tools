@@ -64,6 +64,7 @@ public class DescriptorGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     protected File getOutputDirectory()
     {
         return outputDirectory;
@@ -72,6 +73,7 @@ public class DescriptorGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Generator createGenerator()
     {
         return new PluginDescriptorGenerator( getLog() );
@@ -80,6 +82,7 @@ public class DescriptorGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {

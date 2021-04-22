@@ -67,6 +67,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public PluginDescriptor getPluginDescriptor()
     {
         return pluginDescriptor;
@@ -75,6 +76,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor )
     {
         this.pluginDescriptor = pluginDescriptor;
@@ -84,6 +86,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public MavenProject getProject()
     {
         return project;
@@ -92,6 +95,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public PluginToolsRequest setProject( MavenProject project )
     {
         this.project = project;
@@ -101,6 +105,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getEncoding()
     {
         return this.encoding;
@@ -109,6 +114,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public PluginToolsRequest setEncoding( String encoding )
     {
         if ( StringUtils.isNotEmpty( encoding ) )
@@ -126,6 +132,7 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSkipErrorNoDescriptorsFound()
     {
         return skipErrorNoDescriptorsFound;
@@ -134,12 +141,14 @@ public class DefaultPluginToolsRequest
     /**
      * {@inheritDoc}
      */
+    @Override
     public PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound )
     {
         this.skipErrorNoDescriptorsFound = skipErrorNoDescriptorsFound;
         return this;
     }
 
+    @Override
     public Set<Artifact> getDependencies()
     {
         if ( this.dependencies == null )
@@ -149,28 +158,33 @@ public class DefaultPluginToolsRequest
         return dependencies;
     }
 
+    @Override
     public PluginToolsRequest setDependencies( Set<Artifact> dependencies )
     {
         this.dependencies = dependencies;
         return this;
     }
 
+    @Override
     public List<ArtifactRepository> getRemoteRepos()
     {
         return remoteRepos;
     }
 
+    @Override
     public PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos )
     {
         this.remoteRepos = remoteRepos;
         return this;
     }
 
+    @Override
     public ArtifactRepository getLocal()
     {
         return local;
     }
 
+    @Override
     public PluginToolsRequest setLocal( ArtifactRepository local )
     {
         this.local = local;

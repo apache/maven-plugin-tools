@@ -101,6 +101,7 @@ public class PluginXdocGenerator
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute( File destinationDirectory, PluginToolsRequest request )
         throws GeneratorException
     {

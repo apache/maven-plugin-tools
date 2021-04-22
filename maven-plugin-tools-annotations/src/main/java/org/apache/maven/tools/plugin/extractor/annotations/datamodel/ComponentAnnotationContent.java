@@ -47,6 +47,7 @@ public class ComponentAnnotationContent
         this.hint = hint;
     }
 
+    @Override
     public Class<?> role()
     {
         // not used
@@ -63,6 +64,7 @@ public class ComponentAnnotationContent
         return roleClassName;
     }
 
+    @Override
     public String hint()
     {
         return hint == null ? "" : hint;
@@ -73,6 +75,7 @@ public class ComponentAnnotationContent
         this.hint = hint;
     }
 
+    @Override
     public Class<? extends Annotation> annotationType()
     {
         return null;

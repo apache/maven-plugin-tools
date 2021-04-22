@@ -34,6 +34,7 @@ public class PluginXdocGeneratorTest
 
     // inherits tests from base class
 
+    @Override
     protected void validate( File destinationDirectory )
         throws Exception
     {

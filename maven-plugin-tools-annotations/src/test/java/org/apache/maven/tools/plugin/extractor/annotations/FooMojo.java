@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  */
 
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -49,6 +48,7 @@ public class FooMojo
      * beer for non french folks
      * @deprecated wine is better
      */
+    @Deprecated
     @Parameter( property = "thebeer", defaultValue = "coolbeer" )
     protected String beer;
 
@@ -64,6 +64,7 @@ public class FooMojo
     @Component( role = ArtifactMetadataSource.class, hint = "maven" )
     protected ArtifactMetadataSource artifactMetadataSource;
 
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {

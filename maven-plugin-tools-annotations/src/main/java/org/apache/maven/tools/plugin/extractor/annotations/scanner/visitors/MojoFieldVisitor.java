@@ -60,6 +60,7 @@ public class MojoFieldVisitor
         return fieldName;
     }
 
+    @Override
     public AnnotationVisitor visitAnnotation( String desc, boolean visible )
     {
         String annotationClassName = Type.getType( desc ).getClassName();
@@ -71,11 +72,13 @@ public class MojoFieldVisitor
         return mojoAnnotationVisitor;
     }
 
+    @Override
     public void visitAttribute( Attribute attribute )
     {
         // no op
     }
 
+    @Override
     public void visitEnd()
     {
         // no op

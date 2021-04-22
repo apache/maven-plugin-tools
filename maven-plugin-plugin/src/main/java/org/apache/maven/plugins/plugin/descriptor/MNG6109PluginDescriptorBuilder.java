@@ -51,7 +51,7 @@ public class MNG6109PluginDescriptorBuilder extends PluginDescriptorBuilder
         for ( PlexusConfiguration d : parameterConfigurations )
         {
             String parameterName = d.getChild( "name" ).getValue();
-            Parameter pd = (Parameter) mojoDescriptor.getParameterMap().get( parameterName );
+            Parameter pd = mojoDescriptor.getParameterMap().get( parameterName );
             
             String parameterSince = d.getChild( "since" ).getValue();
             pd.setSince( parameterSince );

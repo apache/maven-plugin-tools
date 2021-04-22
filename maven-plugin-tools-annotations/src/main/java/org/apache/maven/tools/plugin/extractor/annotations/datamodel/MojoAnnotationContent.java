@@ -62,11 +62,13 @@ public class MojoAnnotationContent
 
     private boolean threadSafe = false;
 
+    @Override
     public Class<? extends Annotation> annotationType()
     {
         return null;
     }
 
+    @Override
     public LifecyclePhase defaultPhase()
     {
         return defaultPhase;
@@ -77,6 +79,7 @@ public class MojoAnnotationContent
         this.defaultPhase = LifecyclePhase.valueOf( phase );
     }
 
+    @Override
     public ResolutionScope requiresDependencyResolution()
     {
         return requiresDependencyResolution;
@@ -87,6 +90,7 @@ public class MojoAnnotationContent
         this.requiresDependencyResolution = ResolutionScope.valueOf( requiresDependencyResolution );
     }
 
+    @Override
     public ResolutionScope requiresDependencyCollection()
     {
         return requiresDependencyCollection;
@@ -97,6 +101,7 @@ public class MojoAnnotationContent
         this.requiresDependencyCollection = ResolutionScope.valueOf( requiresDependencyCollection );
     }
 
+    @Override
     public InstantiationStrategy instantiationStrategy()
     {
         return instantiationStrategy;
@@ -107,6 +112,7 @@ public class MojoAnnotationContent
         this.instantiationStrategy = InstantiationStrategy.valueOf( instantiationStrategy );
     }
 
+    @Override
     public String executionStrategy()
     {
         return executionStrategy;
@@ -117,6 +123,7 @@ public class MojoAnnotationContent
         this.executionStrategy = executionStrategy;
     }
 
+    @Override
     public boolean requiresProject()
     {
         return requiresProject;
@@ -127,6 +134,7 @@ public class MojoAnnotationContent
         this.requiresProject = requiresProject;
     }
 
+    @Override
     public boolean requiresReports()
     {
         return requiresReports;
@@ -137,6 +145,7 @@ public class MojoAnnotationContent
         this.requiresReports = requiresReports;
     }
 
+    @Override
     public boolean aggregator()
     {
         return aggregator;
@@ -147,6 +156,7 @@ public class MojoAnnotationContent
         this.aggregator = aggregator;
     }
 
+    @Override
     public boolean requiresDirectInvocation()
     {
         return requiresDirectInvocation;
@@ -157,6 +167,7 @@ public class MojoAnnotationContent
         this.requiresDirectInvocation = requiresDirectInvocation;
     }
 
+    @Override
     public boolean requiresOnline()
     {
         return requiresOnline;
@@ -167,6 +178,7 @@ public class MojoAnnotationContent
         this.requiresOnline = requiresOnline;
     }
 
+    @Override
     public boolean inheritByDefault()
     {
         return inheritByDefault;
@@ -177,6 +189,7 @@ public class MojoAnnotationContent
         this.inheritByDefault = inheritByDefault;
     }
 
+    @Override
     public String configurator()
     {
         return configurator;
@@ -187,6 +200,7 @@ public class MojoAnnotationContent
         this.configurator = configurator;
     }
 
+    @Override
     public boolean threadSafe()
     {
         return threadSafe;
@@ -197,6 +211,7 @@ public class MojoAnnotationContent
         this.threadSafe = threadSafe;
     }
 
+    @Override
     public String name()
     {
         return this.name;

@@ -72,6 +72,7 @@ public class DefaultMojoScanner
     /**
      * {@inheritDoc}
      */
+    @Override
     public void populatePluginDescriptor( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
@@ -134,6 +135,7 @@ public class DefaultMojoScanner
         return result;
     }
 
+    @Override
     public void setActiveExtractors( Set<String> extractors )
     {
         if ( extractors == null )

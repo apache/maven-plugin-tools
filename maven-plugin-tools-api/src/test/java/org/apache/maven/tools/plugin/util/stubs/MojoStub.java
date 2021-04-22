@@ -35,30 +35,35 @@ public class MojoStub
     extends AbstractMojo
 {
     /** {@inheritDoc} */
+    @Override
     public Log getLog()
     {
         return super.getLog();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Map getPluginContext()
     {
         return super.getPluginContext();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setLog( Log log )
     {
         super.setLog( log );
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setPluginContext( Map pluginContext )
     {
         super.setPluginContext( pluginContext );
     }
 
     /** {@inheritDoc} */
+    @Override
     protected Object clone()
         throws CloneNotSupportedException
     {
@@ -66,12 +71,14 @@ public class MojoStub
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean equals( Object obj )
     {
         return super.equals( obj );
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void finalize()
         throws Throwable
     {
@@ -79,18 +86,21 @@ public class MojoStub
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode()
     {
         return super.hashCode();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString()
     {
         return super.toString();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {

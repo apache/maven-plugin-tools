@@ -40,6 +40,7 @@ import java.util.List;
 public class PluginDescriptorGeneratorTest
     extends AbstractGeneratorTestCase
 {
+    @Override
     protected void validate( File destinationDirectory )
         throws Exception
     {
@@ -53,7 +54,7 @@ public class PluginDescriptorGeneratorTest
 
         assertEquals( 1, pluginDescriptor.getMojos().size() );
 
-        MojoDescriptor mojoDescriptor = (MojoDescriptor) pluginDescriptor.getMojos().get( 0 );
+        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().get( 0 );
 
         checkMojo( mojoDescriptor );
 
@@ -103,7 +104,7 @@ public class PluginDescriptorGeneratorTest
         assertNotNull( mojoDescriptor.isDependencyResolutionRequired() );
 
         // check the parameter.
-        checkParameter( (Parameter) mojoDescriptor.getParameters().get( 0 ) );
+        checkParameter( mojoDescriptor.getParameters().get( 0 ) );
     }
 
     private void checkParameter( Parameter parameter )

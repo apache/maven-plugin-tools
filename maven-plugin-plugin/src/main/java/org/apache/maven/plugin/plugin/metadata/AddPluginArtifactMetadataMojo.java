@@ -72,6 +72,7 @@ public class AddPluginArtifactMetadataMojo
     private boolean skip;
 
     /** {@inheritDoc} */
+    @Override
     public void execute()
         throws MojoExecutionException
     {

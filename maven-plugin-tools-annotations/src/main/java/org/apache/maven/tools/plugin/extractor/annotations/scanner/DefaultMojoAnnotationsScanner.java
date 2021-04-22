@@ -66,6 +66,7 @@ public class DefaultMojoAnnotationsScanner
     
     private Reflector reflector = new Reflector();
 
+    @Override
     public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
         throws ExtractionException
     {
@@ -311,7 +312,7 @@ public class DefaultMojoAnnotationsScanner
                     for ( Map.Entry<String, Object> entry : annotationVisitor.getAnnotationValues().entrySet() )
                     {
                         String methodName = entry.getKey();
-                        if ( StringUtils.equals( "role", methodName ) )
+                        if ( "role".equals( methodName ) )
                         {
                             Type type = (Type) entry.getValue();
                             componentAnnotationContent.setRoleClassName( type.getClassName() );

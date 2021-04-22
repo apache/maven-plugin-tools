@@ -182,6 +182,7 @@ public abstract class AbstractGeneratorMojo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void execute()
         throws MojoExecutionException
     {

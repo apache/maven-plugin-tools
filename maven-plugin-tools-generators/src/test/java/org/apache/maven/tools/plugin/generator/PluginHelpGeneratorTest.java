@@ -28,6 +28,7 @@ public class PluginHelpGeneratorTest
     extends AbstractGeneratorTestCase
 {
     // inherits tests from base class
+    @Override
     protected void setupGenerator()
         throws Exception
     {
