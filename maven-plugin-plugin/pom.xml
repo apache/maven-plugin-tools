@@ -83,6 +83,19 @@
         'maven-plugin-tools-annotations' which fails to load at runtime when not available.
       -->
     </dependency>
+    <!-- define optional runtime dependencies for integration tests -->
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-ant</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-beanshell</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
 
     <!-- doxia -->
     <dependency>
