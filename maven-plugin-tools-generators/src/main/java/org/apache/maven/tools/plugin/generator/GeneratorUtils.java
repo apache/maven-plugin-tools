@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,8 +45,8 @@ import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -123,11 +124,11 @@ public final class GeneratorUtils
      * @param dependencies not null list of <code>Dependency</code>
      * @return list of component dependencies
      */
-    public static List<ComponentDependency> toComponentDependencies( List<Dependency> dependencies )
+    public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> dependencies )
     {
         List<ComponentDependency> componentDeps = new LinkedList<>();
 
-        for ( Dependency dependency : dependencies )
+        for ( Artifact dependency : dependencies )
         {
             ComponentDependency cd = new ComponentDependency();
 
