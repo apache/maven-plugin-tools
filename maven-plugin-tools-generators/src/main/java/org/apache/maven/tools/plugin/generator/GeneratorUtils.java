@@ -121,7 +121,7 @@ public final class GeneratorUtils
     }
     
     /**
-     * @param dependencies not null list of <code>Dependency</code>
+     * @param dependencies not null collection of <code>Artifact</code>
      * @return list of component dependencies
      */
     public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> dependencies )
