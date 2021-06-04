@@ -24,13 +24,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
@@ -174,14 +173,6 @@ public class PluginReport
     private boolean skipReport;
 
     /**
-     * The set of dependencies for the current project
-     *
-     * @since 3.0
-     */
-    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
-    protected Set<Artifact> dependencies;
-
-    /**
      * List of Remote Repositories used by the resolver
      *
      * @since 3.0
@@ -316,13 +307,13 @@ public class PluginReport
 
         try
         {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
             pluginDescriptor.setDependencies( deps );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
             request.setSkipErrorNoDescriptorsFound( true );
-            request.setDependencies( dependencies );
+            request.setDependencies( new LinkedHashSet<>( project.getArtifacts() ) );
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
 

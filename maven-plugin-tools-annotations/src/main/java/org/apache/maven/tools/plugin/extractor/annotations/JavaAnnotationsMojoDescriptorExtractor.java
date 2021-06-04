@@ -353,19 +353,27 @@ public class JavaAnnotationsMojoDescriptorExtractor
      */
     private DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
     {
-        DocletTag tag = javaClass.getTagByName( tagName );
-
-        if ( tag == null )
+        try
         {
-            JavaClass superClass = javaClass.getSuperJavaClass();
+            DocletTag tag = javaClass.getTagByName( tagName );
 
-            if ( superClass != null )
+            if ( tag == null )
             {
-                tag = findInClassHierarchy( superClass, tagName );
-            }
-        }
+                JavaClass superClass = javaClass.getSuperJavaClass();
 
-        return tag;
+                if ( superClass != null )
+                {
+                    tag = findInClassHierarchy( superClass, tagName );
+                }
+            }
+
+            return tag;
+        }
+        catch ( NoClassDefFoundError e )
+        {
+            getLogger().warn( "Failed extracting tag '" + tagName + "' from class " + javaClass );
+            throw e;
+        }
     }
 
     /**
@@ -377,37 +385,45 @@ public class JavaAnnotationsMojoDescriptorExtractor
     private Map<String, JavaField> extractFieldParameterTags( JavaClass javaClass,
                                                               Map<String, JavaClass> javaClassesMap )
     {
-        Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
-
-        // we have to add the parent fields first, so that they will be overwritten by the local fields if
-        // that actually happens...
-        JavaClass superClass = javaClass.getSuperJavaClass();
-
-        if ( superClass != null )
+        try
         {
-            if ( superClass.getFields().size() > 0 )
-            {
-                rawParams = extractFieldParameterTags( superClass, javaClassesMap );
-            }
-            // maybe sources comes from scan of sources artifact
-            superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
+            Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
+
+            // we have to add the parent fields first, so that they will be overwritten by the local fields if
+            // that actually happens...
+            JavaClass superClass = javaClass.getSuperJavaClass();
+
             if ( superClass != null )
             {
-                rawParams = extractFieldParameterTags( superClass, javaClassesMap );
+                if ( superClass.getFields().size() > 0 )
+                {
+                    rawParams = extractFieldParameterTags( superClass, javaClassesMap );
+                }
+                // maybe sources comes from scan of sources artifact
+                superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
+                if ( superClass != null )
+                {
+                    rawParams = extractFieldParameterTags( superClass, javaClassesMap );
+                }
             }
-        }
-        else
-        {
+            else
+            {
 
-            rawParams = new TreeMap<>();
-        }
+                rawParams = new TreeMap<>();
+            }
 
-        for ( JavaField field : javaClass.getFields() )
-        {
-            rawParams.put( field.getName(), field );
+            for ( JavaField field : javaClass.getFields() )
+            {
+                rawParams.put( field.getName(), field );
+            }
+
+            return rawParams;
         }
-        
-        return rawParams;
+        catch ( NoClassDefFoundError e )
+        {
+            getLogger().warn( "Failed extracting parameters from " + javaClass );
+            throw e;
+        }
     }
 
     protected Map<String, JavaClass> discoverClasses( final PluginToolsRequest request )

@@ -43,7 +43,7 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
  * @since 2.0
  */
 @Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-       requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
+       requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true )
 public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {

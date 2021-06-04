@@ -127,14 +127,6 @@ public abstract class AbstractGeneratorMojo
     protected boolean skip;
 
     /**
-     * The set of dependencies for the current project
-     *
-     * @since 3.0
-     */
-    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
-    protected Set<Artifact> dependencies;
-    
-    /**
      * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos, to filter
      * dependencies scanned at runtime and focus on dependencies that are really useful to Mojo analysis.
      * By default, the value is {@code null} and all dependencies are scanned (as before this parameter was added).
@@ -250,7 +242,7 @@ public abstract class AbstractGeneratorMojo
 
         try
         {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
             pluginDescriptor.setDependencies( deps );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
@@ -270,12 +262,7 @@ public abstract class AbstractGeneratorMojo
         {
             throw new MojoExecutionException( "Error writing plugin descriptor", e );
         }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                              e );
-        }
-        catch ( ExtractionException e )
+        catch ( InvalidPluginDescriptorException | ExtractionException e )
         {
             throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
@@ -313,7 +300,7 @@ public abstract class AbstractGeneratorMojo
         Set<Artifact> filteredDependencies;
         if ( mojoDependencies == null )
         {
-            filteredDependencies = dependencies;
+            filteredDependencies = new LinkedHashSet<>( project.getArtifacts() );
         }
         else if ( mojoDependencies.size() == 0 )
         {
@@ -325,7 +312,7 @@ public abstract class AbstractGeneratorMojo
             
             ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
 
-            for ( Artifact artifact : dependencies )
+            for ( Artifact artifact : project.getArtifacts() )
             {
                 if ( filter.include( artifact ) )
                 {
