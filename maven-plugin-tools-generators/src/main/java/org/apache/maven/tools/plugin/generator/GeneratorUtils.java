@@ -121,21 +121,21 @@ public final class GeneratorUtils
     }
     
     /**
-     * @param dependencies not null collection of <code>Artifact</code>
+     * @param artifacts not null collection of <code>Artifact</code>
      * @return list of component dependencies
      */
-    public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> dependencies )
+    public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> artifacts )
     {
         List<ComponentDependency> componentDeps = new LinkedList<>();
 
-        for ( Artifact dependency : dependencies )
+        for ( Artifact artifact : artifacts )
         {
             ComponentDependency cd = new ComponentDependency();
 
-            cd.setArtifactId( dependency.getArtifactId() );
-            cd.setGroupId( dependency.getGroupId() );
-            cd.setVersion( dependency.getVersion() );
-            cd.setType( dependency.getType() );
+            cd.setArtifactId( artifact.getArtifactId() );
+            cd.setGroupId( artifact.getGroupId() );
+            cd.setVersion( artifact.getVersion() );
+            cd.setType( artifact.getType() );
 
             componentDeps.add( cd );
         }
