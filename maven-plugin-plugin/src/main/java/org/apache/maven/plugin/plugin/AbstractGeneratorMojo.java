@@ -262,12 +262,7 @@ public abstract class AbstractGeneratorMojo
         {
             throw new MojoExecutionException( "Error writing plugin descriptor", e );
         }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                              e );
-        }
-        catch ( ExtractionException e )
+        catch ( InvalidPluginDescriptorException | ExtractionException e )
         {
             throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
