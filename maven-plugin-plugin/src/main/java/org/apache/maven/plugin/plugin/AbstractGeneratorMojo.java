@@ -127,14 +127,6 @@ public abstract class AbstractGeneratorMojo
     protected boolean skip;
 
     /**
-     * The set of dependencies for the current project
-     *
-     * @since 3.0
-     */
-    @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
-    protected Set<Artifact> dependencies;
-    
-    /**
      * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos, to filter
      * dependencies scanned at runtime and focus on dependencies that are really useful to Mojo analysis.
      * By default, the value is {@code null} and all dependencies are scanned (as before this parameter was added).
@@ -250,7 +242,7 @@ public abstract class AbstractGeneratorMojo
 
         try
         {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getRuntimeDependencies() );
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
             pluginDescriptor.setDependencies( deps );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
@@ -270,12 +262,7 @@ public abstract class AbstractGeneratorMojo
         {
             throw new MojoExecutionException( "Error writing plugin descriptor", e );
         }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                              e );
-        }
-        catch ( ExtractionException e )
+        catch ( InvalidPluginDescriptorException | ExtractionException e )
         {
             throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
                                               e );
@@ -310,30 +297,30 @@ public abstract class AbstractGeneratorMojo
      */
     private Set<Artifact> filterMojoDependencies()
     {
-        Set<Artifact> filteredDependencies;
+        Set<Artifact> filteredArtifacts;
         if ( mojoDependencies == null )
         {
-            filteredDependencies = dependencies;
+            filteredArtifacts = new LinkedHashSet<>( project.getArtifacts() );
         }
         else if ( mojoDependencies.size() == 0 )
         {
-            filteredDependencies = null;
+            filteredArtifacts = null;
         }
         else
         {
-            filteredDependencies = new LinkedHashSet<>();
+            filteredArtifacts = new LinkedHashSet<>();
             
             ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
 
-            for ( Artifact artifact : dependencies )
+            for ( Artifact artifact : project.getArtifacts() )
             {
                 if ( filter.include( artifact ) )
                 {
-                    filteredDependencies.add( artifact );
+                    filteredArtifacts.add( artifact );
                 }
             }
         }
 
-        return filteredDependencies;
+        return filteredArtifacts;
     }
 }
