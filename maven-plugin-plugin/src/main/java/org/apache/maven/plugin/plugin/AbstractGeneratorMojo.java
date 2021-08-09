@@ -297,18 +297,18 @@ public abstract class AbstractGeneratorMojo
      */
     private Set<Artifact> filterMojoDependencies()
     {
-        Set<Artifact> filteredDependencies;
+        Set<Artifact> filteredArtifacts;
         if ( mojoDependencies == null )
         {
-            filteredDependencies = new LinkedHashSet<>( project.getArtifacts() );
+            filteredArtifacts = new LinkedHashSet<>( project.getArtifacts() );
         }
         else if ( mojoDependencies.size() == 0 )
         {
-            filteredDependencies = null;
+            filteredArtifacts = null;
         }
         else
         {
-            filteredDependencies = new LinkedHashSet<>();
+            filteredArtifacts = new LinkedHashSet<>();
             
             ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
 
@@ -316,11 +316,11 @@ public abstract class AbstractGeneratorMojo
             {
                 if ( filter.include( artifact ) )
                 {
-                    filteredDependencies.add( artifact );
+                    filteredArtifacts.add( artifact );
                 }
             }
         }
 
-        return filteredDependencies;
+        return filteredArtifacts;
     }
 }
