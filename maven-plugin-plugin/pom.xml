@@ -166,6 +166,13 @@
       </exclusions>
     </dependency>
 
+    <!-- for m2e support: https://www.eclipse.org/m2e/documentation/m2e-making-maven-plugins-compat.html -->
+    <dependency>
+      <groupId>org.sonatype.plexus</groupId>
+      <artifactId>plexus-build-api</artifactId>
+      <version>0.0.7</version>
+    </dependency>
+ 
     <!-- needed for it tests -->
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
