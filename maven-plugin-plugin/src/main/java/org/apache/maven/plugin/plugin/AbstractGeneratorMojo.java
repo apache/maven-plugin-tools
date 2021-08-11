@@ -39,6 +39,7 @@ import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
 import java.io.File;
 import java.util.Arrays;
@@ -66,6 +67,9 @@ public abstract class AbstractGeneratorMojo
      */
     @Component
     protected MojoScanner mojoScanner;
+
+    @Component
+    protected BuildContext buildContext;
 
     /**
      * The file encoding of the source files.
@@ -254,9 +258,11 @@ public abstract class AbstractGeneratorMojo
 
             mojoScanner.populatePluginDescriptor( request );
 
-            getOutputDirectory().mkdirs();
+            File outputDirectory = getOutputDirectory();
+            outputDirectory.mkdirs();
 
-            createGenerator().execute( getOutputDirectory(), request );
+            createGenerator().execute( outputDirectory, request );
+            buildContext.refresh( outputDirectory );
         }
         catch ( GeneratorException e )
         {
