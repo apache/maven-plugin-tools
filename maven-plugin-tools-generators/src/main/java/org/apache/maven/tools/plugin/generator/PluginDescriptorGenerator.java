@@ -179,6 +179,7 @@ public class PluginDescriptorGenerator
      * @param w              not null
      * @param helpDescriptor will clean html content from description fields
      */
+    @SuppressWarnings( "deprecation" )
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, boolean helpDescriptor )
     {
         w.startElement( "mojo" );
