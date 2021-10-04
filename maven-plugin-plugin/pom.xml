@@ -347,7 +347,6 @@
               <properties>
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
                 <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
-                <https.protocols>${https.protocols}</https.protocols>
               </properties>
             </configuration>
             <executions>
