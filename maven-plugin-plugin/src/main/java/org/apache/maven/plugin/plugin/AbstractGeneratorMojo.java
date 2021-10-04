@@ -204,6 +204,22 @@ public abstract class AbstractGeneratorMojo
                                 + "In the future this error will break the build.\n\n" );
         }
 
+        Set<Artifact> wrongScopedArtifacts = mavenDependenciesNotInProvidedScope();
+        if ( !wrongScopedArtifacts.isEmpty() )
+        {
+            getLog().error( "\n\nMaven dependencies of Maven Plugins should be in provided scope.\n"
+                + "Please make sure that all your dependencies declared in POM having Group Id of\n"
+                + "org.apache.maven have set '<scope>provided</scope>' as well.\n"
+                + "In the future this error will break the build.\n\n"
+                + "Following dependencies are in wrong scope:\n"
+            );
+            for ( Artifact artifact : wrongScopedArtifacts )
+            {
+                getLog().error( artifact.toString() );
+            }
+            getLog().error( "\nPlease fix your build!\n" );
+        }
+
         String defaultGoalPrefix = getDefaultGoalPrefix( project );
           
         if ( goalPrefix == null )
@@ -292,6 +308,25 @@ public abstract class AbstractGeneratorMojo
             defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
         }
         return defaultGoalPrefix;
+    }
+
+    /**
+     * Collects all dependencies having {@code org.apache.maven} group Id that are NOT in provided scope.
+     */
+    private Set<Artifact> mavenDependenciesNotInProvidedScope()
+    {
+        LinkedHashSet<Artifact> wrongScopedDependencies = new LinkedHashSet<>();
+
+        for ( Artifact dependency : project.getArtifacts() )
+        {
+            if ( "org.apache.maven".equals( dependency.getGroupId() )
+                && !Artifact.SCOPE_PROVIDED.equals( dependency.getScope() ) )
+            {
+                wrongScopedDependencies.add( dependency );
+            }
+        }
+
+        return wrongScopedDependencies;
     }
 
     /**
