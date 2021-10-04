@@ -23,8 +23,8 @@ package org.apache.maven.plugins.annotations;
  * Dependencies resolution scopes available before
  * <a href="/ref/current/maven-core/apidocs/org/apache/maven/lifecycle/internal/MojoExecutor.html">mojo execution</a>.
  *
- * Important note: The {@code id} values of this enum corresponds to constants of
- * {@code org.apache.maven.artifact.Artifact} class and MUST BE KEPT IN SYNC (not that they changed recently).
+ * Important note: The {@code id} values of this enum correspond to constants of
+ * {@code org.apache.maven.artifact.Artifact} class and MUST BE KEPT IN SYNC.
  *
  * @author Hervé Boutemy
  * @since 3.0

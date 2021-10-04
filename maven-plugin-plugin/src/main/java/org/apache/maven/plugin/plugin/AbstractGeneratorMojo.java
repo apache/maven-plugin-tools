@@ -209,10 +209,10 @@ public abstract class AbstractGeneratorMojo
         {
             StringBuilder errorMessage = new StringBuilder(
                 "\n\nMaven dependencies of Maven Plugins should be in provided scope.\n"
-                    + "Please make sure that all your dependencies declared in POM having Group Id of\n"
+                    + "Please make sure that all your dependencies declared in POM whose group ID is\n"
                     + "org.apache.maven have set '<scope>provided</scope>' as well.\n"
                     + "In the future this error will break the build.\n\n"
-                    + "Following dependencies are in wrong scope:\n"
+                    + "The following dependencies are in wrong scope:\n"
             );
             for ( Artifact artifact : wrongScopedArtifacts )
             {
@@ -314,7 +314,7 @@ public abstract class AbstractGeneratorMojo
     }
 
     /**
-     * Collects all dependencies having {@code org.apache.maven} group Id that are NOT in provided scope.
+     * Collects all dependencies having {@code org.apache.maven} group ID that are NOT in provided scope.
      */
     private Set<Artifact> mavenDependenciesNotInProvidedScope()
     {
