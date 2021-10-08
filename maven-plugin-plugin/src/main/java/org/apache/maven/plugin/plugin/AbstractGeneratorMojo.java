@@ -198,29 +198,29 @@ public abstract class AbstractGeneratorMojo
             && project.getArtifactId().toLowerCase().endsWith( "-plugin" ) 
             && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
-            getLog().error( "\n\nArtifact Ids of the format maven-___-plugin are reserved for \n"
-                                + "plugins in the Group Id org.apache.maven.plugins\n"
-                                + "Please change your artifactId to the format ___-maven-plugin\n"
-                                + "In the future this error will break the build.\n\n" );
+            getLog().error( String.format( "%n%nArtifact Ids of the format maven-___-plugin are reserved for %n"
+                                + "plugins in the Group Id org.apache.maven.plugins%n"
+                                + "Please change your artifactId to the format ___-maven-plugin%n"
+                                + "In the future this error will break the build.%n%n" ) );
         }
 
         Set<Artifact> wrongScopedArtifacts = mavenDependenciesNotInProvidedScope();
         if ( !wrongScopedArtifacts.isEmpty() )
         {
             StringBuilder errorMessage = new StringBuilder(
-                "\n\nMaven dependencies of Maven Plugins should be in provided scope.\n"
-                    + "Please make sure that all your dependencies declared in POM whose group ID is\n"
-                    + "org.apache.maven have set '<scope>provided</scope>' as well.\n"
-                    + "In the future this error will break the build.\n\n"
-                    + "The following dependencies are in wrong scope:\n"
+                "%n%nMaven dependencies of Maven Plugins should be in provided scope.%n"
+                    + "Please make sure that all your dependencies declared in POM whose group ID is%n"
+                    + "org.apache.maven have set '<scope>provided</scope>' as well.%n"
+                    + "In the future this error will break the build.%n%n"
+                    + "The following dependencies are in wrong scope:%n"
             );
             for ( Artifact artifact : wrongScopedArtifacts )
             {
-                errorMessage.append( " * " ).append( artifact ).append( "\n" );
+                errorMessage.append( " * " ).append( artifact ).append( "%n" );
             }
-            errorMessage.append( "\nPlease fix your build!\n" );
+            errorMessage.append( "%nPlease fix your build!%n%n" );
 
-            getLog().error( errorMessage );
+            getLog().error( String.format( errorMessage.toString() ) );
         }
 
         String defaultGoalPrefix = getDefaultGoalPrefix( project );
