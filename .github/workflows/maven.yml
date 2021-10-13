@@ -46,4 +46,4 @@ jobs:
           java-version: 1.8
 
       - name: Build with Maven
-        run: mvn clean verify -e -B -V
+        run: mvn clean verify -e -B -V -P run-its
