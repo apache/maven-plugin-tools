@@ -323,6 +323,7 @@ public abstract class AbstractGeneratorMojo
         for ( Artifact dependency : project.getArtifacts() )
         {
             if ( "org.apache.maven".equals( dependency.getGroupId() )
+                && dependency.getArtifactId().startsWith( "maven-" )
                 && !Artifact.SCOPE_PROVIDED.equals( dependency.getScope() ) )
             {
                 wrongScopedDependencies.add( dependency );
