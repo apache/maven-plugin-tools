@@ -19,14 +19,14 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
+import junit.framework.TestCase;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 /**
  * @author jdcasey
  */
 public class PluginUtilsTest
-    extends AbstractMojoTestCase
+    extends TestCase
 {
     public void testShouldTrimArtifactIdToFindPluginId()
     {

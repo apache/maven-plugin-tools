@@ -222,7 +222,7 @@ public class JavaMojoDescriptorExtractorTest
     {
         List<MojoDescriptor> results = extract( "source3" );
 
-        assertNull( results );
+        assertTrue( results.isEmpty() );
     }
 
     /**
@@ -253,7 +253,7 @@ public class JavaMojoDescriptorExtractorTest
     {
         List<MojoDescriptor> results = extract( "MPLUGIN-320" );
 
-        assertNull( results );
+        assertTrue( results.isEmpty() );
     }
 
     @Test
@@ -262,7 +262,7 @@ public class JavaMojoDescriptorExtractorTest
     {
         List<MojoDescriptor> results = extract( "MPLUGIN-290" );
 
-        assertNull( results );
+        assertTrue( results.isEmpty() );
     }
 
 }
