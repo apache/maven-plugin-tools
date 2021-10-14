@@ -129,7 +129,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <!-- Used maven-plugin-plugin cannot do this -->
+      <!-- TODO: make this provided once 3.6.2+ maven-plugin-plugin is in use -->
       <scope>compile</scope>
     </dependency>
     <dependency>
