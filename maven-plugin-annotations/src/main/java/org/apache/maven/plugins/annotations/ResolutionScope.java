@@ -19,11 +19,12 @@ package org.apache.maven.plugins.annotations;
  * under the License.
  */
 
-import org.apache.maven.artifact.Artifact;
-
 /**
  * Dependencies resolution scopes available before
  * <a href="/ref/current/maven-core/apidocs/org/apache/maven/lifecycle/internal/MojoExecutor.html">mojo execution</a>.
+ *
+ * Important note: The {@code id} values of this enum correspond to constants of
+ * {@code org.apache.maven.artifact.Artifact} class and MUST BE KEPT IN SYNC.
  *
  * @author Hervé Boutemy
  * @since 3.0
@@ -38,28 +39,28 @@ public enum ResolutionScope
      * <code>compile</code> resolution scope
      * = <code>compile</code> + <code>system</code> + <code>provided</code> dependencies
      */
-    COMPILE( Artifact.SCOPE_COMPILE ),
+    COMPILE( "compile" ),
     /**
      * <code>compile+runtime</code> resolution scope (Maven 3 only)
      * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> dependencies
      */
-    COMPILE_PLUS_RUNTIME( Artifact.SCOPE_COMPILE_PLUS_RUNTIME ),
+    COMPILE_PLUS_RUNTIME( "compile+runtime" ),
     /**
      * <code>runtime</code> resolution scope
      * = <code>compile</code> + <code>runtime</code> dependencies
      */
-    RUNTIME( Artifact.SCOPE_RUNTIME ),
+    RUNTIME( "runtime" ),
     /**
      * <code>runtime+system</code> resolution scope (Maven 3 only)
      * = <code>compile</code> + <code>system</code> + <code>runtime</code> dependencies
      */
-    RUNTIME_PLUS_SYSTEM( Artifact.SCOPE_RUNTIME_PLUS_SYSTEM ),
+    RUNTIME_PLUS_SYSTEM( "runtime+system" ),
     /**
      * <code>test</code> resolution scope
      * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> + <code>test</code>
      * dependencies
      */
-    TEST( Artifact.SCOPE_TEST );
+    TEST( "test" );
 
     private final String id;
 
