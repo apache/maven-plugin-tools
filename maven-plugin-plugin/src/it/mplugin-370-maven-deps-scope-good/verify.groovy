@@ -17,6 +17,6 @@
  * under the License.
  */
 
-File descriptorFile = new File( basedir, "build.log" );
-assert descriptorFile.isFile()
-assert !descriptorFile.text.contains( "Maven dependencies of Maven Plugins should be in provided scope." )
+File buildLog = new File( basedir, "build.log" );
+assert buildLog.isFile()
+assert !buildLog.text.contains( "Maven dependencies of Maven Plugins should be in provided scope." )
