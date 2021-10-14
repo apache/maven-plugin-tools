@@ -83,7 +83,10 @@ public @interface Mojo
     /**
      * does your mojo requires a reporting context to be executed?
      * @return requires a reporting context
+     *
+     * @deprecated unused
      */
+    @Deprecated
     boolean requiresReports() default false;
 
     /**
