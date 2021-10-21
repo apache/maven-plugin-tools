@@ -31,11 +31,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
-import org.apache.maven.execution.RuntimeInformation;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -51,6 +48,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -341,29 +339,22 @@ public class PluginReport
      * (because of Maven MNG-6109 bug that won't give accurate 'since' info when reading plugin.xml).
      * 
      * @return the proper pluginDescriptorBuilder
-     * @see https://issues.apache.org/jira/browse/MNG-6109
-     * @see https://issues.apache.org/jira/browse/MPLUGIN-319
+     * @see <a href="https://issues.apache.org/jira/browse/MNG-6109">MNG-6109</a>
+     * @see <a href="https://issues.apache.org/jira/browse/MPLUGIN-319">MPLUGIN-319</a>
      */
     private PluginDescriptorBuilder getPluginDescriptorBuilder()
     {
         PluginDescriptorBuilder pluginDescriptorBuilder;
-        try
+
+        if ( rtInfo.isMavenVersion( "(3.3.9,)" ) )
         {
-            VersionRange versionRange = VersionRange.createFromVersionSpec( "(3.3.9,)" );
-            if ( versionRange.containsVersion( rtInfo.getApplicationVersion() ) )
-            {
-                pluginDescriptorBuilder = new PluginDescriptorBuilder();
-            }
-            else
-            {
-                pluginDescriptorBuilder = new MNG6109PluginDescriptorBuilder();
-            }
+            pluginDescriptorBuilder = new PluginDescriptorBuilder();
         }
-        catch ( InvalidVersionSpecificationException e )
+        else
         {
-            return new MNG6109PluginDescriptorBuilder();
+            pluginDescriptorBuilder = new MNG6109PluginDescriptorBuilder();
         }
-        
+
         return pluginDescriptorBuilder;
     }
 
