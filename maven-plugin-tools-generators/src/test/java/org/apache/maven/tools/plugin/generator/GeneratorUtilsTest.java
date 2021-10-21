@@ -20,21 +20,25 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.junit.Test;
 
 import java.io.StringWriter;
 import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author jdcasey
  */
 public class GeneratorUtilsTest
-    extends AbstractMojoTestCase
 {
+    @Test
     public void testShouldWriteDependencies()
         throws Exception
     {
@@ -62,6 +66,7 @@ public class GeneratorUtilsTest
         assertEquals( pattern, output );
     }
 
+    @Test
     public void testMakeHtmlValid()
     {
         String javadoc = null;
@@ -94,6 +99,7 @@ public class GeneratorUtilsTest
         assertEquals( javadoc, GeneratorUtils.makeHtmlValid( javadoc ) );
     }
 
+    @Test
     public void testDecodeJavadocTags()
     {
         String javadoc = null;
@@ -148,6 +154,7 @@ public class GeneratorUtilsTest
         assertEquals( "label", GeneratorUtils.decodeJavadocTags( javadoc ) );
     }
 
+    @Test
     public void testToText()
         throws Exception
     {
@@ -179,6 +186,7 @@ public class GeneratorUtilsTest
         assertEquals( "Generates something for the project.", GeneratorUtils.toText( javadoc ) );
     }
 
+    @Test
     public void testIsMavenReport()
         throws Exception
     {
@@ -194,7 +202,7 @@ public class GeneratorUtilsTest
         String impl = "org.apache.maven.tools.plugin.generator.stubs.MavenReportStub";
 
         MavenProjectStub stub = new MavenProjectStub();
-        stub.setCompileSourceRoots( Collections.singletonList( getBasedir() + "/target/classes" ) );
+        stub.setCompileSourceRoots( Collections.singletonList( System.getProperty( "basedir" ) + "/target/classes" ) );
 
         assertTrue( GeneratorUtils.isMavenReport( impl, stub ) );
 
