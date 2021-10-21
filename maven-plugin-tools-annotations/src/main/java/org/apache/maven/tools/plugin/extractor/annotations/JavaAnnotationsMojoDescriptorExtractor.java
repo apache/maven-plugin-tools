@@ -37,10 +37,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -48,6 +46,7 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -60,6 +59,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotated
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
@@ -90,10 +90,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     private MojoAnnotationsScanner mojoAnnotationsScanner;
 
     @org.codehaus.plexus.component.annotations.Requirement
-    private ArtifactResolver artifactResolver;
-
-    @org.codehaus.plexus.component.annotations.Requirement
-    private ArtifactFactory artifactFactory;
+    private RepositorySystem repositorySystem;
 
     @org.codehaus.plexus.component.annotations.Requirement
     private ArchiverManager archiverManager;
@@ -203,10 +200,21 @@ public class JavaAnnotationsMojoDescriptorExtractor
         try
         {
             Artifact sourcesArtifact =
-                artifactFactory.createArtifactWithClassifier( artifact.getGroupId(), artifact.getArtifactId(),
-                                                              artifact.getVersion(), artifact.getType(), classifier );
+                repositorySystem.createArtifactWithClassifier( artifact.getGroupId(), artifact.getArtifactId(),
+                                                               artifact.getVersion(), artifact.getType(), classifier );
 
-            artifactResolver.resolve( sourcesArtifact, request.getRemoteRepos(), request.getLocal() );
+            ArtifactResolutionRequest req = new ArtifactResolutionRequest();
+            req.setArtifact( sourcesArtifact );
+            req.setLocalRepository( request.getLocal() );
+            req.setRemoteRepositories( request.getRemoteRepos() );
+            ArtifactResolutionResult res = repositorySystem.resolve( req );
+            if ( res.hasMissingArtifacts() || res.hasExceptions() )
+            {
+                getLogger().warn(
+                    "Unable to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
+                    + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
+                return Collections.emptyMap();
+            }
 
             if ( sourcesArtifact.getFile() == null || !sourcesArtifact.getFile().exists() )
             {
@@ -226,23 +234,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
             unArchiver.setDestDirectory( extractDirectory );
             unArchiver.extract();
 
-            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ), 
+            return discoverClasses( request.getEncoding(), Arrays.asList( extractDirectory ),
                                     request.getDependencies() );
         }
-        catch ( ArtifactResolutionException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
-            //throw new ExtractionException( e.getMessage(), e );
-            getLogger().debug( "skip ArtifactNotFoundException:" + e.getMessage() );
-            getLogger().warn(
-                "Unable to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
-                    + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
-            return Collections.emptyMap();
-        }
-        catch ( NoSuchArchiverException e )
+        catch ( ArchiverException | NoSuchArchiverException e )
         {
             throw new ExtractionException( e.getMessage(), e );
         }
@@ -250,9 +245,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     /**
      * from sources scan to get @since and @deprecated and description of classes and fields.
-     *
-     * @param mojoAnnotatedClasses
-     * @param javaClassesMap
      */
     protected void populateDataFromJavadoc( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                             Map<String, JavaClass> javaClassesMap )
@@ -289,8 +281,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             // populate parameters
             Map<String, ParameterAnnotationContent> parameters =
-                getParametersParentHierarchy( entry.getValue(), new HashMap<String, ParameterAnnotationContent>(),
-                                              mojoAnnotatedClasses );
+                    getParametersParentHierarchy( entry.getValue(), mojoAnnotatedClasses );
             parameters = new TreeMap<>( parameters );
             for ( Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet() )
             {
@@ -387,7 +378,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     {
         try
         {
-            Map<String, JavaField> rawParams = new TreeMap<String, com.thoughtworks.qdox.model.JavaField>();
+            Map<String, JavaField> rawParams = new TreeMap<>();
 
             // we have to add the parent fields first, so that they will be overwritten by the local fields if
             // that actually happens...
@@ -560,8 +551,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             // Parameter annotations
             Map<String, ParameterAnnotationContent> parameters =
-                getParametersParentHierarchy( mojoAnnotatedClass, new HashMap<String, ParameterAnnotationContent>(),
-                                              mojoAnnotatedClasses );
+                    getParametersParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
 
             for ( ParameterAnnotationContent parameterAnnotationContent : new TreeSet<>( parameters.values() ) )
             {
@@ -594,8 +584,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             // Component annotations
             Map<String, ComponentAnnotationContent> components =
-                getComponentsParentHierarchy( mojoAnnotatedClass, new HashMap<String, ComponentAnnotationContent>(),
-                                              mojoAnnotatedClasses );
+                    getComponentsParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
 
             for ( ComponentAnnotationContent componentAnnotationContent : new TreeSet<>( components.values() ) )
             {
@@ -661,8 +650,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
 
     protected Map<String, ParameterAnnotationContent> getParametersParentHierarchy(
-        MojoAnnotatedClass mojoAnnotatedClass, Map<String, ParameterAnnotationContent> parameters,
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+            MojoAnnotatedClass mojoAnnotatedClass,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<>();
 
@@ -699,8 +688,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     protected Map<String, ComponentAnnotationContent> getComponentsParentHierarchy(
-        MojoAnnotatedClass mojoAnnotatedClass, Map<String, ComponentAnnotationContent> components,
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
+            MojoAnnotatedClass mojoAnnotatedClass,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         List<ComponentAnnotationContent> componentAnnotationContents = new ArrayList<>();
 

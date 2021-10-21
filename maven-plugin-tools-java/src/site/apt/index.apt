@@ -50,13 +50,13 @@ import org.apache.maven.settings.Settings;
  * @aggregator
  * @configurator <roleHint>
  * @execute phase="<phaseName>" lifecycle="<lifecycleId>" goal="<goalName>"
- * @executionStrategy <once-per-session|always>
- * @inheritByDefault <true|false>
+ * @executionStrategy <once-per-session|always> (unsupported since Maven 3.0)
+ * @inheritByDefault <true|false> (unsupported since Maven 3.0)
  * @instantiationStrategy <per-lookup|singleton|keep-alive|poolable>
  * @phase <phaseName>
  * @requiresDependencyResolution <compile|runtime|compile+runtime|test>
  * @requiresDependencyCollection <compile|runtime|compile+runtime|test> (since Maven 3.0)
- * @requiresDirectInvocation <false|true>
+ * @requiresDirectInvocation <false|true> (unsupported since Maven 3.0)
  * @requiresOnline <false|true>
  * @requiresProject <true|false>
  * @requiresReports <false|true> (unsupported since Maven 3.0)

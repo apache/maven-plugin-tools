@@ -58,13 +58,13 @@ import org.apache.maven.settings.Settings;
 @Mojo( name = "<goal-name>",
        aggregator = <false|true>, 
        configurator = "<role hint>",
-       executionStrategy = "<once-per-session|always>",
-       inheritByDefault = <true|false>,
+       executionStrategy = "<once-per-session|always>", // (unsupported since Maven 3.0)
+       inheritByDefault = <true|false>, // (unsupported since Maven 3.0)
        instantiationStrategy = InstantiationStrategy.<strategy>,
        defaultPhase = LifecyclePhase.<phase>,
        requiresDependencyResolution = ResolutionScope.<scope>,
        requiresDependencyCollection = ResolutionScope.<scope>, // (since Maven 3.0)
-       requiresDirectInvocation = <false|true>,
+       requiresDirectInvocation = <false|true>, // (unsupported since Maven 3.0)
        requiresOnline = <false|true>,
        requiresProject = <true|false>,
        requiresReports = <false|true>, // (unsupported since Maven 3.0)
