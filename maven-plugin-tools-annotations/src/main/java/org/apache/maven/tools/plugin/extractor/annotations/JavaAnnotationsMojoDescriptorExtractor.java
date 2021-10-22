@@ -488,15 +488,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         for ( File source : sourceDirectories )
         {
-            try
-            {
-                builder.addSourceTree( source );
-            }
-            catch ( ParseException e )
-            {
-                getLogger().warn( "Unable to scan Javadoc from " + source
-                    + "; skipping since, deprecation and description scanning from it" );
-            }
+            builder.addSourceTree( source );
         }
 
         Collection<JavaClass> javaClasses = builder.getClasses();
