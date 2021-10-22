@@ -19,9 +19,13 @@ package org.apache.maven.tools.plugin.extractor;
  * under the License.
  */
 
+import java.util.Objects;
+
 /**
  * Group key: defines "grouping" for descriptor (based on source of extraction) and rank within
  * group.
+ *
+ * @since TBD
  */
 public final class GroupKey
     implements Comparable<GroupKey>
@@ -61,12 +65,46 @@ public final class GroupKey
         return order;
     }
 
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        GroupKey groupKey = (GroupKey) o;
+        return order == groupKey.order && group.equals( groupKey.group );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( group, order );
+    }
+
     /**
-     * Compares by group then by order.
+     * Compares by group then by order, with special case of {@link #JAVA_GROUP} group:
+     * <ul>
+     *     <li>First, {@link #group} is considered, if equals to {@link #JAVA_GROUP}, is always first, other
+     *     groups are in natural order (string)</li>
+     *     <li>within same named groups, order is defined by {@link #order}</li>
+     * </ul>
      */
     @Override
     public int compareTo( final GroupKey o )
     {
+        if ( JAVA_GROUP.equals( this.group ) && !JAVA_GROUP.equals( o.group ) )
+        {
+            return -1;
+        }
+        else if ( !JAVA_GROUP.equals( this.group ) && JAVA_GROUP.equals( o.group ) )
+        {
+            return 1;
+        }
         int result = this.group.compareTo( o.group );
         if ( result != 0 )
         {

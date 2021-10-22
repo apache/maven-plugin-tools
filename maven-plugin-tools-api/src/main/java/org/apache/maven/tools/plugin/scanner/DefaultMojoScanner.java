@@ -102,16 +102,16 @@ public class DefaultMojoScanner
 
             int extractorDescriptorsCount = extractorDescriptors.size();
 
-            logger.info( extractorId + " mojo extractor found " + extractorDescriptors.size()
-                             + " mojo descriptor" + ( extractorDescriptors.size() > 1 ? "s" : "" ) + "." );
-            numMojoDescriptors += extractorDescriptors.size();
+            logger.info( extractorId + " mojo extractor found " + extractorDescriptorsCount
+                             + " mojo descriptor" + ( extractorDescriptorsCount > 1 ? "s" : "" ) + "." );
+            numMojoDescriptors += extractorDescriptorsCount;
 
             if ( extractor.isDeprecated() &&  extractorDescriptorsCount > 0 )
             {
                 logger.warn( "" );
                 logger.warn( "Deprecated extractor " + extractorId
                              + " extracted " + extractorDescriptorsCount
-                             + " descriptor" + ( extractorDescriptors.size() > 1 ? "s" : "" )
+                             + " descriptor" + ( extractorDescriptorsCount > 1 ? "s" : "" )
                              + ". Upgrade your Mojo definitions." );
                 if ( GroupKey.JAVA_GROUP.equals( groupKey.getGroup() ) )
                 {
@@ -150,6 +150,9 @@ public class DefaultMojoScanner
         }
     }
 
+    /**
+     * Returns a list of extractors sorted by {@link MojoDescriptorExtractor#getGroupKey()}s, never {@code null}.
+     */
     private List<MojoDescriptorExtractor> getOrderedExtractors() throws ExtractionException
     {
         Set<String> extractors = activeExtractors;

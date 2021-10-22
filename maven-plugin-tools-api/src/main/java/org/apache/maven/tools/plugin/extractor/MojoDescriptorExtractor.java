@@ -35,6 +35,8 @@ public interface MojoDescriptorExtractor
 
     /**
      * Returns the "name" (id) of the extractor.
+     *
+     * @since TBD
      */
     String getName();
 
