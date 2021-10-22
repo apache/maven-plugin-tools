@@ -34,6 +34,26 @@ public interface MojoDescriptorExtractor
     String ROLE = MojoDescriptorExtractor.class.getName();
 
     /**
+     * Returns the "name" (id) of the extractor.
+     */
+    String getName();
+
+    /**
+     * Returns {@code true} if extractor is deprecated.
+     *
+     * @since TBD
+     */
+    boolean isDeprecated();
+
+    /**
+     * Returns the {@link GroupKey} of extractor, as {@link org.apache.maven.tools.plugin.scanner.MojoScanner} will
+     * execute them grouped, and ordered within groups. Must never return {@code null}.
+     *
+     * @since TBD
+     */
+    GroupKey getGroupKey();
+
+    /**
      * Execute the mojo extraction.
      *
      * @param request The {@link PluginToolsRequest} containing information for the extraction process.

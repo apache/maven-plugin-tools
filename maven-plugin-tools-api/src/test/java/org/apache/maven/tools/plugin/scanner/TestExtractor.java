@@ -24,6 +24,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
 import java.util.Collections;
@@ -35,8 +36,27 @@ import java.util.List;
 public class TestExtractor
     implements MojoDescriptorExtractor
 {
+    private static final GroupKey GROUP_KEY = new GroupKey( "test", 100 );
 
-    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    @Override
+    public String getName()
+    {
+        return "test";
+    }
+
+    @Override
+    public boolean isDeprecated()
+    {
+        return false;
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
+
+    public List<MojoDescriptor> execute(MavenProject project, PluginDescriptor pluginDescriptor )
     {
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
     }

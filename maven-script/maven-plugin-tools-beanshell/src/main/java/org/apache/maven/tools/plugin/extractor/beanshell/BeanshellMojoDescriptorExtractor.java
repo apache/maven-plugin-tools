@@ -28,6 +28,7 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.codehaus.plexus.component.annotations.Component;
 
@@ -47,6 +48,22 @@ public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor
 {
+    public static final String NAME = "bsh";
+
+    private static final GroupKey GROUP_KEY = new GroupKey( "bsh", 100 );
+
+    @Override
+    public String getName()
+    {
+        return NAME;
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
+
     /**
      * {@inheritDoc}
      */

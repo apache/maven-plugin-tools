@@ -43,6 +43,12 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
+    @Override
+    public boolean isDeprecated()
+    {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )

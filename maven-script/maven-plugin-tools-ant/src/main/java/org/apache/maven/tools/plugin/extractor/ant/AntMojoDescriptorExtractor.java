@@ -34,6 +34,7 @@ import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
@@ -45,17 +46,33 @@ import org.codehaus.plexus.util.StringUtils;
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
  *
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "ant" )
+@Component( role = MojoDescriptorExtractor.class, hint = AntMojoDescriptorExtractor.NAME )
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor
 {
+    public static final String NAME = "ant";
+
+    private static final GroupKey GROUP_KEY = new GroupKey( "ant", 100 );
+
     /** Default metadata file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
 
     /** Default Ant build file extension */
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
-    
+
+    @Override
+    public String getName()
+    {
+        return NAME;
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
+
     /** {@inheritDoc} */
     @Override
     protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata(

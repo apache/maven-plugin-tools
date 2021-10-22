@@ -50,6 +50,7 @@ import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
@@ -80,11 +81,14 @@ import com.thoughtworks.qdox.model.JavaField;
  * @author Olivier Lamy
  * @since 3.0
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "java-annotations" )
+@Component( role = MojoDescriptorExtractor.class, hint = JavaAnnotationsMojoDescriptorExtractor.NAME )
 public class JavaAnnotationsMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
+    public static final String NAME = "java-annotations";
+
+    private static final GroupKey GROUP_KEY = new GroupKey( GroupKey.JAVA_GROUP, 100 );
 
     @org.codehaus.plexus.component.annotations.Requirement
     private MojoAnnotationsScanner mojoAnnotationsScanner;
@@ -94,6 +98,25 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     @org.codehaus.plexus.component.annotations.Requirement
     private ArchiverManager archiverManager;
+
+    @Override
+    public String getName()
+    {
+        return NAME;
+    }
+
+    @Override
+    public boolean isDeprecated()
+    {
+        return false; // this is the "current way" to write Java Mojos
+    }
+
+    @Override
+    @SuppressWarnings( "checkstyle:magicnumber" )
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
 
     @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
