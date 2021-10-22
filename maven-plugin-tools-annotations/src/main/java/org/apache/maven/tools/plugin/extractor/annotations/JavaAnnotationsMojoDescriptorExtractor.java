@@ -73,7 +73,6 @@ import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
-import com.thoughtworks.qdox.parser.ParseException;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.

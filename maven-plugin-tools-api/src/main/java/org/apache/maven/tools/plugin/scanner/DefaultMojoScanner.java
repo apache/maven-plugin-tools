@@ -25,6 +25,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
+import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractorComparator;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -32,7 +33,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -96,18 +96,6 @@ public class DefaultMojoScanner
             GroupKey groupKey = extractor.getGroupKey();
             String extractorId = extractor.getName();
 
-            if ( extractor.isDeprecated() )
-            {
-                if ( groupStats.containsKey( groupKey.getGroup() )
-                      && groupStats.get( groupKey.getGroup() ) != 0 )
-                {
-                    logger.info( extractorId + " deprecated mojo extractor skipped as group '" + groupKey.getGroup()
-                        + "' already discovered " + groupStats.get( groupKey.getGroup() )
-                        + " mojo descriptor" + ( groupStats.get( groupKey.getGroup() ) > 1 ? "s" : "" ) + "." );
-                    continue; // if same group already found descriptors, skip rest of the group
-                }
-            }
-
             logger.debug( "Applying " + extractorId + " mojo extractor" );
 
             List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
@@ -139,8 +127,7 @@ public class DefaultMojoScanner
             }
             else
             {
-                groupStats.put( groupKey.getGroup(),
-                    extractorDescriptorsCount );
+                groupStats.put( groupKey.getGroup(), extractorDescriptorsCount );
             }
 
             for ( MojoDescriptor descriptor : extractorDescriptors )
@@ -185,14 +172,7 @@ public class DefaultMojoScanner
             orderedExtractors.add( extractor );
         }
 
-        Collections.sort( orderedExtractors, new Comparator<MojoDescriptorExtractor>()
-        {
-            @Override
-            public int compare( final MojoDescriptorExtractor o1, final MojoDescriptorExtractor o2 )
-            {
-                return o1.getGroupKey().compareTo( o2.getGroupKey() );
-            }
-        } );
+        Collections.sort( orderedExtractors, MojoDescriptorExtractorComparator.INSTANCE );
 
         return orderedExtractors;
     }
