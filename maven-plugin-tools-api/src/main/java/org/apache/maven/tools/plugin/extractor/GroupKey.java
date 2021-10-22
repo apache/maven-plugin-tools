@@ -35,7 +35,7 @@ public final class GroupKey
 
     private final int order;
 
-    public GroupKey( final String group, final int order )
+    public GroupKey( String group, int order )
     {
         if ( group == null )
         {

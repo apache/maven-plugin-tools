@@ -121,7 +121,15 @@ public class DefaultMojoScanner
             if ( extractor.isDeprecated() &&  extractorDescriptorsCount > 0 )
             {
                 logger.warn( "" );
-                logger.warn( "Deprecated extractor extracted descriptors. Upgrade your Mojo definitions." );
+                logger.warn( "Deprecated extractor " + extractorId
+                             + " extracted " + extractorDescriptorsCount
+                             + " descriptor" + ( extractorDescriptors.size() > 1 ? "s" : "" )
+                             + ". Upgrade your Mojo definitions." );
+                if ( GroupKey.JAVA_GROUP.equals( groupKey.getGroup() ) )
+                {
+                    logger.warn( "You should use Mojo Annotations instead of Javadoc tags." );
+
+                }
                 logger.warn( "" );
             }
 

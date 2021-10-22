@@ -113,7 +113,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
     }
 
     @Override
-    @SuppressWarnings( "checkstyle:magicnumber" )
     public GroupKey getGroupKey()
     {
         return GROUP_KEY;

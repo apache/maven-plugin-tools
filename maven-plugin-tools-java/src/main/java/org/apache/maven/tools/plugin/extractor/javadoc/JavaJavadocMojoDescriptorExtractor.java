@@ -85,7 +85,6 @@ public class JavaJavadocMojoDescriptorExtractor
     }
 
     @Override
-    @SuppressWarnings( "checkstyle:magicnumber" )
     public GroupKey getGroupKey()
     {
         return GROUP_KEY;
