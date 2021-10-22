@@ -101,9 +101,9 @@ public class DefaultMojoScanner
                 if ( groupStats.containsKey( groupKey.getGroup() )
                       && groupStats.get( groupKey.getGroup() ) != 0 )
                 {
-                    logger.debug( "Skipping " + extractorId + " mojo extractor; group '"
-                        + groupKey.getGroup() + "' already have " + groupStats.get( groupKey.getGroup() )
-                        + " discovered descriptors" );
+                    logger.info( extractorId + " deprecated mojo extractor skipped as group '" + groupKey.getGroup()
+                        + "' already discovered " + groupStats.get( groupKey.getGroup() )
+                        + " mojo descriptor" + ( groupStats.get( groupKey.getGroup() ) > 1 ? "s" : "" ) + "." );
                     continue; // if same group already found descriptors, skip rest of the group
                 }
             }
