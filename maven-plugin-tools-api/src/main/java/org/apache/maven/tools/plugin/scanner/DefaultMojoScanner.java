@@ -128,7 +128,6 @@ public class DefaultMojoScanner
                 if ( GroupKey.JAVA_GROUP.equals( groupKey.getGroup() ) )
                 {
                     logger.warn( "You should use Mojo Annotations instead of Javadoc tags." );
-
                 }
                 logger.warn( "" );
             }
