@@ -73,6 +73,7 @@ import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
+import com.thoughtworks.qdox.parser.ParseException;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
@@ -488,7 +489,15 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         for ( File source : sourceDirectories )
         {
-            builder.addSourceTree( source );
+            try
+            {
+                builder.addSourceTree( source );
+            }
+            catch ( ParseException e )
+            {
+                getLogger().warn( "Unable to scan Javadoc from " + source
+                    + "; skipping since, deprecation and description scanning from it" );
+            }
         }
 
         Collection<JavaClass> javaClasses = builder.getClasses();
