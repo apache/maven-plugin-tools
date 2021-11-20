@@ -314,13 +314,12 @@ public class PluginXdocGenerator
             }
         }
 
-        if ( mojoDescriptor.isThreadSafe() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.threadSafe" ) );
-            w.endElement(); //li
-        }
+        addedUl = addUl( w, addedUl );
+        w.startElement( "li" );
+        w.writeMarkup( getString( mojoDescriptor.isThreadSafe()
+                ? "pluginxdoc.mojodescriptor.threadSafe"
+                : "pluginxdoc.mojodescriptor.notThreadSafe" ) );
+        w.endElement(); //li
 
         value = mojoDescriptor.getSince();
         if ( StringUtils.isNotEmpty( value ) )
