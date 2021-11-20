@@ -312,15 +312,14 @@ public class PluginXdocGenerator
                 w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyCollectionRequired", value ) );
                 w.endElement(); //li
             }
+        }
 
-            if ( extendedMojoDescriptor.isThreadSafe() )
-            {
-                addedUl = addUl( w, addedUl );
-                w.startElement( "li" );
-                w.writeMarkup( getString( "pluginxdoc.mojodescriptor.threadSafe" ) );
-                w.endElement(); //li
-            }
-
+        if ( mojoDescriptor.isThreadSafe() )
+        {
+            addedUl = addUl( w, addedUl );
+            w.startElement( "li" );
+            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.threadSafe" ) );
+            w.endElement(); //li
         }
 
         value = mojoDescriptor.getSince();
