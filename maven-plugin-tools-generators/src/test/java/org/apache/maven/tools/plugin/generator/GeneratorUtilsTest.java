@@ -19,15 +19,19 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.junit.Test;
-
-import java.io.StringWriter;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -208,6 +212,32 @@ public class GeneratorUtilsTest
 
         impl = "org.apache.maven.tools.plugin.util.stubs.MojoStub";
         assertFalse( GeneratorUtils.isMavenReport( impl, stub ) );
+    }
+
+    @Test
+    public void testExcludeProvidedScopeFormComponentDependencies()
+    {
+
+        Artifact a1 = new DefaultArtifact( "g", "a1", "1.0", Artifact.SCOPE_COMPILE, "jar", "", null );
+        Artifact a2 = new DefaultArtifact( "g", "a2", "2.0", Artifact.SCOPE_PROVIDED, "jar", "", null );
+        Artifact a3 = new DefaultArtifact( "g", "a3", "3.0", Artifact.SCOPE_RUNTIME, "jar", "", null );
+        List<Artifact> depList = Arrays.asList( a1, a2, a3 );
+
+        List<ComponentDependency> componentDependencies = GeneratorUtils.toComponentDependencies( depList );
+
+        assertEquals( 2, componentDependencies.size() );
+
+        ComponentDependency componentDependency1 = componentDependencies.get( 0 );
+        assertEquals( a1.getGroupId(), componentDependency1.getGroupId() );
+        assertEquals( a1.getArtifactId(), componentDependency1.getArtifactId() );
+        assertEquals( a1.getVersion(), componentDependency1.getVersion() );
+        assertEquals( a1.getType(), componentDependency1.getType() );
+
+        ComponentDependency componentDependency2 = componentDependencies.get( 1 );
+        assertEquals( a3.getGroupId(), componentDependency2.getGroupId() );
+        assertEquals( a3.getArtifactId(), componentDependency2.getArtifactId() );
+        assertEquals( a3.getVersion(), componentDependency2.getVersion() );
+        assertEquals( a3.getType(), componentDependency2.getType() );
     }
 
 }
