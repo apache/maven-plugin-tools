@@ -19,7 +19,10 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.parser.ParserDelegator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,11 +43,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.parser.ParserDelegator;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -55,6 +53,8 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.w3c.tidy.Tidy;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Convenience methods to play with Maven plugins.
@@ -122,7 +122,7 @@ public final class GeneratorUtils
     
     /**
      * @param artifacts not null collection of <code>Artifact</code>
-     * @return list of component dependencies
+     * @return list of component dependencies, without in provided scope
      */
     public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> artifacts )
     {
@@ -130,6 +130,11 @@ public final class GeneratorUtils
 
         for ( Artifact artifact : artifacts )
         {
+            if ( Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) )
+            {
+                continue;
+            }
+
             ComponentDependency cd = new ComponentDependency();
 
             cd.setArtifactId( artifact.getArtifactId() );
