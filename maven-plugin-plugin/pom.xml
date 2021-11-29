@@ -37,6 +37,10 @@
     and a generic help goal.
   </description>
 
+  <prerequisites>
+    <maven>${mavenVersion}</maven>
+  </prerequisites>
+
   <properties>
     <doxiaVersion>1.9.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.9.2</doxia-sitetoolsVersion>
