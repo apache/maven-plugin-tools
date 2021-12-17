@@ -176,6 +176,11 @@ public abstract class AbstractGeneratorMojo
     protected abstract Generator createGenerator();
 
     /**
+     * System/OS line separator: used to format console messages.
+     */
+    private static final String LS = System.lineSeparator();
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -198,10 +203,10 @@ public abstract class AbstractGeneratorMojo
             && project.getArtifactId().toLowerCase().endsWith( "-plugin" ) 
             && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
-            getLog().error( String.format( "%n%nArtifact Ids of the format maven-___-plugin are reserved for %n"
-                                + "plugins in the Group Id org.apache.maven.plugins%n"
-                                + "Please change your artifactId to the format ___-maven-plugin%n"
-                                + "In the future this error will break the build.%n%n" ) );
+            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+                                + "plugins in the Group Id org.apache.maven.plugins" + LS
+                                + "Please change your artifactId to the format ___-maven-plugin" + LS
+                                + "In the future this error will break the build." + LS + LS );
         }
 
         boolean wrongScopedMavenPluginApi = mavenPluginApiDependencyNotInProvidedScope();
