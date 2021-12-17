@@ -204,23 +204,12 @@ public abstract class AbstractGeneratorMojo
                                 + "In the future this error will break the build.%n%n" ) );
         }
 
-        Set<Artifact> wrongScopedArtifacts = mavenDependenciesNotInProvidedScope();
-        if ( !wrongScopedArtifacts.isEmpty() )
+        boolean wrongScopedMavenPluginApi = mavenPluginApiDependencyNotInProvidedScope();
+        if ( wrongScopedMavenPluginApi )
         {
-            StringBuilder errorMessage = new StringBuilder(
-                "%n%nMaven dependencies of Maven Plugins should be in provided scope.%n"
-                    + "Please make sure that all your dependencies declared in POM whose group ID is%n"
-                    + "org.apache.maven have set '<scope>provided</scope>' as well.%n"
-                    + "In the future this error will break the build.%n%n"
-                    + "The following dependencies are in wrong scope:%n"
+            getLog().warn(
+                "It is best practice to keep maven-plugin-api dependency in provided scope."
             );
-            for ( Artifact artifact : wrongScopedArtifacts )
-            {
-                errorMessage.append( " * " ).append( artifact ).append( "%n" );
-            }
-            errorMessage.append( "%nPlease fix your build!%n%n" );
-
-            getLog().error( String.format( errorMessage.toString() ) );
         }
 
         String defaultGoalPrefix = getDefaultGoalPrefix( project );
@@ -314,23 +303,20 @@ public abstract class AbstractGeneratorMojo
     }
 
     /**
-     * Collects all dependencies having {@code org.apache.maven} group ID that are NOT in provided scope.
+     * Returns {@code true} if maven-plugin-api is NOT in provided scope.
      */
-    private Set<Artifact> mavenDependenciesNotInProvidedScope()
+    private boolean mavenPluginApiDependencyNotInProvidedScope()
     {
-        LinkedHashSet<Artifact> wrongScopedDependencies = new LinkedHashSet<>();
-
         for ( Artifact dependency : project.getArtifacts() )
         {
             if ( "org.apache.maven".equals( dependency.getGroupId() )
-                && dependency.getArtifactId().startsWith( "maven-" )
+                && dependency.getArtifactId().equals( "maven-plugin-api" )
                 && !Artifact.SCOPE_PROVIDED.equals( dependency.getScope() ) )
             {
-                wrongScopedDependencies.add( dependency );
+                return true;
             }
         }
-
-        return wrongScopedDependencies;
+        return false;
     }
 
     /**
