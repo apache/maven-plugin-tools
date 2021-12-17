@@ -327,7 +327,7 @@ public abstract class AbstractGeneratorMojo
 
         for ( Artifact dependency : project.getArtifacts() )
         {
-            // maven-archiver and maven-jxr are really in wrong package
+            // maven-archiver and maven-jxr are really in wrong groupId
             if ( "org.apache.maven".equals( dependency.getGroupId() )
                 && dependency.getArtifactId().startsWith( "maven-" )
                 && !dependency.getArtifactId().equals( "maven-archiver" )
