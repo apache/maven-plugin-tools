@@ -176,6 +176,11 @@ public abstract class AbstractGeneratorMojo
     protected abstract Generator createGenerator();
 
     /**
+     * System/OS line separator: used to format console messages.
+     */
+    private static final String LS = System.lineSeparator();
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -198,29 +203,29 @@ public abstract class AbstractGeneratorMojo
             && project.getArtifactId().toLowerCase().endsWith( "-plugin" ) 
             && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
-            getLog().error( String.format( "%n%nArtifact Ids of the format maven-___-plugin are reserved for %n"
-                                + "plugins in the Group Id org.apache.maven.plugins%n"
-                                + "Please change your artifactId to the format ___-maven-plugin%n"
-                                + "In the future this error will break the build.%n%n" ) );
+            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+                                + "plugins in the Group Id org.apache.maven.plugins" + LS
+                                + "Please change your artifactId to the format ___-maven-plugin" + LS
+                                + "In the future this error will break the build." + LS + LS );
         }
 
         Set<Artifact> wrongScopedArtifacts = mavenDependenciesNotInProvidedScope();
         if ( !wrongScopedArtifacts.isEmpty() )
         {
             StringBuilder errorMessage = new StringBuilder(
-                "%n%nMaven dependencies of Maven Plugins should be in provided scope.%n"
-                    + "Please make sure that all your dependencies declared in POM whose group ID is%n"
-                    + "org.apache.maven have set '<scope>provided</scope>' as well.%n"
-                    + "In the future this error will break the build.%n%n"
-                    + "The following dependencies are in wrong scope:%n"
+                LS + LS + "Maven dependencies of Maven Plugins should be in provided scope." + LS
+                    + "Please make sure that all your dependencies declared in POM whose group ID is" + LS
+                    + "org.apache.maven have set '<scope>provided</scope>' as well." + LS
+                    + "In the future this error will break the build." + LS + LS
+                    + "The following dependencies are in wrong scope:" + LS
             );
             for ( Artifact artifact : wrongScopedArtifacts )
             {
-                errorMessage.append( " * " ).append( artifact ).append( "%n" );
+                errorMessage.append( " * " ).append( artifact ).append( LS );
             }
-            errorMessage.append( "%nPlease fix your build!%n%n" );
+            errorMessage.append( LS ).append( "Please fix your build!" ).append( LS ).append( LS );
 
-            getLog().error( String.format( errorMessage.toString() ) );
+            getLog().error( errorMessage.toString() );
         }
 
         String defaultGoalPrefix = getDefaultGoalPrefix( project );
