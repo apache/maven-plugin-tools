@@ -40,12 +40,6 @@ under the License.
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-jxr</artifactId>
-      <version>3.1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>@mavenVersion@</version>
       <scope>compile</scope>
