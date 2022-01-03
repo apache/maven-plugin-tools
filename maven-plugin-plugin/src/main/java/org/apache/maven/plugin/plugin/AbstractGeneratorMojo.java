@@ -185,7 +185,7 @@ public abstract class AbstractGeneratorMojo
     private List<String> expectedProvidedScopeGroupIds = Collections.singletonList( "org.apache.maven" );
 
     /**
-     * List of {@code groupID:artifactID} strings of artifact coordinates that are to be excluded from "expected
+     * List of {@code groupId:artifactId} strings of artifact coordinates that are to be excluded from "expected
      * provided scope" check. Default value: {@code ["org.apache.maven:maven-archiver", "org.apache.maven:maven-jxr"]}.
      *
      * @since 3.6.3
