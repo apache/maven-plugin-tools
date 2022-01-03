@@ -237,8 +237,8 @@ public abstract class AbstractGeneratorMojo
         else if ( !goalPrefix.equals( defaultGoalPrefix ) )
         {
             getLog().warn(
-                "\n\nGoal prefix is specified as: '" + goalPrefix + "'. " + "Maven currently expects it to be '"
-                    + defaultGoalPrefix + "'.\n" );
+                LS + LS + "Goal prefix is specified as: '" + goalPrefix + "'. " + "Maven currently expects it to be '"
+                    + defaultGoalPrefix + "'." + LS );
         }
 
         mojoScanner.setActiveExtractors( extractors );
