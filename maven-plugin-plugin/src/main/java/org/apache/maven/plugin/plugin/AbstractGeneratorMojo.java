@@ -43,6 +43,7 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -139,7 +140,7 @@ public abstract class AbstractGeneratorMojo
      * @since 3.5
      */
     @Parameter
-    private List<String> mojoDependencies;
+    private List<String> mojoDependencies = null;
 
     /**
      * List of Remote Repositories used by the resolver
@@ -163,7 +164,36 @@ public abstract class AbstractGeneratorMojo
      * @since 3.3
      */
     @Parameter
-    protected List<String> packagingTypes = Arrays.asList( "maven-plugin" );
+    protected List<String> packagingTypes = Collections.singletonList( "maven-plugin" );
+
+    /**
+     * Flag controlling is "expected dependencies in provided scope" check to be performed or not. Default value:
+     * {@code true}.
+     *
+     * @since 3.6.3
+     */
+    @Parameter( defaultValue = "true", property = "maven.plugin.checkExpectedProvidedScope" )
+    private boolean checkExpectedProvidedScope = true;
+
+    /**
+     * List of {@code groupId} strings of artifact coordinates that are expected to be in "provided" scope. Default
+     * value: {@code ["org.apache.maven"]}.
+     *
+     * @since 3.6.3
+     */
+    @Parameter
+    private List<String> expectedProvidedScopeGroupIds = Collections.singletonList( "org.apache.maven" );
+
+    /**
+     * List of {@code groupId:artifactId} strings of artifact coordinates that are to be excluded from "expected
+     * provided scope" check. Default value: {@code ["org.apache.maven:maven-archiver", "org.apache.maven:maven-jxr"]}.
+     *
+     * @since 3.6.3
+     */
+    @Parameter
+    private List<String> expectedProvidedScopeExclusions = Arrays.asList(
+            "org.apache.maven:maven-archiver",
+            "org.apache.maven:maven-jxr" );
 
     /**
      * @return the output directory where files will be generated.
@@ -209,23 +239,25 @@ public abstract class AbstractGeneratorMojo
                                 + "In the future this error will break the build." + LS + LS );
         }
 
-        Set<Artifact> wrongScopedArtifacts = mavenDependenciesNotInProvidedScope();
-        if ( !wrongScopedArtifacts.isEmpty() )
+        if ( checkExpectedProvidedScope )
         {
-            StringBuilder errorMessage = new StringBuilder(
-                LS + LS + "Maven dependencies of Maven Plugins should be in provided scope." + LS
-                    + "Please make sure that all your dependencies declared in POM whose group ID is" + LS
-                    + "org.apache.maven have set '<scope>provided</scope>' as well." + LS
-                    + "In the future this error will break the build." + LS + LS
-                    + "The following dependencies are in wrong scope:" + LS
-            );
-            for ( Artifact artifact : wrongScopedArtifacts )
+            Set<Artifact> wrongScopedArtifacts = dependenciesNotInProvidedScope();
+            if ( !wrongScopedArtifacts.isEmpty() )
             {
-                errorMessage.append( " * " ).append( artifact ).append( LS );
-            }
-            errorMessage.append( LS ).append( "Please fix your build!" ).append( LS ).append( LS );
+                StringBuilder errorMessage = new StringBuilder(
+                        LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
+                        + "Please make sure that dependencies listed below declared in POM" + LS
+                        + "have set '<scope>provided</scope>' as well." + LS + LS
+                        + "The following dependencies are in wrong scope:" + LS
+                );
+                for ( Artifact artifact : wrongScopedArtifacts )
+                {
+                    errorMessage.append( " * " ).append( artifact ).append( LS );
+                }
+                errorMessage.append( LS ).append( LS );
 
-            getLog().error( errorMessage.toString() );
+                getLog().error( errorMessage.toString() );
+            }
         }
 
         String defaultGoalPrefix = getDefaultGoalPrefix( project );
@@ -294,7 +326,7 @@ public abstract class AbstractGeneratorMojo
         }
         catch ( InvalidPluginDescriptorException | ExtractionException e )
         {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
+            throw new MojoExecutionException( "Error extracting plugin descriptor: '" + e.getLocalizedMessage() + "'",
                                               e );
         }
         catch ( LinkageError e )
@@ -319,16 +351,17 @@ public abstract class AbstractGeneratorMojo
     }
 
     /**
-     * Collects all dependencies having {@code org.apache.maven} group ID that are NOT in provided scope.
+     * Collects all dependencies expected to be in "provided" scope but are NOT in "provided" scope.
      */
-    private Set<Artifact> mavenDependenciesNotInProvidedScope()
+    private Set<Artifact> dependenciesNotInProvidedScope()
     {
         LinkedHashSet<Artifact> wrongScopedDependencies = new LinkedHashSet<>();
 
         for ( Artifact dependency : project.getArtifacts() )
         {
-            if ( "org.apache.maven".equals( dependency.getGroupId() )
-                && dependency.getArtifactId().startsWith( "maven-" )
+            String ga = dependency.getGroupId() + ":" + dependency.getArtifactId();
+            if ( expectedProvidedScopeGroupIds.contains( dependency.getGroupId() )
+                && !expectedProvidedScopeExclusions.contains( ga )
                 && !Artifact.SCOPE_PROVIDED.equals( dependency.getScope() ) )
             {
                 wrongScopedDependencies.add( dependency );
