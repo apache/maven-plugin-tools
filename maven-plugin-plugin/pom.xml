@@ -42,8 +42,8 @@
   </prerequisites>
 
   <properties>
-    <doxiaVersion>1.9.1</doxiaVersion>
-    <doxia-sitetoolsVersion>1.9.2</doxia-sitetoolsVersion>
+    <doxiaVersion>1.11.1</doxiaVersion>
+    <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
     <it.debug>true</it.debug>
   </properties>
 
