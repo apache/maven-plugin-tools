@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-script</artifactId>
-    <version>3.6.3-SNAPSHOT</version>
+    <version>3.6.3</version>
   </parent>
 
   <artifactId>maven-plugin-tools-beanshell</artifactId>
