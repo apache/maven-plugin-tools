@@ -62,7 +62,7 @@ under the License.
       <!-- dependency of  org.apache.maven.plugin-tools:maven-plugin-tools-annotations:@project.version@:jar:tests -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.2</version>
     </dependency>
     
     <dependency>
