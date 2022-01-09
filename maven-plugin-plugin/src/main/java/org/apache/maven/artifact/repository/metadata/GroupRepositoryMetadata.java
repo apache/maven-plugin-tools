@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.plugin.metadata;
+package org.apache.maven.artifact.repository.metadata;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,12 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.repository.metadata.AbstractRepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.Metadata;
-import org.apache.maven.artifact.repository.metadata.Plugin;
 
 /**
  * Metadata for the group directory of the repository.
+ * Class copied from maven-compat for to remove dependency but keep compatibility with Maven 3 (and Nexus Staging
+ * Plugin, see <a href="https://issues.apache.org/jira/browse/MPLUGIN-384">MPLUGIN-384</a>)
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  */
