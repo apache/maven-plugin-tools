@@ -74,6 +74,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
+        <version>4.2.5</version><!-- Java 7 -->
     </dependency>
         
     <dependency>
