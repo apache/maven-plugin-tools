@@ -94,7 +94,7 @@
     <javaVersion>7</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
-    <antVersion>1.7.1</antVersion>
+    <antVersion>1.9.16</antVersion>
     <sisuVersion>0.3.5</sisuVersion>
     <mavenInvokerPluginVersion>3.2.2</mavenInvokerPluginVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
