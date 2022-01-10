@@ -29,13 +29,14 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotated
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.codehaus.plexus.PlexusTestCase;
-import org.fest.assertions.Assertions;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Olivier Lamy
@@ -57,7 +58,7 @@ public class TestAnnotationsReader
 
         System.out.println( "mojoAnnotatedClasses:" + mojoAnnotatedClasses );
 
-        Assertions.assertThat( mojoAnnotatedClasses ).isNotNull().isNotEmpty().hasSize( 1 );
+        assertThat( mojoAnnotatedClasses ).isNotNull().isNotEmpty().hasSize( 1 );
 
         MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.values().iterator().next();
 
@@ -78,10 +79,10 @@ public class TestAnnotationsReader
         assertEquals( LifecyclePhase.PACKAGE, execute.phase() );
 
         Collection<ComponentAnnotationContent> components = mojoAnnotatedClass.getComponents().values();
-        Assertions.assertThat( components ).isNotNull().isNotEmpty().hasSize( 2 );
+        assertThat( components ).isNotNull().isNotEmpty().hasSize( 2 );
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
-        Assertions.assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
+        assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
             new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false, String.class.getName() ),
             new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
                                             String.class.getName() ) );
