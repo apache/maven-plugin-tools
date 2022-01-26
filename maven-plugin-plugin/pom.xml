@@ -42,6 +42,7 @@
   </prerequisites>
 
   <properties>
+    <mavenPluginPlugin.version>3.6.4</mavenPluginPlugin.version>
     <it.debug>true</it.debug>
   </properties>
 
@@ -249,7 +250,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.4</version>
+        <version>${mavenPluginPlugin.version}</version>
         <executions>
           <execution>
             <id>default-descriptor</id>
@@ -274,7 +275,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.0</version><!-- cannot use ${mavenPluginToolsVersion} property because release plugin would try to update -->
+        <version>${mavenPluginPlugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>
