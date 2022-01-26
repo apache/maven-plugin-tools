@@ -75,13 +75,8 @@ Using Plugin Tools Java Annotations
 
 * POM configuration
 
-  To be able to use these Java annotations, you need to add some configuration to your plugin POM:
-
-  * add <<<maven-plugin-annotations>>> dependency, preferably with <<<provided>>> scope,
-
-  * override Maven core's <<<default-descriptor>>> execution phase to <<<process-classes>>>,
-
-  []
+  To be able to use these Java annotations, you need to add to your plugin POM
+  <<<maven-plugin-annotations>>> dependency, preferably with <<<provided>>> scope.
 
 +-----+
 <project>
@@ -94,7 +89,7 @@ Using Plugin Tools Java Annotations
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>${project.version}</version>
-      <optional>true</optional> <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
+      <scope>provided</scope> <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
     </dependency>
   </dependencies>
   ...
@@ -105,10 +100,6 @@ Using Plugin Tools Java Annotations
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
-          <execution>
-            <id>default-descriptor</id>
-            <phase>process-classes</phase>
-          </execution>
           <!-- if you want to generate help goal -->
           <execution>
             <id>help-goal</id>

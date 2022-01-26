@@ -22,21 +22,18 @@ under the License.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.maven.its.annotation-with-inheritance-from-deps</groupId>
-  <artifactId>annotation-with-inheritance-from-deps</artifactId>
+  <groupId>org.apache.maven.its.mplugin-382</groupId>
+  <artifactId>mplugin-382-exclude-provided-dependency</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Maven Integration Test :: annotation-with-inheritance-from-deps</name>
+  <name>Maven Integration Test :: mplugin-382-empty-dependency</name>
   <description>
-    Test plugin-plugin, which tests maven-plugin-tools-api and 
-    maven-plugin-tools-java. This will generate a plugin descriptor from 
-    java-based mojo sources, install the plugin, and then use it.
+    Test plugin-plugin, plugin.xml descriptor - shouldn't contain dependencies in provided scope
   </description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <plexusCompilerVersion>1.8.6</plexusCompilerVersion>
   </properties>
 
   <dependencies>
@@ -50,48 +47,24 @@ under the License.
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>@project.version@</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
+
+    <!-- dependency in compile scope -->
     <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-annotations</artifactId>
-      <version>@project.version@</version>
-      <classifier>tests</classifier>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
     </dependency>
+
+    <!-- dependency in runtime scope -->
     <dependency>
-      <!-- dependency of  org.apache.maven.plugin-tools:maven-plugin-tools-annotations:@project.version@:jar:tests -->
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-rng-client-api</artifactId>
+      <version>1.4</version>
+      <scope>runtime</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-compiler-manager</artifactId>
-      <version>${plexusCompilerVersion}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-compiler-javac</artifactId>
-      <version>${plexusCompilerVersion}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.1</version>
-    </dependency>
+
   </dependencies>
 
   <build>
@@ -108,29 +81,14 @@ under the License.
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
-        <configuration>
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
-        <executions>
-          <execution>
-            <id>mojo-descriptor</id>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
+
   </build>
 </project>

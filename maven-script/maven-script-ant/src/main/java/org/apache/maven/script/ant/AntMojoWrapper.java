@@ -34,7 +34,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.Path;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -204,7 +203,8 @@ public class AntMojoWrapper
 
         try
         {
-            UnArchiver ua = new ZipUnArchiver( pluginJar );
+            ZipUnArchiver ua = new ZipUnArchiver( pluginJar );
+            ua.enableLogging( logger );
 
             ua.extract( resourcesPath, outputDirectory );
         }

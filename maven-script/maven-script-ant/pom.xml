@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-script</artifactId>
-    <version>3.6.2-SNAPSHOT</version>
+    <version>3.6.5-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-script-ant</artifactId>
@@ -60,6 +60,7 @@ under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
+        <version>4.2.5</version><!-- Java 7 -->
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
