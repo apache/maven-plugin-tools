@@ -30,9 +30,6 @@ import java.util.List;
  */
 public interface MojoDescriptorExtractor
 {
-    /** Plexus role for lookup */
-    String ROLE = MojoDescriptorExtractor.class.getName();
-
     /**
      * Returns the "name" (id) of the extractor.
      *
