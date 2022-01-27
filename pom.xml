@@ -90,16 +90,16 @@
   </distributionManagement>
 
   <properties>
-    <surefire.version>2.22.2</surefire.version>
+    <surefireVersion>2.22.2</surefireVersion>
     <javaVersion>7</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <antVersion>1.9.16</antVersion>
     <sisuVersion>0.3.5</sisuVersion>
-    <mavenInvokerPluginVersion>3.2.2</mavenInvokerPluginVersion>
-    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.2</asmVersion>
+
+    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
   </properties>
 
