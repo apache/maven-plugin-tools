@@ -23,7 +23,7 @@
   <parent>
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>34</version>
+    <version>35-SNAPSHOT</version>
     <relativePath>../pom/maven/pom.xml</relativePath>
   </parent>
 
@@ -64,7 +64,6 @@
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-script</module>
     <module>maven-plugin-plugin</module><!-- keep at end since ITs require every extractors -->
   </modules>
 
@@ -91,9 +90,9 @@
 
   <properties>
     <surefire.version>2.22.2</surefire.version>
-    <javaVersion>7</javaVersion>
-    <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <mavenVersion>3.2.5</mavenVersion>
+    <javaVersion>8</javaVersion>
+    <pluginTestingHarnessVersion>3.4.0-SNAPSHOT</pluginTestingHarnessVersion>
+    <mavenVersion>4.0.0-alpha-1-SNAPSHOT</mavenVersion>
     <antVersion>1.9.16</antVersion>
     <sisuVersion>0.3.5</sisuVersion>
     <mavenInvokerPluginVersion>3.2.2</mavenInvokerPluginVersion>
@@ -295,12 +294,12 @@
     <plugins>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0</version>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.3</version>
+            <version>1.4</version>
           </dependency>
         </dependencies>
       </plugin>
