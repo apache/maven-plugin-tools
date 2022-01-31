@@ -42,7 +42,6 @@
   </prerequisites>
 
   <properties>
-    <mavenPluginPluginVersion>3.6.4</mavenPluginPluginVersion>
     <mavenInvokerPluginVersion>3.2.2</mavenInvokerPluginVersion>
     <it.debug>true</it.debug>
   </properties>
@@ -251,7 +250,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginPluginVersion}</version>
+        <version>3.6.4</version>
         <executions>
           <execution>
             <id>default-descriptor</id>
@@ -276,7 +275,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginPluginVersion}</version>
         <reportSets>
           <reportSet>
             <reports>
