@@ -44,8 +44,10 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
  *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Component( role = MojoDescriptorExtractor.class, hint = "ant" )
+@Deprecated
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
     implements MojoDescriptorExtractor

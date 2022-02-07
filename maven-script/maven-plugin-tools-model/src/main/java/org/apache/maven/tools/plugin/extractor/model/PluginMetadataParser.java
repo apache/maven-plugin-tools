@@ -37,7 +37,10 @@ import java.util.Set;
 
 /**
  * Parser for plugin metadata.
+ *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 public class PluginMetadataParser
 {
     /**

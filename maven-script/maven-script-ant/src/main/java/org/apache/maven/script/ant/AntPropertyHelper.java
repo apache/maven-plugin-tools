@@ -37,7 +37,9 @@ import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
  * Makes the ${expressions} used in Maven available to Ant as properties.
  *
  * @author <a href="mailto:kenney@apache.org">Kenney Westerhof</a>
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 public class AntPropertyHelper
     extends PropertyHelper
 {
