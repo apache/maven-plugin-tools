@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.javadoc;
  * under the License.
  */
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +44,6 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -62,7 +64,8 @@ import com.thoughtworks.qdox.model.JavaType;
  *
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "java-javadoc" )
+@Named( "java-javadoc" )
+@Singleton
 public class JavaJavadocMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor, JavadocMojoAnnotation

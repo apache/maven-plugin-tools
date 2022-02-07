@@ -19,6 +19,14 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * under the License.
  */
 
+import javax.inject.Inject;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -28,27 +36,29 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAn
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
-import org.codehaus.plexus.PlexusTestCase;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import org.codehaus.plexus.testing.PlexusTest;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Olivier Lamy
  */
-public class TestAnnotationsReader
-    extends PlexusTestCase
+@PlexusTest
+class TestAnnotationsReader
 {
-    public void testReadMojoClass()
+
+    @Inject
+    MojoAnnotationsScanner mojoAnnotationsScanner;
+
+    @Test
+    void testReadMojoClass()
         throws Exception
     {
-        MojoAnnotationsScanner mojoAnnotationsScanner = (MojoAnnotationsScanner) lookup( MojoAnnotationsScanner.ROLE );
-
         MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
         request.setClassesDirectories( Collections.singletonList( new File( getBasedir(), "target/test-classes" ) ) );
         request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );

@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -56,7 +59,8 @@ import java.util.zip.ZipInputStream;
  * @author Olivier Lamy
  * @since 3.0
  */
-@org.codehaus.plexus.component.annotations.Component( role = MojoAnnotationsScanner.class )
+@Named
+@Singleton
 public class DefaultMojoAnnotationsScanner
     extends AbstractLogEnabled
     implements MojoAnnotationsScanner

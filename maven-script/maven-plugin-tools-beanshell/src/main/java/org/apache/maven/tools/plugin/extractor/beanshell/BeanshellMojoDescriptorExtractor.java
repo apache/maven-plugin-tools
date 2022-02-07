@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.beanshell;
  * under the License.
  */
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import bsh.EvalError;
@@ -28,8 +31,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
-import org.codehaus.plexus.component.annotations.Component;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -44,10 +45,10 @@ import java.util.Set;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-@Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
+@Named( "bsh" )
+@Singleton
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
-    implements MojoDescriptorExtractor
 {
     /**
      * {@inheritDoc}
