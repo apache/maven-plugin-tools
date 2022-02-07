@@ -31,19 +31,19 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author jdcasey
  */
-public class GeneratorUtilsTest
+class GeneratorUtilsTest
 {
     @Test
-    public void testShouldWriteDependencies()
+    void testShouldWriteDependencies()
         throws Exception
     {
         ComponentDependency dependency = new ComponentDependency();
@@ -71,7 +71,7 @@ public class GeneratorUtilsTest
     }
 
     @Test
-    public void testMakeHtmlValid()
+    void testMakeHtmlValid()
     {
         String javadoc = null;
         assertEquals( "", GeneratorUtils.makeHtmlValid( javadoc ) );
@@ -104,7 +104,7 @@ public class GeneratorUtilsTest
     }
 
     @Test
-    public void testDecodeJavadocTags()
+    void testDecodeJavadocTags()
     {
         String javadoc = null;
         assertEquals( "", GeneratorUtils.decodeJavadocTags( javadoc ) );
@@ -159,7 +159,7 @@ public class GeneratorUtilsTest
     }
 
     @Test
-    public void testToText()
+    void testToText()
         throws Exception
     {
         String javadoc = null;
@@ -191,7 +191,7 @@ public class GeneratorUtilsTest
     }
 
     @Test
-    public void testIsMavenReport()
+    void testIsMavenReport()
         throws Exception
     {
         try
@@ -215,7 +215,7 @@ public class GeneratorUtilsTest
     }
 
     @Test
-    public void testExcludeProvidedScopeFormComponentDependencies()
+    void testExcludeProvidedScopeFormComponentDependencies()
     {
 
         Artifact a1 = new DefaultArtifact( "g", "a1", "1.0", Artifact.SCOPE_COMPILE, "jar", "", null );
@@ -239,5 +239,4 @@ public class GeneratorUtilsTest
         assertEquals( a3.getVersion(), componentDependency2.getVersion() );
         assertEquals( a3.getType(), componentDependency2.getType() );
     }
-
 }

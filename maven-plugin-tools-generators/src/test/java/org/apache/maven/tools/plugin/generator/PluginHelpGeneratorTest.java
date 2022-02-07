@@ -19,22 +19,28 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
+import javax.inject.Inject;
+
+import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
+@PlexusTest
 public class PluginHelpGeneratorTest
     extends AbstractGeneratorTestCase
 {
+
+    @Inject
+    VelocityComponent velocityComponent;
+
     // inherits tests from base class
     @Override
     protected void setupGenerator()
         throws Exception
     {
-
-        generator =
-            new PluginHelpGenerator().setVelocityComponent( (VelocityComponent) lookup( VelocityComponent.ROLE ) );
+        generator = new PluginHelpGenerator().setVelocityComponent( velocityComponent );
 
     }
 }

@@ -23,12 +23,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.apache.maven.project.MavenProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+// at least one test class must be public for test-javadoc report
 public class AbstractGeneratorMojoTest
 {
     @Test
-    public void defaultGoalPrefix()
+    void defaultGoalPrefix()
     {
         assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-plugin-plugin" ) ),
                     is( "plugin" ) );

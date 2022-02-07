@@ -19,41 +19,38 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-import org.apache.maven.tools.plugin.extractor.annotations.AbstractFooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.DeprecatedMojo;
-import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.codehaus.plexus.logging.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class DefaultMojoAnnotationsScannerTest
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+class DefaultMojoAnnotationsScannerTest
 {
     private DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
 
     @Test
-    public void testSkipModuleInfoClassInArchive() throws Exception
+    void testSkipModuleInfoClassInArchive() throws Exception
     {
         scanner.scanArchive( new File( "target/test-classes/java9-module.jar" ), null, false );
     }
 
     @Test
-    public void testJava8Annotations() throws Exception
+    void testJava8Annotations() throws Exception
     {
         scanner.enableLogging( mock( Logger.class ) );
         scanner.scanArchive( new File( "target/test-classes/java8-annotations.jar" ), null, false );
     }
 
     @Test
-    public void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException
+    void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException
     {
         File directoryToScan = new File( DeprecatedMojo.class.getResource( "" ).getFile() );
 
