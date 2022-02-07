@@ -23,15 +23,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -84,7 +86,10 @@ public class PluginHelpGenerator
             String helpClassSources =
                 getHelpClassSources( getPluginHelpPath( mavenProject ) );
 
-            FileUtils.fileWrite( helpClass, UTF_8.name(), helpClassSources );
+            try ( Writer w = new OutputStreamWriter( new CachingOutputStream( helpClass ), UTF_8 ) )
+            {
+                w.write( helpClassSources );
+            }
         }
         catch ( IOException e )
         {

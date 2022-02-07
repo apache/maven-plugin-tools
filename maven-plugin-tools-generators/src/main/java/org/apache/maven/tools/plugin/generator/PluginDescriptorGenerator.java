@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -39,6 +38,7 @@ import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
@@ -89,16 +89,12 @@ public class PluginDescriptorGenerator
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
 
-        if ( destinationFile.exists() )
-        {
-            destinationFile.delete();
-        }
-        else if ( !destinationFile.getParentFile().exists() )
+        if ( !destinationFile.getParentFile().exists() )
         {
             destinationFile.getParentFile().mkdirs();
         }
 
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( destinationFile ), UTF_8 ) )
+        try ( Writer writer = new OutputStreamWriter( new CachingOutputStream( destinationFile ), UTF_8 ) )
         {
             XMLWriter w = new PrettyPrintXMLWriter( writer, UTF_8.name(), null );
 
