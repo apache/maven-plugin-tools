@@ -37,8 +37,10 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  * @author jdcasey
  */
+@Deprecated
 public abstract class AbstractScriptedMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
@@ -74,6 +76,12 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         }
 
         copyScriptsToOutputDirectory( scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request );
+
+        if ( !mojoDescriptors.isEmpty() )
+        {
+            getLogger().warn( "Scripting support for mojos is deprecated and is planned to be removed in Maven 4." );
+            getLogger().warn( "Found " + mojoDescriptors.size() + " scripted mojos." );
+        }
 
         return mojoDescriptors;
     }

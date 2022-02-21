@@ -41,7 +41,9 @@ import java.util.Set;
 /**
  * Extracts Mojo descriptors from <a href="http://www.beanshell.org/">BeanShell</a> sources.
  *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 @Component( role = MojoDescriptorExtractor.class, hint = "bsh" )
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
