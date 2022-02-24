@@ -20,8 +20,11 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -270,12 +273,13 @@ public class PluginReport
         throws MavenReportException
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
-        
-        try
+
+        final Charset charset = Charset.forName( getInputEncoding() );
+        try ( Reader input = new InputStreamReader( new FileInputStream( pluginXmlFile ), charset ) )
         {
-            return builder.build( new FileReader( pluginXmlFile ) );
+            return builder.build( input );
         }
-        catch ( FileNotFoundException | PlexusConfigurationException e )
+        catch ( IOException | PlexusConfigurationException e )
         {
             getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
