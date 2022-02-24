@@ -22,9 +22,7 @@ package org.apache.maven.tools.plugin.generator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -104,16 +102,12 @@ public class PluginDescriptorGenerator
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
 
-        if ( destinationFile.exists() )
-        {
-            destinationFile.delete();
-        }
-        else if ( !destinationFile.getParentFile().exists() )
+        if ( !destinationFile.getParentFile().exists() )
         {
             destinationFile.getParentFile().mkdirs();
         }
 
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( destinationFile ), UTF_8 ) )
+        try ( Writer writer = new CachingWriter( destinationFile.toPath(), UTF_8 ) )
         {
             XMLWriter w = new PrettyPrintXMLWriter( writer, UTF_8.name(), null );
 

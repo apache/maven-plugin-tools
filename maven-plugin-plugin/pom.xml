@@ -38,12 +38,12 @@
   </description>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>3.2.5</maven>
   </prerequisites>
 
   <properties>
     <doxiaVersion>2.0.0-M2-SNAPSHOT</doxiaVersion>
-    <doxiaSitetoolsVersion>2.0.0-M1-SNAPSHOT</doxiaSitetoolsVersion>
+    <doxiaSitetoolsVersion>2.0.0-M3-SNAPSHOT</doxiaSitetoolsVersion>
     <it.debug>true</it.debug>
   </properties>
 

@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.util.stubs;
+package org.apache.maven.tools.plugin.generator;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -9,7 +9,7 @@ package org.apache.maven.tools.plugin.util.stubs;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,39 +19,35 @@ package org.apache.maven.tools.plugin.util.stubs;
  * under the License.
  */
 
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
-
-/**
- * Dummy Mojo.
- *
- * @goal dummy
- */
-public class MojoStub
-    extends AbstractMojo
+public class CachingOutputStream extends ByteArrayOutputStream
 {
-    /** {@inheritDoc} */
-    @Override
-    public Map getPluginContext()
+    private final Path path;
+
+    public CachingOutputStream( Path path )
     {
-        return super.getPluginContext();
+        this.path = Objects.requireNonNull( path );
     }
 
-    /** {@inheritDoc} */
     @Override
-    public void setPluginContext( Map pluginContext )
+    public void close() throws IOException
     {
-        super.setPluginContext( pluginContext );
+        byte[] data = toByteArray();
+        if ( Files.exists( path ) )
+        {
+            byte[] old = Files.readAllBytes( path );
+            if ( Arrays.equals( old, data ) )
+            {
+                return;
+            }
+        }
+        Files.write( path, data );
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-
-    }
 }

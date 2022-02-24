@@ -30,7 +30,6 @@ import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.PropertyUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -44,14 +43,13 @@ import org.objectweb.asm.commons.SimpleRemapper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
@@ -91,6 +89,8 @@ public class PluginHelpGenerator
     private String helpPackageName;
 
     private boolean useAnnotations;
+
+    private boolean useMaven4Api;
 
     private VelocityComponent velocityComponent;
 
@@ -142,6 +142,9 @@ public class PluginHelpGenerator
         useAnnotations = request.getProject().getArtifactMap().containsKey(
             "org.apache.maven.plugin-tools:maven-plugin-annotations" );
 
+        useMaven4Api = request.getProject().getArtifactMap().containsKey(
+                "org.apache.maven:maven-core-api" );
+
         try
         {
             String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";
@@ -152,7 +155,10 @@ public class PluginHelpGenerator
             String helpClassSources =
                 getHelpClassSources( getPluginHelpPath( request.getProject() ), pluginDescriptor );
 
-            FileUtils.fileWrite( helpClass, request.getEncoding(), helpClassSources );
+            try ( Writer writer = new CachingWriter( helpClass.toPath(), Charset.forName( request.getEncoding() ) ) )
+            {
+                writer.write( helpClassSources );
+            }
         }
         catch ( IOException e )
         {
@@ -198,6 +204,7 @@ public class PluginHelpGenerator
         properties.put( "artifactId", pluginDescriptor.getArtifactId() );
         properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
         properties.put( "useAnnotations", useAnnotations );
+        properties.put( "useMaven4Api", useMaven4Api );
 
         StringWriter stringWriter = new StringWriter();
 
@@ -256,9 +263,9 @@ public class PluginHelpGenerator
             tmpPropertiesFile.getParentFile().mkdirs();
         }
 
-        try ( FileOutputStream fos = new FileOutputStream( tmpPropertiesFile ) )
+        try ( Writer writer = new CachingWriter( tmpPropertiesFile.toPath(), UTF_8 ) )
         {
-            properties.store( fos, "maven plugin help mojo generation informations" );
+            properties.store( writer, "maven plugin help mojo generation informations" );
         }
         catch ( IOException e )
         {
@@ -365,9 +372,8 @@ public class PluginHelpGenerator
             Charset encoding = Charset.forName( request.getEncoding() );
             try ( Reader sourceReader = new InputStreamReader( new FileInputStream( helpSourceFile ), //
                                                               encoding ); //
-                 PrintWriter sourceWriter = new PrintWriter(
-                     new OutputStreamWriter( new FileOutputStream( helpSourceFileNew ), //
-                                             encoding ) ) )
+                  PrintWriter sourceWriter = new PrintWriter( new CachingWriter(
+                         helpSourceFileNew.toPath(), encoding ) ) )
             {
                 sourceWriter.println( "package " + destinationPackage + ";" );
                 IOUtil.copy( sourceReader, sourceWriter );
@@ -414,7 +420,7 @@ public class PluginHelpGenerator
         }
 
         byte[] renamedClass = cw.toByteArray();
-        try ( FileOutputStream fos = new FileOutputStream( rewriteHelpClassFile ) )
+        try ( CachingOutputStream fos = new CachingOutputStream( rewriteHelpClassFile.toPath() ) )
         {
             fos.write( renamedClass );
         }

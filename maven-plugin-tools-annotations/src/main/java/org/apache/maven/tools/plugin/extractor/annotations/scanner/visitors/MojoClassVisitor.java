@@ -31,10 +31,11 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Olivier Lamy
@@ -74,7 +75,12 @@ public class MojoClassVisitor
 
     public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
     {
-        return annotationVisitorMap.get( annotation.getName() );
+        return getAnnotationVisitor( annotation.getName() );
+    }
+
+    public MojoAnnotationVisitor getAnnotationVisitor( String name )
+    {
+        return annotationVisitorMap.get( name );
     }
 
     public void setAnnotationVisitorMap( Map<String, MojoAnnotationVisitor> annotationVisitorMap )
@@ -94,14 +100,17 @@ public class MojoClassVisitor
 
     public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
     {
-        String annotationClassName = annotation.getName();
+        return findFieldWithAnnotation( Collections.singleton( annotation.getName() ) );
+    }
 
+    public List<MojoFieldVisitor> findFieldWithAnnotation( Set<String> annotationClassNames )
+    {
         List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
 
         for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
         {
             MojoAnnotationVisitor mojoAnnotationVisitor = mojoFieldVisitor.getMojoAnnotationVisitor();
-            if ( mojoAnnotationVisitor != null && Objects.equals( annotationClassName,
+            if ( mojoAnnotationVisitor != null && annotationClassNames.contains(
                                                                       mojoAnnotationVisitor.getAnnotationClassName() ) )
             {
                 mojoFieldVisitors.add( mojoFieldVisitor );

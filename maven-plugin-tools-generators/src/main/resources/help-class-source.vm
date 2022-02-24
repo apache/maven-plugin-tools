@@ -1,3 +1,10 @@
+#if ( $useMaven4Api )
+#set ( $mojoException = "MojoException" )
+#set ( $logger = "logger" )
+#else
+#set ( $mojoException = "MojoExecutionException" )
+#set ( $logger = "getLog()" )
+#end
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -5,9 +12,9 @@
 ## to you under the Apache License, Version 2.0 (the
 ## "License"); you may not use this file except in compliance
 ## with the License.  You may obtain a copy of the License at
-## 
+##
 ##   http://www.apache.org/licenses/LICENSE-2.0
-## 
+##
 ## Unless required by applicable law or agreed to in writing,
 ## software distributed under the License is distributed on an
 ## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,13 +25,23 @@
 package ${helpPackageName};
 #end
 
+#if( $useMaven4Api )
+import org.apache.maven.api.plugin.MojoException;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Parameter;
+#else
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 #if ( $useAnnotations )
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 #end
+#end
 
+#if ( $useMaven4Api )
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+#end
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,26 +60,36 @@ import java.util.List;
  * Display help information on ${artifactId}.<br>
  * Call <code>mvn ${goalPrefix}:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author maven-plugin-tools
-#if ( !$useAnnotations )     
+#if ( !$useAnnotations )
  * @goal help
  * @requiresProject false
  * @threadSafe
 #end
  */
-#if ( $useAnnotations )
+#if ( $useMaven4Api )
+@Mojo( name = "help", requiresProject = false )
+#elseif ( $useAnnotations )
 @Mojo( name = "help", requiresProject = false, threadSafe = true )
 #end
 public class HelpMojo
+#if ( $useMaven4Api )
+    implements org.apache.maven.api.plugin.Mojo
+#else
     extends AbstractMojo
+#end
 {
+#if ( $useMaven4Api )
+    private final Logger logger = LoggerFactory.getLogger( getClass() );
+
+#end
     /**
      * If <code>true</code>, display all settable properties for each goal.
      *
-#if ( !$useAnnotations )     
+#if ( !$useAnnotations )
      * @parameter property="detail" default-value="false"
 #end
      */
-#if ( $useAnnotations )     
+#if ( $useAnnotations || $useMaven4Api )
     @Parameter( property = "detail", defaultValue = "false" )
 #end
     private boolean detail;
@@ -70,23 +97,23 @@ public class HelpMojo
     /**
      * The name of the goal for which to show help. If unspecified, all goals will be displayed.
      *
-#if ( !$useAnnotations )     
+#if ( !$useAnnotations )
      * @parameter property="goal"
 #end
      */
-#if ( $useAnnotations )     
+#if ( $useAnnotations || $useMaven4Api )
     @Parameter( property = "goal" )
-#end    
+#end
     private java.lang.String goal;
 
     /**
      * The maximum length of a display line, should be positive.
      *
-#if ( !$useAnnotations )     
+#if ( !$useAnnotations )
      * @parameter property="lineLength" default-value="80"
 #end
      */
-#if ( $useAnnotations )     
+#if ( $useAnnotations || $useMaven4Api )
     @Parameter( property = "lineLength", defaultValue = "80" )
 #end
     private int lineLength;
@@ -94,11 +121,11 @@ public class HelpMojo
     /**
      * The number of spaces per indentation level, should be positive.
      *
-#if ( !$useAnnotations )     
+#if ( !$useAnnotations )
      * @parameter property="indentSize" default-value="2"
 #end
      */
-#if ( $useAnnotations )     
+#if ( $useAnnotations || $useMaven4Api )
     @Parameter( property = "indentSize", defaultValue = "2" )
 #end
     private int indentSize;
@@ -110,9 +137,9 @@ public class HelpMojo
     private static final int DEFAULT_LINE_LENGTH = 80;
 
     private Document build()
-        throws MojoExecutionException
+        throws ${mojoException}
     {
-        getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
+        ${logger}.debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
         try ( InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH ) )
         {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -121,15 +148,15 @@ public class HelpMojo
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new ${mojoException}( e.getMessage(), e );
         }
         catch ( ParserConfigurationException e )
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new ${mojoException}( e.getMessage(), e );
         }
         catch ( SAXException e )
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new ${mojoException}( e.getMessage(), e );
         }
     }
 
@@ -138,16 +165,16 @@ public class HelpMojo
      */
     @Override
     public void execute()
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         if ( lineLength <= 0 )
         {
-            getLog().warn( "The parameter 'lineLength' should be positive, using '80' as default." );
+            ${logger}.warn( "The parameter 'lineLength' should be positive, using '80' as default." );
             lineLength = DEFAULT_LINE_LENGTH;
         }
         if ( indentSize <= 0 )
         {
-            getLog().warn( "The parameter 'indentSize' should be positive, using '2' as default." );
+            ${logger}.warn( "The parameter 'indentSize' should be positive, using '2' as default." );
             indentSize = 2;
         }
 
@@ -196,9 +223,9 @@ public class HelpMojo
             writeGoal( sb, goalPrefix, (Element) mojo );
         }
 
-        if ( getLog().isInfoEnabled() )
+        if ( ${logger}.isInfoEnabled() )
         {
-            getLog().info( sb.toString() );
+            ${logger}.info( sb.toString() );
         }
     }
 
@@ -209,22 +236,22 @@ public class HelpMojo
     }
 
     private static String getValue( Node node, String elementName )
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         return getSingleChild( node, elementName ).getTextContent();
     }
 
     private static Node getSingleChild( Node node, String elementName )
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         List<Node> namedChild = findNamedChild( node, elementName );
         if ( namedChild.isEmpty() )
         {
-            throw new MojoExecutionException( "Could not find " + elementName + " in plugin-help.xml" );
+            throw new ${mojoException}( "Could not find " + elementName + " in plugin-help.xml" );
         }
         if ( namedChild.size() > 1 )
         {
-            throw new MojoExecutionException( "Multiple " + elementName + " in plugin-help.xml" );
+            throw new ${mojoException}( "Multiple " + elementName + " in plugin-help.xml" );
         }
         return namedChild.get( 0 );
     }
@@ -245,7 +272,7 @@ public class HelpMojo
     }
 
     private static Node findSingleChild( Node node, String elementName )
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         List<Node> elementsByTagName = findNamedChild( node, elementName );
         if ( elementsByTagName.isEmpty() )
@@ -254,13 +281,13 @@ public class HelpMojo
         }
         if ( elementsByTagName.size() > 1 )
         {
-            throw new MojoExecutionException( "Multiple " + elementName + "in plugin-help.xml" );
+            throw new ${mojoException}( "Multiple " + elementName + "in plugin-help.xml" );
         }
         return elementsByTagName.get( 0 );
     }
 
     private void writeGoal( StringBuilder sb, String goalPrefix, Element mojo )
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         String mojoGoal = getValue( mojo, "goal" );
         Node configurationElement = findSingleChild( mojo, "configuration" );
@@ -300,7 +327,7 @@ public class HelpMojo
     }
 
     private void writeParameter( StringBuilder sb, Node parameter, Node configurationElement )
-        throws MojoExecutionException
+        throws ${mojoException}
     {
         String parameterName = getValue( parameter, "name" );
         String parameterDescription = getValue( parameter, "description" );
