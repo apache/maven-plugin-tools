@@ -22,9 +22,7 @@ package org.apache.maven.plugin.plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -63,6 +61,7 @@ import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
@@ -274,8 +273,7 @@ public class PluginReport
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
 
-        final Charset charset = Charset.forName( getInputEncoding() );
-        try ( Reader input = new InputStreamReader( new FileInputStream( pluginXmlFile ), charset ) )
+        try ( Reader input = new XmlStreamReader( new FileInputStream( pluginXmlFile ) ) )
         {
             return builder.build( input );
         }
