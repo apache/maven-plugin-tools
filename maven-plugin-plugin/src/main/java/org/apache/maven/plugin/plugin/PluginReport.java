@@ -20,8 +20,9 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -60,6 +61,7 @@ import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
@@ -270,12 +272,12 @@ public class PluginReport
         throws MavenReportException
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
-        
-        try
+
+        try ( Reader input = new XmlStreamReader( new FileInputStream( pluginXmlFile ) ) )
         {
-            return builder.build( new FileReader( pluginXmlFile ) );
+            return builder.build( input );
         }
-        catch ( FileNotFoundException | PlexusConfigurationException e )
+        catch ( IOException | PlexusConfigurationException e )
         {
             getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
         }
