@@ -389,6 +389,13 @@ public class PluginDescriptorGenerator
             }
 
             GeneratorUtils.element( w, "threadSafe", String.valueOf( extendedMojoDescriptor.isThreadSafe() ) );
+
+            boolean v4Api = extendedMojoDescriptor.isV4Api();
+            if ( v4Api )
+            {
+                GeneratorUtils.element( w, "v4Api", String.valueOf( v4Api ) );
+            }
+
         }
 
         // ----------------------------------------------------------------------

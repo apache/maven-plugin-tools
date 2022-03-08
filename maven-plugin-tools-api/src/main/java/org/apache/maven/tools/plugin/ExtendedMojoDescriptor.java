@@ -32,6 +32,8 @@ public class ExtendedMojoDescriptor
 
     private String requiresDependencyCollection = null;
 
+    private boolean v4Api = false;
+
     @Override
     public boolean isThreadSafe()
     {
@@ -54,5 +56,17 @@ public class ExtendedMojoDescriptor
     public void setDependencyCollectionRequired( String requiresDependencyCollection )
     {
         this.requiresDependencyCollection = requiresDependencyCollection;
+    }
+
+    @Override
+    public boolean isV4Api()
+    {
+        return v4Api;
+    }
+
+    @Override
+    public void setV4Api( boolean v4Api )
+    {
+        this.v4Api = v4Api;
     }
 }

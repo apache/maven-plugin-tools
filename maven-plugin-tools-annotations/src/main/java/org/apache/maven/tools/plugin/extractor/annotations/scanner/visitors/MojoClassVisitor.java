@@ -139,6 +139,10 @@ public class MojoClassVisitor
         {
             return null;
         }
+        if ( annotationClassName.startsWith( MojoAnnotationsScanner.V4_API_ANNOTATIONS_PACKAGE ) )
+        {
+            mojoAnnotatedClass.setV4Api( true );
+        }
         MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( logger, annotationClassName );
         annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );
         return mojoAnnotationVisitor;
