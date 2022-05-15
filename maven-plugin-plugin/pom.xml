@@ -270,21 +270,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.0</version>
-        <!-- will use previous maven-plugin-plugin release to build current maven-plugin-plugin as configured in parent -->
         <executions>
-          <execution>
-            <id>default-descriptor</id>
-            <phase>process-classes</phase>
-          </execution>
           <execution>
             <id>generated-helpmojo</id>
             <goals>
               <goal>helpmojo</goal>
             </goals>
-            <configuration>
-              <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -296,7 +287,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.0</version><!-- cannot use ${mavenPluginToolsVersion} property because release plugin would try to update -->
         <reportSets>
           <reportSet>
             <reports>
@@ -316,19 +306,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${mavenInvokerPluginVersion}</version>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>l10n-maven-plugin</artifactId>
-            <version>1.0-alpha-2</version>
-            <configuration>
-              <locales>
-                <locale>de</locale>
-                <locale>fr</locale>
-                <locale>sv</locale>
-              </locales>
-            </configuration>
           </plugin>
         </plugins>
       </reporting>
@@ -340,7 +317,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${mavenInvokerPluginVersion}</version>
             <configuration>
               <projectsDirectory>src/it</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>

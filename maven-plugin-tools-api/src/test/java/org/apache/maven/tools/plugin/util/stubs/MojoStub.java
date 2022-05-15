@@ -28,8 +28,6 @@ import org.apache.maven.plugin.logging.Log;
 
 /**
  * Dummy Mojo.
- *
- * @goal dummy
  */
 public class MojoStub
     extends AbstractMojo
