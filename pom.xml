@@ -93,7 +93,7 @@
     <surefire.version>2.22.2</surefire.version>
     <javaVersion>7</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>3.8.5</mavenVersion>
     <antVersion>1.9.16</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.2</asmVersion>
