@@ -96,7 +96,7 @@
     <mavenVersion>3.2.5</mavenVersion>
     <antVersion>1.9.16</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
-    <asmVersion>9.2</asmVersion>
+    <asmVersion>9.3</asmVersion>
     <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
   </properties>
 
