@@ -91,7 +91,7 @@
 
   <properties>
     <surefire.version>2.22.2</surefire.version>
-    <javaVersion>7</javaVersion>
+    <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
     <antVersion>1.9.16</antVersion>
