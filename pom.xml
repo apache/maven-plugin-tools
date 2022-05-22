@@ -94,7 +94,7 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
-    <antVersion>1.9.16</antVersion>
+    <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.3</asmVersion>
     <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
