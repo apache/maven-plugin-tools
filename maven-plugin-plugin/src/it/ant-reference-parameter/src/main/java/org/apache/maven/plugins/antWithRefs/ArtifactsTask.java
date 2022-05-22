@@ -29,7 +29,7 @@ public class ArtifactsTask
     public void execute()
         throws BuildException
     {
-        log( String.valueOf( getProject().getReference( "artifacts" ) ) );
+        log( String.valueOf( ( Object ) getProject().getReference( "artifacts" ) ) );
     }
 
 }
