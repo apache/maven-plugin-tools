@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Olivier Lamy
@@ -96,13 +95,13 @@ public class MojoClassVisitor
     {
         String annotationClassName = annotation.getName();
 
-        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
+        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<>();
 
         for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
         {
-            MojoAnnotationVisitor mojoAnnotationVisitor = mojoFieldVisitor.getMojoAnnotationVisitor();
-            if ( mojoAnnotationVisitor != null && Objects.equals( annotationClassName,
-                                                                      mojoAnnotationVisitor.getAnnotationClassName() ) )
+            Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+
+            if (  filedVisitorMap.containsKey( annotationClassName ) )
             {
                 mojoFieldVisitors.add( mojoFieldVisitor );
             }

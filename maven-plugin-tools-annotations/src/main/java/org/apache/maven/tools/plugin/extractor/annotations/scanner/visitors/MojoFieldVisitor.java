@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * under the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.codehaus.plexus.logging.Logger;
 import org.objectweb.asm.AnnotationVisitor;
@@ -38,7 +41,7 @@ public class MojoFieldVisitor
 
     private String fieldName;
 
-    private MojoAnnotationVisitor mojoAnnotationVisitor;
+    private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<>();
 
     private String className;
 
@@ -50,9 +53,9 @@ public class MojoFieldVisitor
         this.className = className;
     }
 
-    public MojoAnnotationVisitor getMojoAnnotationVisitor()
+    public Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap()
     {
-        return mojoAnnotationVisitor;
+        return annotationVisitorMap;
     }
 
     public String getFieldName()
@@ -68,7 +71,8 @@ public class MojoFieldVisitor
         {
             return null;
         }
-        mojoAnnotationVisitor = new MojoAnnotationVisitor( logger, annotationClassName );
+        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( logger, annotationClassName );
+        annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );
         return mojoAnnotationVisitor;
     }
 

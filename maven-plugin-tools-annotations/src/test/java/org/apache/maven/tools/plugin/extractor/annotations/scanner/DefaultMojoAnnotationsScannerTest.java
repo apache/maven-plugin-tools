@@ -19,10 +19,19 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
+import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.AbstractFooMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.DeprecatedMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.Test;
 
@@ -33,14 +42,41 @@ public class DefaultMojoAnnotationsScannerTest
     @Test
     public void testSkipModuleInfoClassInArchive() throws Exception
     {
-        scanner.scanArchive( new File( "target/test-classes/java9-module.jar"), null, false );
+        scanner.scanArchive( new File( "target/test-classes/java9-module.jar" ), null, false );
     }
-    
+
     @Test
     public void testJava8Annotations() throws Exception
     {
         scanner.enableLogging( mock( Logger.class ) );
-        scanner.scanArchive( new File( "target/test-classes/java8-annotations.jar"), null, false );
+        scanner.scanArchive( new File( "target/test-classes/java8-annotations.jar" ), null, false );
+    }
+
+    @Test
+    public void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException
+    {
+        File directoryToScan = new File( DeprecatedMojo.class.getResource( "" ).getFile() );
+
+        scanner.enableLogging( mock( Logger.class ) );
+        Map<String, MojoAnnotatedClass> result = scanner.scanDirectory(
+            directoryToScan, Collections.singletonList( "DeprecatedMojo.class" ), null, false );
+
+        assertThat( result ).hasSize( 1 );
+
+        MojoAnnotatedClass annotatedClass = result.get( DeprecatedMojo.class.getName() );
+        assertThat( annotatedClass.getClassName() ).isEqualTo( DeprecatedMojo.class.getName() );
+        assertThat( annotatedClass.getMojo().getDeprecated() ).isEmpty();
+
+        assertThat( annotatedClass.getParameters() )
+            .containsOnlyKeys( "deprecatedParameters", "anotherNotDeprecated" );
+
+        assertThat( annotatedClass.getParameters().get( "deprecatedParameters" ).getDeprecated() ).isEmpty();
+        assertThat( annotatedClass.getParameters().get( "deprecatedParameters" ).alias() )
+            .isEqualTo( "deprecatedParametersAlias" );
+
+        assertThat( annotatedClass.getParameters().get( "anotherNotDeprecated" ).getDeprecated() ).isNull();
+        assertThat( annotatedClass.getParameters().get( "anotherNotDeprecated" ).property() )
+            .isEqualTo( "property.anotherNotDeprecated" );
     }
 
 }
