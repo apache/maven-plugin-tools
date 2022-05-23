@@ -94,7 +94,7 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
-    <antVersion>1.9.16</antVersion>
+    <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.3</asmVersion>
     <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
@@ -183,7 +183,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-archiver</artifactId>
-        <version>3.6.0</version>
+        <version>4.2.7</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -225,10 +225,17 @@
         <version>${asmVersion}</version>
       </dependency>
 
+      <!-- testing -->
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
         <version>${pluginTestingHarnessVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.22.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
