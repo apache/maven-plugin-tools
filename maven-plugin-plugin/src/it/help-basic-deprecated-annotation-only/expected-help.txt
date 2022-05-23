@@ -1,0 +1,25 @@
+[INFO] help 1.0-SNAPSHOT
+  Tests generation and compilation of the help mojo.
+
+help:test
+  Deprecated. No reason given
+
+  MOJO-DESCRIPTION. Some 'quotation' marks and backslashes '\\', some important
+  javadoc
+  and an inline link to AnotherMojo.
+
+  Available parameters:
+
+    defaultParam (Default: escape\backslash)
+      This parameter uses 'quotation' marks and backslashes '\\' in its
+      description. Those characters must be escaped in Java string literals.
+
+    deprecatedParam
+      Deprecated. No reason given
+
+      Parameter description in javadoc.
+
+    undocumentedParam
+      
+      Required: Yes
+      User property: test.undocumented
