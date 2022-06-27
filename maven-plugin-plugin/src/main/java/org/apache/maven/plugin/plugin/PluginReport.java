@@ -662,8 +662,6 @@ public class PluginReport
                 '\n' );
             sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append(
                 "</artifactId>" ).append( '\n' );
-            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
-                '\n' );
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
             sb.append( "    </plugins>" ).append( '\n' );
