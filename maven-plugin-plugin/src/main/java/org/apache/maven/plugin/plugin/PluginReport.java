@@ -173,6 +173,15 @@ public class PluginReport
     private boolean skipReport;
 
     /**
+     * Set this to "true" to generate the usage section for "plugin-info.html" with
+     * {@code <extensions>true</extensions>}.
+     * 
+     * @since 3.7.0
+     */
+    @Parameter( defaultValue = "false", property = "maven.plugin.report.hasExtensionsToLoad" )
+    private boolean hasExtensionsToLoad;
+
+    /**
      * List of Remote Repositories used by the resolver
      *
      * @since 3.0
@@ -264,7 +273,8 @@ public class PluginReport
 
         // Write the overview
         PluginOverviewRenderer r =
-            new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor, locale );
+            new PluginOverviewRenderer( project, requirements, getSink(), 
+                    pluginDescriptor, locale, hasExtensionsToLoad );
         r.render();
     }
 
@@ -437,6 +447,8 @@ public class PluginReport
 
         private final Locale locale;
 
+        private final boolean hasExtensionsToLoad;
+
         /**
          * @param project          not null
          * @param requirements     not null
@@ -445,7 +457,7 @@ public class PluginReport
          * @param locale           not null
          */
         PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
-                                PluginDescriptor pluginDescriptor, Locale locale )
+                                PluginDescriptor pluginDescriptor, Locale locale, boolean hasExtensionsToLoad )
         {
             super( sink );
 
@@ -456,6 +468,8 @@ public class PluginReport
             this.pluginDescriptor = pluginDescriptor;
 
             this.locale = locale;
+
+            this.hasExtensionsToLoad = hasExtensionsToLoad;
         }
 
         /**
@@ -650,6 +664,11 @@ public class PluginReport
                 "</artifactId>" ).append( '\n' );
             sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
                 '\n' );
+            if ( hasExtensionsToLoad )
+            {
+                sb.append( "          <extensions>true</extensions>" ).append(
+                        '\n' );
+            }
             sb.append( "        </plugin>" ).append( '\n' );
             sb.append( "        ..." ).append( '\n' );
             sb.append( "      </plugins>" ).append( '\n' );
