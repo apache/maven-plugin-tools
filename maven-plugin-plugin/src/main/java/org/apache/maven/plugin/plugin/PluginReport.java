@@ -751,13 +751,19 @@ public class PluginReport
                 compiler = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
             }
 
-            jdk = getPluginParameter( compiler, "target" );
+            jdk = getPluginParameter( compiler, "release" );
             if ( jdk != null )
             {
                 return jdk;
             }
 
-            jdk = getPluginParameter( compiler, "release" );
+            jdk = project.getProperties().getProperty( "maven.compiler.release" );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
+            jdk = getPluginParameter( compiler, "target" );
             if ( jdk != null )
             {
                 return jdk;
