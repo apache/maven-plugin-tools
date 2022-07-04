@@ -42,6 +42,7 @@ under the License.
 
   <modules>
     <module>property</module>
+    <module>propertyRelease</module>
     <module>pluginManagement</module>
     <module>plugin</module>
     <module>requirement</module>
