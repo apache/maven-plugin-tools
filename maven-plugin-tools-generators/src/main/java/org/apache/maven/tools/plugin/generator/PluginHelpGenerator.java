@@ -143,7 +143,7 @@ public class PluginHelpGenerator
             "org.apache.maven.plugin-tools:maven-plugin-annotations" );
 
         useMaven4Api = request.getProject().getArtifactMap().containsKey(
-                "org.apache.maven:maven-core-api" );
+                "org.apache.maven:maven-api-core" );
 
         try
         {
