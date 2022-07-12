@@ -597,19 +597,23 @@ public class PluginReport
                 ( jdk != null ? jdk : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
-            sink.tableRow();
-            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
-            tableCell( ( StringUtils.isNotEmpty( requirements.getMemory() )
-                ? requirements.getMemory()
-                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
-            sink.tableRow_();
+            String memory = requirements.getMemory();
+            if ( StringUtils.isNotEmpty( memory ) )
+            {
+                sink.tableRow();
+                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
+                tableCell( memory );
+                sink.tableRow_();
+            }
 
-            sink.tableRow();
-            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
-            tableCell( ( StringUtils.isNotEmpty( requirements.getDiskSpace() )
-                ? requirements.getDiskSpace()
-                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
-            sink.tableRow_();
+            String diskSpace = requirements.getDiskSpace();
+            if ( StringUtils.isNotEmpty( diskSpace ) )
+            {
+                sink.tableRow();
+                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
+                tableCell( diskSpace );
+                sink.tableRow_();
+            }
 
             if ( requirements.getOthers() != null && requirements.getOthers().size() > 0 )
             {
