@@ -44,7 +44,7 @@ under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.0.1</version>
+      <version>@plexusUtilsVersion@</version>
     </dependency>
   </dependencies>
 

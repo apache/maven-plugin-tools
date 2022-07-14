@@ -97,6 +97,7 @@
     <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.3</asmVersion>
+    <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
     <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
   </properties>
 
@@ -173,7 +174,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.3.0</version>
+        <version>${plexusUtilsVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
