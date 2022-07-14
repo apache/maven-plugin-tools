@@ -108,7 +108,10 @@ public class PluginReport
      * If not is specified, Maven requirement is extracted from
      * <code>&lt;project&gt;&lt;prerequisites&gt;&lt;maven&gt;</code>
      * and JDK requirement is extracted from maven-compiler-plugin configuration.
+     *
+     * @deprecated will be removed in the next major version, please don't use
      */
+    @Deprecated
     @Parameter
     private Requirements requirements;
 
