@@ -20,22 +20,18 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
@@ -52,13 +48,10 @@ import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
-import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
@@ -84,28 +77,13 @@ public class PluginReport
     private File outputDirectory;
 
     /**
-     * Doxia Site Renderer.
-     */
-    @Component
-    private Renderer siteRenderer;
-
-    /**
-     * The Maven Project.
-     */
-    @Parameter( defaultValue = "${project}", readonly = true )
-    private MavenProject project;
-
-    /**
-     * Mojo scanner tools.
-     */
-    @Component
-    protected MojoScanner mojoScanner;
-
-    /**
      * The file encoding of the source files.
+     *
+     * @deprecated not used in report, will be removed in the next major version
      *
      * @since 2.7
      */
+    @Deprecated
     @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
     private String encoding;
 
@@ -151,8 +129,11 @@ public class PluginReport
      * (There is a special case for maven-plugin-plugin: it is mapped to 'plugin')
      * </p>
      *
+     * @deprecated not used in report, will be removed in the next major version
+     *
      * @since 2.4
      */
+    @Deprecated
     @Parameter( property = "goalPrefix" )
     protected String goalPrefix;
 
@@ -182,22 +163,6 @@ public class PluginReport
     private boolean hasExtensionsToLoad;
 
     /**
-     * List of Remote Repositories used by the resolver
-     *
-     * @since 3.0
-     */
-    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
-    protected List<ArtifactRepository> remoteRepos;
-
-    /**
-     * Location of the local repository.
-     *
-     * @since 3.0
-     */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
-    protected ArtifactRepository local;
-    
-    /**
      * @since 3.5.1
      */
     @Component
@@ -216,28 +181,10 @@ public class PluginReport
      * {@inheritDoc}
      */
     @Override
-    protected Renderer getSiteRenderer()
-    {
-        return siteRenderer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected String getOutputDirectory()
     {
         // PLUGIN-191: output directory of plugin.html, not *-mojo.xml
         return project.getReporting().getOutputDirectory();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected MavenProject getProject()
-    {
-        return project;
     }
 
     /**
@@ -256,10 +203,6 @@ public class PluginReport
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
-        if ( !canGenerateReport() )
-        {
-            return;
-        }
         if ( skip || skipReport )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );
@@ -273,7 +216,7 @@ public class PluginReport
 
         // Write the overview
         PluginOverviewRenderer r =
-            new PluginOverviewRenderer( project, requirements, getSink(), 
+            new PluginOverviewRenderer( getProject(), requirements, getSink(),
                     pluginDescriptor, locale, hasExtensionsToLoad );
         r.render();
     }
@@ -283,66 +226,15 @@ public class PluginReport
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
 
-        try ( Reader input = new XmlStreamReader( new FileInputStream( pluginXmlFile ) ) )
+        try ( Reader input = new XmlStreamReader( Files.newInputStream( pluginXmlFile.toPath() ) ) )
         {
             return builder.build( input );
         }
         catch ( IOException | PlexusConfigurationException e )
         {
-            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
+            throw new MavenReportException( "Error extracting plugin descriptor from " + pluginXmlFile, e );
         }
 
-        // Copy from AbstractGeneratorMojo#execute()
-        String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
-        if ( goalPrefix == null )
-        {
-            goalPrefix = defaultGoalPrefix;
-        }
-        else
-        {
-            getLog().warn( "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
-                               + defaultGoalPrefix + "'.\n" );
-        }
-
-        // TODO: could use this more, eg in the writing of the plugin descriptor!
-        PluginDescriptor pluginDescriptor = new PluginDescriptor();
-
-        pluginDescriptor.setGroupId( project.getGroupId() );
-
-        pluginDescriptor.setArtifactId( project.getArtifactId() );
-
-        pluginDescriptor.setVersion( project.getVersion() );
-
-        pluginDescriptor.setGoalPrefix( goalPrefix );
-
-        try
-        {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
-            pluginDescriptor.setDependencies( deps );
-
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( encoding );
-            request.setSkipErrorNoDescriptorsFound( true );
-            request.setDependencies( new LinkedHashSet<>( project.getArtifacts() ) );
-            request.setLocal( this.local );
-            request.setRemoteRepos( this.remoteRepos );
-
-            try
-            {
-                mojoScanner.populatePluginDescriptor( request );
-            }
-            catch ( InvalidPluginDescriptorException e )
-            {
-                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().debug( "Plugin without mojos.", e );
-            }
-        }
-        catch ( ExtractionException e )
-        {
-            throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                            e );
-        }
-        return pluginDescriptor;
     }
 
     /**
@@ -412,8 +304,8 @@ public class PluginReport
             File outputDir = outputDirectory;
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator( project, locale );
-            PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale );
+            PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( getProject(), pluginDescriptor );
             generator.execute( outputDir, pluginToolsRequest );
         }
         catch ( GeneratorException e )
@@ -485,7 +377,6 @@ public class PluginReport
          * {@inheritDoc}
          */
         @Override
-        @SuppressWarnings( { "unchecked", "rawtypes" } )
         public void renderBody()
         {
             startSection( getTitle() );
