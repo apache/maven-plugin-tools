@@ -327,7 +327,7 @@
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <filterProperties>
                 <sitePluginVersion>3.11.0</sitePluginVersion>
-                <projectInfoReportsPlugin>3.2.2</projectInfoReportsPlugin>
+                <projectInfoReportsPlugin>3.4.0</projectInfoReportsPlugin>
                 <antVersion>${antVersion}</antVersion>
               </filterProperties>
               <properties>

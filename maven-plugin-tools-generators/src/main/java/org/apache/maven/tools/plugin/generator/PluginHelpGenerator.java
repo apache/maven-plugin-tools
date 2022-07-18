@@ -184,20 +184,19 @@ public class PluginHelpGenerator
     private String getHelpClassSources( String pluginHelpPath, PluginDescriptor pluginDescriptor )
         throws IOException
     {
-        Properties properties = new Properties();
-        VelocityContext context = new VelocityContext( properties );
+        VelocityContext context = new VelocityContext();
         if ( this.helpPackageName != null )
         {
-            properties.put( "helpPackageName", this.helpPackageName );
+            context.put( "helpPackageName", this.helpPackageName );
         }
         else
         {
-            properties.put( "helpPackageName", "" );
+            context.put( "helpPackageName", "" );
         }
-        properties.put( "pluginHelpPath", pluginHelpPath );
-        properties.put( "artifactId", pluginDescriptor.getArtifactId() );
-        properties.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
-        properties.put( "useAnnotations", useAnnotations );
+        context.put( "pluginHelpPath", pluginHelpPath );
+        context.put( "artifactId", pluginDescriptor.getArtifactId() );
+        context.put( "goalPrefix", pluginDescriptor.getGoalPrefix() );
+        context.put( "useAnnotations", useAnnotations );
 
         StringWriter stringWriter = new StringWriter();
 
