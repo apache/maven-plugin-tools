@@ -47,7 +47,7 @@
         </li>
       </ul>
       <subsection name="Required Parameters">
-        <table border="0" class="bodyTable">
+        <table class="bodyTable">
           <tr>
             <th>Name</th>
             <th>Type</th>
@@ -81,7 +81,7 @@
         </table>
       </subsection>
       <subsection name="Optional Parameters">
-        <table border="0" class="bodyTable">
+        <table class="bodyTable">
           <tr>
             <th>Name</th>
             <th>Type</th>
@@ -109,7 +109,7 @@
       <subsection name="Parameter Details">
         <h4>
           <strong>
-            <a name="dir">&lt;dir&gt;</a>
+            <a id="dir">&lt;dir&gt;</a>
           </strong>
         </h4>
         <div>Test parameter description</div>
@@ -142,7 +142,7 @@
         <hr/>
         <h4>
           <strong>
-            <a name="withoutSince">&lt;withoutSince&gt;</a>
+            <a id="withoutSince">&lt;withoutSince&gt;</a>
           </strong>
         </h4>
         <div>(no description)</div>
