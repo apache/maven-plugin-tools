@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
-import org.apache.maven.doxia.util.HtmlTools;
+import org.apache.maven.doxia.util.DoxiaUtils;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.logging.Log;
@@ -260,7 +260,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderTableCellWithCode(
                 format("parameter.name", parameter.getName()),
                 // no need for additional URI encoding as it returns only URI safe characters
-                Optional.of("#" + HtmlTools.encodeId(parameter.getName())));
+                Optional.of("#" + DoxiaUtils.encodeId(parameter.getName())));
 
         // type
         Map.Entry<String, Optional<String>> type = getLinkedType(parameter, true);

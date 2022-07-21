@@ -103,8 +103,8 @@
     <asmVersion>9.6</asmVersion>
     <plexusUtilsVersion>4.0.0</plexusUtilsVersion>
     <plexusXmlVersion>3.0.0</plexusXmlVersion>
-    <reportingApiVersion>3.1.1</reportingApiVersion>
-    <reportingImplVersion>3.2.0</reportingImplVersion>
+    <reportingApiVersion>4.0.0-M9</reportingApiVersion>
+    <reportingImplVersion>4.0.0-M13</reportingImplVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <javadocPluginVersion>3.5.0</javadocPluginVersion>
     <project.build.outputTimestamp>2024-01-07T12:05:13Z</project.build.outputTimestamp>
@@ -193,12 +193,6 @@
         <groupId>org.apache.maven.reporting</groupId>
         <artifactId>maven-reporting-impl</artifactId>
         <version>${reportingImplVersion}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-container-default</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -230,24 +224,14 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-velocity</artifactId>
-        <version>1.2</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-container-default</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>velocity</groupId>
-            <artifactId>velocity</artifactId>
-          </exclusion>
-        </exclusions>
+        <version>2.1.0</version>
       </dependency>
 
       <!-- other -->
       <dependency>
         <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.7</version>
+        <artifactId>velocity-engine-core</artifactId>
+        <version>2.3</version>
       </dependency>
 
       <dependency>

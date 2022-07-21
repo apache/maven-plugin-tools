@@ -129,7 +129,6 @@ public class PluginReport extends AbstractMavenReport {
     @Override
     public boolean canGenerateReport() {
         if (skip) {
-            getLog().info("Maven Plugin Plugin Report generation skipped.");
             return false;
         }
 
@@ -209,7 +208,6 @@ public class PluginReport extends AbstractMavenReport {
      */
     private void generateMojosDocumentation(PluginDescriptor pluginDescriptor, Locale locale)
             throws MavenReportException {
-
         if (pluginDescriptor.getMojos() != null) {
             for (MojoDescriptor descriptor : pluginDescriptor.getMojos()) {
                 GoalRenderer renderer;
