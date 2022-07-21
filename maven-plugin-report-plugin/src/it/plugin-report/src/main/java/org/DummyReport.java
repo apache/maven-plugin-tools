@@ -108,7 +108,6 @@ public class DummyReport extends AbstractMavenReport {
      */
     public boolean canGenerateReport() {
         if (skip || skipReport) {
-            getLog().info("Maven Plugin Plugin Report generation skipped.");
             return false;
         }
 

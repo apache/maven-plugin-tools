@@ -326,7 +326,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         sb.append("  ...").append(Markup.EOL);
         sb.append("</project>");
 
-        verbatimText(sb.toString());
+        verbatimSource(sb.toString());
 
         sink.paragraph();
         linkPatternedText(getI18nString("configuration.end"));
