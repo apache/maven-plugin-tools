@@ -36,7 +36,6 @@ under the License.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <plexusCompilerVersion>1.8.6</plexusCompilerVersion>
   </properties>
 
   <dependencies>
@@ -55,28 +54,6 @@ under the License.
       <artifactId>maven-plugin-annotations</artifactId>
       <version>@project.version@</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-compiler-manager</artifactId>
-      <version>${plexusCompilerVersion}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-compiler-javac</artifactId>
-      <version>${plexusCompilerVersion}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

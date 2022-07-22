@@ -27,7 +27,6 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.codehaus.plexus.compiler.manager.CompilerManager;
 
 /**
  * @author Olivier Lamy
@@ -51,12 +50,6 @@ public class FooMojo
     @Deprecated
     @Parameter( property = "thebeer", defaultValue = "coolbeer" )
     protected String beer;
-
-    /**
-     * Plexus compiler manager.
-     */
-    @Component
-    protected CompilerManager compilerManager;
 
     /**
      *
