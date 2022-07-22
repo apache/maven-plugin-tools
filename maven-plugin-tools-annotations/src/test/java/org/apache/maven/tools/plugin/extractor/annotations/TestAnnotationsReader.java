@@ -79,7 +79,7 @@ public class TestAnnotationsReader
         assertEquals( LifecyclePhase.PACKAGE, execute.phase() );
 
         Collection<ComponentAnnotationContent> components = mojoAnnotatedClass.getComponents().values();
-        assertThat( components ).isNotNull().isNotEmpty().hasSize( 2 );
+        assertThat( components ).isNotNull().isNotEmpty().hasSize( 1 );
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
         assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(

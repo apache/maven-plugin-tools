@@ -66,10 +66,6 @@ public class FirstMojo
         {
             throw new MojoExecutionException( "projectHelper == null" );
         }
-        if ( compilerManager == null )
-        {
-            throw new MojoExecutionException( "compilerManager == null" );
-        }
         if (! ( projectHelper instanceof MavenProjectHelper ))
         {
             throw new MojoExecutionException( "! projectHelper instanceof MavenProjectHelper" );

@@ -54,15 +54,15 @@ assert mojo.configuration.beer[0].text() == '${thebeer}'
 assert mojo.configuration.beer[0].'@implementation' == 'java.lang.String'
 assert mojo.configuration.beer[0].'@default-value' == 'coolbeer'
 
-assert mojo.requirements.requirement.size() == 3
+assert mojo.requirements.requirement.size() == 2
 
-assert mojo.requirements.requirement[1].role.text() == 'org.codehaus.plexus.compiler.manager.CompilerManager'
+assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.artifact.metadata.ArtifactMetadataSource'
+assert mojo.requirements.requirement[0].'role-hint'.text() == 'maven'
+assert mojo.requirements.requirement[0].'field-name'.text() == 'artifactMetadataSource'
+
+assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.project.MavenProjectHelper'
 assert mojo.requirements.requirement[1].'role-hint'.text() == ''
-assert mojo.requirements.requirement[1].'field-name'.text() == 'compilerManager'
-
-assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.project.MavenProjectHelper'
-//assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
-assert mojo.requirements.requirement[2].'field-name'.text() == 'projectHelper'
+assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3
 
