@@ -63,7 +63,14 @@ public final class PluginUtils
         mavenComponents.put( "org.apache.maven.plugin.MojoExecution", "${mojoExecution}" );
         mavenComponents.put( "org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}" );
         mavenComponents.put( "org.apache.maven.settings.Settings", "${settings}" );
-        
+
+        mavenComponents.put( "org.apache.maven.api.Session", "${session}" );
+        mavenComponents.put( "org.apache.maven.api.Project", "${project}" );
+        mavenComponents.put( "org.apache.maven.api.MojoExecution", "${mojoExecution}" );
+        // TODO: apiv4: add PluginDescriptor to the api ?
+        //mavenComponents.put( "org.apache.maven.api.descriptor.PluginDescriptor", "${plugin}" );
+        mavenComponents.put( "org.apache.maven.api.settings.Settings", "${settings}" );
+
         MAVEN_COMPONENTS = Collections.unmodifiableMap( mavenComponents );
     }
 

@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.7.1-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -94,6 +94,7 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
+    <maven4Version>4.0.0-alpha-2</maven4Version>
     <mavenVersion>3.2.5</mavenVersion>
     <!-- SLF4J version must match the version exported from the mavenVersion, 
     https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
@@ -106,9 +107,10 @@
     <asmVersion>9.4</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
-    <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
+    <plexusUtilsVersion>4.0.0-alpha-2</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
+    <surefire.version>3.0.0-M7</surefire.version>
     <project.build.outputTimestamp>2022-10-30T09:30:18Z</project.build.outputTimestamp>
   </properties>
 
@@ -237,7 +239,7 @@
       </dependency>
       <!-- plexus -->
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
+        <groupId>org.apache.maven</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>${plexusUtilsVersion}</version>
       </dependency>
@@ -369,6 +371,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
           </configuration>

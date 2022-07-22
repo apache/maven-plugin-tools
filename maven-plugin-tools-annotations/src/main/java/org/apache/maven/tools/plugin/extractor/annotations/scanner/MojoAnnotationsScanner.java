@@ -37,16 +37,25 @@ public interface MojoAnnotationsScanner
 {
     String ROLE = MojoAnnotationsScanner.class.getName();
 
+    String V4_API_PLUGIN_PACKAGE = "org.apache.maven.api.plugin";
+
+    String V4_API_ANNOTATIONS_PACKAGE = V4_API_PLUGIN_PACKAGE + ".annotations";
+
     List<String> CLASS_LEVEL_ANNOTATIONS = Arrays.asList( Mojo.class.getName(),
                                                           Execute.class.getName(),
-                                                          Deprecated.class.getName() );
+                                                          Deprecated.class.getName(),
+                                                          V4_API_ANNOTATIONS_PACKAGE + ".Mojo",
+                                                          V4_API_ANNOTATIONS_PACKAGE + ".Execute" );
 
     List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
                                                           Component.class.getName(),
-                                                          Deprecated.class.getName() );
+                                                          Deprecated.class.getName(),
+                                                          V4_API_ANNOTATIONS_PACKAGE + ".Parameter",
+                                                          V4_API_ANNOTATIONS_PACKAGE + ".Component" );
 
     List<String> METHOD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
-                                                           Deprecated.class.getName() );
+                                                           Deprecated.class.getName(),
+                                                           V4_API_ANNOTATIONS_PACKAGE + ".Parameter" );
 
     /**
      * Scan classes for mojo annotations.

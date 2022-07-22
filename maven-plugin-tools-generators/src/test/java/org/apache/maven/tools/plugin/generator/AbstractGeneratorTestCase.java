@@ -101,20 +101,10 @@ public abstract class AbstractGeneratorTestCase
         MavenProject mavenProject = new MavenProject();
         mavenProject.setGroupId( "foo" );
         mavenProject.setArtifactId( "bar" );
-        mavenProject.setBuild( new Build()
-        {
-            @Override
-            public String getDirectory()
-            {
-                return basedir + "/target";
-            }
-
-            @Override
-            public String getOutputDirectory()
-            {
-                return basedir + "/target";
-            }
-        } );
+        Build build = new Build();
+        build.setDirectory( basedir + "/target" );
+        build.setOutputDirectory( basedir + "/target" );
+        mavenProject.setBuild( build );
         extendPluginDescriptor( pluginDescriptor );
         generator.execute( destinationDirectory, new DefaultPluginToolsRequest( mavenProject, pluginDescriptor ) );
 

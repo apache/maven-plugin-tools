@@ -23,12 +23,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.codehaus.plexus.util.StringUtils;
@@ -40,6 +41,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.util.TraceSignatureVisitor;
+
+import static org.apache.maven.tools.plugin.extractor.annotations.scanner.DefaultMojoAnnotationsScanner.PARAMETER_V3;
+import static org.apache.maven.tools.plugin.extractor.annotations.scanner.DefaultMojoAnnotationsScanner.PARAMETER_V4;
 
 /**
  * Visitor for Mojo classes.
@@ -77,28 +81,48 @@ public class MojoClassVisitor
 
     public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
     {
-        return annotationVisitorMap.get( annotation.getName() );
+        return getAnnotationVisitor( annotation.getName() );
+    }
+
+    public MojoAnnotationVisitor getAnnotationVisitor( String name )
+    {
+        return annotationVisitorMap.get( name );
     }
 
     public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
     {
-        String annotationClassName = annotation.getName();
+        return findFieldWithAnnotation( Collections.singleton( annotation.getName() ) );
+    }
 
-        return fieldVisitors.stream()
-            .filter( field -> field.getAnnotationVisitorMap().containsKey( annotationClassName ) )
-            .collect( Collectors.toList() );
+    public List<MojoFieldVisitor> findFieldWithAnnotation( Set<String> annotationClassNames )
+    {
+        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
+
+        for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
+        {
+            Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+            if ( filedVisitorMap.keySet().stream().anyMatch( annotationClassNames::contains ) )
+            {
+                mojoFieldVisitors.add( mojoFieldVisitor );
+            }
+        }
+
+        return mojoFieldVisitors;
     }
 
     public List<MojoParameterVisitor> findParameterVisitors()
     {
-        String annotationClassName = Parameter.class.getName();
+        return findParameterVisitors( new HashSet<>( Arrays.asList( PARAMETER_V3, PARAMETER_V4 ) ) );
+    }
 
-        return Stream
-            .concat(
-                findFieldWithAnnotation( Parameter.class ).stream(),
-                methodVisitors.stream()
-                    .filter( method -> method.getAnnotationVisitorMap().containsKey( annotationClassName ) ) )
-            .collect( Collectors.toList() );
+    public List<MojoParameterVisitor> findParameterVisitors( Set<String> annotationClassNames )
+    {
+        return Stream.concat(
+                    findFieldWithAnnotation( annotationClassNames ).stream(),
+                    methodVisitors.stream()
+                            .filter( method -> method.getAnnotationVisitorMap().keySet().stream()
+                                    .anyMatch( annotationClassNames::contains ) ) )
+                .collect( Collectors.toList() );
     }
 
     @Override
@@ -120,6 +144,10 @@ public class MojoClassVisitor
         if ( !MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {
             return null;
+        }
+        if ( annotationClassName.startsWith( MojoAnnotationsScanner.V4_API_ANNOTATIONS_PACKAGE ) )
+        {
+            mojoAnnotatedClass.setV4Api( true );
         }
         MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( annotationClassName );
         annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );

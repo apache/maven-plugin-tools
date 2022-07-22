@@ -120,7 +120,7 @@ public class DummyReport
         {
             return;
         }
-        if (skip || skipReport)
+        if ( skip || skipReport )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );
             return;
@@ -181,12 +181,10 @@ public class DummyReport
         private final Locale locale;
 
         /**
-         * @param project not null
          * @param sink not null
          * @param locale not null
          */
-        public PluginOverviewRenderer( Sink sink,
-                                       Locale locale )
+        PluginOverviewRenderer( Sink sink, Locale locale )
         {
             super( sink );
 

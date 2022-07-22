@@ -86,14 +86,9 @@ public class JavaMojoDescriptorExtractorTest
         model.setArtifactId( "maven-unitTesting-plugin" );
 
         MavenProject project = new MavenProject( model );
-        project.setBuild( new Build()
-        {
-            @Override
-            public String getDirectory()
-            {
-                return new File( "target" ).getAbsolutePath();
-            }
-        } );
+        Build build = new Build();
+        build.setDirectory( new File( "target" ).getAbsolutePath() );
+        project.setBuild( build );
 
         project.setFile( new File( root, "pom.xml" ) );
         project.addCompileSourceRoot( new File( root, directory ).getPath() );

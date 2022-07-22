@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -68,6 +70,17 @@ public class DefaultMojoAnnotationsScanner
     extends AbstractLogEnabled
     implements MojoAnnotationsScanner
 {
+    public static final String MVN4_API = "org.apache.maven.api.plugin.annotations.";
+    public static final String MOJO_V4 = MVN4_API + "Mojo";
+    public static final String EXECUTE_V4 = MVN4_API + "Execute";
+    public static final String PARAMETER_V4 = MVN4_API + "Parameter";
+    public static final String COMPONENT_V4 = MVN4_API + "Component";
+
+    public static final String MOJO_V3 = Mojo.class.getName();
+    public static final String EXECUTE_V3 = Execute.class.getName();
+    public static final String PARAMETER_V3 = Parameter.class.getName();
+    public static final String COMPONENT_V3 = Component.class.getName();
+
     // classes with a dash must be ignored
     private static final Pattern SCANNABLE_CLASS = Pattern.compile( "[^-]+\\.class" );
     private static final String EMPTY = "";
@@ -86,8 +99,9 @@ public class DefaultMojoAnnotationsScanner
             {
                 scan( mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true );
                 if ( request.getMavenApiVersion() == null
-                     && dependency.getArtifactId().equals( "maven-plugin-api" )
-                     && dependency.getGroupId().equals( "org.apache.maven" ) )
+                     && dependency.getGroupId().equals( "org.apache.maven" )
+                     && ( dependency.getArtifactId().equals( "maven-plugin-api" )
+                        || dependency.getArtifactId().equals( "maven-api-core" ) ) )
                 {
                     request.setMavenApiVersion( dependency.getVersion() );
                 }
@@ -281,7 +295,11 @@ public class DefaultMojoAnnotationsScanner
         try
         {
             // @Mojo annotation
-            MojoAnnotationVisitor mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Mojo.class );
+            MojoAnnotationVisitor mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( MOJO_V3 );
+            if ( mojoAnnotationVisitor == null )
+            {
+                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( MOJO_V4 );
+            }
             if ( mojoAnnotationVisitor != null )
             {
                 MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
@@ -296,7 +314,11 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Execute annotation
-            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Execute.class );
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( EXECUTE_V3 );
+            if ( mojoAnnotationVisitor == null )
+            {
+                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( EXECUTE_V4 );
+            }
             if ( mojoAnnotationVisitor != null )
             {
                 ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
@@ -305,7 +327,8 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Parameter annotations
-            List<MojoParameterVisitor> mojoParameterVisitors = mojoClassVisitor.findParameterVisitors();
+            List<MojoParameterVisitor> mojoParameterVisitors = mojoClassVisitor.findParameterVisitors(
+                    new HashSet<>( Arrays.asList( PARAMETER_V3, PARAMETER_V4 ) ) );
             for ( MojoParameterVisitor parameterVisitor : mojoParameterVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
@@ -314,9 +337,16 @@ public class DefaultMojoAnnotationsScanner
                                                     parameterVisitor.isAnnotationOnMethod() );
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = parameterVisitor.getAnnotationVisitorMap();
-                MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( Parameter.class.getName() );
+                MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( PARAMETER_V3 );
+                if ( fieldAnnotationVisitor == null )
+                {
+                    fieldAnnotationVisitor = annotationVisitorMap.get( PARAMETER_V4 );
+                }
 
-                populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
+                if ( fieldAnnotationVisitor != null )
+                {
+                    populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
+                }
 
                 if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )
                 {
@@ -328,14 +358,19 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Component annotations
-            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Component.class );
+            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation(
+                    new HashSet<>( Arrays.asList( COMPONENT_V3, COMPONENT_V4 ) ) );
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ComponentAnnotationContent componentAnnotationContent =
                     new ComponentAnnotationContent( mojoFieldVisitor.getFieldName() );
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
-                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get( Component.class.getName() );
+                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get( COMPONENT_V3 );
+                if ( annotationVisitor == null )
+                {
+                    annotationVisitor = annotationVisitorMap.get( COMPONENT_V4 );
+                }
 
                 if ( annotationVisitor != null )
                 {

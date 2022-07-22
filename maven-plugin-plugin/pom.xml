@@ -21,9 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>maven-plugin-tools</artifactId>
     <groupId>org.apache.maven.plugin-tools</groupId>
-    <version>3.7.1-SNAPSHOT</version>
+    <artifactId>maven-plugin-tools</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.maven.plugins</groupId>
@@ -38,11 +38,12 @@
   </description>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>3.2.5</maven>
   </prerequisites>
 
   <properties>
     <it.debug>true</it.debug>
+    <javaVersion>8</javaVersion>
   </properties>
 
   <dependencies>
@@ -135,7 +136,7 @@
 
     <!-- plexus -->
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
+      <groupId>org.apache.maven</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>

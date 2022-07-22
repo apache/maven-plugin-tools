@@ -495,8 +495,22 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         catch ( NoClassDefFoundError e )
         {
-            getLogger().warn( "Failed extracting tag '" + tagName + "' from class " + javaClass );
-            throw e;
+            if ( e.getMessage().replace( '/', '.' )
+                    .contains( MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE ) )
+            {
+                return null;
+            }
+            String str;
+            try
+            {
+                str = javaClass.getFullyQualifiedName();
+            }
+            catch ( Throwable t )
+            {
+                str = javaClass.getValue();
+            }
+            getLogger().warn( "Failed extracting tag '" + tagName + "' from class " + str );
+            throw (NoClassDefFoundError) new NoClassDefFoundError( e.getMessage() ).initCause( e );
         }
     }
 
@@ -599,8 +613,22 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         catch ( NoClassDefFoundError e )
         {
-            getLogger().warn( "Failed extracting methods from " + javaClass );
-            throw e;
+            if ( e.getMessage().replace( '/', '.' )
+                    .contains( MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE ) )
+            {
+                return new TreeMap<>();
+            }
+            String str;
+            try
+            {
+                str = javaClass.getFullyQualifiedName();
+            }
+            catch ( Throwable t )
+            {
+                str = javaClass.getValue();
+            }
+            getLogger().warn( "Failed extracting methods from " + str );
+            throw (NoClassDefFoundError) new NoClassDefFoundError( e.getMessage() ).initCause( e );
         }
     }
 
@@ -759,6 +787,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
             //mojoDescriptor.setRoleHint( "default" );
             mojoDescriptor.setImplementation( mojoAnnotatedClass.getClassName() );
             mojoDescriptor.setLanguage( "java" );
+
+            mojoDescriptor.setV4Api( mojoAnnotatedClass.isV4Api() );
 
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
 
