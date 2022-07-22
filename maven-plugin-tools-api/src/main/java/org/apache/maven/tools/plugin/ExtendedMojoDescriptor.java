@@ -35,6 +35,8 @@ public class ExtendedMojoDescriptor
 
     private String requiresDependencyCollection = null;
 
+    private boolean v4Api = false;
+
     public ExtendedMojoDescriptor()
     {
         this( false );
@@ -72,7 +74,7 @@ public class ExtendedMojoDescriptor
     {
         this.requiresDependencyCollection = requiresDependencyCollection;
     }
-    
+
     /**
      * Indicates if the methods {@link #getDescription()}, {@link #getDeprecated()}, {@link Parameter#getDescription()}
      * and {@link Parameter#getDeprecated()} return XHTML values.
@@ -83,5 +85,17 @@ public class ExtendedMojoDescriptor
     public boolean containsXhtmlTextValues()
     {
         return containsXhtmlTextValues;
+    }
+
+    @Override
+    public boolean isV4Api()
+    {
+        return v4Api;
+    }
+
+    @Override
+    public void setV4Api( boolean v4Api )
+    {
+        this.v4Api = v4Api;
     }
 }

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -70,28 +71,49 @@ public class MojoClassVisitor
 
     public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
     {
-        return annotationVisitorMap.get( annotation.getName() );
+        return getAnnotationVisitor( annotation.getName() );
+    }
+
+    public MojoAnnotationVisitor getAnnotationVisitor( String name )
+    {
+        return annotationVisitorMap.get( name );
     }
 
     public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
     {
-        String annotationClassName = annotation.getName();
+        return findFieldWithAnnotation( Collections.singleton( annotation.getName() ) );
+    }
 
-        return fieldVisitors.stream()
-            .filter( field -> field.getAnnotationVisitorMap().containsKey( annotationClassName ) )
-            .collect( Collectors.toList() );
+    public List<MojoFieldVisitor> findFieldWithAnnotation( Set<String> annotationClassNames )
+    {
+        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
+
+        for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
+        {
+            Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+            if ( filedVisitorMap.keySet().stream().anyMatch( annotationClassNames::contains ) )
+            {
+                mojoFieldVisitors.add( mojoFieldVisitor );
+            }
+        }
+
+        return mojoFieldVisitors;
     }
 
     public List<MojoParameterVisitor> findParameterVisitors()
     {
+        return findParameterVisitors( Collections.singleton( Parameter.class.getName() ) );
+    }
+
+    public List<MojoParameterVisitor> findParameterVisitors( Set<String> annotationClassNames )
+    {
         String annotationClassName = Parameter.class.getName();
 
-        return Stream
-            .concat(
-                findFieldWithAnnotation( Parameter.class ).stream(),
-                methodVisitors.stream()
-                    .filter( method -> method.getAnnotationVisitorMap().containsKey( annotationClassName ) ) )
-            .collect( Collectors.toList() );
+        return Stream.concat(
+                    findFieldWithAnnotation( Parameter.class ).stream(),
+                    methodVisitors.stream()
+                            .filter( method -> method.getAnnotationVisitorMap().containsKey( annotationClassName ) ) )
+                .collect( Collectors.toList() );
     }
 
     @Override
@@ -112,6 +134,10 @@ public class MojoClassVisitor
         if ( !MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
         {
             return null;
+        }
+        if ( annotationClassName.startsWith( MojoAnnotationsScanner.V4_API_ANNOTATIONS_PACKAGE ) )
+        {
+            mojoAnnotatedClass.setV4Api( true );
         }
         MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( annotationClassName );
         annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );

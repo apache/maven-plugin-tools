@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
@@ -34,23 +33,9 @@ public class MojoStub
 {
     /** {@inheritDoc} */
     @Override
-    public Log getLog()
-    {
-        return super.getLog();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public Map getPluginContext()
     {
         return super.getPluginContext();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setLog( Log log )
-    {
-        super.setLog( log );
     }
 
     /** {@inheritDoc} */
@@ -62,45 +47,8 @@ public class MojoStub
 
     /** {@inheritDoc} */
     @Override
-    protected Object clone()
-        throws CloneNotSupportedException
-    {
-        return super.clone();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals( Object obj )
-    {
-        return super.equals( obj );
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void finalize()
-        throws Throwable
-    {
-        super.finalize();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString()
-    {
-        return super.toString();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
 
     }

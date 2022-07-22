@@ -57,6 +57,7 @@ public class PluginHelpGenerator
     private String helpPackageName;
     private String goalPrefix;
     private MavenProject mavenProject;
+    private boolean useMaven4Api;
     private VelocityComponent velocityComponent;
 
     /**
@@ -75,6 +76,10 @@ public class PluginHelpGenerator
         throws GeneratorException
     {
         String helpImplementation = getImplementation();
+
+        useMaven4Api = mavenProject.getDependencies().stream()
+                        .anyMatch( dep -> "org.apache.maven".equals( dep.getGroupId() )
+                                && "maven-api-core".equals( dep.getArtifactId() ) );
 
         try
         {
@@ -138,6 +143,7 @@ public class PluginHelpGenerator
         // TODO: evaluate prefix from deserialized plugin
         context.put( "goalPrefix", goalPrefix );
         context.put( "useAnnotations", useAnnotations );
+        context.put( "useMaven4Api", useMaven4Api );
 
         StringWriter stringWriter = new StringWriter();
 

@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -106,7 +105,7 @@ public class FooMojo
 
     @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
         // nothing
     }

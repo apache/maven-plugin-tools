@@ -57,6 +57,8 @@ public class MojoAnnotatedClass
      */
     private Artifact artifact;
 
+    private boolean v4Api;
+
     public MojoAnnotatedClass()
     {
         // no op
@@ -151,6 +153,16 @@ public class MojoAnnotatedClass
         return !( getComponents().isEmpty() && getParameters().isEmpty() && execute == null && mojo == null );
     }
 
+    public boolean isV4Api()
+    {
+        return v4Api;
+    }
+
+    public void setV4Api( boolean v4Api )
+    {
+        this.v4Api = v4Api;
+    }
+
     @Override
     public String toString()
     {
@@ -162,6 +174,7 @@ public class MojoAnnotatedClass
         sb.append( ", execute=" ).append( execute );
         sb.append( ", parameters=" ).append( parameters );
         sb.append( ", components=" ).append( components );
+        sb.append( ", v4api=" ).append( v4Api );
         sb.append( '}' );
         return sb.toString();
     }
