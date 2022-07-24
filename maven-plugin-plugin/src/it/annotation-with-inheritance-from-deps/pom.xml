@@ -43,31 +43,35 @@ under the License.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>@mavenVersion@</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>@mavenVersion@</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>@project.version@</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-annotations</artifactId>
       <version>@project.version@</version>
       <classifier>tests</classifier>
+      <!-- we only need one class FooMojo -->
+      <!-- in order to don't manage all transitive dependencies simply exclude its -->
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <dependency>
-      <!-- dependency of  org.apache.maven.plugin-tools:maven-plugin-tools-annotations:@project.version@:jar:tests -->
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.8.2</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>@plexusUtilsVersion@</version>
-    </dependency>
+
   </dependencies>
 
   <build>
