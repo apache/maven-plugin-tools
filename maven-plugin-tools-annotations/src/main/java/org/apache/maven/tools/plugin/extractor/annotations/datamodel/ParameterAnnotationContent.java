@@ -20,8 +20,10 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.Parameter;
+import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 /**
  * @author Olivier Lamy
@@ -40,6 +42,8 @@ public class ParameterAnnotationContent
 
     private String defaultValue;
 
+    private String implementationClassName;
+
     private boolean required = false;
 
     private boolean readonly = false;
@@ -53,12 +57,13 @@ public class ParameterAnnotationContent
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
-                                       boolean required, boolean readonly, String className )
+                                       Class<?> implementation, boolean required, boolean readonly, String className )
     {
         this( fieldName, className );
         this.alias = alias;
         this.property = property;
         this.defaultValue = defaultValue;
+        this.implementationClassName = implementation != null ? implementation.getName() : null;
         this.required = required;
         this.readonly = readonly;
     }
@@ -107,6 +112,33 @@ public class ParameterAnnotationContent
         this.defaultValue = defaultValue;
     }
 
+    public void implementation( Type implementation )
+    {
+
+        implementationClassName = implementation.getClassName();
+        if ( implementationClassName.equals( Object.class.getName() ) )
+        {
+            // Object is default value for implementation attribute
+            this.implementationClassName = null;
+        }
+    }
+
+    public String getImplementationClassName()
+    {
+        return implementationClassName;
+    }
+
+    @Override
+    public Class<?> implementation()
+    {
+        // needed for implementing @Parameter
+        // we don't have access to project class path,
+        // so loading class is not possible without build additional classLoader
+        // we only operate on classes names
+        throw new UnsupportedOperationException(
+            "please use getImplementationClassName instead of implementation method" );
+    }
+
     @Override
     public boolean required()
     {
@@ -151,10 +183,14 @@ public class ParameterAnnotationContent
         final StringBuilder sb = new StringBuilder();
         sb.append( super.toString() );
         sb.append( "ParameterAnnotationContent" );
-        sb.append( "{name='" ).append( name ).append( '\'' );
+        sb.append( "{fieldName='" ).append( getFieldName() ).append( '\'' );
+        sb.append( ", className='" ).append( getClassName() ).append( '\'' );
+        sb.append( ", name='" ).append( name ).append( '\'' );
+        sb.append( ", alias='" ).append( alias ).append( '\'' );
         sb.append( ", alias='" ).append( alias ).append( '\'' );
         sb.append( ", property='" ).append( property ).append( '\'' );
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
+        sb.append( ", implementation='" ).append( implementationClassName ).append( '\'' );
         sb.append( ", required=" ).append( required );
         sb.append( ", readonly=" ).append( readonly );
         sb.append( '}' );
@@ -189,15 +225,24 @@ public class ParameterAnnotationContent
             return false;
         }
 
-        if ( alias != null ? !alias.equals( that.alias ) : that.alias != null )
+        if ( getClassName() != null ? !getClassName().equals( that.getClassName() ) : that.getClassName() != null )
         {
             return false;
         }
-        if ( defaultValue != null ? !defaultValue.equals( that.defaultValue ) : that.defaultValue != null )
+
+        if ( !Objects.equals( alias, that.alias ) )
         {
             return false;
         }
-        if ( property != null ? !property.equals( that.property ) : that.property != null )
+        if ( !Objects.equals( defaultValue, that.defaultValue ) )
+        {
+            return false;
+        }
+        if ( !Objects.equals( property, that.property ) )
+        {
+            return false;
+        }
+        if ( !Objects.equals( implementationClassName, that.implementationClassName ) )
         {
             return false;
         }
@@ -208,12 +253,7 @@ public class ParameterAnnotationContent
     @Override
     public int hashCode()
     {
-        int result = alias != null ? alias.hashCode() : 0;
-        result = 31 * result + ( getFieldName() != null ? getFieldName().hashCode() : 0 );
-        result = 31 * result + ( property != null ? property.hashCode() : 0 );
-        result = 31 * result + ( defaultValue != null ? defaultValue.hashCode() : 0 );
-        result = 31 * result + ( required ? 1 : 0 );
-        result = 31 * result + ( readonly ? 1 : 0 );
-        return result;
+        return Objects.hash( alias, getFieldName(), property, defaultValue, required, readonly,
+                             implementationClassName );
     }
 }
