@@ -92,9 +92,18 @@ class TestAnnotationsReader
         assertThat( components ).isNotNull().isNotEmpty().hasSize( 1 );
 
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
-        assertThat( parameters ).isNotNull().isNotEmpty().hasSize( 2 ).contains(
-            new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false, String.class.getName() ),
-            new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
-                                            String.class.getName() ) );
+        assertThat( parameters ).isNotNull()
+            .isNotEmpty()
+            .hasSize( 3 )
+            .contains(
+                new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", null, true, false,
+                                                String.class.getName() ),
+                new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", null, false, false,
+                                                String.class.getName() ),
+                new ParameterAnnotationContent( "fooInterface", null, "fooInterface", null,
+                                                FooInterfaceImpl.class,
+                                                false,
+                                                false, FooInterface.class.getName() )
+            );
     }
 }

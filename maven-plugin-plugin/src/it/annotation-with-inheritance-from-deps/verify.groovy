@@ -64,13 +64,14 @@ assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.project
 assert mojo.requirements.requirement[1].'role-hint'.text() == ''
 assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
-assert mojo.parameters.parameter.size() == 3
+assert mojo.parameters.parameter.size() == 4
 
 def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.text() == 'As of 0.2'
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
@@ -81,6 +82,7 @@ parameter = mojo.parameters.parameter.findAll{ it.name.text() == "beer"}[0]
 assert parameter.name.text() == 'beer'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.text() == "wine is better"
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
@@ -91,9 +93,21 @@ parameter = mojo.parameters.parameter.findAll{ it.name.text() == "bar"}[0]
 assert parameter.name.text() == 'bar'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'the cool bar to go'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "fooInterface"}[0]
+
+assert parameter.name.text() == 'fooInterface'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.tools.plugin.extractor.annotations.FooInterface'
+assert parameter.implementation.text() == 'org.apache.maven.tools.plugin.extractor.annotations.FooInterfaceImpl'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == 'Interface type as parameter.'
 
 return true;
