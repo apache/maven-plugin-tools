@@ -23,11 +23,8 @@ assert touchFile.isFile()
 File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
 assert descriptorFile.isFile()
 
-File oldHelpClass = new File( basedir, "target/classes/HelpMojo.class" );
-assert !oldHelpClass.exists()
-
-File newHelpClass = new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" );
-assert newHelpClass.exists()
+File helpClass = new File( basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance/annotation_with_inheritance/HelpMojo.class" );
+assert helpClass.exists()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
