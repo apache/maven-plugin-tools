@@ -128,7 +128,7 @@ public class JavaMojoDescriptorExtractorTest
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
-        Generator descriptorGenerator = new PluginDescriptorGenerator( new SystemStreamLog() );
+        Generator descriptorGenerator = new PluginDescriptorGenerator();
 
         descriptorGenerator.execute( new File( root, directory ), request );
 

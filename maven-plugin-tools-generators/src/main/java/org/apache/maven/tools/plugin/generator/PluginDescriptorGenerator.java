@@ -19,8 +19,6 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,12 +29,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
+
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -44,6 +41,8 @@ import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Generate a <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a> and
@@ -54,20 +53,10 @@ public class PluginDescriptorGenerator
     implements Generator
 {
 
-    private final Log log;
-
-    public PluginDescriptorGenerator( Log log )
-    {
-        this.log = log;
-    }
-
     @Override
     public void execute( File destinationDirectory, PluginToolsRequest request )
         throws GeneratorException
     {
-        // eventually rewrite help mojo class to match actual package name
-        PluginHelpGenerator.rewriteHelpMojo( request, log );
-
         try
         {
             // write complete plugin.xml descriptor
@@ -86,10 +75,6 @@ public class PluginDescriptorGenerator
         {
             throw new GeneratorException( e.getMessage(), e );
         }
-        catch ( DuplicateMojoDescriptorException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
-        }
     }
 
     private String getVersion()
@@ -100,7 +85,7 @@ public class PluginDescriptorGenerator
     }
 
     public void writeDescriptor( File destinationFile, PluginToolsRequest request, boolean helpDescriptor )
-        throws IOException, DuplicateMojoDescriptorException
+        throws IOException
     {
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
 
@@ -167,11 +152,6 @@ public class PluginDescriptorGenerator
             writer.flush();
 
         }
-    }
-
-    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w )
-    {
-        processMojoDescriptor( mojoDescriptor, w, false );
     }
 
     /**

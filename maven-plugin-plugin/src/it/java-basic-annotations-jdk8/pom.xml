@@ -23,7 +23,7 @@ under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.maven.its.basic-java-annotations</groupId>
-  <artifactId>maven-it-basic-java-annotations</artifactId>
+  <artifactId>123-maven-it-basic-java-annotations</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
