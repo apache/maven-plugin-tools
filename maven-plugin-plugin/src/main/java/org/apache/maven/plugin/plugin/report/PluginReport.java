@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.plugin;
+package org.apache.maven.plugin.plugin.report;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -104,7 +104,7 @@ public class PluginReport
      *   &lt;/others&gt;
      * &lt;/requirements&gt;
      * </pre>
-     * 
+     * <p>
      * If not is specified, Maven requirement is extracted from
      * <code>&lt;project&gt;&lt;prerequisites&gt;&lt;maven&gt;</code>
      * and JDK requirement is extracted from maven-compiler-plugin configuration.
@@ -159,11 +159,31 @@ public class PluginReport
     /**
      * Set this to "true" to generate the usage section for "plugin-info.html" with
      * {@code <extensions>true</extensions>}.
-     * 
+     *
      * @since 3.7.0
      */
     @Parameter( defaultValue = "false", property = "maven.plugin.report.hasExtensionsToLoad" )
     private boolean hasExtensionsToLoad;
+
+    /**
+     * The Plugin requirements history list.
+     * <p>
+     * Can be specified as list of <code>requirementsHistory</code>:
+     *
+     * <pre>
+     * &lt;requirementsHistories&gt;
+     *   &lt;requirementsHistory&gt;
+     *     &lt;version&gt;plugin version&lt;/version&gt;
+     *     &lt;maven&gt;maven version&lt;/maven&gt;
+     *     &lt;jdk&gt;jdk version&lt;/jdk&gt;
+     *   &lt;/requirementsHistory&gt;
+     * &lt;/requirementsHistories&gt;
+     * </pre>
+     *
+     * @since 3.7.0
+     */
+    @Parameter
+    private List<RequirementsHistory> requirementsHistories = new ArrayList<>();
 
     /**
      * @since 3.5.1
@@ -177,7 +197,7 @@ public class PluginReport
      * @since 3.5.1
      */
     @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
-                    readonly = true )
+                readonly = true )
     private File pluginXmlFile;
 
     /**
@@ -219,8 +239,8 @@ public class PluginReport
 
         // Write the overview
         PluginOverviewRenderer r =
-            new PluginOverviewRenderer( getProject(), requirements, getSink(),
-                    pluginDescriptor, locale, hasExtensionsToLoad );
+            new PluginOverviewRenderer( getProject(), requirements, requirementsHistories, getSink(),
+                                        pluginDescriptor, locale, hasExtensionsToLoad );
         r.render();
     }
 
@@ -241,10 +261,10 @@ public class PluginReport
     }
 
     /**
-     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the 
-     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix 
+     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the
+     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix
      * (because of Maven MNG-6109 bug that won't give accurate 'since' info when reading plugin.xml).
-     * 
+     *
      * @return the proper pluginDescriptorBuilder
      * @see <a href="https://issues.apache.org/jira/browse/MNG-6109">MNG-6109</a>
      * @see <a href="https://issues.apache.org/jira/browse/MPLUGIN-319">MPLUGIN-319</a>
@@ -338,6 +358,8 @@ public class PluginReport
 
         private final Requirements requirements;
 
+        private final List<RequirementsHistory> requirementsHistories;
+
         private final PluginDescriptor pluginDescriptor;
 
         private final Locale locale;
@@ -345,13 +367,15 @@ public class PluginReport
         private final boolean hasExtensionsToLoad;
 
         /**
-         * @param project          not null
-         * @param requirements     not null
-         * @param sink             not null
-         * @param pluginDescriptor not null
-         * @param locale           not null
+         * @param project               not null
+         * @param requirements          not null
+         * @param requirementsHistories not null
+         * @param sink                  not null
+         * @param pluginDescriptor      not null
+         * @param locale                not null
          */
-        PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
+        PluginOverviewRenderer( MavenProject project, Requirements requirements,
+                                List<RequirementsHistory> requirementsHistories, Sink sink,
                                 PluginDescriptor pluginDescriptor, Locale locale, boolean hasExtensionsToLoad )
         {
             super( sink );
@@ -359,6 +383,8 @@ public class PluginReport
             this.project = project;
 
             this.requirements = ( requirements == null ? new Requirements() : requirements );
+
+            this.requirementsHistories = requirementsHistories;
 
             this.pluginDescriptor = pluginDescriptor;
 
@@ -411,11 +437,11 @@ public class PluginReport
             String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
             if ( hasMavenReport )
             {
-                tableHeader( new String[]{ goalColumnName, isMavenReport, descriptionColumnName } );
+                tableHeader( new String[] {goalColumnName, isMavenReport, descriptionColumnName} );
             }
             else
             {
-                tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
+                tableHeader( new String[] {goalColumnName, descriptionColumnName} );
             }
 
             List<MojoDescriptor> mojos = new ArrayList<>();
@@ -527,7 +553,40 @@ public class PluginReport
 
             endSection();
 
+            renderRequirementsHistories();
+
             renderUsageSection( hasMavenReport );
+
+            endSection();
+        }
+
+        private void renderRequirementsHistories()
+        {
+            if ( requirementsHistories.isEmpty() )
+            {
+                return;
+            }
+
+            startSection( getBundle( locale ).getString( "report.plugin.systemrequirements.history" ) );
+            paragraph( getBundle( locale ).getString( "report.plugin.systemrequirements.history.intro" ) );
+
+            startTable();
+            tableHeader( new String[] {
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.version" ),
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.maven" ),
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.jdk" )
+            } );
+
+            requirementsHistories.forEach(
+                requirementsHistory ->
+                {
+                    sink.tableRow();
+                    tableCell( requirementsHistory.getVersion() );
+                    tableCell( requirementsHistory.getMaven() );
+                    tableCell( requirementsHistory.getJdk() );
+                    sink.tableRow_();
+                } );
+            endTable();
 
             endSection();
         }
@@ -565,7 +624,7 @@ public class PluginReport
             if ( hasExtensionsToLoad )
             {
                 sb.append( "          <extensions>true</extensions>" ).append(
-                        '\n' );
+                    '\n' );
             }
             sb.append( "        </plugin>" ).append( '\n' );
             sb.append( "        ..." ).append( '\n' );
