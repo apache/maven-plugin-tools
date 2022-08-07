@@ -151,7 +151,7 @@
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>3.1.0</version>
+      <version>${reportingImplVersion}</version>
     </dependency>
 
     <!-- plexus -->
@@ -311,8 +311,8 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <filterProperties>
-                <sitePluginVersion>3.11.0</sitePluginVersion>
-                <projectInfoReportsPlugin>3.4.0</projectInfoReportsPlugin>
+                <sitePluginVersion>3.12.1</sitePluginVersion>
+                <projectInfoReportsPlugin>3.4.1</projectInfoReportsPlugin>
                 <antVersion>${antVersion}</antVersion>
               </filterProperties>
               <properties>
