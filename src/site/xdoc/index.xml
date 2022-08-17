@@ -118,6 +118,21 @@
         </tr>      
       </table>
 
+      <subsection name="Plugin Descriptors">
+        <p>The plugin descriptor is first being generated in memory finally containing some values in HTML format before being persisted into three different formats.
+        The formats differ in
+          <ul>
+            <li>whether they contain extended attributes (not part of the <a href="http://maven.apache.org/ref/current/maven-plugin-api/plugin.html">Plugin Descriptor Spec</a></li>
+            <li>whether descriptive values contain HTML or plain text</li>
+          </ul>
+        Javadoc tags are in general being resolved and replaced by their XHTML value before they end up in the according plugin descriptor attributes <code>description</code> and <code>deprecated</code>.
+        Also javadoc code links via <code>{@link}</code> or <code>@see</code> are replaced by links to the according Javadoc pages if configured accordingly.
+        </p>
+        <p>
+          <img src="images/plugin-descriptors.svg" width="759" border="0" />
+        </p>
+      </subsection>
+
       <subsection name="See Also">
         <ul>
           <li><a href="/plugin-testing/">Maven Plugin Testing</a></li>

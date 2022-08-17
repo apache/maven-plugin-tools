@@ -57,11 +57,13 @@ import com.thoughtworks.qdox.model.JavaType;
 
 /**
  * <p>
- * Extracts Mojo descriptors from <a href="http://java.sun.com/">Java</a> sources.
+ * Extracts Mojo descriptors from <a href="https://www.oracle.com/java/technologies//">Java</a> source
+ * javadoc comments only. New mojos should rather rely on annotations and comments which are evaluated
+ * by extractor named {@code java}.
  * </p>
  * For more information about the usage tag, have a look to:
- * <a href="http://maven.apache.org/developers/mojo-api-specification.html">
- * http://maven.apache.org/developers/mojo-api-specification.html</a>
+ * <a href="https://maven.apache.org/developers/mojo-api-specification.html">
+ * https://maven.apache.org/developers/mojo-api-specification.html</a>
  *
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */

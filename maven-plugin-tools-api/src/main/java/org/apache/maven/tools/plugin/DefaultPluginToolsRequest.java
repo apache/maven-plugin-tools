@@ -23,9 +23,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +59,14 @@ public class DefaultPluginToolsRequest
     private List<ArtifactRepository> remoteRepos;
 
     private ArtifactRepository local;
+
+    private URI internalJavadocBaseUrl;
+    
+    private String internalJavadocVersion;
+    
+    private List<URI> externalJavadocBaseUrls;
+
+    private Settings settings;
 
     public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
     {
@@ -189,5 +199,57 @@ public class DefaultPluginToolsRequest
     {
         this.local = local;
         return this;
+    }
+
+    @Override
+    public PluginToolsRequest setInternalJavadocBaseUrl( URI baseUrl )
+    {
+        internalJavadocBaseUrl = baseUrl;
+        return this;
+    }
+
+    @Override
+    public URI getInternalJavadocBaseUrl()
+    {
+        return internalJavadocBaseUrl;
+    }
+
+    @Override
+    public PluginToolsRequest setInternalJavadocVersion( String javadocVersion )
+    {
+        this.internalJavadocVersion = javadocVersion;
+        return this;
+    }
+
+    @Override
+    public String getInternalJavadocVersion()
+    {
+        return internalJavadocVersion;
+    }
+
+    @Override
+    public PluginToolsRequest setExternalJavadocBaseUrls( List<URI> javadocLinks )
+    {
+        this.externalJavadocBaseUrls = javadocLinks;
+        return this;
+    }
+
+    @Override
+    public List<URI> getExternalJavadocBaseUrls()
+    {
+        return externalJavadocBaseUrls;
+    }
+
+    @Override
+    public PluginToolsRequest setSettings( Settings settings )
+    {
+        this.settings = settings;
+        return this;
+    }
+
+    @Override
+    public Settings getSettings()
+    {
+        return settings;
     }
 }

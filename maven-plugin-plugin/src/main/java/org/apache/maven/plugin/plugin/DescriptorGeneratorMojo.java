@@ -20,6 +20,7 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -38,12 +39,13 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
-import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
+import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -117,7 +119,6 @@ public class DescriptorGeneratorMojo
     @Parameter
     private Set<String> extractors;
 
-
     /**
      * By default, an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
      * descriptor generator mojo is bound to generate-resources phase.
@@ -169,6 +170,52 @@ public class DescriptorGeneratorMojo
     private List<String> mojoDependencies = null;
 
     /**
+     * Creates links to existing external javadoc-generated documentation.
+     * <br>
+     * <b>Notes</b>:
+     * all given links should have a fetchable {@code /package-list} or {@code /element-list} file.
+     * For instance:
+     * <pre>
+     * &lt;links&gt;
+     *   &lt;link&gt;https://docs.oracle.com/javase/8/docs/api/&lt;/link&gt;
+     * &lt;links&gt;
+     * </pre>
+     * is valid because <code>https://docs.oracle.com/javase/8/docs/api/package-list</code> exists.
+     * See <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/javadoc.html#standard-doclet-options">
+     * link option of the javadoc tool</a>.
+     * @since 3.7.0
+     */
+    @Parameter( property = "externalJavadocBaseUrl", alias = "links" )
+    protected List<URI> externalJavadocBaseUrl;
+
+    /**
+     * The base URL for the Javadoc site containing the current project's API documentation.
+     * This may be relative to root of the Maven site.
+     * It does not need to exist yet at the time when this goal is executed.
+     * @since 3.7.0
+     */
+    @Parameter( property = "internalJavadocBaseUrl", defaultValue = "./apidocs/" )
+    protected URI internalJavadocBaseUrl;
+
+    /**
+     * The version of the javadoc tool (equal to the container JDK version) used to generate the internal javadoc
+     * Only relevant if {@link #internalJavadocBaseUrl} is set.
+     * Explicitly set this to a value (as specific as possible)
+     * 
+     * @since 3.7.0
+     */
+    @Parameter( property = "internalJavadocVersion", defaultValue = "${java.version}" )
+    protected String internalJavadocVersion;
+
+    /**
+     * The Maven Settings, for evaluating proxy settings used to access {@link #javadocLinks}
+     *
+     * @since 3.7.0
+     */
+    @Parameter( defaultValue = "${settings}", readonly = true, required = true )
+    private Settings settings;
+
+    /**
      * List of Remote Repositories used by the resolver
      *
      * @since 3.0
@@ -196,6 +243,17 @@ public class DescriptorGeneratorMojo
     public void generate()
         throws MojoExecutionException
     {
+
+        if ( !"maven-plugin".equalsIgnoreCase( project.getArtifactId() )
+                        && project.getArtifactId().toLowerCase().startsWith( "maven-" )
+                        && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
+                        && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
+        {
+            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+                                + "plugins in the Group Id org.apache.maven.plugins" + LS
+                                + "Please change your artifactId to the format ___-maven-plugin" + LS
+                                + "In the future this error will break the build." + LS + LS );
+        }
 
         if ( skipDescriptor )
         {
@@ -262,12 +320,16 @@ public class DescriptorGeneratorMojo
             request.setDependencies( filterMojoDependencies() );
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
+            request.setInternalJavadocBaseUrl( internalJavadocBaseUrl );
+            request.setInternalJavadocVersion( internalJavadocVersion );
+            request.setExternalJavadocBaseUrls( externalJavadocBaseUrl );
+            request.setSettings( settings );
 
             mojoScanner.populatePluginDescriptor( request );
 
             outputDirectory.mkdirs();
 
-            PluginDescriptorGenerator pluginDescriptorGenerator = new PluginDescriptorGenerator();
+            PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
             pluginDescriptorGenerator.execute( outputDirectory, request );
 
             buildContext.refresh( outputDirectory );

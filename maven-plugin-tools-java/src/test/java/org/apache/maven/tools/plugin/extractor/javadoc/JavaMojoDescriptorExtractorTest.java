@@ -35,7 +35,7 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
-import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
+import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.logging.Logger;
@@ -89,7 +89,7 @@ public class JavaMojoDescriptorExtractorTest
         project.setBuild( new Build()
         {
             @Override
-            public String getOutputDirectory()
+            public String getDirectory()
             {
                 return new File( "target" ).getAbsolutePath();
             }
@@ -128,7 +128,7 @@ public class JavaMojoDescriptorExtractorTest
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
-        Generator descriptorGenerator = new PluginDescriptorGenerator();
+        Generator descriptorGenerator = new PluginDescriptorFilesGenerator();
 
         descriptorGenerator.execute( new File( root, directory ), request );
 

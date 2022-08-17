@@ -94,6 +94,9 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
+    <!-- SLF4J version must match the version exported from the mavenVersion, 
+    https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
+    <slf4jVersion>1.7.5</slf4jVersion>
     <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.4</asmVersion>
@@ -171,7 +174,16 @@
         <artifactId>maven-settings</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4jVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4jVersion}</version>
+      </dependency>
       <!-- plexus -->
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -211,7 +223,12 @@
         <artifactId>qdox</artifactId>
         <version>2.0.3</version>
       </dependency>
-
+      <!-- for XHTML to plain text and HTML to XHTML conversion -->
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.15.3</version>
+      </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
@@ -273,6 +290,16 @@
           <configuration>
             <tagBase>https://svn.apache.org/repos/asf/maven/plugin-tools/tags</tagBase>
             <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <excludes combine.children="append">
+              <exclude>src/site/resources/images/plugin-descriptors.svg</exclude><!-- Jenkins job with local Maven repository -->
+              <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude><!-- Hudson Maven3 integration log -->
+            </excludes>
           </configuration>
         </plugin>
       </plugins>

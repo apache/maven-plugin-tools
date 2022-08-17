@@ -35,6 +35,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
+import org.apache.maven.plugin.plugin.DescriptorGeneratorMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -60,6 +61,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 /**
  * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
  * and one <code><i>goal</i>-mojo.html</code> per goal.
+ * Relies on one output file from {@link DescriptorGeneratorMojo}.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -195,10 +197,21 @@ public class PluginReport
      * Path to {@code plugin.xml} plugin descriptor to generate the report from.
      *
      * @since 3.5.1
+     * @deprecated No longer evaluated, use {@link #enhancedPluginXmlFile}.
      */
     @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
                 readonly = true )
+    @Deprecated
     private File pluginXmlFile;
+
+    /**
+     * Path to enhanced plugin descriptor to generate the report from (must contain some XHTML values)
+     *
+     * @since 3.7.0
+     */
+    @Parameter( defaultValue = "${project.build.directory}/plugin-enhanced.xml", required = true,
+                readonly = true )
+    private File enhancedPluginXmlFile;
 
     /**
      * {@inheritDoc}
@@ -249,13 +262,13 @@ public class PluginReport
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
 
-        try ( Reader input = new XmlStreamReader( Files.newInputStream( pluginXmlFile.toPath() ) ) )
+        try ( Reader input = new XmlStreamReader( Files.newInputStream( enhancedPluginXmlFile.toPath() ) ) )
         {
             return builder.build( input );
         }
         catch ( IOException | PlexusConfigurationException e )
         {
-            throw new MavenReportException( "Error extracting plugin descriptor from " + pluginXmlFile, e );
+            throw new MavenReportException( "Error extracting plugin descriptor from " + enhancedPluginXmlFile, e );
         }
 
     }
@@ -462,11 +475,11 @@ public class PluginReport
                 {
                     description =
                         "<strong>" + getBundle( locale ).getString( "report.plugin.goal.deprecated" ) + "</strong> "
-                            + GeneratorUtils.makeHtmlValid( mojo.getDeprecated() );
+                            + mojo.getDeprecated();
                 }
                 else if ( StringUtils.isNotEmpty( mojo.getDescription() ) )
                 {
-                    description = GeneratorUtils.makeHtmlValid( mojo.getDescription() );
+                    description = mojo.getDescription();
                 }
                 else
                 {

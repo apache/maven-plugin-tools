@@ -26,20 +26,20 @@ import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 
 // at least one test class must be public for test-javadoc report
-public class AbstractGeneratorMojoTest
+public class DescriptorGeneratorMojoTest
 {
     @Test
     void defaultGoalPrefix()
     {
-        assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-plugin-plugin" ) ),
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-plugin-plugin" ) ),
                     is( "plugin" ) );
-        assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-default-plugin" ) ),
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-default-plugin" ) ),
                     is( "default" ) );
-        assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( null, "default-maven-plugin" ) ),
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "default-maven-plugin" ) ),
                     is( "default" ) );
-        assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( "foo.bar", "maven-plugin" ) ),
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( "foo.bar", "maven-plugin" ) ),
                     is( "bar" ) );
-        assertThat( AbstractGeneratorMojo.getDefaultGoalPrefix( newProject( "foo", "maven-plugin" ) ), is( "foo" ) );
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( "foo", "maven-plugin" ) ), is( "foo" ) );
     }
     
     private MavenProject newProject( final String groupId, final String artifactId )

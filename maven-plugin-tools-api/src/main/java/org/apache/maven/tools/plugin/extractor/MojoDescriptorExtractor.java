@@ -56,7 +56,7 @@ public interface MojoDescriptorExtractor
      * Execute the mojo extraction.
      *
      * @param request The {@link PluginToolsRequest} containing information for the extraction process.
-     * @return a list of mojo descriptors.
+     * @return a list of mojo descriptors. These may return HTML values for some fields.
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      * @since 2.5

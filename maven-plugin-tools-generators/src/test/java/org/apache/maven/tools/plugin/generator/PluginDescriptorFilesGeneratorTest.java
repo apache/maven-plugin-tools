@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
 @PlexusTest
-public class PluginDescriptorGeneratorTest
+public class PluginDescriptorFilesGeneratorTest
     extends AbstractGeneratorTestCase
 {
     @Override

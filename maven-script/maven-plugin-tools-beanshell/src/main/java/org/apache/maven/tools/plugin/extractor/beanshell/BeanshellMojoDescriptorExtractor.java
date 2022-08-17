@@ -148,6 +148,7 @@ public class BeanshellMojoDescriptorExtractor
             throw new InvalidPluginDescriptorException( "Error scanning beanshell script", evalError );
         }
 
+        // FIXME: convert javadocs
         return mojoDescriptor;
     }
 }
