@@ -149,7 +149,6 @@ public class AntMojoWrapperTest
         jarFile.deleteOnExit();
 
         JarArchiver archiver = new JarArchiver();
-        archiver.enableLogging( new ConsoleLogger( Logger.LEVEL_ERROR, "archiver" ) );
         archiver.setDestFile( jarFile );
         archiver.addFile( pluginXmlFile, pluginXml );
         archiver.createArchive();
