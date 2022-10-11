@@ -21,7 +21,9 @@ assert new File( basedir, 'target/generated-site' ).exists()
 
 content = new File( basedir, 'target/generated-site/xdoc/noop-mojo.xml' ).text
 
-assert content.contains( '<li><strong>Since</strong>: <code>1.0</code></li>' )
+assert content.contains( '<li>Since version: <code>1.0</code>.</li>' )
+assert content.contains( '<td><code>-</code></td>' )
+assert content.contains( '<td><code>1.1</code></td>' )
 assert content.contains( '<li><strong>Since</strong>: <code>1.1</code></li>' )
 
 return true

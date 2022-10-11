@@ -57,6 +57,7 @@ public abstract class AbstractGeneratorTestCase
         mojoDescriptor.setGoal( "testGoal" );
         mojoDescriptor.setImplementation( "org.apache.maven.tools.plugin.generator.TestMojo" );
         mojoDescriptor.setDependencyResolutionRequired( "compile" );
+        mojoDescriptor.setSince( "mojoSince" );
 
         List<Parameter> params = new ArrayList<>();
 
@@ -68,7 +69,12 @@ public abstract class AbstractGeneratorTestCase
         param.setType( "java.lang.String" );
         param.setDescription( "Test parameter description" );
         param.setAlias( "some.alias" );
+        param.setSince( "paramDirSince" );
+        params.add( param );
 
+        param = new Parameter();
+        param.setName( "withoutSince" );
+        param.setType( "java.lang.String" );
         params.add( param );
 
         mojoDescriptor.setParameters( params );
