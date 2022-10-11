@@ -19,13 +19,13 @@ package org.apache.maven.tools.plugin.util;
  * under the License.
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author jdcasey
@@ -34,7 +34,7 @@ public class TestUtils
 {
 
     @Test
-    public void testDirnameFunction_METATEST() throws UnsupportedEncodingException
+    void testDirnameFunction_METATEST() throws UnsupportedEncodingException
     {
         String classname = getClass().getName().replace( '.', '/' ) + ".class";
         String basedir = TestUtils.dirname( classname );

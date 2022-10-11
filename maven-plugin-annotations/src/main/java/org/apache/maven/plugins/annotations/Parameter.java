@@ -73,6 +73,13 @@ public @interface Parameter
     String defaultValue() default "";
 
     /**
+     * Defines the implementation in the case the parameter type is an interface.
+     *
+     * @return the implementation class name
+     */
+    Class<?> implementation() default Object.class;
+
+    /**
      * is the parameter required?
      * @return <code>true</code> if the Mojo should fail when the parameter cannot be injected
      */

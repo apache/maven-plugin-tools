@@ -77,9 +77,7 @@
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <!-- from stricter view, should use ${mavenPluginToolsVersion} but this is causing problems with release plugin -->
-      <!--version>${mavenPluginToolsVersion}</version-->
-      <!--  
+      <!--
         Do not use 'provided' scope here. The annotations are a transitive dependency of
         'maven-plugin-tools-annotations' which fails to load at runtime when not available.
       -->
@@ -130,8 +128,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <!-- TODO: make this provided once 3.6.2+ maven-plugin-plugin is in use -->
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -154,7 +151,7 @@
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-impl</artifactId>
-      <version>3.0.0</version>
+      <version>${reportingImplVersion}</version>
     </dependency>
 
     <!-- plexus -->
@@ -181,8 +178,13 @@
 
     <!-- tests -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -228,23 +230,6 @@
     </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.modello</groupId>
-        <artifactId>modello-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <version>1.0.0</version>
-          <models>
-            <model>src/main/mdo/pluginRequirements.mdo</model>
-          </models>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
@@ -270,21 +255,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.0</version>
-        <!-- will use previous maven-plugin-plugin release to build current maven-plugin-plugin as configured in parent -->
         <executions>
-          <execution>
-            <id>default-descriptor</id>
-            <phase>process-classes</phase>
-          </execution>
           <execution>
             <id>generated-helpmojo</id>
             <goals>
               <goal>helpmojo</goal>
             </goals>
-            <configuration>
-              <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -296,7 +272,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.0</version><!-- cannot use ${mavenPluginToolsVersion} property because release plugin would try to update -->
         <reportSets>
           <reportSet>
             <reports>
@@ -316,19 +291,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${mavenInvokerPluginVersion}</version>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>l10n-maven-plugin</artifactId>
-            <version>1.0-alpha-2</version>
-            <configuration>
-              <locales>
-                <locale>de</locale>
-                <locale>fr</locale>
-                <locale>sv</locale>
-              </locales>
-            </configuration>
           </plugin>
         </plugins>
       </reporting>
@@ -340,7 +302,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${mavenInvokerPluginVersion}</version>
             <configuration>
               <projectsDirectory>src/it</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
@@ -350,7 +311,8 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <filterProperties>
-                <sitePluginVersion>3.3</sitePluginVersion>
+                <sitePluginVersion>3.12.1</sitePluginVersion>
+                <projectInfoReportsPlugin>3.4.1</projectInfoReportsPlugin>
                 <antVersion>${antVersion}</antVersion>
               </filterProperties>
               <properties>

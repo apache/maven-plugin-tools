@@ -17,7 +17,7 @@
  * under the License.
  */
 
-firstRun = new File( basedir, "target/generated-sources-run1/plugin/test/HelpMojo.java" ).text;
-secondRun = new File( basedir, "target/generated-sources/plugin/test/HelpMojo.java" ).text;
+firstRun = new File( basedir, "target/generated-sources-run1/plugin/org/apache/maven/its/plugin/help/HelpMojo.java" ).text;
+secondRun = new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/plugin/help/HelpMojo.java" ).text;
 
 assert firstRun == secondRun;

@@ -224,8 +224,7 @@ requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "
 assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
 // check help mojo source and class
-assert new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" ).isFile()
-assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/plugin/coreit/HelpMojo.java" ).isFile()
-assert !new File( basedir, "target/generated-sources/plugin/HelpMojo.java" ).isFile()
+assert new File( basedir, "target/classes/org/apache/maven/its/basic_java_annotations/_123_maven_it_basic_java_annotations/HelpMojo.class" ).isFile()
+assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/basic_java_annotations/_123_maven_it_basic_java_annotations/HelpMojo.java" ).isFile()
 
 return true;

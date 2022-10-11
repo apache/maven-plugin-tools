@@ -38,15 +38,19 @@ import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// at least one test class must be public for test-javadoc report
 public class AntMojoDescriptorExtractorTest
 {
     
     @Test
-    public void testBasicMojoExtraction_CheckInjectedParametersAndRequirements()
+    void testBasicMojoExtraction_CheckInjectedParametersAndRequirements()
         throws InvalidPluginDescriptorException, ExtractionException
     {
         Map<String, Set<File>> scriptMap = buildTestMap( "basic" );
@@ -82,11 +86,11 @@ public class AntMojoDescriptorExtractorTest
                 paramMap.put( param.getName(), param );
             }
 
-            assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'basedir' parameter.", paramMap.get( "basedir" ) );
-            assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'messageLevel' parameter.", paramMap.get( "messageLevel" ) );
-            assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'project' parameter.", paramMap.get( "project" ) );
-            assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'session' parameter.", paramMap.get( "session" ) );
-            assertNotNull( "Mojo descriptor: " + desc.getGoal() + " is missing 'mojoExecution' parameter.", paramMap.get( "mojoExecution" ) );
+            assertNotNull( paramMap.get( "basedir" ), "Mojo descriptor: " + desc.getGoal() + " is missing 'basedir' parameter." );
+            assertNotNull( paramMap.get( "messageLevel" ), "Mojo descriptor: " + desc.getGoal() + " is missing 'messageLevel' parameter." );
+            assertNotNull( paramMap.get( "project" ), "Mojo descriptor: " + desc.getGoal() + " is missing 'project' parameter." );
+            assertNotNull( paramMap.get( "session" ), "Mojo descriptor: " + desc.getGoal() + " is missing 'session' parameter." );
+            assertNotNull( paramMap.get( "mojoExecution" ), "Mojo descriptor: " + desc.getGoal() + " is missing 'mojoExecution' parameter." );
 
             List<ComponentRequirement> components = desc.getRequirements();
 
@@ -94,7 +98,7 @@ public class AntMojoDescriptorExtractorTest
             assertEquals( 1, components.size() );
 
             ComponentRequirement req = components.get( 0 );
-            assertEquals( "Mojo descriptor: " + desc.getGoal() + " is missing 'PathTranslator' component requirement.", PathTranslator.class.getName(), req.getRole() );
+            assertEquals( PathTranslator.class.getName(), req.getRole(), "Mojo descriptor: " + desc.getGoal() + " is missing 'PathTranslator' component requirement." );
         }
     }
 
@@ -106,10 +110,7 @@ public class AntMojoDescriptorExtractorTest
             ClassLoader cloader = Thread.currentThread().getContextClassLoader();
             URL mojosXmlUrl = cloader.getResource( resourceDirName + "/test.mojos.xml" );
 
-            if ( mojosXmlUrl == null )
-            {
-                fail( "No classpath resource named: '" + resourceDirName + "/test.mojos.xml' could be found." );
-            }
+            assertNotNull( mojosXmlUrl, "No classpath resource named: '" + resourceDirName + "/test.mojos.xml' could be found." );
 
             File mojosXml = Paths.get( mojosXmlUrl.toURI() ).toFile();
             File dir = mojosXml.getParentFile();

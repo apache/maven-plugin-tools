@@ -20,11 +20,8 @@
 File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
 assert descriptorFile.isFile()
 
-File oldHelpClass = new File( basedir, "target/classes/HelpMojo.class" );
-assert !oldHelpClass.exists()
-
-File newHelpClass = new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" );
-assert newHelpClass.exists()
+File helpClass = new File( basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance_from_deps/annotation_with_inheritance_from_deps/HelpMojo.class" );
+assert helpClass.exists()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
@@ -54,23 +51,24 @@ assert mojo.configuration.beer[0].text() == '${thebeer}'
 assert mojo.configuration.beer[0].'@implementation' == 'java.lang.String'
 assert mojo.configuration.beer[0].'@default-value' == 'coolbeer'
 
-assert mojo.requirements.requirement.size() == 3
+assert mojo.requirements.requirement.size() == 2
 
-assert mojo.requirements.requirement[1].role.text() == 'org.codehaus.plexus.compiler.manager.CompilerManager'
+assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.artifact.metadata.ArtifactMetadataSource'
+assert mojo.requirements.requirement[0].'role-hint'.text() == 'maven'
+assert mojo.requirements.requirement[0].'field-name'.text() == 'artifactMetadataSource'
+
+assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.project.MavenProjectHelper'
 assert mojo.requirements.requirement[1].'role-hint'.text() == ''
-assert mojo.requirements.requirement[1].'field-name'.text() == 'compilerManager'
+assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
-assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.project.MavenProjectHelper'
-//assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
-assert mojo.requirements.requirement[2].'field-name'.text() == 'projectHelper'
-
-assert mojo.parameters.parameter.size() == 3
+assert mojo.parameters.parameter.size() == 4
 
 def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.text() == 'As of 0.2'
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
@@ -81,6 +79,7 @@ parameter = mojo.parameters.parameter.findAll{ it.name.text() == "beer"}[0]
 assert parameter.name.text() == 'beer'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.text() == "wine is better"
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
@@ -91,9 +90,21 @@ parameter = mojo.parameters.parameter.findAll{ it.name.text() == "bar"}[0]
 assert parameter.name.text() == 'bar'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
 assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'the cool bar to go'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "fooInterface"}[0]
+
+assert parameter.name.text() == 'fooInterface'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'org.apache.maven.tools.plugin.extractor.annotations.FooInterface'
+assert parameter.implementation.text() == 'org.apache.maven.tools.plugin.extractor.annotations.FooInterfaceImpl'
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == 'Interface type as parameter.'
 
 return true;

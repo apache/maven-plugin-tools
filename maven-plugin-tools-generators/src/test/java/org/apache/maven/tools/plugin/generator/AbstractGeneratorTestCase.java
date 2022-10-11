@@ -27,9 +27,9 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -42,20 +42,12 @@ import java.util.List;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
 public abstract class AbstractGeneratorTestCase
-    extends PlexusTestCase
 {
     protected Generator generator;
 
-    protected String basedir;
+    protected String basedir = System.getProperty( "basedir" );
 
-    @Override
-    protected void setUp()
-        throws Exception
-    {
-        super.setUp();
-        basedir = System.getProperty( "basedir" );
-    }
-
+    @Test
     public void testGenerator()
         throws Exception
     {

@@ -19,12 +19,12 @@ package org.apache.maven.tools.plugin.extractor;
  * under the License.
  */
 
-import org.junit.Test;
-
 import java.util.TreeSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * UT for {@link GroupKey}.

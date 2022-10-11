@@ -44,21 +44,23 @@ import org.codehaus.plexus.util.FileUtils;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author jdcasey
  */
+// at least one test class must be public for test-javadoc report
 public class JavaMojoDescriptorExtractorTest
 {
     private File root;
 
-    @Before
-    public void setUp()
+    @BeforeEach
+    void setUp()
     {
         File sourceFile = fileOf( "dir-flag.txt" );
         root = sourceFile.getParentFile();
@@ -126,7 +128,7 @@ public class JavaMojoDescriptorExtractorTest
             request.getPluginDescriptor().addMojo( mojoDescriptor );
         }
 
-        Generator descriptorGenerator = new PluginDescriptorGenerator( new SystemStreamLog() );
+        Generator descriptorGenerator = new PluginDescriptorGenerator();
 
         descriptorGenerator.execute( new File( root, directory ), request );
 
@@ -151,10 +153,7 @@ public class JavaMojoDescriptorExtractorTest
 
         Diff diff = XMLUnit.compareXML( expected, actual );
 
-        if ( !diff.identical() )
-        {
-            fail( "generated plugin.xml is not identical as plugin-expected.xml for " + directory + ": " + diff );
-        }
+        assertTrue( diff.identical(), "generated plugin.xml is not identical as plugin-expected.xml for " + directory + ": " + diff );
     }
 
     /**
@@ -171,16 +170,16 @@ public class JavaMojoDescriptorExtractorTest
     }
 
     @Test
-    public void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
+    void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "source" );
 
-        assertEquals( "Extracted mojos", 2, results.size() );
+        assertEquals( 2, results.size(), "Extracted mojos" );
     }
 
     @Test
-    public void testShouldPropagateImplementationParameter()
+    void testShouldPropagateImplementationParameter()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "source2" );
@@ -195,11 +194,11 @@ public class JavaMojoDescriptorExtractorTest
 
         Parameter parameter = parameters.get( 0 );
 
-        assertEquals( "Implementation parameter", "source2.sub.MyBla", parameter.getImplementation() );
+        assertEquals( "source2.sub.MyBla", parameter.getImplementation(), "Implementation parameter" );
     }
 
     @Test
-    public void testMaven30Parameters()
+    void testMaven30Parameters()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "source2" );
@@ -217,7 +216,7 @@ public class JavaMojoDescriptorExtractorTest
      * @throws Exception
      */
     @Test
-    public void testAnnotationInPlugin()
+    void testAnnotationInPlugin()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "source3" );
@@ -230,7 +229,7 @@ public class JavaMojoDescriptorExtractorTest
      * generics.
      */
     @Test
-    public void testJava15SyntaxParsing()
+    void testJava15SyntaxParsing()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "java-1.5" );
@@ -239,7 +238,7 @@ public class JavaMojoDescriptorExtractorTest
     }
 
     @Test
-    public void testSingleTypeImportWithFullyQualifiedClassName()
+    void testSingleTypeImportWithFullyQualifiedClassName()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "MPLUGIN-314" );
@@ -248,7 +247,7 @@ public class JavaMojoDescriptorExtractorTest
     }
 
     @Test
-    public void testMethodReferenceInEnumConstructor()
+    void testMethodReferenceInEnumConstructor()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "MPLUGIN-320" );
@@ -257,12 +256,11 @@ public class JavaMojoDescriptorExtractorTest
     }
 
     @Test
-    public void testEnumWithRegexPattern()
+    void testEnumWithRegexPattern()
         throws Exception
     {
         List<MojoDescriptor> results = extract( "MPLUGIN-290" );
 
         assertTrue( results.isEmpty() );
     }
-
 }

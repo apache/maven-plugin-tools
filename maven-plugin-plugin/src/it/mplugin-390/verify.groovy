@@ -17,40 +17,13 @@
  * under the License.
  */
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+assert descriptorFile.isFile()
 
-try
-{
-    File siteDir = new File( basedir, "target/site" );
-    System.out.println( "Checking for existence of site directory: " + siteDir );
-    if ( !siteDir.isDirectory() )
-    {
-        System.out.println( "FAILED!" );
-        return false;
-    }
+File touchFile = new File( basedir, "target/touch.txt" );
+assert touchFile.isFile()
 
-    String[] expectedFiles = {
-        "noop-mojo.html",
-        "noop-mojo.html",
-        "report-mojo.html",
-    };
-    for ( String path : expectedFiles )
-    {
-        File file = new File( siteDir, path );
-        System.out.println( "Checking for existence of doc file: " + file );
-        if ( !file.isFile() || file.length() <= 0 )
-        {
-            System.out.println( "FAILED!" );
-            return false;
-        }
-    }
-}
-catch( Throwable t )
-{
-    t.printStackTrace();
-    return false;
-}
+// the touch file should be newer than the descriptor
+assert touchFile.lastModified() > descriptorFile.lastModified()
 
 return true;

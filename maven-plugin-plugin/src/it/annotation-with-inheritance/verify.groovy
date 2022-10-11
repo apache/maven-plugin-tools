@@ -23,11 +23,8 @@ assert touchFile.isFile()
 File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
 assert descriptorFile.isFile()
 
-File oldHelpClass = new File( basedir, "target/classes/HelpMojo.class" );
-assert !oldHelpClass.exists()
-
-File newHelpClass = new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" );
-assert newHelpClass.exists()
+File helpClass = new File( basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance/annotation_with_inheritance/HelpMojo.class" );
+assert helpClass.exists()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
@@ -57,11 +54,11 @@ assert mojo.configuration.touchFile[0].text() == '${first.touchFile}'
 assert mojo.configuration.touchFile[0].'@implementation' == 'java.io.File'
 assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.directory}/touch.txt'
 
-assert mojo.requirements.requirement.size() == 3
+assert mojo.requirements.requirement.size() == 2
 
-assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.project.MavenProjectHelper'
+assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.project.MavenProjectHelper'
 //assert mojo.requirements.requirement[2].'role-hint'.text() == 'default'
-assert mojo.requirements.requirement[2].'field-name'.text() == 'projectHelper'
+assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 4
 

@@ -72,11 +72,6 @@ public class ThirdMojo
         {
             throw new MojoExecutionException( "projectHelper == null" );
         }
-        if ( compilerManager == null )
-        {
-            throw new MojoExecutionException( "compilerManager == null" );
-        }
-
         if ( dependencies.isEmpty() )
         {
             throw new MojoExecutionException( "dependencies.isEmpty()" );

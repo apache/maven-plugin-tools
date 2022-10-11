@@ -31,7 +31,9 @@ import org.codehaus.plexus.component.factory.bsh.BshComponent;
  * Mojo adapter for a Beanshell Mojo.
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 public class BeanshellMojoAdapter
     extends AbstractMojo
     implements BshComponent

@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -56,14 +59,16 @@ import java.util.zip.ZipInputStream;
  * @author Olivier Lamy
  * @since 3.0
  */
-@org.codehaus.plexus.component.annotations.Component( role = MojoAnnotationsScanner.class )
+@Named
+@Singleton
 public class DefaultMojoAnnotationsScanner
     extends AbstractLogEnabled
     implements MojoAnnotationsScanner
 {
     // classes with a dash must be ignored
     private static final Pattern SCANNABLE_CLASS = Pattern.compile( "[^-]+\\.class" );
-    
+    private static final String EMPTY = "";
+
     private Reflector reflector = new Reflector();
 
     @Override
@@ -271,6 +276,12 @@ public class DefaultMojoAnnotationsScanner
             {
                 MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
                 populateAnnotationContent( mojoAnnotationContent, mojoAnnotationVisitor );
+
+                if ( mojoClassVisitor.getAnnotationVisitor( Deprecated.class ) != null )
+                {
+                    mojoAnnotationContent.setDeprecated( EMPTY );
+                }
+
                 mojoAnnotatedClass.setMojo( mojoAnnotationContent );
             }
 
@@ -289,10 +300,15 @@ public class DefaultMojoAnnotationsScanner
             {
                 ParameterAnnotationContent parameterAnnotationContent =
                     new ParameterAnnotationContent( mojoFieldVisitor.getFieldName(), mojoFieldVisitor.getClassName() );
-                if ( mojoFieldVisitor.getMojoAnnotationVisitor() != null )
+
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+                MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( Parameter.class.getName() );
+
+                populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
+
+                if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )
                 {
-                    populateAnnotationContent( parameterAnnotationContent,
-                                               mojoFieldVisitor.getMojoAnnotationVisitor() );
+                    parameterAnnotationContent.setDeprecated( EMPTY );
                 }
 
                 mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
@@ -306,7 +322,9 @@ public class DefaultMojoAnnotationsScanner
                 ComponentAnnotationContent componentAnnotationContent =
                     new ComponentAnnotationContent( mojoFieldVisitor.getFieldName() );
 
-                MojoAnnotationVisitor annotationVisitor = mojoFieldVisitor.getMojoAnnotationVisitor();
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get( Component.class.getName() );
+
                 if ( annotationVisitor != null )
                 {
                     for ( Map.Entry<String, Object> entry : annotationVisitor.getAnnotationValues().entrySet() )
