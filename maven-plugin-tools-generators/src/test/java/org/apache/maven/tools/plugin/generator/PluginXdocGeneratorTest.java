@@ -20,9 +20,12 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import java.io.File;
+import java.io.InputStream;
 
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
@@ -39,9 +42,14 @@ public class PluginXdocGeneratorTest
         throws Exception
     {
         File docFile = new File( destinationDirectory, "testGoal-mojo.xml" );
+        Xpp3Dom actual = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( docFile ) );
 
-        // sanity check: is the output well-formed?
-        Xpp3DomBuilder.build( ReaderFactory.newXmlReader( docFile ) );
+        InputStream expectedAsStream = getClass().getResourceAsStream( "/expected-testGoal-mojo.xml" );
+
+        Xpp3Dom expected = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( expectedAsStream ) );
+
+        Assertions.assertEquals( expected, actual );
+
     }
 
 }

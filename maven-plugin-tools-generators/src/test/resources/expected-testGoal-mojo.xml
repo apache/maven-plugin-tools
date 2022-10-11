@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0" xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <properties>
+    <title>test:testGoal</title>
+  </properties>
+  <body>
+    <section name="test:testGoal">
+      <p>
+        <strong>Full name</strong>
+      </p>
+      <p>null:maven-unitTesting-plugin:null:testGoal</p>
+      <p>
+        <strong>Description</strong>
+      </p>
+      <div>(no description)</div>
+      <p>
+        <strong>Attributes</strong>
+      </p>
+      <ul>
+        <li>Requires a Maven project to be executed.</li>
+        <li>
+          <code>compile</code>
+        </li>
+        <li>The goal is not marked as thread-safe and thus does not support parallel builds.</li>
+        <li>
+          <code>mojoSince</code>
+        </li>
+      </ul>
+      <subsection name="Required Parameters">
+        <table border="0">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Since</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>
+              <code>
+                <a href="#dir">&lt;dir&gt;</a>
+              </code>
+            </td>
+            <td>
+              <code>String</code>
+            </td>
+            <td>
+              <code>paramDirSince</code>
+            </td>
+            <td>
+              <br/>
+              <strong>Default value is</strong>
+              <code>&lt;/markup-must-be-escaped&gt;</code>
+              <br/>
+              <strong>User property is</strong>
+              <code>project.build.directory</code>
+              <br/>
+              <strong>Alias is</strong>
+              <code>some.alias</code>
+            </td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Optional Parameters">
+        <table border="0">
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Since</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>
+              <code>
+                <a href="#withoutSince">&lt;withoutSince&gt;</a>
+              </code>
+            </td>
+            <td>
+              <code>String</code>
+            </td>
+            <td>
+              <code>-</code>
+            </td>
+            <td>
+              <br/>
+            </td>
+          </tr>
+        </table>
+      </subsection>
+      <subsection name="Parameter Details">
+        <h4>
+          <strong>
+            <a name="dir">&lt;dir&gt;</a>
+          </strong>
+        </h4>
+        <div>Test parameter description</div>
+        <ul>
+          <li>
+            <strong>Type</strong>
+            <code>java.lang.String</code>
+          </li>
+          <li>
+            <strong>Since</strong>
+            <code>paramDirSince</code>
+          </li>
+          <li>
+            <strong>Required</strong>
+            <code>Yes</code>
+          </li>
+          <li>
+            <strong>User Property</strong>
+            <code>project.build.directory</code>
+          </li>
+          <li>
+            <strong>Default</strong>
+            <code>&lt;/markup-must-be-escaped&gt;</code>
+          </li>
+          <li>
+            <strong>Alias</strong>
+            <code>some.alias</code>
+          </li>
+        </ul>
+        <hr/>
+        <h4>
+          <strong>
+            <a name="withoutSince">&lt;withoutSince&gt;</a>
+          </strong>
+        </h4>
+        <div>(no description)</div>
+        <ul>
+          <li>
+            <strong>Type</strong>
+            <code>java.lang.String</code>
+          </li>
+          <li>
+            <strong>Required</strong>
+            <code>No</code>
+          </li>
+        </ul>
+      </subsection>
+    </section>
+  </body>
+</document>

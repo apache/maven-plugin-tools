@@ -401,9 +401,8 @@ public class PluginXdocGenerator
 
         if ( !list.isEmpty() )
         {
-            writeParameterSummary( mojoDescriptor, list, w );
-
-            writeParameterDetails( mojoDescriptor, list, w );
+            writeParameterSummary( list, w );
+            writeParameterDetails( list, w );
         }
         else
         {
@@ -448,11 +447,10 @@ public class PluginXdocGenerator
     }
 
     /**
-     * @param mojoDescriptor not null
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterDetails( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterDetails( List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
@@ -492,15 +490,6 @@ public class PluginXdocGenerator
             {
                 addedUl = addUl( w, addedUl );
                 writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), parameter.getSince(), w );
-            }
-            else
-            {
-                if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
-                {
-                    addedUl = addUl( w, addedUl );
-                    writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), mojoDescriptor.getSince(),
-                                 w );
-                }
             }
 
             if ( parameter.isRequired() )
@@ -597,34 +586,32 @@ public class PluginXdocGenerator
     }
 
     /**
-     * @param mojoDescriptor not null
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterSummary( MojoDescriptor mojoDescriptor, List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterSummary( List<Parameter> parameterList, XMLWriter w )
     {
         List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
-        if ( requiredParams.size() > 0 )
+        if ( !requiredParams.isEmpty() )
         {
-            writeParameterList( mojoDescriptor, getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
+            writeParameterList( getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
                                 requiredParams, w );
         }
 
         List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
-        if ( optionalParams.size() > 0 )
+        if ( !optionalParams.isEmpty() )
         {
-            writeParameterList( mojoDescriptor, getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
+            writeParameterList( getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
                                 optionalParams, w );
         }
     }
 
     /**
-     * @param mojoDescriptor not null
      * @param title          not null
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterList( MojoDescriptor mojoDescriptor, String title, List<Parameter> parameterList,
+    private void writeParameterList( String title, List<Parameter> parameterList,
                                      XMLWriter w )
     {
         w.startElement( "subsection" );
@@ -671,14 +658,7 @@ public class PluginXdocGenerator
             }
             else
             {
-                if ( StringUtils.isNotEmpty( mojoDescriptor.getSince() ) )
-                {
-                    w.writeMarkup( "<code>" + mojoDescriptor.getSince() + "</code>" );
-                }
-                else
-                {
-                    w.writeMarkup( "<code>-</code>" );
-                }
+                w.writeMarkup( "<code>-</code>" );
             }
             w.endElement(); //td
 
@@ -810,11 +790,11 @@ public class PluginXdocGenerator
     {
         if ( text != null )
         {
-            text = text.replaceAll( "&", "&amp;" );
-            text = text.replaceAll( "<", "&lt;" );
-            text = text.replaceAll( ">", "&gt;" );
-            text = text.replaceAll( "\"", "&quot;" );
-            text = text.replaceAll( "\'", "&apos;" );
+            text = text.replace( "&", "&amp;" );
+            text = text.replace( "<", "&lt;" );
+            text = text.replace( ">", "&gt;" );
+            text = text.replace( "\"", "&quot;" );
+            text = text.replace( "\'", "&apos;" );
         }
         return text;
     }
