@@ -37,6 +37,7 @@ under the License.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>@mavenVersion@</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -67,7 +68,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
+        <version>@projectInfoReportsPlugin@</version>
         <reportSets>
           <reportSet>
             <reports>

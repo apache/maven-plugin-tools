@@ -19,6 +19,10 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * under the License.
  */
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -63,7 +67,6 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -80,19 +83,20 @@ import com.thoughtworks.qdox.model.JavaField;
  * @author Olivier Lamy
  * @since 3.0
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "java-annotations" )
+@Named( "java-annotations" )
+@Singleton
 public class JavaAnnotationsMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor
 {
 
-    @org.codehaus.plexus.component.annotations.Requirement
+    @Inject
     private MojoAnnotationsScanner mojoAnnotationsScanner;
 
-    @org.codehaus.plexus.component.annotations.Requirement
+    @Inject
     private RepositorySystem repositorySystem;
 
-    @org.codehaus.plexus.component.annotations.Requirement
+    @Inject
     private ArchiverManager archiverManager;
 
     @Override
@@ -563,6 +567,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setName( name );
                 parameter.setAlias( parameterAnnotationContent.alias() );
                 parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
+                parameter.setImplementation( parameterAnnotationContent.getImplementationClassName() );
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
                 parameter.setEditable( !parameterAnnotationContent.readonly() );

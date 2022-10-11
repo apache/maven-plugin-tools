@@ -19,8 +19,9 @@ package org.apache.maven.script.ant;
  * under the License.
  */
 
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -65,23 +66,24 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+// at least one test class must be public for test-javadoc report
 public class AntMojoWrapperTest
 {
     
     private BuildListener buildListener;
 
-    @Before
+    @BeforeEach
     public void setUp() 
     {
         buildListener = mock( BuildListener.class );
     }
     
     @Test
-    public void test2xStylePlugin()
+    void test2xStylePlugin()
         throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
         ComponentConfigurationException, ArchiverException, URISyntaxException
     {
@@ -106,14 +108,8 @@ public class AntMojoWrapperTest
 
     private void assertPresence( List<String> messages, String test )
     {
-        for ( String message : messages )
-        {
-            if ( message.contains( test ) )
-            {
-                fail( "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE." );
-                return;
-            }
-        }
+        assertTrue( messages.stream().noneMatch( s -> s.contains( test ) ),
+                "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE." );
     }
 
     private List<String> run( String pluginXml )
@@ -125,10 +121,7 @@ public class AntMojoWrapperTest
 
         URL resource = Thread.currentThread().getContextClassLoader().getResource( pluginXml );
 
-        if ( resource == null )
-        {
-            fail( "plugin descriptor not found: '" + pluginXml + "'." );
-        }
+        assertNotNull( resource, "plugin descriptor not found: '" + pluginXml + "'." );
 
         PluginDescriptor pd;
         try ( Reader reader = new InputStreamReader( resource.openStream() ) )

@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.plugin;
+package org.apache.maven.plugin.plugin.report;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,21 +20,18 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
@@ -51,15 +48,13 @@ import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
-import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
@@ -82,28 +77,13 @@ public class PluginReport
     private File outputDirectory;
 
     /**
-     * Doxia Site Renderer.
-     */
-    @Component
-    private Renderer siteRenderer;
-
-    /**
-     * The Maven Project.
-     */
-    @Parameter( defaultValue = "${project}", readonly = true )
-    private MavenProject project;
-
-    /**
-     * Mojo scanner tools.
-     */
-    @Component
-    protected MojoScanner mojoScanner;
-
-    /**
      * The file encoding of the source files.
+     *
+     * @deprecated not used in report, will be removed in the next major version
      *
      * @since 2.7
      */
+    @Deprecated
     @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
     private String encoding;
 
@@ -124,11 +104,14 @@ public class PluginReport
      *   &lt;/others&gt;
      * &lt;/requirements&gt;
      * </pre>
-     * 
+     * <p>
      * If not is specified, Maven requirement is extracted from
      * <code>&lt;project&gt;&lt;prerequisites&gt;&lt;maven&gt;</code>
      * and JDK requirement is extracted from maven-compiler-plugin configuration.
+     *
+     * @deprecated will be removed in the next major version, please don't use
      */
+    @Deprecated
     @Parameter
     private Requirements requirements;
 
@@ -149,8 +132,11 @@ public class PluginReport
      * (There is a special case for maven-plugin-plugin: it is mapped to 'plugin')
      * </p>
      *
+     * @deprecated not used in report, will be removed in the next major version
+     *
      * @since 2.4
      */
+    @Deprecated
     @Parameter( property = "goalPrefix" )
     protected String goalPrefix;
 
@@ -171,21 +157,34 @@ public class PluginReport
     private boolean skipReport;
 
     /**
-     * List of Remote Repositories used by the resolver
+     * Set this to "true" to generate the usage section for "plugin-info.html" with
+     * {@code <extensions>true</extensions>}.
      *
-     * @since 3.0
+     * @since 3.7.0
      */
-    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
-    protected List<ArtifactRepository> remoteRepos;
+    @Parameter( defaultValue = "false", property = "maven.plugin.report.hasExtensionsToLoad" )
+    private boolean hasExtensionsToLoad;
 
     /**
-     * Location of the local repository.
+     * The Plugin requirements history list.
+     * <p>
+     * Can be specified as list of <code>requirementsHistory</code>:
      *
-     * @since 3.0
+     * <pre>
+     * &lt;requirementsHistories&gt;
+     *   &lt;requirementsHistory&gt;
+     *     &lt;version&gt;plugin version&lt;/version&gt;
+     *     &lt;maven&gt;maven version&lt;/maven&gt;
+     *     &lt;jdk&gt;jdk version&lt;/jdk&gt;
+     *   &lt;/requirementsHistory&gt;
+     * &lt;/requirementsHistories&gt;
+     * </pre>
+     *
+     * @since 3.7.0
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
-    protected ArtifactRepository local;
-    
+    @Parameter
+    private List<RequirementsHistory> requirementsHistories = new ArrayList<>();
+
     /**
      * @since 3.5.1
      */
@@ -198,17 +197,8 @@ public class PluginReport
      * @since 3.5.1
      */
     @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
-                    readonly = true )
+                readonly = true )
     private File pluginXmlFile;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Renderer getSiteRenderer()
-    {
-        return siteRenderer;
-    }
 
     /**
      * {@inheritDoc}
@@ -218,15 +208,6 @@ public class PluginReport
     {
         // PLUGIN-191: output directory of plugin.html, not *-mojo.xml
         return project.getReporting().getOutputDirectory();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected MavenProject getProject()
-    {
-        return project;
     }
 
     /**
@@ -245,10 +226,6 @@ public class PluginReport
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
-        if ( !canGenerateReport() )
-        {
-            return;
-        }
         if ( skip || skipReport )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );
@@ -262,7 +239,8 @@ public class PluginReport
 
         // Write the overview
         PluginOverviewRenderer r =
-            new PluginOverviewRenderer( project, requirements, getSink(), pluginDescriptor, locale );
+            new PluginOverviewRenderer( getProject(), requirements, requirementsHistories, getSink(),
+                                        pluginDescriptor, locale, hasExtensionsToLoad );
         r.render();
     }
 
@@ -270,74 +248,23 @@ public class PluginReport
         throws MavenReportException
     {
         PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
-        
-        try
-        {
-            return builder.build( new FileReader( pluginXmlFile ) );
-        }
-        catch ( FileNotFoundException | PlexusConfigurationException e )
-        {
-            getLog().debug( "Failed to read " + pluginXmlFile + ", fall back to mojoScanner" );
-        }
 
-        // Copy from AbstractGeneratorMojo#execute()
-        String defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
-        if ( goalPrefix == null )
+        try ( Reader input = new XmlStreamReader( Files.newInputStream( pluginXmlFile.toPath() ) ) )
         {
-            goalPrefix = defaultGoalPrefix;
+            return builder.build( input );
         }
-        else
+        catch ( IOException | PlexusConfigurationException e )
         {
-            getLog().warn( "\n\nGoal prefix is specified as: '" + goalPrefix + "'. Maven currently expects it to be '"
-                               + defaultGoalPrefix + "'.\n" );
+            throw new MavenReportException( "Error extracting plugin descriptor from " + pluginXmlFile, e );
         }
 
-        // TODO: could use this more, eg in the writing of the plugin descriptor!
-        PluginDescriptor pluginDescriptor = new PluginDescriptor();
-
-        pluginDescriptor.setGroupId( project.getGroupId() );
-
-        pluginDescriptor.setArtifactId( project.getArtifactId() );
-
-        pluginDescriptor.setVersion( project.getVersion() );
-
-        pluginDescriptor.setGoalPrefix( goalPrefix );
-
-        try
-        {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
-            pluginDescriptor.setDependencies( deps );
-
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( encoding );
-            request.setSkipErrorNoDescriptorsFound( true );
-            request.setDependencies( new LinkedHashSet<>( project.getArtifacts() ) );
-            request.setLocal( this.local );
-            request.setRemoteRepos( this.remoteRepos );
-
-            try
-            {
-                mojoScanner.populatePluginDescriptor( request );
-            }
-            catch ( InvalidPluginDescriptorException e )
-            {
-                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().debug( "Plugin without mojos.", e );
-            }
-        }
-        catch ( ExtractionException e )
-        {
-            throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
-                                            e );
-        }
-        return pluginDescriptor;
     }
 
     /**
-     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the 
-     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix 
+     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the
+     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix
      * (because of Maven MNG-6109 bug that won't give accurate 'since' info when reading plugin.xml).
-     * 
+     *
      * @return the proper pluginDescriptorBuilder
      * @see <a href="https://issues.apache.org/jira/browse/MNG-6109">MNG-6109</a>
      * @see <a href="https://issues.apache.org/jira/browse/MPLUGIN-319">MPLUGIN-319</a>
@@ -400,8 +327,8 @@ public class PluginReport
             File outputDir = outputDirectory;
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator( project, locale );
-            PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale );
+            PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( getProject(), pluginDescriptor );
             generator.execute( outputDir, pluginToolsRequest );
         }
         catch ( GeneratorException e )
@@ -431,19 +358,25 @@ public class PluginReport
 
         private final Requirements requirements;
 
+        private final List<RequirementsHistory> requirementsHistories;
+
         private final PluginDescriptor pluginDescriptor;
 
         private final Locale locale;
 
+        private final boolean hasExtensionsToLoad;
+
         /**
-         * @param project          not null
-         * @param requirements     not null
-         * @param sink             not null
-         * @param pluginDescriptor not null
-         * @param locale           not null
+         * @param project               not null
+         * @param requirements          not null
+         * @param requirementsHistories not null
+         * @param sink                  not null
+         * @param pluginDescriptor      not null
+         * @param locale                not null
          */
-        PluginOverviewRenderer( MavenProject project, Requirements requirements, Sink sink,
-                                PluginDescriptor pluginDescriptor, Locale locale )
+        PluginOverviewRenderer( MavenProject project, Requirements requirements,
+                                List<RequirementsHistory> requirementsHistories, Sink sink,
+                                PluginDescriptor pluginDescriptor, Locale locale, boolean hasExtensionsToLoad )
         {
             super( sink );
 
@@ -451,9 +384,13 @@ public class PluginReport
 
             this.requirements = ( requirements == null ? new Requirements() : requirements );
 
+            this.requirementsHistories = requirementsHistories;
+
             this.pluginDescriptor = pluginDescriptor;
 
             this.locale = locale;
+
+            this.hasExtensionsToLoad = hasExtensionsToLoad;
         }
 
         /**
@@ -469,7 +406,6 @@ public class PluginReport
          * {@inheritDoc}
          */
         @Override
-        @SuppressWarnings( { "unchecked", "rawtypes" } )
         public void renderBody()
         {
             startSection( getTitle() );
@@ -501,11 +437,11 @@ public class PluginReport
             String descriptionColumnName = getBundle( locale ).getString( "report.plugin.goals.column.description" );
             if ( hasMavenReport )
             {
-                tableHeader( new String[]{ goalColumnName, isMavenReport, descriptionColumnName } );
+                tableHeader( new String[] {goalColumnName, isMavenReport, descriptionColumnName} );
             }
             else
             {
-                tableHeader( new String[]{ goalColumnName, descriptionColumnName } );
+                tableHeader( new String[] {goalColumnName, descriptionColumnName} );
             }
 
             List<MojoDescriptor> mojos = new ArrayList<>();
@@ -581,19 +517,23 @@ public class PluginReport
                 ( jdk != null ? jdk : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
-            sink.tableRow();
-            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
-            tableCell( ( StringUtils.isNotEmpty( requirements.getMemory() )
-                ? requirements.getMemory()
-                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
-            sink.tableRow_();
+            String memory = requirements.getMemory();
+            if ( StringUtils.isNotEmpty( memory ) )
+            {
+                sink.tableRow();
+                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
+                tableCell( memory );
+                sink.tableRow_();
+            }
 
-            sink.tableRow();
-            tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
-            tableCell( ( StringUtils.isNotEmpty( requirements.getDiskSpace() )
-                ? requirements.getDiskSpace()
-                : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
-            sink.tableRow_();
+            String diskSpace = requirements.getDiskSpace();
+            if ( StringUtils.isNotEmpty( diskSpace ) )
+            {
+                sink.tableRow();
+                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
+                tableCell( diskSpace );
+                sink.tableRow_();
+            }
 
             if ( requirements.getOthers() != null && requirements.getOthers().size() > 0 )
             {
@@ -613,7 +553,40 @@ public class PluginReport
 
             endSection();
 
+            renderRequirementsHistories();
+
             renderUsageSection( hasMavenReport );
+
+            endSection();
+        }
+
+        private void renderRequirementsHistories()
+        {
+            if ( requirementsHistories.isEmpty() )
+            {
+                return;
+            }
+
+            startSection( getBundle( locale ).getString( "report.plugin.systemrequirements.history" ) );
+            paragraph( getBundle( locale ).getString( "report.plugin.systemrequirements.history.intro" ) );
+
+            startTable();
+            tableHeader( new String[] {
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.version" ),
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.maven" ),
+                getBundle( locale ).getString( "report.plugin.systemrequirements.history.jdk" )
+            } );
+
+            requirementsHistories.forEach(
+                requirementsHistory ->
+                {
+                    sink.tableRow();
+                    tableCell( requirementsHistory.getVersion() );
+                    tableCell( requirementsHistory.getMaven() );
+                    tableCell( requirementsHistory.getJdk() );
+                    sink.tableRow_();
+                } );
+            endTable();
 
             endSection();
         }
@@ -648,6 +621,11 @@ public class PluginReport
                 "</artifactId>" ).append( '\n' );
             sb.append( "          <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
                 '\n' );
+            if ( hasExtensionsToLoad )
+            {
+                sb.append( "          <extensions>true</extensions>" ).append(
+                    '\n' );
+            }
             sb.append( "        </plugin>" ).append( '\n' );
             sb.append( "        ..." ).append( '\n' );
             sb.append( "      </plugins>" ).append( '\n' );
@@ -660,8 +638,6 @@ public class PluginReport
                 '\n' );
             sb.append( "        <artifactId>" ).append( pluginDescriptor.getArtifactId() ).append(
                 "</artifactId>" ).append( '\n' );
-            sb.append( "        <version>" ).append( pluginDescriptor.getVersion() ).append( "</version>" ).append(
-                '\n' );
             sb.append( "      </plugin>" ).append( '\n' );
             sb.append( "      ..." ).append( '\n' );
             sb.append( "    </plugins>" ).append( '\n' );
@@ -751,13 +727,19 @@ public class PluginReport
                 compiler = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
             }
 
-            jdk = getPluginParameter( compiler, "target" );
+            jdk = getPluginParameter( compiler, "release" );
             if ( jdk != null )
             {
                 return jdk;
             }
 
-            jdk = getPluginParameter( compiler, "release" );
+            jdk = project.getProperties().getProperty( "maven.compiler.release" );
+            if ( jdk != null )
+            {
+                return jdk;
+            }
+
+            jdk = getPluginParameter( compiler, "target" );
             if ( jdk != null )
             {
                 return jdk;

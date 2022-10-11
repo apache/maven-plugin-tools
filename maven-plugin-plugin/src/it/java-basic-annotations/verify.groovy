@@ -224,8 +224,19 @@ requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "
 assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
 // check help mojo source and class
-assert new File( basedir, "target/classes/org/apache/maven/plugin/coreit/HelpMojo.class" ).isFile()
-assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/plugin/coreit/HelpMojo.java" ).isFile()
-assert !new File( basedir, "target/generated-sources/plugin/HelpMojo.java" ).isFile()
+assert new File( basedir, "target/classes/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.class" ).isFile()
+assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.java" ).isFile()
+
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "help"}[0]
+assert mojo.goal.text() == 'help'
+assert mojo.implementation.text() == 'org.apache.maven.its.basic_java_annotations.maven_it_basic_java_annotations.HelpMojo'
+assert mojo.language.text() == 'java'
+
+// check values set by deprecated annotation only
+mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "mplugin-396"}[0]
+assert mojo.deprecated.text() == 'No reason given'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "param" }[0]
+assert parameter.deprecated.text() == 'No reason given'
 
 return true;

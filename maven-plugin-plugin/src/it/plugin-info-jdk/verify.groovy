@@ -18,6 +18,7 @@
  */
 
 assert new File( basedir, 'property/target/site/plugin-info.html' ).text.contains( '<td>1.3</td>' )
+assert new File( basedir, 'propertyRelease/target/site/plugin-info.html' ).text.contains( '<td>8</td>' )
 assert new File( basedir, 'pluginManagement/target/site/plugin-info.html' ).text.contains( '<td>1.4</td>' )
 assert new File( basedir, 'plugin/target/site/plugin-info.html' ).text.contains( '<td>1.5</td>' )
 assert new File( basedir, 'requirement/target/site/plugin-info.html' ).text.contains( '<td>1.8</td>' )

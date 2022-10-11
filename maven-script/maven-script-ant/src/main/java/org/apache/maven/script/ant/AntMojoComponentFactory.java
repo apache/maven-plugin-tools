@@ -27,8 +27,10 @@ import org.codehaus.plexus.component.factory.ant.AntScriptInvoker;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
- * 
+ *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 public class AntMojoComponentFactory
     extends AntComponentFactory
 {

@@ -25,15 +25,19 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Set;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// at least one test class must be public for test-javadoc report
 public class PluginMetadataParserTest
 {
     
     @Test
-    public void testBasicDeclarationWithoutCall()
+    void testBasicDeclarationWithoutCall()
         throws PluginMetadataParseException
     {
         File metadataFile = getMetadataFile( "test.mojos.xml" );
@@ -47,7 +51,7 @@ public class PluginMetadataParserTest
     }
     
     @Test
-    public void testBasicDeclarationWithCall()
+    void testBasicDeclarationWithCall()
         throws PluginMetadataParseException
     {
         File metadataFile = getMetadataFile( "test2.mojos.xml" );
@@ -65,10 +69,7 @@ public class PluginMetadataParserTest
         try
         {
             URL resource = Thread.currentThread().getContextClassLoader().getResource( name );
-            if ( resource == null )
-            {
-                fail( "Cannot find classpath resource: '" + name + "'." );
-            }
+            assertNotNull( resource, "Cannot find classpath resource: '" + name + "'." );
             return Paths.get( resource.toURI() ).toFile();
         }
         catch ( final URISyntaxException e )
@@ -76,5 +77,4 @@ public class PluginMetadataParserTest
             throw new AssertionError( e );
         }
     }
-
 }

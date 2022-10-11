@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.scanner;
  * under the License.
  */
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -37,6 +40,7 @@ import java.util.Set;
 /**
  * @author jdcasey
  */
+@Named
 public class DefaultMojoScanner
     extends AbstractLogEnabled
     implements MojoScanner
@@ -54,6 +58,7 @@ public class DefaultMojoScanner
      *
      * @param extractors not null
      */
+    @Inject
     public DefaultMojoScanner( Map<String, MojoDescriptorExtractor> extractors )
     {
         this.mojoDescriptorExtractors = extractors;

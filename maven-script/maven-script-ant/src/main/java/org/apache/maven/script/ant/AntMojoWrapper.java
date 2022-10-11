@@ -53,8 +53,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
+@Deprecated
 public class AntMojoWrapper
     extends AbstractMojo
     implements ContextEnabled, MapOrientedComponent, LogEnabled

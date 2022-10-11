@@ -19,7 +19,11 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
+import javax.lang.model.SourceVersion;
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -27,19 +31,19 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * Generates a <code>HelpMojo</code> class.
- * 
- * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  *
+ * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
  */
 @Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true,
-                requiresDependencyResolution = ResolutionScope.COMPILE )
+       requiresDependencyResolution = ResolutionScope.COMPILE )
 public class HelpGeneratorMojo
     extends AbstractGeneratorMojo
 {
@@ -50,9 +54,14 @@ public class HelpGeneratorMojo
     protected File outputDirectory;
 
     /**
-     * The name of the package for the generated <code>HelpMojo</code>. By default, the package will be calculated based
-     * on the packages of the other plugin goals.
-     * 
+     * The name of the package for the generated <code>HelpMojo</code>.
+     * <p>
+     * By default, the package name will be calculated as <code>groupId + "." + artifactId</code> with additional
+     * <ul>
+     * <li><code>-</code> (dashes) will be replaced by <code>_</code> (underscores)</li>
+     * <li><code>_</code> (underscore) will be added before each number or Java keyword at the beginning of name</li>
+     * </ul>
+     *
      * @since 2.6
      */
     @Parameter
@@ -64,41 +73,59 @@ public class HelpGeneratorMojo
     @Component
     private VelocityComponent velocity;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected File getOutputDirectory()
+    String getHelpPackageName()
     {
-        return outputDirectory;
+        String packageName = null;
+        if ( StringUtils.isNotBlank( helpPackageName ) )
+        {
+            packageName = helpPackageName;
+        }
+
+        if ( packageName == null )
+        {
+            packageName = project.getGroupId() + "." + project.getArtifactId();
+            packageName = packageName.replace( "-", "_" );
+
+            String[] packageItems = packageName.split( "\\." );
+            packageName = Arrays.stream( packageItems )
+                .map( this::prefixSpecialCase )
+                .collect( Collectors.joining( "." ) );
+        }
+
+        return packageName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Generator createGenerator()
+    private String prefixSpecialCase( String name )
     {
-        return new PluginHelpGenerator().setHelpPackageName( helpPackageName ).setVelocityComponent( this.velocity );
+        if ( SourceVersion.isKeyword( name ) || !Character.isJavaIdentifierStart( name.charAt( 0 ) ) )
+        {
+            name = "_" + name;
+        }
+        return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void execute()
-        throws MojoExecutionException
+    protected void generate() throws MojoExecutionException
     {
-        // force value for this plugin
-        skipErrorNoDescriptorsFound = true;
+        PluginHelpGenerator pluginHelpGenerator = new PluginHelpGenerator()
+            .setMavenProject( project )
+            .setHelpPackageName( getHelpPackageName() )
+            .setGoalPrefix( goalPrefix )
+            .setVelocityComponent( velocity );
 
-        super.execute();
+        try
+        {
+            pluginHelpGenerator.execute( outputDirectory );
+        }
+        catch ( GeneratorException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
 
-        if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) && !skip )
+        if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) )
         {
             project.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
         }
-
     }
 
 }

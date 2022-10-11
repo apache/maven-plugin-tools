@@ -28,8 +28,6 @@ import org.apache.maven.reporting.MavenReportException;
 
 /**
  * Dummy report.
- *
- * @goal dummyReport
  */
 public class MavenReportStub
     extends AbstractMavenReport

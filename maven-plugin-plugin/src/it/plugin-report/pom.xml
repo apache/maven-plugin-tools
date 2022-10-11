@@ -25,7 +25,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>21</version>
+    <version>34</version>
   </parent>
 
   <groupId>org.apache.maven.its</groupId>
@@ -47,16 +47,29 @@ under the License.
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>@mavenVersion@</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-impl</artifactId>
-      <version>3.0.0</version>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>@mavenVersion@</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>@mavenVersion@</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-api</artifactId>
-      <version>3.0</version>
+      <version>@reportingApiVersion@</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-impl</artifactId>
+      <version>@reportingImplVersion@</version>
     </dependency>
   </dependencies>
 
@@ -81,6 +94,9 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>@sitePluginVersion@</version>
+        <configuration>
+          <locales>en</locales>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -90,7 +106,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
+        <version>@projectInfoReportsPlugin@</version>
         <reportSets>
           <reportSet>
             <reports>

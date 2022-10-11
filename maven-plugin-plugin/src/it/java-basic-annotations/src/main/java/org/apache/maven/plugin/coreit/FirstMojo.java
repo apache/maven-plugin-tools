@@ -44,6 +44,7 @@ import java.io.File;
  */
 @Mojo( name = "first", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
 @Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
+@Deprecated
 public class FirstMojo
     extends AbstractMojo
 {
@@ -62,6 +63,7 @@ public class FirstMojo
      * @since 0.1
      * @deprecated As of 0.2
      */
+    @Deprecated
     @Parameter( name = "namedParam", alias = "alias" )
     private String aliasedParam;
 

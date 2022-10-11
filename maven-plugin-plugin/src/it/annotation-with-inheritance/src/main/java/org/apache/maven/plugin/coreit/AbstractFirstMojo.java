@@ -20,13 +20,8 @@ package org.apache.maven.plugin.coreit;
  */
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.codehaus.plexus.compiler.manager.CompilerManager;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 
 import java.io.File;
@@ -47,12 +42,6 @@ public abstract class AbstractFirstMojo
     @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
                 required = true )
     protected File touchFile;
-
-    /**
-     * Plexus compiler manager.
-     */
-    @Component
-    protected CompilerManager compilerManager;
 
     /**
      *

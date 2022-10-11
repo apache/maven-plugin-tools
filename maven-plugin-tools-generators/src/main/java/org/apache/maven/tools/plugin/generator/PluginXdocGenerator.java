@@ -27,11 +27,11 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -133,7 +133,7 @@ public class PluginXdocGenerator
         throws IOException
     {
         File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( outputFile ), UTF_8 ) )
+        try ( Writer writer = new OutputStreamWriter( new CachingOutputStream( outputFile ), UTF_8 ) )
         {
             XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), UTF_8.name(), null );
             writeBody( mojoDescriptor, w );

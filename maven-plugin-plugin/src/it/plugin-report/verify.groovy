@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,22 +17,12 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import org.codehaus.plexus.velocity.VelocityComponent;
+assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/report-mojo.html' ).isFile()
 
-/**
- * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- */
-public class PluginHelpGeneratorTest
-    extends AbstractGeneratorTestCase
-{
-    // inherits tests from base class
-    @Override
-    protected void setupGenerator()
-        throws Exception
-    {
+def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
+assert pluginInfo.isFile()
 
-        generator =
-            new PluginHelpGenerator().setVelocityComponent( (VelocityComponent) lookup( VelocityComponent.ROLE ) );
-
-    }
-}
+assert !pluginInfo.text.contains('Memory')
+assert !pluginInfo.text.contains('Disk Space')
+assert !pluginInfo.text.contains('No minimum requirement.')

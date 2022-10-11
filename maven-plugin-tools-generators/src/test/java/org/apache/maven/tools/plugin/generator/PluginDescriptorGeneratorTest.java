@@ -24,6 +24,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.BufferedReader;
@@ -34,9 +35,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
+@PlexusTest
 public class PluginDescriptorGeneratorTest
     extends AbstractGeneratorTestCase
 {

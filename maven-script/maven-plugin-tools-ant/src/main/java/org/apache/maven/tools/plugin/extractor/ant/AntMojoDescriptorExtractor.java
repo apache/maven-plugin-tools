@@ -19,6 +19,9 @@ package org.apache.maven.tools.plugin.extractor.ant;
  * under the License.
  */
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,21 +37,21 @@ import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
  *
+ * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
-@Component( role = MojoDescriptorExtractor.class, hint = "ant" )
+@Deprecated
+@Named( "ant" )
+@Singleton
 public class AntMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
-    implements MojoDescriptorExtractor
 {
     /** Default metadata file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
