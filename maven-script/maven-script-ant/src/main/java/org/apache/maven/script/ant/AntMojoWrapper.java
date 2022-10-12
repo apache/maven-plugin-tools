@@ -206,7 +206,6 @@ public class AntMojoWrapper
         try
         {
             ZipUnArchiver ua = new ZipUnArchiver( pluginJar );
-            ua.enableLogging( logger );
 
             ua.extract( resourcesPath, outputDirectory );
         }
