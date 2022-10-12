@@ -31,9 +31,6 @@ import java.util.Set;
  */
 public interface MojoScanner
 {
-    /** Plexus role for lookup */
-    String ROLE = MojoScanner.class.getName();
-
     /**
      * @param request not null
      * @throws ExtractionException if any

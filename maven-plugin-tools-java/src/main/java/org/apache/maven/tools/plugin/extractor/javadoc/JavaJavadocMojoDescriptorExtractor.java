@@ -42,6 +42,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -64,12 +65,34 @@ import com.thoughtworks.qdox.model.JavaType;
  *
  * @see org.apache.maven.plugin.descriptor.MojoDescriptor
  */
-@Named( "java-javadoc" )
+@Named( JavaJavadocMojoDescriptorExtractor.NAME )
 @Singleton
 public class JavaJavadocMojoDescriptorExtractor
     extends AbstractLogEnabled
     implements MojoDescriptorExtractor, JavadocMojoAnnotation
 {
+    public static final String NAME = "java-javadoc";
+
+    private static final GroupKey GROUP_KEY = new GroupKey( GroupKey.JAVA_GROUP, 200 );
+
+    @Override
+    public String getName()
+    {
+        return NAME;
+    }
+
+    @Override
+    public boolean isDeprecated()
+    {
+        return true; // one should use Java5 annotations instead
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
+
     /**
      * @param parameter not null
      * @param i positive number

@@ -26,6 +26,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
 import java.util.Collections;
@@ -37,6 +38,8 @@ import java.util.List;
 public class ScannerTestExtractor
     implements MojoDescriptorExtractor
 {
+    private static final GroupKey GROUP_KEY = new GroupKey( "test", 100 );
+
     private final String goal;
 
     public ScannerTestExtractor( String goal )
@@ -44,7 +47,25 @@ public class ScannerTestExtractor
         this.goal = goal;
     }
 
-    public List<MojoDescriptor> execute( MavenProject project, PluginDescriptor pluginDescriptor )
+    @Override
+    public String getName()
+    {
+      return "scanner-test";
+    }
+
+    @Override
+    public boolean isDeprecated()
+    {
+      return false;
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+      return GROUP_KEY;
+    }
+
+    public List<MojoDescriptor> execute(MavenProject project, PluginDescriptor pluginDescriptor )
         throws InvalidPluginDescriptorException, ExtractionException
     {
         return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );

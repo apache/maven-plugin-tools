@@ -31,6 +31,7 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.GroupKey;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -45,11 +46,27 @@ import java.util.Set;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-@Named( "bsh" )
+@Named( BeanshellMojoDescriptorExtractor.NAME )
 @Singleton
 public class BeanshellMojoDescriptorExtractor
     extends AbstractScriptedMojoDescriptorExtractor
 {
+    public static final String NAME = "bsh";
+
+    private static final GroupKey GROUP_KEY = new GroupKey( "bsh", 100 );
+
+    @Override
+    public String getName()
+    {
+        return NAME;
+    }
+
+    @Override
+    public GroupKey getGroupKey()
+    {
+        return GROUP_KEY;
+    }
+
     /**
      * {@inheritDoc}
      */
