@@ -39,8 +39,6 @@ under the License.
       <item name="Configuring Generation of Plugin Descriptor" href="/examples/generate-descriptor.html"/>
       <item name="Configuring Generation of Plugin Documentation" href="/examples/generate-report.html"/>
       <item name="Configuring Generation of HelpMojo" href="/examples/generate-help.html"/>
-      <item name="Ant Mojo" href="/examples/ant-mojo.html"/>
-      <item name="Beanshell Mojo" href="/examples/beanshell-mojo.html"/>
     </menu>
 
     <menu name="Developers">

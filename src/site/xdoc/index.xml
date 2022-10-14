@@ -34,8 +34,7 @@
     <section name="Maven Plugin Tools">
 
       <p>The Maven Plugin Tools contains the necessary tools to generate rebarbative content like descriptor,
-      help and documentation. In addition, it provides tools to write Maven Plugins in scripting languages
-      like Ant or Beanshell.</p>
+      help and documentation.</p>
 
       <p>
         <img src="images/plugin-tools-deps.png" width="759" height="474" border="0" usemap="#PluginTools_dependencies" />
@@ -54,11 +53,11 @@
           <area shape="rect" coords="514,95,759,131"  alt="plugin-tools-generators"  href="./maven-plugin-tools-generators"/>
           <area shape="rect" coords="44,263,570,432"  alt="maven-script"             href="./maven-script"/>
           <area shape="rect" coords="340,438,529,474" alt="maven-plugin-api"         href="/ref/current/maven-plugin-api/"/>
-          <area shape="rect" coords="510,154,582,190" alt="qdox"                     href="http://qdox.codehaus.org/"/>
-          <area shape="rect" coords="510,212,583,248" alt="asm"                      href="http://asm.ow2.org/"/>
+          <area shape="rect" coords="510,154,582,190" alt="qdox"                     href="https://github.com/paul-hammant/qdox"/>
+          <area shape="rect" coords="510,212,583,248" alt="asm"                      href="https://asm.ow2.org/"/>
           <area shape="rect" coords="656,134,747,169" alt="Doxia"                    href="/doxia/"/>
           <area shape="rect" coords="599,271,715,306" alt="Beanshell"                href="http://www.beanshell.org/"/>
-          <area shape="rect" coords="600,329,670,366" alt="Ant"                      href="http://ant.apache.maven/"/>
+          <area shape="rect" coords="600,329,670,366" alt="Ant"                      href="https://ant.apache.org/"/>
         </map>
       </p>
 
