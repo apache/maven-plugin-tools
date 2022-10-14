@@ -19,9 +19,9 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd">
 
   <body>
     <menu name="Overview">
@@ -42,9 +42,8 @@ under the License.
     </menu>
 
     <menu name="Developers">
-      <item name="Maven Plugin Tools" href="http://maven.apache.org/plugin-tools/index.html"/>
-      <item name="Maven Plugin Descriptor" href="http://maven.apache.org/ref/current/maven-plugin-api/plugin.html"/>
-      <item name="Multiple Language Support: Redesign Notes" href="multiple-language-support.html"/>
+      <item name="Maven Plugin Tools" href="https://maven.apache.org/plugin-tools/index.html"/>
+      <item name="Maven Plugin Descriptor" href="https://maven.apache.org/ref/current/maven-plugin-api/plugin.html"/>
     </menu>
   </body>
 </project>
