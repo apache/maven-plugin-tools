@@ -24,11 +24,13 @@ import javax.inject.Singleton;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Description;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.DescriptionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
@@ -285,6 +287,16 @@ public class DefaultMojoAnnotationsScanner
                 mojoAnnotatedClass.setMojo( mojoAnnotationContent );
             }
 
+            // @Description annotation
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Description.class );
+            if ( mojoAnnotationVisitor != null )
+            {
+                DescriptionAnnotationContent descriptionAnnotationContent = new DescriptionAnnotationContent();
+                populateAnnotationContent( descriptionAnnotationContent, mojoAnnotationVisitor );
+
+                mojoAnnotatedClass.getMojo().setDescription( descriptionAnnotationContent.getContent() );
+            }
+
             // @Execute annotation
             mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( Execute.class );
             if ( mojoAnnotationVisitor != null )
@@ -306,10 +318,20 @@ public class DefaultMojoAnnotationsScanner
 
                 populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
 
+                DescriptionAnnotationContent descriptionAnnotationContent = new DescriptionAnnotationContent();
+                final MojoAnnotationVisitor descriptionAnnotationVisitor =
+                        annotationVisitorMap.get( Description.class.getName() );
+                if ( descriptionAnnotationVisitor != null )
+                {
+                    populateAnnotationContent( descriptionAnnotationContent, descriptionAnnotationVisitor );
+                }
+
                 if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )
                 {
                     parameterAnnotationContent.setDeprecated( EMPTY );
                 }
+
+                parameterAnnotationContent.setDescription( descriptionAnnotationContent.getContent() );
 
                 mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
                                                         parameterAnnotationContent );
