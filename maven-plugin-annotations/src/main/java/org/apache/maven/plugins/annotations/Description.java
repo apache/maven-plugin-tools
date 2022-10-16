@@ -55,25 +55,4 @@ public @interface Description
      */
     String since() default "";
 
-    /**
-     * Marks this Mojo goal or parameter as deprecated.
-     *
-     * @return {@code true} whether this Mojo goal or parameter is deprecated.
-     */
-    boolean deprecated() default false;
-
-    /**
-     * Deprecation reason (optional).
-     *
-     * @return an empty String if no deprecation reason has been given or a description.
-     */
-    String deprecatedBecause() default "";
-
-    /**
-     * Version since when this goal or parameter has been deprecated.
-     *
-     * @return the version since when this goal or parameter has been deprecated (inclusive) or an empty String if no
-     * version was given.
-     */
-    String deprecatedSince() default "";
 }

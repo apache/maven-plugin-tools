@@ -32,12 +32,6 @@ public class DescriptionAnnotationContent
 
     private String since;
 
-    private boolean deprecated;
-
-    private String deprecatedBecause;
-
-    private String deprecatedSince;
-
     public String getContent()
     {
         return content;
@@ -58,45 +52,12 @@ public class DescriptionAnnotationContent
         this.since = since;
     }
 
-    public boolean isDeprecated()
-    {
-        return deprecated;
-    }
-
-    public void setDeprecated( boolean deprecated )
-    {
-        this.deprecated = deprecated;
-    }
-
-    public String getDeprecatedBecause()
-    {
-        return deprecatedBecause;
-    }
-
-    public void setDeprecatedBecause( String deprecatedBecause )
-    {
-        this.deprecatedBecause = deprecatedBecause;
-    }
-
-    public String getDeprecatedSince()
-    {
-        return deprecatedSince;
-    }
-
-    public void setDeprecatedSince( String deprecatedSince )
-    {
-        this.deprecatedSince = deprecatedSince;
-    }
-
     @Override
     public String toString()
     {
         return new StringJoiner( ", ", DescriptionAnnotationContent.class.getSimpleName() + "[", "]" )
                 .add( "content='" + content + "'" )
                 .add( "since='" + since + "'" )
-                .add( "deprecated=" + deprecated )
-                .add( "deprecatedBecause='" + deprecatedBecause + "'" )
-                .add( "deprecatedSince='" + deprecatedSince + "'" )
                 .toString();
     }
 }

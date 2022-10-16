@@ -326,12 +326,13 @@ public class DefaultMojoAnnotationsScanner
                     populateAnnotationContent( descriptionAnnotationContent, descriptionAnnotationVisitor );
                 }
 
+                parameterAnnotationContent.setDescription( descriptionAnnotationContent.getContent() );
+                parameterAnnotationContent.setSince( descriptionAnnotationContent.getSince() );
+
                 if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )
                 {
                     parameterAnnotationContent.setDeprecated( EMPTY );
                 }
-
-                parameterAnnotationContent.setDescription( descriptionAnnotationContent.getContent() );
 
                 mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
                                                         parameterAnnotationContent );
