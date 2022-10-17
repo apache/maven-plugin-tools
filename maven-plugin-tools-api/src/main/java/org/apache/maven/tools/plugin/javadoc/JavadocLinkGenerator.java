@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
+package org.apache.maven.tools.plugin.javadoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,11 +19,17 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  * under the License.
  */
 
+import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.languages.java.version.JavaVersion;
@@ -43,11 +49,11 @@ public class JavadocLinkGenerator
      */
     public enum JavadocToolVersionRange
     {
-        JDK7_OR_LOWER( null, JavaVersion.parse( "1.7" ) ),
-        JDK8_OR_9( JavaVersion.parse( "8" ), JavaVersion.parse( "9" ) ),
+        JDK7_OR_LOWER( null, JavaVersion.parse( "1.8" ) ),
+        JDK8_OR_9( JavaVersion.parse( "1.8" ), JavaVersion.parse( "10" ) ),
         JDK10_OR_HIGHER( JavaVersion.parse( "10" ), null );
         
-        // both bounds are inclusive
+        // upper bound is exclusive, lower bound inclusive (null means unlimited)
         private final JavaVersion lowerBound;
         private final JavaVersion upperBound;
         JavadocToolVersionRange( JavaVersion lowerBound, JavaVersion upperBound )
@@ -60,12 +66,10 @@ public class JavadocLinkGenerator
         {
             for ( JavadocToolVersionRange range : values() )
             {
-                if ( range.lowerBound == null || javadocVersion.isAtLeast( range.lowerBound ) )
+                if ( ( range.lowerBound == null || javadocVersion.isAtLeast( range.lowerBound ) )
+                     && ( range.upperBound == null || javadocVersion.isBefore( range.upperBound ) ) )
                 {
-                    if ( range.upperBound == null || range.upperBound.isAtLeast( javadocVersion ) )
-                    {
-                        return range;
-                    }
+                    return range;
                 }
             }
             throw new IllegalArgumentException( "Found no matching javadoc tool version range for " + javadocVersion );
@@ -124,17 +128,24 @@ public class JavadocLinkGenerator
         {
             internalJavadocSite = null;
         }
-        externalJavadocSites = new ArrayList<>( externalJavadocSiteUrls.size() );
-        for ( URI siteUrl : externalJavadocSiteUrls  )
+        if ( externalJavadocSiteUrls != null )
         {
-            try
+            externalJavadocSites = new ArrayList<>( externalJavadocSiteUrls.size() );
+            for ( URI siteUrl : externalJavadocSiteUrls  )
             {
-                externalJavadocSites.add( new JavadocSite( siteUrl, settings ) );
+                try
+                {
+                    externalJavadocSites.add( new JavadocSite( siteUrl, settings ) );
+                }
+                catch ( IOException e )
+                {
+                    LOG.warn( "Could not use {} as base URL: {}", siteUrl, e.getMessage(), e );
+                }
             }
-            catch ( IOException e )
-            {
-                LOG.warn( "Could not use {} as base URL: {}", siteUrl, e.getMessage(), e );
-            }
+        }
+        else
+        {
+            externalJavadocSites = Collections.emptyList();
         }
     }
 
@@ -161,12 +172,76 @@ public class JavadocLinkGenerator
         }
     }
 
-    URI getInternalJavadocSiteBaseUrl()
+    /**
+     * 
+     * @param binaryName a binary name according to 
+     * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
+     * @return the (deep-) link towards a javadoc page
+     * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
+     */
+    public URI createLink( String binaryName )
+    {
+        String packageName = "";
+        // first check external links, otherwise assume internal link
+        JavadocSite javadocSite = externalJavadocSites.stream()
+                        .filter( base -> base.hasEntryFor( Optional.empty(),
+                                                           Optional.of( packageName ) ) )
+                        .findFirst().orElse( null );
+        if ( javadocSite == null )
+        {
+            if ( internalJavadocSite != null )
+            {
+                javadocSite = internalJavadocSite;
+            }
+            else
+            {
+                throw new IllegalArgumentException( "Found no javadoc site for " + binaryName );
+            }
+        }
+        return javadocSite.createLink( binaryName );
+    }
+
+    public URI getInternalJavadocSiteBaseUrl()
     {
         if ( internalJavadocSite == null )
         {
             throw new IllegalStateException( "Could not get docroot of internal javadoc as it hasn't been set" );
         }
         return internalJavadocSite.getBaseUri();
+    }
+    
+    /**
+     * Checks if a given link is valid. For absolute links uses the underling {@link java.net.HttpURLConnection},
+     * otherwise checks for existence of the file on the filesystem.
+     * 
+     * @param url the url to check
+     * @param baseDirectory the base directory to which relative file URLs refer
+     * @return {@code true} in case the given link is valid otherwise {@code false}
+     */
+    public static boolean isLinkValid( URI url, Path baseDirectory )
+    {
+        if ( url.isAbsolute() )
+        {
+            try ( BufferedReader reader = JavadocSite.getReader( url.toURL(), null ) )
+            {
+                if ( url.getFragment() != null )
+                {
+                    Pattern pattern = JavadocSite.getAnchorPattern( url.getFragment() );
+                    if ( reader.lines().noneMatch( pattern.asPredicate() ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch ( IOException e )
+            {
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            return Files.exists( baseDirectory.resolve( url.getPath() ) );
+        }
     }
 }

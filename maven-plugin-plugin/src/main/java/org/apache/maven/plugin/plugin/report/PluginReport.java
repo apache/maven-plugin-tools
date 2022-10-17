@@ -41,7 +41,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.plugin.descriptor.MNG6109PluginDescriptorBuilder;
+import org.apache.maven.plugins.plugin.descriptor.EnhancedPluginDescriptorBuilder;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
@@ -260,7 +260,7 @@ public class PluginReport
     private PluginDescriptor extractPluginDescriptor()
         throws MavenReportException
     {
-        PluginDescriptorBuilder builder = getPluginDescriptorBuilder();
+        PluginDescriptorBuilder builder = new EnhancedPluginDescriptorBuilder( rtInfo );
 
         try ( Reader input = new XmlStreamReader( Files.newInputStream( enhancedPluginXmlFile.toPath() ) ) )
         {
@@ -271,31 +271,6 @@ public class PluginReport
             throw new MavenReportException( "Error extracting plugin descriptor from " + enhancedPluginXmlFile, e );
         }
 
-    }
-
-    /**
-     * Return the pluginDescriptorBuilder to use based on the Maven version: either use the original from the
-     * maven-plugin-api or a patched version for Maven versions before the MNG-6109 fix
-     * (because of Maven MNG-6109 bug that won't give accurate 'since' info when reading plugin.xml).
-     *
-     * @return the proper pluginDescriptorBuilder
-     * @see <a href="https://issues.apache.org/jira/browse/MNG-6109">MNG-6109</a>
-     * @see <a href="https://issues.apache.org/jira/browse/MPLUGIN-319">MPLUGIN-319</a>
-     */
-    private PluginDescriptorBuilder getPluginDescriptorBuilder()
-    {
-        PluginDescriptorBuilder pluginDescriptorBuilder;
-
-        if ( rtInfo.isMavenVersion( "(3.3.9,)" ) )
-        {
-            pluginDescriptorBuilder = new PluginDescriptorBuilder();
-        }
-        else
-        {
-            pluginDescriptorBuilder = new MNG6109PluginDescriptorBuilder();
-        }
-
-        return pluginDescriptorBuilder;
     }
 
     /**
@@ -340,7 +315,7 @@ public class PluginReport
             File outputDir = outputDirectory;
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale );
+            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale, getReportOutputDirectory() );
             PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( getProject(), pluginDescriptor );
             generator.execute( outputDir, pluginToolsRequest );
         }

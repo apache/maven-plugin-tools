@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,11 +37,14 @@ import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -59,6 +63,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class PluginDescriptorFilesGenerator
     implements Generator
 {
+    private static final Logger LOG = LoggerFactory.getLogger( PluginDescriptorFilesGenerator.class );
+
+    /**
+     * The type of the plugin descriptor file
+     */
     enum DescriptorType
     {
         STANDARD,
@@ -125,10 +134,10 @@ public class PluginDescriptorFilesGenerator
             switch ( type )
             {
                 case LIMITED_FOR_HELP_MOJO:
-                    additionalInfo = " (for help'mojo with additional attributes)";
+                    additionalInfo = " (for help'mojo with additional elements)";
                     break;
                 case XHTML:
-                    additionalInfo = " (enhanced XHTML version with additional attributes)";
+                    additionalInfo = " (enhanced XHTML version with additional elements (used for plugin:report))";
                     break;
                 default:
                     additionalInfo = "";
@@ -161,6 +170,11 @@ public class PluginDescriptorFilesGenerator
 
             w.startElement( "mojos" );
 
+            JavadocLinkGenerator javadocLinkGenerator =
+                            new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
+                                                      request.getInternalJavadocVersion(),
+                                                      request.getExternalJavadocBaseUrls(),
+                                                      request.getSettings() );
             if ( pluginDescriptor.getMojos() != null )
             {
                 List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
@@ -169,7 +183,7 @@ public class PluginDescriptorFilesGenerator
 
                 for ( MojoDescriptor descriptor : descriptors )
                 {
-                    processMojoDescriptor( descriptor, w, type, converter );
+                    processMojoDescriptor( descriptor, w, type, converter, javadocLinkGenerator );
                 }
             }
 
@@ -189,8 +203,9 @@ public class PluginDescriptorFilesGenerator
 
     @SuppressWarnings( "deprecation" )
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, DescriptorType type,
-                                          Converter converter )
+                                          Converter converter, JavadocLinkGenerator javadocLinkGenerator )
     {
+        // TODO: convert javadoc to html optionally
         w.startElement( "mojo" );
 
         // ----------------------------------------------------------------------
@@ -462,6 +477,19 @@ public class PluginDescriptorFilesGenerator
 
                     GeneratorUtils.element( w, "type", parameter.getType() );
 
+                    if ( type == DescriptorType.XHTML )
+                    {
+                        try
+                        {
+                            URI uri = javadocLinkGenerator.createLink( parameter.getType() );
+                            GeneratorUtils.element( w, "typeJavadocUrl", uri.toString() );
+                        } 
+                        catch ( IllegalArgumentException e )
+                        {
+                            LOG.warn( "Could not get javadoc URL for parameter type {} of parameter {} from goal {}",
+                                      parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(), e );
+                        }
+                    }
                     if ( parameter.getSince() != null )
                     {
                         w.startElement( "since" );

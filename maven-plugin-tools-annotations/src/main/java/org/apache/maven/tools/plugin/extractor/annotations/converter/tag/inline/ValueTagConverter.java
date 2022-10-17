@@ -23,8 +23,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocReference;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 
 /**
  * Supports <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#value">

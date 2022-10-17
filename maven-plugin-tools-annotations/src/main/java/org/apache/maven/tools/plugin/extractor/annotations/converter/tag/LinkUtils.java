@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocReference;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

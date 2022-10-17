@@ -22,14 +22,18 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Objects;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference.MemberType;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.CurrentClass;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.OtherClass;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,8 +64,8 @@ class JavaClassConverterContextTest
         
         contextClass = builder.getClassByName( CurrentClass.class.getName() );
         currentPackageName = contextClass.getPackageName();
-        javadocBaseUri = getClass().getResource("/javadoc/jdk11/").toURI();
-        linkGenerator = new JavadocLinkGenerator( Collections.singletonList( javadocBaseUri ), null ); // all contained packages are listed in /element-list
+        javadocBaseUri = new URI("http://localhost/apidocs");
+        linkGenerator = new JavadocLinkGenerator( javadocBaseUri, "11" );
         context = new JavaClassConverterContext( contextClass, builder, Collections.emptyMap(), linkGenerator, 10 );
     }
 
@@ -184,11 +188,6 @@ class JavaClassConverterContextTest
                       context.getUrl( new FullyQualifiedJavadocReference( "org.apache.maven.tools.plugin.extractor.annotations.converter.test", 
                                                                           "CurrentClass", "CurrentClass()", MemberType.METHOD, false ) ) );
 
-        // unknown package
-        assertThrows( IllegalArgumentException.class, () ->
-                      context.getUrl( new FullyQualifiedJavadocReference( "org.apache.maven.tools.plugin.extractor.annotations",
-                                                                          "FooMojo", false ) ) );
-                                                                       
         // package reference
         assertEquals( javadocBaseUri.resolve( new URI( null, "org/apache/maven/tools/plugin/extractor/annotations/converter/test/package-summary.html", null ) ),
                       context.getUrl( new FullyQualifiedJavadocReference( "org.apache.maven.tools.plugin.extractor.annotations.converter.test", false ) ) );
@@ -212,7 +211,7 @@ class JavaClassConverterContextTest
     {
         assertEquals( "\"STATIC 1\"", context.getStaticFieldValue( new FullyQualifiedJavadocReference( currentPackageName,  "OtherClass", "STATIC_1", MemberType.FIELD, false ) ) );
         assertEquals( "\"STATIC 2\"", context.getStaticFieldValue( new FullyQualifiedJavadocReference( currentPackageName,  "OtherClass", "STATIC_2", MemberType.FIELD, false ) ) );
-        // although not explicitly stated, never valid for value javadoc tag, as this only supports string constants
+        // although not explicitly stated, never used for value javadoc tag, as this only supports string constants
         assertEquals( "3l", context.getStaticFieldValue( new FullyQualifiedJavadocReference( currentPackageName,  "OtherClass", "STATIC_3", MemberType.FIELD, false ) ) );
         FullyQualifiedJavadocReference reference = new FullyQualifiedJavadocReference( currentPackageName,  "OtherClass", "field1", MemberType.FIELD, false );
         assertThrows( IllegalArgumentException.class, () -> context.getStaticFieldValue( reference ) );

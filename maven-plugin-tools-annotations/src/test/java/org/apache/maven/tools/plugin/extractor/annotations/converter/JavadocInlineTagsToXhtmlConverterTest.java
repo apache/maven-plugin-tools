@@ -30,6 +30,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.LinkTagToHtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.LiteralTagToHtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.ValueTagConverter;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

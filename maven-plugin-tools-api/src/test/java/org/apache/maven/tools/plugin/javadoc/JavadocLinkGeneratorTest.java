@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
+package org.apache.maven.tools.plugin.javadoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,7 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference.MemberType;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.codehaus.plexus.languages.java.version.JavaVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,8 +36,8 @@ class JavadocLinkGeneratorTest
 {
 
     @ParameterizedTest
-    @MethodSource( "org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocSiteTest#jdkNamesAndVersions")
-    void testCreateLinkFromOfflineSite( String jdkName, JavadocLinkGenerator.JavadocToolVersionRange versionRange, String version )
+    @MethodSource( "org.apache.maven.tools.plugin.javadoc.JavadocSiteTest#jdkNamesAndVersions")
+    void testCreateLinkFromFullyQualifiedJavadocReference( String jdkName, JavadocLinkGenerator.JavadocToolVersionRange versionRange, String version )
         throws URISyntaxException
     {
         URI javadocBaseUri = getClass().getResource( "/javadoc/" + jdkName + "/" ).toURI();
@@ -85,12 +85,32 @@ class JavadocLinkGeneratorTest
 
     }
 
+    @ParameterizedTest
+    @MethodSource( "org.apache.maven.tools.plugin.javadoc.JavadocSiteTest#jdkNamesAndVersions")
+    void testCreateLinkFromBinaryName( String jdkName, JavadocLinkGenerator.JavadocToolVersionRange versionRange, String version )
+        throws URISyntaxException
+    {
+        URI javadocBaseUri = getClass().getResource( "/javadoc/" + jdkName + "/" ).toURI();
+        JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator( javadocBaseUri, version );
+        // invalid link for primitives
+        assertThrows( IllegalArgumentException.class, () -> linkGenerator.createLink( "boolean" ) );
+        // link for array
+        assertEquals( javadocBaseUri.resolve( new URI( null,
+                                                       "java/lang/String.html",
+                                                       null ) ),
+                      linkGenerator.createLink( "java.lang.String[]" ) );
+
+    }
+
     @Test
     void testGetMatchingJavadocToolVersionRange()
     {
         assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK7_OR_LOWER,  JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("1.5.0") ) );
-        assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK8_OR_9,  JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("8.0.123") ) );
+        assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK7_OR_LOWER,  JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("1.7.0_123") ) );
+        assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER,  JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("10") ) );
         assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER,  JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("22") ) );
+        assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK8_OR_9, JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("1.8.0_345") ) );
+        assertEquals( JavadocLinkGenerator.JavadocToolVersionRange.JDK8_OR_9, JavadocLinkGenerator.JavadocToolVersionRange.findMatch( JavaVersion.parse("9.1.1") ) );
     }
 
     @Test

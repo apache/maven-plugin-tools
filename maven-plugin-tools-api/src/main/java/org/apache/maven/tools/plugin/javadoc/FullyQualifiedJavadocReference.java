@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
+package org.apache.maven.tools.plugin.javadoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -29,8 +29,6 @@ import java.util.Optional;
  * normalized form containing only fully qualified type names (without argument names), separated by {@code ,} without
  * any whitespace characters. Also the member type is always resolved to one of {@link MemberType} (in case the
  * reference contains a member part).
- * 
- * @see ConverterContext#resolveReference(JavadocReference)
  */
 public class FullyQualifiedJavadocReference
     extends JavadocReference

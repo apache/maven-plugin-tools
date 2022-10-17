@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
+package org.apache.maven.tools.plugin.javadoc;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

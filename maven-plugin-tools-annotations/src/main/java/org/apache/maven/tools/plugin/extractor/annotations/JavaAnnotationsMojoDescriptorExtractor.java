@@ -65,7 +65,6 @@ import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocBlockTagsToXhtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavaClassConverterContext;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocInlineTagsToXhtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
@@ -74,6 +73,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAn
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;

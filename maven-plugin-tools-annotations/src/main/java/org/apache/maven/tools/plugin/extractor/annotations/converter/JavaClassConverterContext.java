@@ -42,8 +42,11 @@ import com.thoughtworks.qdox.model.JavaPackage;
 import com.thoughtworks.qdox.model.JavaType;
 import com.thoughtworks.qdox.parser.structs.TypeDef;
 import com.thoughtworks.qdox.type.TypeResolver;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference.MemberType;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 
 /** {@link ConverterContext} based on QDox's {@link JavaClass} and {@link JavaProjectBuilder}. */
 public class JavaClassConverterContext

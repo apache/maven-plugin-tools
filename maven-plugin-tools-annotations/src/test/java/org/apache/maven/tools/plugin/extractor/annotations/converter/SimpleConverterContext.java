@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  */
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +28,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference.MemberType;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 
 /**
  * Simple converter not leveraging actual Java classes only for testing purposes.
@@ -51,14 +53,7 @@ public class SimpleConverterContext
     public SimpleConverterContext( String packageName, URI javadocBaseUrl, JavadocReference... unresolvableReferences )
     {
         this( packageName,
-             (ref) -> JavadocSite.createLink( ref, javadocBaseUrl, (u, r) -> {
-                 try {
-                     return new URI( u.getScheme(), u.getSchemeSpecificPart(), r.getMember().orElse( null ) );
-                 }
-                 catch (URISyntaxException e) {
-                     throw new IllegalArgumentException("Could not create javadoc link", e);
-                 }
-             } ),
+             (ref) -> new JavadocLinkGenerator( javadocBaseUrl, "11" ).createLink( ref ),
              unresolvableReferences );
     }
 

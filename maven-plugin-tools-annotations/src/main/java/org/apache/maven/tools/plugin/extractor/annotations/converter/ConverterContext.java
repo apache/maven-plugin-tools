@@ -23,6 +23,8 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block.JavadocBlockTagToHtmlConverter;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
+import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 
 /**
  * Context which is passed to {@link JavadocBlockTagsToXhtmlConverter}, {@link JavadocInlineTagsToXhtmlConverter},

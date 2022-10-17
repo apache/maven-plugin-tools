@@ -1,4 +1,4 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
+package org.apache.maven.tools.plugin.javadoc;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.apache.maven.tools.plugin.extractor.annotations.converter.FullyQualifiedJavadocReference.MemberType;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

@@ -19,29 +19,32 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.io.CachingOutputStream;
-import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.EnhancedParameterWrapper;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.io.CachingOutputStream;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Generate <a href="https://maven.apache.org/doxia/references/xdoc-format.html">xdoc documentation</a> for each mojo.
@@ -60,13 +63,18 @@ public class PluginXdocGenerator
     private final MavenProject project;
 
     /**
+     * The directory where the generated site is written.
+     * Used for resolving relative links to javadoc.
+     */
+    private final File reportOutputDirectory;
+
+    /**
      * Default constructor using <code>Locale.ENGLISH</code> as locale.
      * Used only in test cases.
      */
     public PluginXdocGenerator()
     {
-        this.project = null;
-        this.locale = Locale.ENGLISH;
+        this( null );
     }
 
     /**
@@ -76,15 +84,14 @@ public class PluginXdocGenerator
      */
     public PluginXdocGenerator( MavenProject project )
     {
-        this.project = project;
-        this.locale = Locale.ENGLISH;
+        this( project, Locale.ENGLISH, new File( "" ).getAbsoluteFile() );
     }
 
     /**
      * @param project not null.
      * @param locale  not null wanted locale.
      */
-    public PluginXdocGenerator( MavenProject project, Locale locale )
+    public PluginXdocGenerator( MavenProject project, Locale locale, File reportOutputDirectory )
     {
         this.project = project;
         if ( locale == null )
@@ -95,6 +102,7 @@ public class PluginXdocGenerator
         {
             this.locale = locale;
         }
+        this.reportOutputDirectory = reportOutputDirectory;
     }
 
 
@@ -138,7 +146,7 @@ public class PluginXdocGenerator
         try ( Writer writer = new OutputStreamWriter( new CachingOutputStream( outputFile ), UTF_8 ) )
         {
             XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), UTF_8.name(), null );
-            writeBody( mojoDescriptor, containsXhtmlTextValues, w );
+            writeBody( mojoDescriptor, containsXhtmlTextValues, w, destinationDirectory );
 
             writer.flush();
         }
@@ -170,7 +178,8 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeBody( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w )
+    private void writeBody( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w,
+                            File destinationDirectory )
     {
         w.startElement( "document" );
         w.addAttribute( "xmlns", "http://maven.apache.org/XDOC/2.0" );
@@ -237,7 +246,7 @@ public class PluginXdocGenerator
 
         writeGoalAttributes( mojoDescriptor, w );
 
-        writeGoalParameterTable( mojoDescriptor, containsXhtmlTextValues, w );
+        writeGoalParameterTable( mojoDescriptor, containsXhtmlTextValues, w, destinationDirectory );
 
         w.endElement(); // section
 
@@ -406,7 +415,8 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w )
+    private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w,
+                                          File destinationDirectory )
     {
         List<Parameter> parameterList = mojoDescriptor.getParameters();
 
@@ -415,8 +425,8 @@ public class PluginXdocGenerator
 
         if ( !list.isEmpty() )
         {
-            writeParameterSummary( list, containsXhtmlTextValues, w );
-            writeParameterDetails( list, containsXhtmlTextValues, w );
+            writeParameterSummary( list, containsXhtmlTextValues, w, destinationDirectory );
+            writeParameterDetails( list, containsXhtmlTextValues, w, destinationDirectory );
         }
         else
         {
@@ -432,7 +442,7 @@ public class PluginXdocGenerator
     }
 
     /**
-     * Filter parameters to only retain those which must be documented, ie not components nor readonly.
+     * Filter parameters to only retain those which must be documented, i.e. neither components nor readonly.
      *
      * @param parameterList not null
      * @return the parameters list without components.
@@ -464,7 +474,8 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterDetails( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w )
+    private void writeParameterDetails( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w,
+                                        File destinationDirectory )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
@@ -498,7 +509,8 @@ public class PluginXdocGenerator
 
             boolean addedUl = false;
             addedUl = addUl( w, addedUl, parameter.getType() );
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), parameter.getType(), w );
+            String typeValue = getLinkedType( parameter, destinationDirectory, false );
+            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), typeValue, w );
 
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
             {
@@ -553,6 +565,36 @@ public class PluginXdocGenerator
         w.endElement();
     }
 
+    private String getLinkedType( Parameter parameter, File destinationDirectory, boolean isShortType  )
+    {
+        final String typeValue;
+        if ( isShortType )
+        {
+            int index = parameter.getType().lastIndexOf( '.' );
+            typeValue = parameter.getType().substring( index + 1 );
+        }
+        else
+        {
+            typeValue = parameter.getType();
+        }
+        if ( parameter instanceof EnhancedParameterWrapper )
+        {
+            EnhancedParameterWrapper enhancedParameter = (EnhancedParameterWrapper) parameter;
+            if ( enhancedParameter.getTypeJavadocUrl() != null )
+            {
+                // check if link is valid
+                URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
+                if ( javadocUrl.isAbsolute() 
+                     || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
+                {
+                    return format( "pluginxdoc.mojodescriptor.parameter.type_link", 
+                                        new Object[] { typeValue, enhancedParameter.getTypeJavadocUrl() } );
+                }
+            }
+        }
+        return typeValue;
+    }
+
     private boolean addUl( XMLWriter w, boolean addedUl, String content )
     {
         if ( StringUtils.isNotEmpty( content ) )
@@ -603,20 +645,21 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterSummary( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w )
+    private void writeParameterSummary( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w,
+                                        File destinationDirectory )
     {
         List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
         if ( !requiredParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
-                                requiredParams, containsXhtmlTextValues, w );
+                                requiredParams, containsXhtmlTextValues, w, destinationDirectory );
         }
 
         List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
         if ( !optionalParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
-                                optionalParams, containsXhtmlTextValues, w );
+                                optionalParams, containsXhtmlTextValues, w, destinationDirectory );
         }
     }
 
@@ -626,7 +669,7 @@ public class PluginXdocGenerator
      * @param w              not null
      */
     private void writeParameterList( String title, List<Parameter> parameterList,
-                                     boolean containsXhtmlTextValues, XMLWriter w )
+                                     boolean containsXhtmlTextValues, XMLWriter w, File destinationDirectory )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -660,8 +703,7 @@ public class PluginXdocGenerator
 
             //type
             w.startElement( "td" );
-            int index = parameter.getType().lastIndexOf( "." );
-            w.writeMarkup( "<code>" + parameter.getType().substring( index + 1 ) + "</code>" );
+            w.writeMarkup( "<code>" + getLinkedType( parameter, destinationDirectory, true ) + "</code>" );
             w.endElement(); //td
 
             // since
