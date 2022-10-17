@@ -294,7 +294,7 @@ public class DefaultMojoAnnotationsScanner
                 DescriptionAnnotationContent descriptionAnnotationContent = new DescriptionAnnotationContent();
                 populateAnnotationContent( descriptionAnnotationContent, mojoAnnotationVisitor );
 
-                mojoAnnotatedClass.getMojo().setDescription( descriptionAnnotationContent.getContent() );
+                mojoAnnotatedClass.getMojo().setDescription( descriptionAnnotationContent.getValue() );
             }
 
             // @Execute annotation
@@ -326,7 +326,7 @@ public class DefaultMojoAnnotationsScanner
                     populateAnnotationContent( descriptionAnnotationContent, descriptionAnnotationVisitor );
                 }
 
-                parameterAnnotationContent.setDescription( descriptionAnnotationContent.getContent() );
+                parameterAnnotationContent.setDescription( descriptionAnnotationContent.getValue() );
                 parameterAnnotationContent.setSince( descriptionAnnotationContent.getSince() );
 
                 if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )

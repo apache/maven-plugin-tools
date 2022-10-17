@@ -28,18 +28,18 @@ import java.util.StringJoiner;
 public class DescriptionAnnotationContent
 {
 
-    private String content;
+    private String value;
 
     private String since;
 
-    public String getContent()
+    public String getValue()
     {
-        return content;
+        return value;
     }
 
-    public void setContent( String content )
+    public void setValue( String value )
     {
-        this.content = content;
+        this.value = value;
     }
 
     public String getSince()
@@ -56,7 +56,7 @@ public class DescriptionAnnotationContent
     public String toString()
     {
         return new StringJoiner( ", ", DescriptionAnnotationContent.class.getSimpleName() + "[", "]" )
-                .add( "content='" + content + "'" )
+                .add( "value='" + value + "'" )
                 .add( "since='" + since + "'" )
                 .toString();
     }

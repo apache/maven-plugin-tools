@@ -45,7 +45,7 @@ public @interface Description
      *
      * @return a description of the Mojo or the parameter.
      */
-    String content();
+    String value();
 
     /**
      * The version of the plugin since when this goal or parameter was introduced (inclusive, optional).
