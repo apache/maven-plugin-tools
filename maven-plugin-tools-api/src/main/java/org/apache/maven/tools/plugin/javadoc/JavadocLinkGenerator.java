@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -37,8 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generates links for elements (packages, classes, fields, constructors, methods) in external javadoc sites
- * or an internal (potentially not yet existing) one.
+ * Generates links for elements (packages, classes, fields, constructors, methods) in external
+ * and/or an internal (potentially not yet existing) javadoc site.
  * The external site must be accessible for it to be considered due to the different fragment formats.
  */
 public class JavadocLinkGenerator
@@ -150,9 +151,12 @@ public class JavadocLinkGenerator
     }
 
     /**
-     * 
+     * Generates a (deep-)link to a HTML page in any of the sites given to the constructor.
+     * The link is not validated (i.e. might point to a non-existing page).
+     * Only uses the offline site for references returning {@code false} for
+     * {@link FullyQualifiedJavadocReference#isExternal()}.
      * @param javadocReference
-     * @return the generated link
+     * @return the (deep-) link towards a javadoc page
      * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
      */
     public URI createLink( FullyQualifiedJavadocReference javadocReference )
@@ -173,19 +177,21 @@ public class JavadocLinkGenerator
     }
 
     /**
-     * 
+     * Generates a (deep-)link to a HTML page in any of the sites given to the constructor.
+     * The link is not validated (i.e. might point to a non-existing page).
+     * Preferably resolves from the online sites if they provide the given package.
      * @param binaryName a binary name according to 
      * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
      * @return the (deep-) link towards a javadoc page
-     * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
+     * @throws IllegalArgumentException in case no javadoc link could be generated for the given name
      */
     public URI createLink( String binaryName )
     {
-        String packageName = "";
+        Map.Entry<String, String> packageAndClassName = JavadocSite.getPackageAndClassName( binaryName );
         // first check external links, otherwise assume internal link
         JavadocSite javadocSite = externalJavadocSites.stream()
                         .filter( base -> base.hasEntryFor( Optional.empty(),
-                                                           Optional.of( packageName ) ) )
+                                                           Optional.of( packageAndClassName.getKey() ) ) )
                         .findFirst().orElse( null );
         if ( javadocSite == null )
         {
@@ -198,7 +204,7 @@ public class JavadocLinkGenerator
                 throw new IllegalArgumentException( "Found no javadoc site for " + binaryName );
             }
         }
-        return javadocSite.createLink( binaryName );
+        return javadocSite.createLink( packageAndClassName.getKey(), packageAndClassName.getValue() );
     }
 
     public URI getInternalJavadocSiteBaseUrl()

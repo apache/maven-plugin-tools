@@ -29,6 +29,7 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -254,14 +255,38 @@ class JavadocSite
     /**
      * Generates a link to a javadoc html page below the javadoc site represented by this object.
      * The link is not validated (i.e. might point to a non-existing page)
-     * @param binaryName a binary name according to 
-     * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
+     * @param 
      * @return the (deep-)link towards a javadoc page
      * @throws IllegalArgumentException if no link can be created
      */
-    public URI createLink( String binaryName )
+    public URI createLink( String packageName, String className )
     {
-        // assume binary name according to https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1
+        try
+        {
+            if ( className.endsWith( "[]" ) )
+            {
+                // url must point to simple class
+                className = className.substring( 0, className.length()  - 2 );
+            }
+            return createLink( baseUri, Optional.empty(), Optional.of( packageName ),
+                               Optional.of( className ) );
+        }
+        catch ( URISyntaxException e )
+        {
+            throw new IllegalArgumentException( "Could not create link for " + packageName + "." + className, e );
+        }
+    }
+
+    /**
+     * Splits up a given binary name into package name and class name part.
+     * @param binaryName a binary name according to 
+     * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
+     * @return a key value pair where the key is the package name and the value the class name
+     * @throws IllegalArgumentException if no link can be created
+     */
+    static Map.Entry<String, String> getPackageAndClassName( String binaryName )
+    {
+     // assume binary name according to https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1
         int indexOfDollar = binaryName.indexOf( '$' );
         if ( indexOfDollar >= 0 ) 
         {
@@ -278,22 +303,9 @@ class JavadocSite
         {
             throw new IllegalArgumentException( "Invalid binary name ending with a dot: " + binaryName );
         }
-        try
-        {
-            String packageName = binaryName.substring( 0, indexOfLastDot );
-            String className = binaryName.substring( indexOfLastDot + 1, binaryName.length() );
-            if ( className.endsWith( "[]" ) )
-            {
-                // url must point to simple class
-                className = className.substring( 0, className.length()  - 2 );
-            }
-            return createLink( baseUri, Optional.empty(), Optional.of( packageName ),
-                               Optional.of( className ) );
-        }
-        catch ( URISyntaxException e )
-        {
-            throw new IllegalArgumentException( "Could not create link for " + binaryName, e );
-        }
+        String packageName = binaryName.substring( 0, indexOfLastDot );
+        String className = binaryName.substring( indexOfLastDot + 1, binaryName.length() );
+        return new AbstractMap.SimpleEntry<>( packageName, className );
     }
 
     /**

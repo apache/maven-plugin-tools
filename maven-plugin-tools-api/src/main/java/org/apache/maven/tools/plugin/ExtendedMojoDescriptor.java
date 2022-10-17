@@ -77,7 +77,7 @@ public class ExtendedMojoDescriptor
      * Indicates if the methods {@link #getDescription()}, {@link #getDeprecated()}, {@link Parameter#getDescription()}
      * and {@link Parameter#getDeprecated()} return XHTML values.
      * @return {@code true} if aforementioned methods return XHTML values, if {@code false} those values contain
-     * javadoc (HTML + custom javadoc tags)
+     * javadoc (HTML + custom javadoc tags) (for legacy extractors)
      * @since 3.7.0
      */
     public boolean containsXhtmlTextValues()

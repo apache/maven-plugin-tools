@@ -34,6 +34,7 @@ import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.plugin.report.PluginReport;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -183,24 +184,27 @@ public class DescriptorGeneratorMojo
      * is valid because <code>https://docs.oracle.com/javase/8/docs/api/package-list</code> exists.
      * See <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/javadoc.html#standard-doclet-options">
      * link option of the javadoc tool</a>.
+     * Using this parameter requires connectivity to the given URLs during the goal execution.
      * @since 3.7.0
      */
-    @Parameter( property = "externalJavadocBaseUrl", alias = "links" )
-    protected List<URI> externalJavadocBaseUrl;
+    @Parameter( property = "externalJavadocBaseUrls", alias = "links" )
+    protected List<URI> externalJavadocBaseUrls;
 
     /**
      * The base URL for the Javadoc site containing the current project's API documentation.
-     * This may be relative to root of the Maven site.
+     * This may be relative to the root of the generated Maven site.
      * It does not need to exist yet at the time when this goal is executed.
+     * Must end with a slash.
+     * <b>In case this is set the javadoc reporting goal should be executed prior to {@link PluginReport}.</b>
      * @since 3.7.0
      */
-    @Parameter( property = "internalJavadocBaseUrl", defaultValue = "./apidocs/" )
+    @Parameter( property = "internalJavadocBaseUrl" )
     protected URI internalJavadocBaseUrl;
 
     /**
      * The version of the javadoc tool (equal to the container JDK version) used to generate the internal javadoc
      * Only relevant if {@link #internalJavadocBaseUrl} is set.
-     * Explicitly set this to a value (as specific as possible)
+     * The default value needs to be overwritten in case toolchains are being used for generating Javadoc.
      * 
      * @since 3.7.0
      */
@@ -309,6 +313,11 @@ public class DescriptorGeneratorMojo
             getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
         }
 
+        if ( internalJavadocBaseUrl != null && !internalJavadocBaseUrl.getPath().endsWith( "/" ) )
+        {
+            throw new MojoExecutionException( "Given parameter 'internalJavadocBaseUrl' must end with a slash but is '"
+                                              + internalJavadocBaseUrl + "'" );
+        }
         try
         {
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
@@ -322,7 +331,7 @@ public class DescriptorGeneratorMojo
             request.setRemoteRepos( this.remoteRepos );
             request.setInternalJavadocBaseUrl( internalJavadocBaseUrl );
             request.setInternalJavadocVersion( internalJavadocVersion );
-            request.setExternalJavadocBaseUrls( externalJavadocBaseUrl );
+            request.setExternalJavadocBaseUrls( externalJavadocBaseUrls );
             request.setSettings( settings );
 
             mojoScanner.populatePluginDescriptor( request );

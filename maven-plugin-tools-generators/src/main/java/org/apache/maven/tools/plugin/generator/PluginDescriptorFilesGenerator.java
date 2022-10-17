@@ -116,9 +116,6 @@ public class PluginDescriptorFilesGenerator
     public void writeDescriptor( File destinationFile, PluginToolsRequest request, DescriptorType type )
         throws IOException
     {
-        Converter converter = ( type != DescriptorType.XHTML ) 
-                        ? new HtmlToPlainTextConverter( )
-                        : new NoOpConverter();
         PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
 
         if ( !destinationFile.getParentFile().exists() )
@@ -150,7 +147,7 @@ public class PluginDescriptorFilesGenerator
 
             GeneratorUtils.element( w, "name", pluginDescriptor.getName() );
 
-            GeneratorUtils.element( w, "description", converter.convert( pluginDescriptor.getDescription() ) );
+            GeneratorUtils.element( w, "description", pluginDescriptor.getDescription() );
 
             GeneratorUtils.element( w, "groupId", pluginDescriptor.getGroupId() );
 
@@ -183,7 +180,7 @@ public class PluginDescriptorFilesGenerator
 
                 for ( MojoDescriptor descriptor : descriptors )
                 {
-                    processMojoDescriptor( descriptor, w, type, converter, javadocLinkGenerator );
+                    processMojoDescriptor( descriptor, w, type, javadocLinkGenerator );
                 }
             }
 
@@ -201,11 +198,41 @@ public class PluginDescriptorFilesGenerator
         }
     }
 
+    /**
+     * 
+     * @param type
+     * @param containsXhtmlValue
+     * @param text
+     * @return the normalized text value (i.e. potentially converted to XHTML)
+     */
+    private static String getTextValue( DescriptorType type, boolean containsXhtmlValue, String text )
+    {
+        final String xhtmlText;
+        if ( !containsXhtmlValue ) // text comes from legacy extractor
+        {
+            xhtmlText = GeneratorUtils.makeHtmlValid( text );
+        }
+        else
+        {
+            xhtmlText = text;
+        }
+        if ( type != DescriptorType.XHTML )
+        {
+            return new HtmlToPlainTextConverter().convert( text );
+        }
+        else
+        {
+            return xhtmlText;
+        }
+    }
+
     @SuppressWarnings( "deprecation" )
     protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, XMLWriter w, DescriptorType type,
-                                          Converter converter, JavadocLinkGenerator javadocLinkGenerator )
+                                          JavadocLinkGenerator javadocLinkGenerator )
     {
-        // TODO: convert javadoc to html optionally
+        boolean containsXhtmlTextValues = mojoDescriptor instanceof ExtendedMojoDescriptor
+                        && ( (ExtendedMojoDescriptor) mojoDescriptor ).containsXhtmlTextValues();
+        
         w.startElement( "mojo" );
 
         // ----------------------------------------------------------------------
@@ -225,7 +252,7 @@ public class PluginDescriptorFilesGenerator
         if ( StringUtils.isNotEmpty( description ) )
         {
             w.startElement( "description" );
-            w.writeText( converter.convert( mojoDescriptor.getDescription() ) );
+            w.writeText( getTextValue( type, containsXhtmlTextValues, mojoDescriptor.getDescription() ) );
             w.endElement();
         }
 
@@ -392,7 +419,7 @@ public class PluginDescriptorFilesGenerator
             }
             else
             {
-                w.writeText( converter.convert( mojoDescriptor.getDeprecated() ) );
+                w.writeText( getTextValue( type, containsXhtmlTextValues, mojoDescriptor.getDeprecated() ) );
             }
 
             w.endElement();
@@ -486,8 +513,9 @@ public class PluginDescriptorFilesGenerator
                         } 
                         catch ( IllegalArgumentException e )
                         {
-                            LOG.warn( "Could not get javadoc URL for parameter type {} of parameter {} from goal {}",
-                                      parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(), e );
+                            LOG.warn( "Could not get javadoc URL for type {} of parameter {} from goal {}: {}",
+                                      parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(),
+                                      e.getMessage() );
                         }
                     }
                     if ( parameter.getSince() != null )
@@ -514,7 +542,9 @@ public class PluginDescriptorFilesGenerator
                         }
                         else
                         {
-                            GeneratorUtils.element( w, "deprecated", converter.convert( parameter.getDeprecated() ) );
+                            GeneratorUtils.element( w, "deprecated", 
+                                                    getTextValue( type, containsXhtmlTextValues,
+                                                                  parameter.getDeprecated() ) );
                         }
                     }
 
@@ -527,7 +557,8 @@ public class PluginDescriptorFilesGenerator
 
                     GeneratorUtils.element( w, "editable", Boolean.toString( parameter.isEditable() ) );
 
-                    GeneratorUtils.element( w, "description", converter.convert( parameter.getDescription() ) );
+                    GeneratorUtils.element( w, "description", getTextValue( type, containsXhtmlTextValues,
+                                                                            parameter.getDescription() ) );
 
                     if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) || StringUtils.isNotEmpty(
                         parameter.getExpression() ) )

@@ -120,9 +120,7 @@ public class PluginXdocGenerator
                 List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
                 for ( MojoDescriptor descriptor : mojos )
                 {
-                    boolean containsXhtmlTextValues = descriptor instanceof ExtendedMojoDescriptor
-                                    && ( (ExtendedMojoDescriptor) descriptor ).containsXhtmlTextValues();
-                    processMojoDescriptor( descriptor, containsXhtmlTextValues, destinationDirectory );
+                    processMojoDescriptor( descriptor, destinationDirectory );
                 }
             }
         }
@@ -138,29 +136,16 @@ public class PluginXdocGenerator
      * @param destinationDirectory not null
      * @throws IOException if any
      */
-    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues,
-                                          File destinationDirectory )
+    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, File destinationDirectory )
         throws IOException
     {
         File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
         try ( Writer writer = new OutputStreamWriter( new CachingOutputStream( outputFile ), UTF_8 ) )
         {
             XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), UTF_8.name(), null );
-            writeBody( mojoDescriptor, containsXhtmlTextValues, w, destinationDirectory );
+            writeBody( mojoDescriptor, w );
 
             writer.flush();
-        }
-    }
-
-    private static String getXhtmlText( boolean isXhtmlTextValue, String text )
-    {
-        if ( isXhtmlTextValue )
-        {
-            return text;
-        }
-        else
-        {
-            return GeneratorUtils.makeHtmlValid( text );
         }
     }
 
@@ -178,8 +163,7 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeBody( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w,
-                            File destinationDirectory )
+    private void writeBody( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
         w.startElement( "document" );
         w.addAttribute( "xmlns", "http://maven.apache.org/XDOC/2.0" );
@@ -226,7 +210,7 @@ public class PluginXdocGenerator
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.deprecated" ) );
             w.endElement(); // p
             w.startElement( "div" );
-            w.writeMarkup( getXhtmlText( containsXhtmlTextValues, mojoDescriptor.getDeprecated() ) );
+            w.writeMarkup( mojoDescriptor.getDeprecated() );
             w.endElement(); // div
         }
 
@@ -236,7 +220,7 @@ public class PluginXdocGenerator
         w.startElement( "div" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
-            w.writeMarkup( getXhtmlText( containsXhtmlTextValues, mojoDescriptor.getDescription() ) );
+            w.writeMarkup( mojoDescriptor.getDescription() );
         }
         else
         {
@@ -246,7 +230,7 @@ public class PluginXdocGenerator
 
         writeGoalAttributes( mojoDescriptor, w );
 
-        writeGoalParameterTable( mojoDescriptor, containsXhtmlTextValues, w, destinationDirectory );
+        writeGoalParameterTable( mojoDescriptor, w );
 
         w.endElement(); // section
 
@@ -415,8 +399,7 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, boolean containsXhtmlTextValues, XMLWriter w,
-                                          File destinationDirectory )
+    private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
     {
         List<Parameter> parameterList = mojoDescriptor.getParameters();
 
@@ -425,8 +408,8 @@ public class PluginXdocGenerator
 
         if ( !list.isEmpty() )
         {
-            writeParameterSummary( list, containsXhtmlTextValues, w, destinationDirectory );
-            writeParameterDetails( list, containsXhtmlTextValues, w, destinationDirectory );
+            writeParameterSummary( list, w );
+            writeParameterDetails( list, w );
         }
         else
         {
@@ -474,8 +457,7 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterDetails( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w,
-                                        File destinationDirectory )
+    private void writeParameterDetails( List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
@@ -491,15 +473,14 @@ public class PluginXdocGenerator
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 w.startElement( "div" );
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                       getXhtmlText( containsXhtmlTextValues, parameter.getDeprecated() ) ) );
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() ) );
                 w.endElement(); // div
             }
 
             w.startElement( "div" );
             if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                w.writeMarkup( getXhtmlText( containsXhtmlTextValues, parameter.getDescription() ) );
+                w.writeMarkup( parameter.getDescription() );
             }
             else
             {
@@ -509,7 +490,7 @@ public class PluginXdocGenerator
 
             boolean addedUl = false;
             addedUl = addUl( w, addedUl, parameter.getType() );
-            String typeValue = getLinkedType( parameter, destinationDirectory, false );
+            String typeValue = getLinkedType( parameter, false );
             writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), typeValue, w );
 
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
@@ -565,7 +546,7 @@ public class PluginXdocGenerator
         w.endElement();
     }
 
-    private String getLinkedType( Parameter parameter, File destinationDirectory, boolean isShortType  )
+    private String getLinkedType( Parameter parameter, boolean isShortType  )
     {
         final String typeValue;
         if ( isShortType )
@@ -645,21 +626,20 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterSummary( List<Parameter> parameterList, boolean containsXhtmlTextValues, XMLWriter w,
-                                        File destinationDirectory )
+    private void writeParameterSummary( List<Parameter> parameterList, XMLWriter w )
     {
         List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
         if ( !requiredParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
-                                requiredParams, containsXhtmlTextValues, w, destinationDirectory );
+                                requiredParams, w );
         }
 
         List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
         if ( !optionalParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
-                                optionalParams, containsXhtmlTextValues, w, destinationDirectory );
+                                optionalParams, w );
         }
     }
 
@@ -668,8 +648,7 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterList( String title, List<Parameter> parameterList,
-                                     boolean containsXhtmlTextValues, XMLWriter w, File destinationDirectory )
+    private void writeParameterList( String title, List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -703,7 +682,7 @@ public class PluginXdocGenerator
 
             //type
             w.startElement( "td" );
-            w.writeMarkup( "<code>" + getLinkedType( parameter, destinationDirectory, true ) + "</code>" );
+            w.writeMarkup( "<code>" + getLinkedType( parameter, true ) + "</code>" );
             w.endElement(); //td
 
             // since
@@ -723,12 +702,11 @@ public class PluginXdocGenerator
             String description;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                      getXhtmlText( containsXhtmlTextValues, parameter.getDeprecated() ) );
+                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                description = getXhtmlText( containsXhtmlTextValues, parameter.getDescription() );
+                description = parameter.getDescription();
             }
             else
             {
