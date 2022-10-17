@@ -32,22 +32,22 @@ public class DescriptionAnnotationContent
 
     private String since;
 
-    public String getValue()
+    public String value()
     {
         return value;
     }
 
-    public void setValue( String value )
+    public void value( String value )
     {
         this.value = value;
     }
 
-    public String getSince()
+    public String since()
     {
         return since;
     }
 
-    public void setSince( String since )
+    public void since( String since )
     {
         this.since = since;
     }
