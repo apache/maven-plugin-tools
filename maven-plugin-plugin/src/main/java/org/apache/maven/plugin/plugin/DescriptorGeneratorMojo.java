@@ -20,6 +20,7 @@ package org.apache.maven.plugin.plugin;
  */
 
 import java.io.File;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -33,17 +34,19 @@ import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.plugin.report.PluginReport;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
-import org.apache.maven.tools.plugin.generator.PluginDescriptorGenerator;
+import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -117,7 +120,6 @@ public class DescriptorGeneratorMojo
     @Parameter
     private Set<String> extractors;
 
-
     /**
      * By default, an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
      * descriptor generator mojo is bound to generate-resources phase.
@@ -169,6 +171,55 @@ public class DescriptorGeneratorMojo
     private List<String> mojoDependencies = null;
 
     /**
+     * Creates links to existing external javadoc-generated documentation.
+     * <br>
+     * <b>Notes</b>:
+     * all given links should have a fetchable {@code /package-list} or {@code /element-list} file.
+     * For instance:
+     * <pre>
+     * &lt;links&gt;
+     *   &lt;link&gt;https://docs.oracle.com/javase/8/docs/api/&lt;/link&gt;
+     * &lt;links&gt;
+     * </pre>
+     * is valid because <code>https://docs.oracle.com/javase/8/docs/api/package-list</code> exists.
+     * See <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/javadoc.html#standard-doclet-options">
+     * link option of the javadoc tool</a>.
+     * Using this parameter requires connectivity to the given URLs during the goal execution.
+     * @since 3.7.0
+     */
+    @Parameter( property = "externalJavadocBaseUrls", alias = "links" )
+    protected List<URI> externalJavadocBaseUrls;
+
+    /**
+     * The base URL for the Javadoc site containing the current project's API documentation.
+     * This may be relative to the root of the generated Maven site.
+     * It does not need to exist yet at the time when this goal is executed.
+     * Must end with a slash.
+     * <b>In case this is set the javadoc reporting goal should be executed prior to {@link PluginReport}.</b>
+     * @since 3.7.0
+     */
+    @Parameter( property = "internalJavadocBaseUrl" )
+    protected URI internalJavadocBaseUrl;
+
+    /**
+     * The version of the javadoc tool (equal to the container JDK version) used to generate the internal javadoc
+     * Only relevant if {@link #internalJavadocBaseUrl} is set.
+     * The default value needs to be overwritten in case toolchains are being used for generating Javadoc.
+     * 
+     * @since 3.7.0
+     */
+    @Parameter( property = "internalJavadocVersion", defaultValue = "${java.version}" )
+    protected String internalJavadocVersion;
+
+    /**
+     * The Maven Settings, for evaluating proxy settings used to access {@link #javadocLinks}
+     *
+     * @since 3.7.0
+     */
+    @Parameter( defaultValue = "${settings}", readonly = true, required = true )
+    private Settings settings;
+
+    /**
      * List of Remote Repositories used by the resolver
      *
      * @since 3.0
@@ -196,6 +247,17 @@ public class DescriptorGeneratorMojo
     public void generate()
         throws MojoExecutionException
     {
+
+        if ( !"maven-plugin".equalsIgnoreCase( project.getArtifactId() )
+                        && project.getArtifactId().toLowerCase().startsWith( "maven-" )
+                        && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
+                        && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
+        {
+            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+                                + "plugins in the Group Id org.apache.maven.plugins" + LS
+                                + "Please change your artifactId to the format ___-maven-plugin" + LS
+                                + "In the future this error will break the build." + LS + LS );
+        }
 
         if ( skipDescriptor )
         {
@@ -251,6 +313,11 @@ public class DescriptorGeneratorMojo
             getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
         }
 
+        if ( internalJavadocBaseUrl != null && !internalJavadocBaseUrl.getPath().endsWith( "/" ) )
+        {
+            throw new MojoExecutionException( "Given parameter 'internalJavadocBaseUrl' must end with a slash but is '"
+                                              + internalJavadocBaseUrl + "'" );
+        }
         try
         {
             List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
@@ -262,12 +329,16 @@ public class DescriptorGeneratorMojo
             request.setDependencies( filterMojoDependencies() );
             request.setLocal( this.local );
             request.setRemoteRepos( this.remoteRepos );
+            request.setInternalJavadocBaseUrl( internalJavadocBaseUrl );
+            request.setInternalJavadocVersion( internalJavadocVersion );
+            request.setExternalJavadocBaseUrls( externalJavadocBaseUrls );
+            request.setSettings( settings );
 
             mojoScanner.populatePluginDescriptor( request );
 
             outputDirectory.mkdirs();
 
-            PluginDescriptorGenerator pluginDescriptorGenerator = new PluginDescriptorGenerator();
+            PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
             pluginDescriptorGenerator.execute( outputDirectory, request );
 
             buildContext.refresh( outputDirectory );

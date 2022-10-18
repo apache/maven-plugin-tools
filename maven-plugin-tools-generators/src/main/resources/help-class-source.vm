@@ -115,6 +115,10 @@ public class HelpMojo
         getLog().debug( "load plugin-help.xml: " + PLUGIN_HELP_PATH );
         try ( InputStream is = getClass().getResourceAsStream( PLUGIN_HELP_PATH ) )
         {
+            if ( is == null )
+            {
+                throw new MojoExecutionException( "Could not find plugin descriptor at " + PLUGIN_HELP_PATH );
+            }
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             return dBuilder.parse( is );

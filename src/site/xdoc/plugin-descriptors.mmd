@@ -1,0 +1,26 @@
+%% mermaid (https://mermaid-js.github.io/mermaid/#/) diagram
+flowchart LR
+    subgraph producer["goal plugin:descriptor"]
+        P2["MojoScanner"]--> |calls| P3["MojoDescriptorExtractors"]
+    end
+    producer --> |calls|G2
+    P4(["PluginDescriptor"])
+    P3 --> |populates| P4
+    subgraph output["Plugin Descriptors Serializations"]
+         O1(["plugin.xml (plain text)"])
+         O2(["plugin-help.xml (plain text)"])
+         O3(["plugin-enhanced.xml (html)"])
+    end 
+    subgraph generators["maven-plugin-tools-generators"]
+        G1["PluginXdocGenerator"] --> |generates| R2([XDoc])
+        G1 --> |resolves links to javadoc| G1
+        G1 --> |uses| O3
+        G2["PluginDescriptorFilesGenerator"] --> |consumes| P4
+        G2 --> |transforms javadoc to XHTML| G2
+    end
+    G2 --> |writes| output
+    subgraph consumers["Consumers"]
+        C1["goal plugin:report"] --> |calls| G1
+        C2[Maven Plugin Execution] --> |uses| O1
+        C3[Maven Plugin Help Mojo] --> |uses| O2
+    end

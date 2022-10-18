@@ -79,6 +79,12 @@
       <artifactId>asm-commons</artifactId>
     </dependency>
 
+    <!-- for HTML to plain text conversion -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+    </dependency>
+
     <!-- misc -->
     <dependency>
       <groupId>net.sf.jtidy</groupId>

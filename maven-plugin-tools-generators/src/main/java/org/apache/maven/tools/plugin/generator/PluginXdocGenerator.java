@@ -19,23 +19,12 @@ package org.apache.maven.tools.plugin.generator;
  * under the License.
  */
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.io.CachingOutputStream;
-import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,8 +32,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.EnhancedParameterWrapper;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.io.CachingOutputStream;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
- * Generate xdoc documentation for each mojo.
+ * Generate <a href="https://maven.apache.org/doxia/references/xdoc-format.html">xdoc documentation</a> for each mojo.
  */
 public class PluginXdocGenerator
     implements Generator
@@ -60,13 +63,18 @@ public class PluginXdocGenerator
     private final MavenProject project;
 
     /**
+     * The directory where the generated site is written.
+     * Used for resolving relative links to javadoc.
+     */
+    private final File reportOutputDirectory;
+
+    /**
      * Default constructor using <code>Locale.ENGLISH</code> as locale.
      * Used only in test cases.
      */
     public PluginXdocGenerator()
     {
-        this.project = null;
-        this.locale = Locale.ENGLISH;
+        this( null );
     }
 
     /**
@@ -76,15 +84,14 @@ public class PluginXdocGenerator
      */
     public PluginXdocGenerator( MavenProject project )
     {
-        this.project = project;
-        this.locale = Locale.ENGLISH;
+        this( project, Locale.ENGLISH, new File( "" ).getAbsoluteFile() );
     }
 
     /**
      * @param project not null.
      * @param locale  not null wanted locale.
      */
-    public PluginXdocGenerator( MavenProject project, Locale locale )
+    public PluginXdocGenerator( MavenProject project, Locale locale, File reportOutputDirectory )
     {
         this.project = project;
         if ( locale == null )
@@ -95,6 +102,7 @@ public class PluginXdocGenerator
         {
             this.locale = locale;
         }
+        this.reportOutputDirectory = reportOutputDirectory;
     }
 
 
@@ -109,8 +117,7 @@ public class PluginXdocGenerator
         {
             if ( request.getPluginDescriptor().getMojos() != null )
             {
-                @SuppressWarnings( "unchecked" ) List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
-
+                List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
                 for ( MojoDescriptor descriptor : mojos )
                 {
                     processMojoDescriptor( descriptor, destinationDirectory );
@@ -203,7 +210,7 @@ public class PluginXdocGenerator
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.deprecated" ) );
             w.endElement(); // p
             w.startElement( "div" );
-            w.writeMarkup( GeneratorUtils.makeHtmlValid( mojoDescriptor.getDeprecated() ) );
+            w.writeMarkup( mojoDescriptor.getDeprecated() );
             w.endElement(); // div
         }
 
@@ -213,7 +220,7 @@ public class PluginXdocGenerator
         w.startElement( "div" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
-            w.writeMarkup( GeneratorUtils.makeHtmlValid( mojoDescriptor.getDescription() ) );
+            w.writeMarkup( mojoDescriptor.getDescription() );
         }
         else
         {
@@ -418,7 +425,7 @@ public class PluginXdocGenerator
     }
 
     /**
-     * Filter parameters to only retain those which must be documented, ie not components nor readonly.
+     * Filter parameters to only retain those which must be documented, i.e. neither components nor readonly.
      *
      * @param parameterList not null
      * @return the parameters list without components.
@@ -466,15 +473,14 @@ public class PluginXdocGenerator
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 w.startElement( "div" );
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                       GeneratorUtils.makeHtmlValid( parameter.getDeprecated() ) ) );
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() ) );
                 w.endElement(); // div
             }
 
             w.startElement( "div" );
             if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                w.writeMarkup( GeneratorUtils.makeHtmlValid( parameter.getDescription() ) );
+                w.writeMarkup( parameter.getDescription() );
             }
             else
             {
@@ -484,7 +490,8 @@ public class PluginXdocGenerator
 
             boolean addedUl = false;
             addedUl = addUl( w, addedUl, parameter.getType() );
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), parameter.getType(), w );
+            String typeValue = getLinkedType( parameter, false );
+            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), typeValue, w );
 
             if ( StringUtils.isNotEmpty( parameter.getSince() ) )
             {
@@ -537,6 +544,36 @@ public class PluginXdocGenerator
         }
 
         w.endElement();
+    }
+
+    private String getLinkedType( Parameter parameter, boolean isShortType  )
+    {
+        final String typeValue;
+        if ( isShortType )
+        {
+            int index = parameter.getType().lastIndexOf( '.' );
+            typeValue = parameter.getType().substring( index + 1 );
+        }
+        else
+        {
+            typeValue = parameter.getType();
+        }
+        if ( parameter instanceof EnhancedParameterWrapper )
+        {
+            EnhancedParameterWrapper enhancedParameter = (EnhancedParameterWrapper) parameter;
+            if ( enhancedParameter.getTypeJavadocUrl() != null )
+            {
+                // check if link is valid
+                URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
+                if ( javadocUrl.isAbsolute() 
+                     || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
+                {
+                    return format( "pluginxdoc.mojodescriptor.parameter.type_link", 
+                                        new Object[] { typeValue, enhancedParameter.getTypeJavadocUrl() } );
+                }
+            }
+        }
+        return typeValue;
     }
 
     private boolean addUl( XMLWriter w, boolean addedUl, String content )
@@ -611,8 +648,7 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterList( String title, List<Parameter> parameterList,
-                                     XMLWriter w )
+    private void writeParameterList( String title, List<Parameter> parameterList, XMLWriter w )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -646,8 +682,7 @@ public class PluginXdocGenerator
 
             //type
             w.startElement( "td" );
-            int index = parameter.getType().lastIndexOf( "." );
-            w.writeMarkup( "<code>" + parameter.getType().substring( index + 1 ) + "</code>" );
+            w.writeMarkup( "<code>" + getLinkedType( parameter, true ) + "</code>" );
             w.endElement(); //td
 
             // since
@@ -667,12 +702,11 @@ public class PluginXdocGenerator
             String description;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated",
-                                      GeneratorUtils.makeHtmlValid( parameter.getDeprecated() ) );
+                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                description = GeneratorUtils.makeHtmlValid( parameter.getDescription() );
+                description = parameter.getDescription();
             }
             else
             {

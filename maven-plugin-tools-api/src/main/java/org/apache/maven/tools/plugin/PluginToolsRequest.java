@@ -19,13 +19,15 @@ package org.apache.maven.tools.plugin;
  * under the License.
  */
 
+import java.net.URI;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-
-import java.util.List;
-import java.util.Set;
+import org.apache.maven.settings.Settings;
 
 /**
  * Request that encapsulates all information relevant to the process of extracting
@@ -140,4 +142,59 @@ public interface PluginToolsRequest
      */
     PluginToolsRequest setLocal( ArtifactRepository local );
 
+    /**
+     * 
+     * @param baseUrl may be relative to the current site's root
+     * @return This request.
+     * @since 3.7.0
+     */
+    PluginToolsRequest setInternalJavadocBaseUrl( URI baseUrl );
+
+    /**
+     * @return the javadoc base url for the internal classes
+     * @since 3.7.0
+     */
+    URI getInternalJavadocBaseUrl();
+
+    /**
+     * 
+     * @param javadocVersion
+     * @return This request.
+     * @since 3.7.0
+     */
+    PluginToolsRequest setInternalJavadocVersion( String javadocVersion );
+
+    /**
+     * @return the javadoc version used to create the internal javadoc site
+     * @since 3.7.0
+     */
+    String getInternalJavadocVersion();
+    
+    /**
+     * 
+     * @param javadocLinks
+     * @return This request.
+     * @since 3.7.0
+     */
+    PluginToolsRequest setExternalJavadocBaseUrls( List<URI> javadocLinks );
+
+    /**
+     * @return the list of external javadoc base urls to consider
+     * @since 3.7.0
+     */
+    List<URI> getExternalJavadocBaseUrls();
+
+    /**
+     * 
+     * @param settings the Maven settings
+     * @return This request.
+     * @since 3.7.0
+     */
+    PluginToolsRequest setSettings( Settings settings );
+
+    /**
+     * @return the Maven settings
+     * @since 3.7.0
+     */
+    Settings getSettings();
 }

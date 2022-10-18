@@ -38,6 +38,7 @@ import org.codehaus.plexus.velocity.VelocityComponent;
 
 /**
  * Generates a <code>HelpMojo</code> class.
+ * Relies at runtime on one output file from {@link DescriptorGeneratorMojo}.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
