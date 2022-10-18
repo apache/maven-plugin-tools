@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  */
 
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Description;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -38,10 +39,12 @@ public interface MojoAnnotationsScanner
     String ROLE = MojoAnnotationsScanner.class.getName();
 
     List<String> CLASS_LEVEL_ANNOTATIONS = Arrays.asList( Mojo.class.getName(),
+                                                          Description.class.getName(),
                                                           Execute.class.getName(),
                                                           Deprecated.class.getName() );
 
     List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
+                                                          Description.class.getName(),
                                                           Component.class.getName(),
                                                           Deprecated.class.getName() );
 

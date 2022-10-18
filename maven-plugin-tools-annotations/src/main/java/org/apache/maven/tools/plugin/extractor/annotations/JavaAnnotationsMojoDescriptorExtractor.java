@@ -288,16 +288,19 @@ public class JavaAnnotationsMojoDescriptorExtractor
             MojoAnnotationContent mojoAnnotationContent = entry.getValue().getMojo();
             if ( mojoAnnotationContent != null )
             {
-                mojoAnnotationContent.setDescription( javaClass.getComment() );
+                if ( StringUtils.isEmpty( mojoAnnotationContent.getDescription() ) )
+                {
+                    mojoAnnotationContent.setDescription( javaClass.getComment() );
+                }
 
                 DocletTag since = findInClassHierarchy( javaClass, "since" );
-                if ( since != null )
+                if ( since != null && StringUtils.isEmpty( mojoAnnotationContent.getSince() ) )
                 {
                     mojoAnnotationContent.setSince( since.getValue() );
                 }
 
                 DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
-                if ( deprecated != null )
+                if ( deprecated != null && StringUtils.isEmpty( mojoAnnotationContent.getDeprecated() ) )
                 {
                     mojoAnnotationContent.setDeprecated( deprecated.getValue() );
                 }

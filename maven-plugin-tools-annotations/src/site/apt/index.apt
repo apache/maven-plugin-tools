@@ -52,6 +52,7 @@ import org.apache.maven.settings.Settings;
 
 /**
  * Mojo Description. @Mojo( name = "<goal-name>" ) is the minimal required annotation.
+ *
  * @since <since-text>
  * @deprecated <deprecated-text>
  */
@@ -72,10 +73,15 @@ import org.apache.maven.settings.Settings;
 @Execute( goal = "<goal-name>",
           phase = LifecyclePhase.<phase>,
           lifecycle = "<lifecycle-id>" )
+@Description( value = "Mojo description avoiding/overriding javadoc",
+              since = "equivalent of @since javadoc tag",
+              deprecated = "equivalent of @deprecated javadoc tag" ) // (since plugin-tools 3.7)
 public class MyMojo
     extends AbstractMojo
 {
     /**
+     * Parameter description.
+     *
      * @since <since-text>
      * @deprecated <deprecated-text>
      */
