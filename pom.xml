@@ -65,7 +65,9 @@
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
     <module>maven-script</module>
-    <module>maven-plugin-plugin</module><!-- keep at end since ITs require every extractors -->
+    <!-- keep at end since ITs require every extractors -->
+    <module>maven-plugin-plugin</module>
+    <module>maven-plugin-report-plugin</module>
   </modules>
 
   <scm>
@@ -147,6 +149,11 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-beanshell</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

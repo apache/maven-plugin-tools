@@ -35,7 +35,6 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
-import org.apache.maven.plugin.plugin.DescriptorGeneratorMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -61,14 +60,12 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 /**
  * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
  * and one <code><i>goal</i>-mojo.html</code> per goal.
- * Relies on one output file from {@link DescriptorGeneratorMojo}.
+ * Relies on one output file from {@link org.apache.maven.plugin.plugin.DescriptorGeneratorMojo}.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.0
- * @deprecated use the maven-plugin-report-plugin instead
  */
-@Deprecated
 @Mojo( name = "report", threadSafe = true )
 @Execute( phase = LifecyclePhase.PROCESS_CLASSES )
 public class PluginReport
@@ -244,10 +241,6 @@ public class PluginReport
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
-        getLog().warn( "The 'report' goal of the maven-plugin-plugin is deprecated, please use "
-                + "the 'report' goal from the maven-plugin-report-plugin instead. This goal will be removed "
-                + "in version 4.0.0." );
-
         if ( skip || skipReport )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );

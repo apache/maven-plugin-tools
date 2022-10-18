@@ -24,7 +24,6 @@ package org.apache.maven.plugin.plugin.report;
  *
  * @author Slawomir Jaranowski
  */
-@Deprecated
 public class RequirementsHistory
 {
     /**

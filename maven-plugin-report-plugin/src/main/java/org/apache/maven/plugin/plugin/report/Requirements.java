@@ -19,19 +19,16 @@ package org.apache.maven.plugin.plugin.report;
  * under the License.
  */
 
+import java.util.Properties;
+
 /**
- * Plugin requirements history.
+ * Plugin requirements.
  *
- * @author Slawomir Jaranowski
+ * @deprecated will be removed in the next major version
  */
 @Deprecated
-public class RequirementsHistory
+public class Requirements
 {
-    /**
-     * The plugin version.
-     */
-    private String version;
-
     /**
      * The minimum version of Maven to run this plugin.
      */
@@ -42,10 +39,20 @@ public class RequirementsHistory
      */
     private String jdk;
 
-    public String getVersion()
-    {
-        return version;
-    }
+    /**
+     * The minimum memory needed to run this plugin.
+     */
+    private String memory;
+
+    /**
+     * The minimum diskSpace needed to run this plugin.
+     */
+    private String diskSpace;
+
+    /**
+     * Field others.
+     */
+    private Properties others;
 
     public String getMaven()
     {
@@ -57,13 +64,30 @@ public class RequirementsHistory
         return jdk;
     }
 
+    public String getMemory()
+    {
+        return memory;
+    }
+
+    public String getDiskSpace()
+    {
+        return diskSpace;
+    }
+
+    public Properties getOthers()
+    {
+        return others;
+    }
+
     @Override
     public String toString()
     {
-        final StringBuilder sb = new StringBuilder( "RequirementsHistory{" );
-        sb.append( "version='" ).append( version ).append( '\'' );
-        sb.append( ", maven='" ).append( maven ).append( '\'' );
+        final StringBuilder sb = new StringBuilder( "Requirements{" );
+        sb.append( "maven='" ).append( maven ).append( '\'' );
         sb.append( ", jdk='" ).append( jdk ).append( '\'' );
+        sb.append( ", memory='" ).append( memory ).append( '\'' );
+        sb.append( ", diskSpace='" ).append( diskSpace ).append( '\'' );
+        sb.append( ", others=" ).append( others );
         sb.append( '}' );
         return sb.toString();
     }
