@@ -52,6 +52,7 @@ import org.apache.maven.settings.Settings;
 
 /**
  * Mojo Description. @Mojo( name = "<goal-name>" ) is the minimal required annotation.
+ *
  * @since <since-text>
  * @deprecated <deprecated-text>
  */
@@ -76,6 +77,8 @@ public class MyMojo
     extends AbstractMojo
 {
     /**
+     * Parameter description.
+     *
      * @since <since-text>
      * @deprecated <deprecated-text>
      */

@@ -31,9 +31,9 @@ Using Plugin Tools Java Annotations
  Since version 3.0 of the maven-plugin-plugin, you can use Java5 annotations to generate the 
  plugin descriptor file.
 
- <<NOTE>> With annotations, your Mojo super class does not have to be in the same project. Provided that the super class also uses annotations, it
+ <<NOTE>> With annotations, your Mojo super class does not have to be in the same project: provided that the super class also uses annotations, it
  can now come from reactor projects or external dependencies. By default all dependencies are scanned, but this can be reduced with the <<<mojoDependencies>>>
- parameter. As javadoc doclets are still useful for <<<@since>>>, <<<@deprecated>>> and comments, the sources are still scanned. So if you use an external 
+ parameter. BUT as javadoc doclets are still useful for goals and parameters description, <<<@since>>> and <<<@deprecated>>>, the sources are still scanned. So if you use an external
  dependency, you must still provide an artifact with sources (<<<sources>>> classifier) to provide documentation (the tooling will skip error if this artifact 
  sources is missing).
 
