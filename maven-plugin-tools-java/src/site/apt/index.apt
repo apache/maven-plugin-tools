@@ -68,6 +68,8 @@ public class MyMojo
     extends AbstractMojo
 {
     /**
+     * Parameter description.
+     *
      * @parameter name="parameter" alias="myAlias" implementation="" property="aProperty" default-value="${anExpression}"
      * @readonly
      * @required
