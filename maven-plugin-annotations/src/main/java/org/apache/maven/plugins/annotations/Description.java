@@ -40,7 +40,7 @@ public @interface Description
      * Description content for the {@code Mojo} or Mojo {@code Parameter}.
      *
      * <p>A &quot;Safe HTML&quot; subset can be used. This is achieved by running
-     * the content through the <a href="https://github.com/owasp/java-html-sanitizer"<OWASP Java HTML Sanitizer</a>
+     * the content through the <a href="https://github.com/owasp/java-html-sanitizer">OWASP Java HTML Sanitizer</a>
      * before rendering.</p>
      *
      * @return a description of the Mojo or the parameter.
