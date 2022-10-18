@@ -145,10 +145,13 @@ public class PluginReport
     /**
      * Set this to "true" to skip invoking any goals or reports of the plugin.
      *
+     * @deprecated use {@link #skip} parameter instead
+     *
      * @since 2.8
      */
+    @Deprecated
     @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
-    private boolean skip;
+    private boolean skipReport;
 
     /**
      * Set this to "true" to skip generating the report.
@@ -156,7 +159,7 @@ public class PluginReport
      * @since 2.8
      */
     @Parameter( defaultValue = "false", property = "maven.plugin.report.skip" )
-    private boolean skipReport;
+    private boolean skip;
 
     /**
      * Set this to "true" to generate the usage section for "plugin-info.html" with
