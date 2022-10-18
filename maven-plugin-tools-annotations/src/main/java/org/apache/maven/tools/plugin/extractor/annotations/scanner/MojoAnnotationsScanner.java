@@ -45,6 +45,9 @@ public interface MojoAnnotationsScanner
                                                           Component.class.getName(),
                                                           Deprecated.class.getName() );
 
+    List<String> METHOD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
+                                                           Deprecated.class.getName() );
+
     /**
      * Scan classes for mojo annotations.
      * 

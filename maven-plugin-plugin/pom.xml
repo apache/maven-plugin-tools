@@ -312,6 +312,7 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <debug>true</debug>
               <streamLogsOnFailures>true</streamLogsOnFailures>
+              <showErrors>true</showErrors>
               <filterProperties>
                 <sitePluginVersion>3.12.1</sitePluginVersion>
                 <projectInfoReportsPlugin>3.4.1</projectInfoReportsPlugin>

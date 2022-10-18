@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugins.annotations.Execute;
@@ -94,8 +95,8 @@ class TestAnnotationsReader
         Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
         assertThat( parameters ).isNotNull()
             .isNotEmpty()
-            .hasSize( 3 )
-            .contains(
+            .hasSize( 6 )
+            .containsExactlyInAnyOrder(
                 new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", null, true, false,
                                                 String.class.getName() ),
                 new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", null, false, false,
@@ -103,7 +104,19 @@ class TestAnnotationsReader
                 new ParameterAnnotationContent( "fooInterface", null, "fooInterface", null,
                                                 FooInterfaceImpl.class,
                                                 false,
-                                                false, FooInterface.class.getName() )
+                                                false, FooInterface.class.getName() ),
+                new ParameterAnnotationContent( "paramFromSetter", null, "props.paramFromSetter", null,
+                                                null,
+                                                false,
+                                                false, String.class.getName() ),
+                new ParameterAnnotationContent( "paramFromAdd", null, "props.paramFromAdd", null,
+                                                null,
+                                                false,
+                                                false, String.class.getName() ),
+                new ParameterAnnotationContent( "paramFromSetterDeprecated", null, "props.paramFromSetterDeprecated", null,
+                                                null,
+                                                false,
+                                                false, List.class.getName() )
             );
     }
 }
