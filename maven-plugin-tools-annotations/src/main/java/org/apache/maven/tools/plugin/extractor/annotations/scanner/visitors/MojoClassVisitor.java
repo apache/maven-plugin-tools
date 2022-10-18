@@ -19,41 +19,44 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * under the License.
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
-import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
+ * Visitor for Mojo classes.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
 public class MojoClassVisitor
     extends ClassVisitor
 {
-    private Logger logger;
-
     private MojoAnnotatedClass mojoAnnotatedClass;
 
     private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<>();
 
     private List<MojoFieldVisitor> fieldVisitors = new ArrayList<>();
 
-    public MojoClassVisitor( Logger logger )
+    private List<MojoMethodVisitor> methodVisitors = new ArrayList<>();
+
+    public MojoClassVisitor()
     {
         super( Opcodes.ASM9 );
-        this.logger = logger;
     }
 
     public MojoAnnotatedClass getMojoAnnotatedClass()
@@ -61,53 +64,30 @@ public class MojoClassVisitor
         return mojoAnnotatedClass;
     }
 
-    public void setMojoAnnotatedClass( MojoAnnotatedClass mojoAnnotatedClass )
-    {
-        this.mojoAnnotatedClass = mojoAnnotatedClass;
-    }
-
-    public Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap()
-    {
-        return annotationVisitorMap;
-    }
-
     public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
     {
         return annotationVisitorMap.get( annotation.getName() );
-    }
-
-    public void setAnnotationVisitorMap( Map<String, MojoAnnotationVisitor> annotationVisitorMap )
-    {
-        this.annotationVisitorMap = annotationVisitorMap;
-    }
-
-    public List<MojoFieldVisitor> getFieldVisitors()
-    {
-        return fieldVisitors;
-    }
-
-    public void setFieldVisitors( List<MojoFieldVisitor> fieldVisitors )
-    {
-        this.fieldVisitors = fieldVisitors;
     }
 
     public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
     {
         String annotationClassName = annotation.getName();
 
-        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<>();
+        return fieldVisitors.stream()
+            .filter( field -> field.getAnnotationVisitorMap().containsKey( annotationClassName ) )
+            .collect( Collectors.toList() );
+    }
 
-        for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
-        {
-            Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+    public List<MojoParameterVisitor> findParameterVisitors()
+    {
+        String annotationClassName = Parameter.class.getName();
 
-            if (  filedVisitorMap.containsKey( annotationClassName ) )
-            {
-                mojoFieldVisitors.add( mojoFieldVisitor );
-            }
-        }
-
-        return mojoFieldVisitors;
+        return Stream
+            .concat(
+                findFieldWithAnnotation( Parameter.class ).stream(),
+                methodVisitors.stream()
+                    .filter( method -> method.getAnnotationVisitorMap().containsKey( annotationClassName ) ) )
+            .collect( Collectors.toList() );
     }
 
     @Override
@@ -129,7 +109,7 @@ public class MojoClassVisitor
         {
             return null;
         }
-        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( logger, annotationClassName );
+        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( annotationClassName );
         annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );
         return mojoAnnotationVisitor;
     }
@@ -137,7 +117,7 @@ public class MojoClassVisitor
     @Override
     public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
     {
-        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( logger, name, Type.getType( desc ).getClassName() );
+        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( name, Type.getType( desc ).getClassName() );
         fieldVisitors.add( mojoFieldVisitor );
         return mojoFieldVisitor;
     }
@@ -145,38 +125,29 @@ public class MojoClassVisitor
     @Override
     public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
     {
-        // we don't need methods informations
+        if ( ( access & Opcodes.ACC_PUBLIC ) != Opcodes.ACC_PUBLIC
+            || ( access & Opcodes.ACC_STATIC ) == Opcodes.ACC_STATIC )
+        {
+            return null;
+        }
+
+        if ( name.length() < 4 || !( name.startsWith( "add" ) || name.startsWith( "set" ) ) )
+        {
+            return null;
+        }
+
+        Type type = Type.getType( desc );
+
+        if ( "void".equals( type.getReturnType().getClassName() ) && type.getArgumentTypes().length == 1 )
+        {
+            String fieldName = StringUtils.lowercaseFirstLetter( name.substring( 3 ) );
+            String className = type.getArgumentTypes()[0].getClassName();
+
+            MojoMethodVisitor mojoMethodVisitor = new MojoMethodVisitor( fieldName, className );
+            methodVisitors.add( mojoMethodVisitor );
+            return mojoMethodVisitor;
+        }
+
         return null;
     }
-
-    @Override
-    public void visitAttribute( Attribute attr )
-    {
-        // no op
-    }
-
-    @Override
-    public void visitSource( String source, String debug )
-    {
-        // no op
-    }
-
-    @Override
-    public void visitOuterClass( String owner, String name, String desc )
-    {
-        // no op
-    }
-
-    @Override
-    public void visitInnerClass( String name, String outerName, String innerName, int access )
-    {
-        // no op
-    }
-
-    @Override
-    public void visitEnd()
-    {
-        // no op
-    }
-
 }

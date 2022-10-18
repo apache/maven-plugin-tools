@@ -19,6 +19,8 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * under the License.
  */
 
+import java.util.List;
+
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -58,6 +60,45 @@ public class FooMojo
     protected String beer;
 
     /**
+     * setter as parameter.
+     */
+    @Parameter( property = "props.paramFromSetter" )
+    public void setParamFromSetter(String value)
+    {
+        // empty
+    }
+
+    /**
+     * add method as parameter.
+     */
+    @Parameter( property = "props.paramFromAdd" )
+    public void addParamFromAdd(String value)
+    {
+        // empty
+    }
+
+    /**
+     * deprecated setter as parameter.
+     *
+     * @deprecated reason of deprecation
+     */
+    @Deprecated
+    @Parameter( property = "props.paramFromSetterDeprecated" )
+    public void setParamFromSetterDeprecated( List<String> value)
+    {
+        // empty
+    }
+
+    /**
+     * Static methods should be excluded.
+     */
+    @Parameter
+    public static void setStaticMethod( String value )
+    {
+        // empty
+    }
+
+    /**
      *
      */
     @Component( role = ArtifactMetadataSource.class, hint = "maven" )
@@ -68,5 +109,11 @@ public class FooMojo
         throws MojoExecutionException, MojoFailureException
     {
         // nothing
+    }
+
+    @Deprecated
+    public void deprecatedMethod(String value)
+    {
+
     }
 }

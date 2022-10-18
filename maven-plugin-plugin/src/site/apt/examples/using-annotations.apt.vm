@@ -41,7 +41,7 @@ Using Plugin Tools Java Annotations
 
   Information for plugin descriptor generation is specified using 4 annotations:
 
-  * 2 class-level annotations:
+  * 2 class level annotations:
 
     * <<<@Mojo>>>: This annotation will mark your class as a Mojo,
 
@@ -49,9 +49,13 @@ Using Plugin Tools Java Annotations
 
     []
 
-  * 2 field-level annotations:
+  * 1 field or method level annotations:
 
     * <<<@Parameter>>>: Used to configure your Mojo parameters,
+
+    []
+
+  * 1 field level annotations:
 
     * <<<@Component>>>: Used to configure injection of Plexus components or Maven context components.
 

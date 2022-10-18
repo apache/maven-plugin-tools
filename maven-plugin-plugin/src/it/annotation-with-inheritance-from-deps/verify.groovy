@@ -61,7 +61,7 @@ assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.project
 assert mojo.requirements.requirement[1].'role-hint'.text() == ''
 assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
-assert mojo.parameters.parameter.size() == 4
+assert mojo.parameters.parameter.size() == 7
 
 def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
 
@@ -106,5 +106,38 @@ assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'Interface type as parameter.'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromSetter"}[0]
+
+assert parameter.name.text() == 'paramFromSetter'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == 'setter as parameter.'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromAdd"}[0]
+
+assert parameter.name.text() == 'paramFromAdd'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.lang.String'
+assert parameter.implementation.isEmpty()
+assert parameter.deprecated.isEmpty()
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == 'add method as parameter.'
+
+parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromSetterDeprecated"}[0]
+
+assert parameter.name.text() == 'paramFromSetterDeprecated'
+assert parameter.alias.isEmpty()
+assert parameter.type.text() == 'java.util.List'
+assert parameter.implementation.isEmpty()
+assert parameter.deprecated.text() == 'reason of deprecation'
+assert parameter.required.text() == 'false'
+assert parameter.editable.text() == 'true'
+assert parameter.description.text() == 'deprecated setter as parameter.'
 
 return true;

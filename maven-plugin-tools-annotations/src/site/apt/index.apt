@@ -118,6 +118,15 @@ public class MyMojo
     @Parameter( defaultValue = "${project.build.directory}", readonly = true )
     private File target;
 
+    /**
+     * @Parameter for methods can be used only with public setter methods
+    */
+    @Parameter( ... )
+    public setOutput( File output )
+    {
+        ...
+    }
+
     public void execute()
     {
         ...

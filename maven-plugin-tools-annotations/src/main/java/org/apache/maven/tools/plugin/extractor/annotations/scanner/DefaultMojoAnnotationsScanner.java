@@ -35,6 +35,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAn
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoAnnotationVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoClassVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoParameterVisitor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.StringUtils;
@@ -56,6 +57,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
+ * Mojo scanner with java annotations.
+ *
  * @author Olivier Lamy
  * @since 3.0
  */
@@ -206,7 +209,7 @@ public class DefaultMojoAnnotationsScanner
                                      Artifact artifact, boolean excludeMojo, String source, String file )
         throws IOException, ExtractionException
     {
-        MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( getLogger() );
+        MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( );
 
         try
         {
@@ -295,13 +298,13 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Parameter annotations
-            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Parameter.class );
-            for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
+            List<MojoParameterVisitor> mojoParameterVisitors = mojoClassVisitor.findParameterVisitors();
+            for ( MojoParameterVisitor parameterVisitor : mojoParameterVisitors )
             {
                 ParameterAnnotationContent parameterAnnotationContent =
-                    new ParameterAnnotationContent( mojoFieldVisitor.getFieldName(), mojoFieldVisitor.getClassName() );
+                    new ParameterAnnotationContent( parameterVisitor.getFieldName(), parameterVisitor.getClassName() );
 
-                Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap = parameterVisitor.getAnnotationVisitorMap();
                 MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( Parameter.class.getName() );
 
                 populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
@@ -316,7 +319,7 @@ public class DefaultMojoAnnotationsScanner
             }
 
             // @Component annotations
-            mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Component.class );
+            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation( Component.class );
             for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
             {
                 ComponentAnnotationContent componentAnnotationContent =
