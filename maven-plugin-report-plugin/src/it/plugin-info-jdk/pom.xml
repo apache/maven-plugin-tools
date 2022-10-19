@@ -92,6 +92,9 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-report-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <enhancedPluginXmlFile>${project.build.outputDirectory}/META-INF/maven/plugin-enhanced.xml</enhancedPluginXmlFile>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
