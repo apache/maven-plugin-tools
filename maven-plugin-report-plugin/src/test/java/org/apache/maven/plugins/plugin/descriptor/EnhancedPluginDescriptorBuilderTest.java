@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class EnhancedPluginDescriptorBuilderTest
+public class EnhancedPluginDescriptorBuilderTest
 {
 
     @Test
