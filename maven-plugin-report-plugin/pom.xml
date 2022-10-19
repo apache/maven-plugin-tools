@@ -194,6 +194,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <goalPrefix>plugin-report</goalPrefix>
+                </configuration>
             </plugin>
         </plugins>
     </build>
