@@ -234,7 +234,7 @@ public class PluginReport
     @Override
     public boolean canGenerateReport()
     {
-        return pluginXmlFile != null && pluginXmlFile.isFile() && pluginXmlFile.canRead();
+        return enhancedPluginXmlFile != null && enhancedPluginXmlFile.isFile() && enhancedPluginXmlFile.canRead();
     }
 
     /**
