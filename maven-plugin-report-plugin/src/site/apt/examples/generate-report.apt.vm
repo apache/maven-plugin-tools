@@ -37,7 +37,7 @@ Configuring Generation of Documentation Reports
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
         <version>${project.version}</version>
       </plugin>
     </plugins>
