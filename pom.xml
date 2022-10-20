@@ -24,12 +24,12 @@
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
     <version>37</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.6.5-SNAPSHOT</version>
+  <version>3.7.0</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -74,7 +74,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</developerConnection>
     <url>https://github.com/apache/maven-plugin-tools/tree/${project.scm.tag}</url>
-    <tag>master</tag>
+    <tag>maven-plugin-tools-3.7.0</tag>
   </scm>
   <issueManagement>
     <system>jira</system>
@@ -105,7 +105,7 @@
     <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
-    <project.build.outputTimestamp>2022-01-10T23:05:38Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2022-10-20T07:36:14Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
