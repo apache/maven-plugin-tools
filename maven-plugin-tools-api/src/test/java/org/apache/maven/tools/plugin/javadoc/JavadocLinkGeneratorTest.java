@@ -116,11 +116,9 @@ class JavadocLinkGeneratorTest
     @Test
     void testInaccessibleBaseUri() throws URISyntaxException
     {
-        // construction succeeds, but every subsequent link creation fails
-        JavadocLinkGenerator linkGenerator =
-            new JavadocLinkGenerator( Collections.singletonList( new URI( "https://example.com/apidocs/" ) ), null );
-        assertThrows( IllegalArgumentException.class,
-                       () -> linkGenerator.createLink( new FullyQualifiedJavadocReference( "some.unknown.package", false ) ) );
+        // construction fails as no valid site URL is given
+        assertThrows( IllegalArgumentException.class, () -> 
+            new JavadocLinkGenerator( Collections.singletonList( new URI( "https://example.com/apidocs/" ) ), null ) );
 
     }
 }

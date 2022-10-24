@@ -213,4 +213,10 @@ public class SimpleConverterContext
     {
         return (T) attributes.getOrDefault( name, defaultValue );
     }
+
+    @Override
+    public boolean canGetUrl()
+    {
+        return true;
+    }
 }

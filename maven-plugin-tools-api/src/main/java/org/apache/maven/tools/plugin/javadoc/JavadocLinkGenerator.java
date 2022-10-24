@@ -148,6 +148,11 @@ public class JavadocLinkGenerator
         {
             externalJavadocSites = Collections.emptyList();
         }
+        if ( internalJavadocSite == null && externalJavadocSites.isEmpty() )
+        {
+            throw new IllegalArgumentException( "Either internal or at least one accessible external javadoc "
+                                                + "URLs must be given!" );
+        }
     }
 
     /**
@@ -158,6 +163,7 @@ public class JavadocLinkGenerator
      * @param javadocReference
      * @return the (deep-) link towards a javadoc page
      * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
+     * @throws IllegalStateException in case no javadoc source sites have been configured
      */
     public URI createLink( FullyQualifiedJavadocReference javadocReference )
     {

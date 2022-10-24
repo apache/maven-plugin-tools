@@ -23,7 +23,6 @@ import java.net.URI;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.SimpleConverterContext;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.LinkUtils;
 import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +43,7 @@ class LinkUtilsTest
     void testCreateLinkWithNoJavadoc()
     {
         ConverterContext context = new SimpleConverterContext( "myPackage", ( ref ) -> { throw new IllegalArgumentException("Could not get javadoc"); } );
-        assertEquals( "NoJavadoc<!-- this link does not have javadoc linked -->",
+        assertEquals( "NoJavadoc<!-- reference not found in associated javadoc sites -->",
                       LinkUtils.createLink( "NoJavadoc", context ) );
     }
 

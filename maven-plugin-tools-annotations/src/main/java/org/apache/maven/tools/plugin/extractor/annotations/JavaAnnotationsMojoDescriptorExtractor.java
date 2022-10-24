@@ -143,11 +143,20 @@ public class JavaAnnotationsMojoDescriptorExtractor
         JavaProjectBuilder builder = scanJavadoc( request, mojoAnnotatedClasses.values() );
         Map<String, JavaClass> javaClassesMap = discoverClasses( builder );
 
+        final JavadocLinkGenerator linkGenerator;
+        if ( request.getInternalJavadocBaseUrl() != null || ( request.getExternalJavadocBaseUrls() != null
+             && !request.getExternalJavadocBaseUrls().isEmpty() ) )
+        {
+            linkGenerator =  new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
+                                                       request.getInternalJavadocVersion(),
+                                                       request.getExternalJavadocBaseUrls(),
+                                                       request.getSettings() );
+        }
+        else
+        {
+            linkGenerator = null;
+        }
 
-        JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
-                                                                       request.getInternalJavadocVersion(),
-                                                                       request.getExternalJavadocBaseUrls(),
-                                                                       request.getSettings() );
         populateDataFromJavadoc( builder, mojoAnnotatedClasses, javaClassesMap, linkGenerator );
 
         return toMojoDescriptors( mojoAnnotatedClasses, request.getPluginDescriptor() );

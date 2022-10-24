@@ -167,11 +167,20 @@ public class PluginDescriptorFilesGenerator
 
             w.startElement( "mojos" );
 
-            JavadocLinkGenerator javadocLinkGenerator =
-                            new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
-                                                      request.getInternalJavadocVersion(),
-                                                      request.getExternalJavadocBaseUrls(),
-                                                      request.getSettings() );
+            final JavadocLinkGenerator javadocLinkGenerator;
+            if ( request.getInternalJavadocBaseUrl() != null 
+                 || ( request.getExternalJavadocBaseUrls() != null 
+                      && !request.getExternalJavadocBaseUrls().isEmpty() ) )
+            {
+                javadocLinkGenerator =  new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
+                                                                  request.getInternalJavadocVersion(),
+                                                                  request.getExternalJavadocBaseUrls(),
+                                                                  request.getSettings() );
+            }
+            else
+            {
+                javadocLinkGenerator = null;
+            }
             if ( pluginDescriptor.getMojos() != null )
             {
                 List<MojoDescriptor> descriptors = pluginDescriptor.getMojos();
@@ -506,16 +515,19 @@ public class PluginDescriptorFilesGenerator
 
                     if ( type == DescriptorType.XHTML )
                     {
-                        try
+                        if ( javadocLinkGenerator != null )
                         {
-                            URI uri = javadocLinkGenerator.createLink( parameter.getType() );
-                            GeneratorUtils.element( w, "typeJavadocUrl", uri.toString() );
-                        } 
-                        catch ( IllegalArgumentException e )
-                        {
-                            LOG.warn( "Could not get javadoc URL for type {} of parameter {} from goal {}: {}",
-                                      parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(),
-                                      e.getMessage() );
+                            try
+                            {
+                                URI uri = javadocLinkGenerator.createLink( parameter.getType() );
+                                GeneratorUtils.element( w, "typeJavadocUrl", uri.toString() );
+                            } 
+                            catch ( IllegalArgumentException e )
+                            {
+                                LOG.warn( "Could not get javadoc URL for type {} of parameter {} from goal {}: {}",
+                                          parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(),
+                                          e.getMessage() );
+                            }
                         }
                     }
                     if ( parameter.getSince() != null )
