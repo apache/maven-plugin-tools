@@ -94,7 +94,7 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <mavenVersion>4.0.0-alpha-1-SNAPSHOT</mavenVersion>
+    <mavenVersion>4.0.0-alpha-2</mavenVersion>
     <!-- SLF4J version must match the version exported from the mavenVersion, 
     https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
     <slf4jVersion>1.7.5</slf4jVersion>
@@ -103,7 +103,7 @@
     <asmVersion>9.4</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
-    <plexusUtilsVersion>4.0.0-alpha-1-SNAPSHOT</plexusUtilsVersion>
+    <plexusUtilsVersion>4.0.0-alpha-2</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <surefire.version>3.0.0-M7</surefire.version>
@@ -235,7 +235,7 @@
       </dependency>
       <!-- plexus -->
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
+        <groupId>org.apache.maven</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>${plexusUtilsVersion}</version>
       </dependency>
