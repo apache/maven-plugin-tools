@@ -57,7 +57,7 @@
     </dependency>
     <!-- plexus -->
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
+      <groupId>org.apache.maven</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <!-- for retrieving package-list or element-list of existing javadoc sites -->
