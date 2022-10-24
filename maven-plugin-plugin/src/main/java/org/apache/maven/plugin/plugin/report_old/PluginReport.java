@@ -1,4 +1,4 @@
-package org.apache.maven.plugin.plugin.report;
+package org.apache.maven.plugin.plugin.report_old;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -41,7 +41,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.plugin.descriptor.EnhancedPluginDescriptorBuilder;
+import org.apache.maven.plugins.plugin.descriptor_old.EnhancedPluginDescriptorBuilder;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
