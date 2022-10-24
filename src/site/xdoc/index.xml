@@ -66,62 +66,66 @@
         <tr>
           <td><b><a href="./maven-plugin-plugin/index.html">maven-plugin-plugin</a></b></td>
           <td>Create a Maven plugin descriptor for any mojos found in the source tree, generate reports, create help goal.</td>
-        </tr> 
+        </tr>
+        <tr>
+          <td><b><a href="./maven-plugin-report-plugin/index.html">maven-plugin-report-plugin</a></b></td>
+          <td>The Plugin Report Plugin is used to create reports about the plugin being built.</td>
+        </tr>
         <tr>
           <td><a href="./maven-plugin-tools-generators/index.html">maven-plugin-tools-generators</a></td>
           <td>Generators (XML descriptor, help, documentation), used by maven-plugin-plugin to generate content from descriptor extracted from sources.</td>
-        </tr>      
+        </tr>
         <tr>
           <td><a href="./maven-plugin-tools-api/index.html">maven-plugin-tools-api</a></td>
           <td>Extractor API, used by maven-plugin-plugin to extract Mojo information.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-java/index.html">maven-plugin-tools-java</a></td>
           <td>Extractor for plugins written in Java annotated with Mojo Javadoc Tags.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./maven-plugin-tools-javadoc/index.html">maven-plugin-tools-javadoc</a></td>
           <td>Provides doclets to support Mojo Javadoc Tags in the Javadoc Tool.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-plugin-tools-annotations/index.html">maven-plugin-tools-annotations</a></td>
           <td>Extractor for plugins written in Java with Java annotations.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./maven-plugin-annotations/index.html">maven-plugin-annotations</a></td>
           <td>Provides the Java annotations to use in Mojos.</td>
-        </tr>      
+        </tr>
         <tr>
           <td><a href="./maven-script/index.html">maven-script</a></td>
           <td>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-beanshell/index.html">maven-plugin-tools-beanshell</a></td>
           <td>Extractor for plugins written in Beanshell.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-beanshell/index.html">maven-script-beanshell</a></td>
           <td>Maven Beanshell Mojo Support, ie write Maven plugins with Beanshell scripts.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-ant/index.html">maven-plugin-tools-ant</a></td>
           <td>Extractor for plugins written in Ant.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-script/maven-script-ant/index.html">maven-script-ant</a></td>
           <td>Maven Ant Mojo Support, ie write Maven plugins with Ant script.</td>
-        </tr>      
+        </tr>
         <tr>
           <td>&nbsp;&nbsp;<a href="./maven-script/maven-plugin-tools-model/index.html">maven-plugin-tools-model</a></td>
           <td>Plugin Metadata Model for script-based plugins.</td>
-        </tr>      
+        </tr>
       </table>
 
       <subsection name="Plugin Descriptors">
         <p>The plugin descriptor is first being generated in memory finally containing some values in HTML format before being persisted into three different formats.
         The formats differ in
           <ul>
-            <li>whether they contain extended attributes (not part of the <a href="http://maven.apache.org/ref/current/maven-plugin-api/plugin.html">Plugin Descriptor Spec</a></li>
+            <li>whether they contain extended attributes (not part of the <a href="https://maven.apache.org/ref/current/maven-plugin-api/plugin.html">Plugin Descriptor Spec</a></li>
             <li>whether descriptive values contain HTML or plain text</li>
           </ul>
         Javadoc tags are in general being resolved and replaced by their XHTML value before they end up in the according plugin descriptor attributes <code>description</code> and <code>deprecated</code>.

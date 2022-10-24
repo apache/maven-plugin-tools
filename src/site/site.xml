@@ -31,10 +31,16 @@ under the License.
       <item name="Introduction" href="index.html"/>
       <item name="JavaDocs" href="apidocs/index.html"/>
       <item name="Source Xref" href="xref/index.html"/>
-      <!--item name="FAQ" href="faq.html"/-->
       <!-- According to https://issues.apache.org/jira/browse/MNGSITE-152 -->
       <item name="License" href="https://www.apache.org/licenses/"/>
       <item name="Download" href="download.html"/>
+    </menu>
+
+    <menu name="Examples" inherit="bottom">
+      <item name="Using Java5 annotations" href="/maven-plugin-plugin/examples/using-annotations.html"/>
+      <item name="Configuring Generation of Plugin Descriptor" href="/maven-plugin-plugin/examples/generate-descriptor.html"/>
+      <item name="Configuring Generation of Plugin Documentation" href="/maven-plugin-report-plugin/examples/generate-report.html"/>
+      <item name="Configuring Generation of HelpMojo" href="/maven-plugin-plugin/examples/generate-help.html"/>
     </menu>
 
     <menu ref="modules" />

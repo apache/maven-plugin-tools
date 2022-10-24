@@ -194,7 +194,8 @@ public class DescriptorGeneratorMojo
      * This may be relative to the root of the generated Maven site.
      * It does not need to exist yet at the time when this goal is executed.
      * Must end with a slash.
-     * <b>In case this is set the javadoc reporting goal should be executed prior to Plugin Report.</b>
+     * <b>In case this is set the javadoc reporting goal should be executed prior to
+     * <a href="../maven-plugin-report-plugin/index.html">Plugin Report</a>.</b>
      * @since 3.7.0
      */
     @Parameter( property = "internalJavadocBaseUrl" )
