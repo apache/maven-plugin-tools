@@ -60,11 +60,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 /**
  * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
  * and one <code><i>goal</i>-mojo.html</code> per goal.
- * Relies on one output file from {@link org.apache.maven.plugin.plugin.DescriptorGeneratorMojo}.
+ * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
- * @since 2.0
+ * @since 3.7.0
  */
 @Mojo( name = "report", threadSafe = true )
 @Execute( phase = LifecyclePhase.PROCESS_CLASSES )
@@ -155,7 +155,7 @@ public class PluginReport
     /**
      * Set this to "true" to skip generating the report.
      *
-     * @since 2.8
+     * @since 3.7.0
      */
     @Parameter( defaultValue = "false", property = "maven.plugin.report.skip" )
     private boolean skip;
@@ -198,7 +198,7 @@ public class PluginReport
     /**
      * Path to {@code plugin.xml} plugin descriptor to generate the report from.
      *
-     * @since 3.5.1
+     * @since 3.7.0
      * @deprecated No longer evaluated, use {@link #enhancedPluginXmlFile}.
      */
     @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
