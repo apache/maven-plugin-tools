@@ -293,6 +293,15 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <sourceFileExcludes>
+              <exclude>HelpMojo.*</exclude>
+            </sourceFileExcludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
             <tagBase>https://svn.apache.org/repos/asf/maven/plugin-tools/tags</tagBase>
@@ -363,13 +372,8 @@
             </configuration>
             <reportSets>
               <reportSet>
-                <id>non-aggregate</id>
-                <reports>
-                  <report>javadoc</report>
-                </reports>
-              </reportSet>
-              <reportSet>
                 <id>aggregate</id>
+                <inherited>false</inherited>
                 <reports>
                   <report>aggregate</report>
                 </reports>
@@ -381,13 +385,8 @@
             <artifactId>maven-jxr-plugin</artifactId>
             <reportSets>
               <reportSet>
-                <id>non-aggregate</id>
-                <reports>
-                  <report>jxr</report>
-                </reports>
-              </reportSet>
-              <reportSet>
                 <id>aggregate</id>
+                <inherited>false</inherited>
                 <reports>
                   <report>aggregate</report>
                 </reports>
@@ -398,12 +397,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
             <reportSets>
-              <reportSet>
-                <id>non-aggregate</id>
-                <reports>
-                  <report>checkstyle</report>
-                </reports>
-              </reportSet>
               <reportSet>
                 <id>aggregate</id>
                 <inherited>false</inherited>

@@ -34,7 +34,6 @@ import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.plugin.report.PluginReport;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -195,7 +194,7 @@ public class DescriptorGeneratorMojo
      * This may be relative to the root of the generated Maven site.
      * It does not need to exist yet at the time when this goal is executed.
      * Must end with a slash.
-     * <b>In case this is set the javadoc reporting goal should be executed prior to {@link PluginReport}.</b>
+     * <b>In case this is set the javadoc reporting goal should be executed prior to Plugin Report.</b>
      * @since 3.7.0
      */
     @Parameter( property = "internalJavadocBaseUrl" )
