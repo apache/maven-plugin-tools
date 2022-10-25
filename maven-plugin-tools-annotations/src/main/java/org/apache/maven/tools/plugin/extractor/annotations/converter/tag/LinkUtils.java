@@ -49,43 +49,53 @@ public class LinkUtils
     public static String createLink( String referenceValue, ConverterContext context,
                                      UnaryOperator<String> labelDecorator )
     {
-        StringBuilder link = new StringBuilder();
         try
         {
             JavadocReference reference = JavadocReference.parse( referenceValue );
             FullyQualifiedJavadocReference fqReference = context.resolveReference( reference );
-            try
+            if ( !context.canGetUrl() )
             {
-                link.append( "<a href=\"" );
-                link.append( context.getUrl( fqReference ).toString() );
-                link.append( "\">" );
-                String label = getReferenceLabel( fqReference, context );
-                label = labelDecorator.apply( label );
-                link.append( label );
-                link.append( "</a>" );
+                return getReferenceLabel( fqReference, context, labelDecorator, "no javadoc sites associated" );
             }
-            catch ( IllegalArgumentException e )
-            {
-                LOG.warn( "Could not get javadoc URL for reference {} at {} (fully qualified {}): {}", referenceValue,
-                          fqReference, context.getLocation(), e.getMessage() );
-                String label = getReferenceLabel( fqReference, context );
-                link.setLength( 0 );
-                link.append( labelDecorator.apply( label ) );
-                link.append( "<!-- this link does not have javadoc linked -->" );
-            }
+            return createLink( referenceValue, fqReference, context, labelDecorator );
         }
         catch ( IllegalArgumentException e )
         {
             LOG.warn( "Unresolvable link in javadoc tag with value {} found in {}: {}", referenceValue,
                       context.getLocation(), e.getMessage() );
-            String label = referenceValue;
-            label = labelDecorator.apply( label );
-            link.setLength( 0 );
-            link.append( label );
-            link.append( "<!-- this link could not be resolved -->" );
+            return labelDecorator.apply( referenceValue ) + "<!-- this link could not be resolved -->";
         }
+    }
 
+    private static String createLink( String referenceValue, FullyQualifiedJavadocReference fqReference, 
+                                      ConverterContext context, UnaryOperator<String> labelDecorator )
+    {
+        StringBuilder link = new StringBuilder();
+        try
+        {
+            link.append( "<a href=\"" );
+            link.append( context.getUrl( fqReference ).toString() );
+            link.append( "\">" );
+            String label = getReferenceLabel( fqReference, context );
+            label = labelDecorator.apply( label );
+            link.append( label );
+            link.append( "</a>" );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            LOG.warn( "Could not get javadoc URL for reference {} at {} (fully qualified {}): {}", referenceValue,
+                      fqReference, context.getLocation(), e.getMessage() );
+            return getReferenceLabel( fqReference, context, labelDecorator,
+                                      "reference not found in associated javadoc sites" );
+        }
         return link.toString();
+    }
+
+    private static String getReferenceLabel( FullyQualifiedJavadocReference fqReference, ConverterContext context,
+                                      UnaryOperator<String> labelDecorator, String htmlComment ) 
+    {
+        String label = getReferenceLabel( fqReference, context );
+        return labelDecorator.apply( label ) + "<!-- " + htmlComment + " -->";
     }
 
     /**

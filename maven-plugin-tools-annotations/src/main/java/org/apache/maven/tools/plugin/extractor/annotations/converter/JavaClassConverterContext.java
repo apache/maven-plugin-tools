@@ -61,7 +61,7 @@ public class JavaClassConverterContext
 
     final Map<String, MojoAnnotatedClass> mojoAnnotatedClasses;
 
-    final JavadocLinkGenerator linkGenerator;
+    final JavadocLinkGenerator linkGenerator; // may be null in case nothing was configured
 
     final int lineNumber;
 
@@ -168,6 +168,13 @@ public class JavaClassConverterContext
             && javaClass.getSimpleName().equals( reference.getClassName().orElse( "" ) );
     }
 
+    
+    @Override
+    public boolean canGetUrl()
+    {
+        return linkGenerator != null;
+    }
+
     @Override
     public URI getUrl( FullyQualifiedJavadocReference reference )
     {
@@ -195,6 +202,10 @@ public class JavaClassConverterContext
         catch ( URISyntaxException e )
         {
             throw new IllegalStateException( "Error constructing a valid URL", e ); // should not happen
+        }
+        if ( linkGenerator == null )
+        {
+            throw new IllegalStateException( "No Javadoc Sites given to create URLs to" );
         }
         return linkGenerator.createLink( reference );
     }

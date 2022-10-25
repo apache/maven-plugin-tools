@@ -71,10 +71,19 @@ public interface ConverterContext
     FullyQualifiedJavadocReference resolveReference( JavadocReference reference );
 
     /**
+     * 
+     * @return {@code true} if links to javadoc pages could potentially be generated with
+     * {@link #getUrl(FullyQualifiedJavadocReference)}.
+     */
+    boolean canGetUrl();
+
+    /**
      * Returns a (deep-)link to the javadoc page for the given reference
      * @param reference the reference for which to get the url
      * @return the link
      * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
+     * @throws IllegalStateException in case no javadoc source sites have been configured
+     * (i.e. {@link #canGetUrl()} returns {@code false})
      */
     URI getUrl( FullyQualifiedJavadocReference reference );
 
@@ -86,6 +95,10 @@ public interface ConverterContext
      */
     String getStaticFieldValue( FullyQualifiedJavadocReference reference );
 
+    /**
+     * Returns the base url to use for internal javadoc links 
+     * @return the base url for internal javadoc links (may be {@code null}).
+     */
     URI getInternalJavadocSiteBaseUrl();
 
     /**
