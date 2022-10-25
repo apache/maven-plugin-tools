@@ -513,9 +513,15 @@ public class PluginDescriptorFilesGenerator
 
                     GeneratorUtils.element( w, "type", parameter.getType() );
 
-                    if ( type == DescriptorType.XHTML )
+                    if ( type == DescriptorType.XHTML && javadocLinkGenerator != null )
                     {
-                        if ( javadocLinkGenerator != null )
+                        // skip primitives which never has javadoc
+                        if ( parameter.getType().indexOf( '.' ) == -1 )
+                        {
+                            LOG.debug( "Javadoc URLs are not available for primitive types like {}",
+                                       parameter.getType() );
+                        }
+                        else
                         {
                             try
                             {
