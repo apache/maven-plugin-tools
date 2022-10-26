@@ -40,7 +40,6 @@
     </prerequisites>
 
     <properties>
-        <doxiaVersion>1.11.1</doxiaVersion>
         <it.debug>true</it.debug>
     </properties>
 
@@ -91,14 +90,12 @@
         <dependency>
             <groupId>org.apache.maven.doxia</groupId>
             <artifactId>doxia-sink-api</artifactId>
-            <version>${doxiaVersion}</version>
         </dependency>
 
         <!-- shared -->
         <dependency>
             <groupId>org.apache.maven.reporting</groupId>
             <artifactId>maven-reporting-impl</artifactId>
-            <version>${reportingImplVersion}</version>
         </dependency>
 
         <!-- plexus -->
