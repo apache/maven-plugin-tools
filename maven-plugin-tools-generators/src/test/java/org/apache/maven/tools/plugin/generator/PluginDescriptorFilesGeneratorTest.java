@@ -29,12 +29,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.junit.jupiter.api.Test;
@@ -50,6 +52,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PluginDescriptorFilesGeneratorTest
     extends AbstractGeneratorTestCase
 {
+    @Override
+    protected void extendPluginDescriptor( PluginDescriptor pluginDescriptor ) throws DuplicateParameterException
+    {
+        Parameter parameterWithGenerics = new Parameter();
+        parameterWithGenerics.setName( "parameterWithGenerics" );
+        parameterWithGenerics.setType("java.util.Collection<java.lang.String>");
+        parameterWithGenerics.setExpression( "${customParam}" );
+        parameterWithGenerics.setDefaultValue( "a,b,c" );
+        pluginDescriptor.getMojos().get( 0 ).addParameter( parameterWithGenerics );
+    }
+
     @Override
     protected void validate( File destinationDirectory )
         throws Exception
@@ -113,8 +126,21 @@ public class PluginDescriptorFilesGeneratorTest
 
         assertNotNull( mojoDescriptor.isDependencyResolutionRequired() );
 
-        // check the parameter.
+        // check the default parameter
         checkParameter( mojoDescriptor.getParameters().get( 0 ) );
+
+        // check another parameter with generics type information
+        Parameter parameterWithGenerics = mojoDescriptor.getParameters().get( 2 );
+        assertNotNull( parameterWithGenerics );
+        assertEquals( "parameterWithGenerics", parameterWithGenerics.getName() );
+        assertEquals( "java.util.Collection", parameterWithGenerics.getType() );
+
+        PlexusConfiguration configurations = mojoDescriptor.getMojoConfiguration();
+        assertNotNull( configurations );
+        PlexusConfiguration configuration = configurations.getChild( "parameterWithGenerics" );
+        assertEquals( "java.util.Collection", configuration.getAttribute( "implementation" ) );
+        assertEquals( "a,b,c", configuration.getAttribute( "default-value") );
+        assertEquals( "${customParam}", configuration.getValue() );
     }
 
     private void checkParameter( Parameter parameter )
