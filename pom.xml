@@ -66,8 +66,8 @@
     <module>maven-plugin-annotations</module>
     <module>maven-script</module>
     <!-- keep at end since ITs require every extractors -->
-    <module>maven-plugin-plugin</module>
     <module>maven-plugin-report-plugin</module>
+    <module>maven-plugin-plugin</module>
   </modules>
 
   <scm>
@@ -324,6 +324,22 @@
           <configuration>
             <trimStackTrace>false</trimStackTrace>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${project.version}</version>
+          <configuration>
+            <internalJavadocBaseUrl>./apidocs/</internalJavadocBaseUrl>
+            <externalJavadocBaseUrls>
+              <externalJavadocBaseUrl>https://docs.oracle.com/javase/8/docs/api/</externalJavadocBaseUrl>
+            </externalJavadocBaseUrls>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-report-plugin</artifactId>
+          <version>${project.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -113,7 +113,7 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Depenency is listed here because it's used in ITs -->
+        <!-- Dependency is listed here because it's used in ITs -->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-plugin-plugin</artifactId>
