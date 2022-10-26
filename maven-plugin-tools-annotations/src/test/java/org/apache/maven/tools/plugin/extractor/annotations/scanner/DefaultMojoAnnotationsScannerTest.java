@@ -26,10 +26,14 @@ import java.util.Map;
 
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.annotations.DeprecatedMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.ParametersWithGenericsMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 class DefaultMojoAnnotationsScannerTest
@@ -76,4 +80,48 @@ class DefaultMojoAnnotationsScannerTest
             .isEqualTo( "property.anotherNotDeprecated" );
     }
 
+    @Test
+    void scanParametersWithGenerics() throws ExtractionException, IOException
+    {
+        File directoryToScan = new File( ParametersWithGenericsMojo.class.getResource( "" ).getFile() );
+
+        scanner.enableLogging( mock( Logger.class ) );
+        Map<String, MojoAnnotatedClass> result = scanner.scanDirectory(
+            directoryToScan, Collections.singletonList( "ParametersWithGenericsMojo**.class" ), null, false );
+
+        assertThat( result ).hasSize( 2 ); // mojo and nested class
+
+        MojoAnnotatedClass annotatedClass = result.get( ParametersWithGenericsMojo.class.getName() );
+        assertThat( annotatedClass.getClassName() ).isEqualTo( ParametersWithGenericsMojo.class.getName() );
+
+        ParameterAnnotationContent parameter = annotatedClass.getParameters().get( "string" );
+        assertNotNull( parameter );
+        assertEquals( "java.lang.String", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).isEmpty();
+
+        parameter = annotatedClass.getParameters().get( "stringBooleanMap" );
+        assertNotNull( parameter );
+        assertEquals( "java.util.Map", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.String", "java.lang.Boolean" );
+
+        parameter = annotatedClass.getParameters().get( "integerCollection" );
+        assertNotNull( parameter );
+        assertEquals( "java.util.Collection", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Integer" );
+
+        parameter = annotatedClass.getParameters().get( "nestedStringCollection" );
+        assertNotNull( parameter );
+        assertEquals( "java.util.Collection", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.util.Collection<java.lang.String>" );
+
+        parameter = annotatedClass.getParameters().get( "integerArrayCollection" );
+        assertNotNull( parameter );
+        assertEquals( "java.util.Collection", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Integer[]" );
+
+        parameter = annotatedClass.getParameters().get( "numberList" );
+        assertNotNull( parameter );
+        assertEquals( "java.util.List", parameter.getClassName() );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Number" );
+    }
 }

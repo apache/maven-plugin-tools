@@ -246,7 +246,11 @@
         <artifactId>asm-commons</artifactId>
         <version>${asmVersion}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>${asmVersion}</version>
+      </dependency>
       <!-- testing -->
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>

@@ -98,25 +98,25 @@ class TestAnnotationsReader
             .hasSize( 6 )
             .containsExactlyInAnyOrder(
                 new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", null, true, false,
-                                                String.class.getName() ),
+                                                String.class.getName(), Collections.emptyList() ),
                 new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", null, false, false,
-                                                String.class.getName() ),
+                                                String.class.getName(), Collections.emptyList() ),
                 new ParameterAnnotationContent( "fooInterface", null, "fooInterface", null,
                                                 FooInterfaceImpl.class,
                                                 false,
-                                                false, FooInterface.class.getName() ),
+                                                false, FooInterface.class.getName(), Collections.emptyList() ),
                 new ParameterAnnotationContent( "paramFromSetter", null, "props.paramFromSetter", null,
                                                 null,
                                                 false,
-                                                false, String.class.getName() ),
+                                                false, String.class.getName(), Collections.emptyList() ),
                 new ParameterAnnotationContent( "paramFromAdd", null, "props.paramFromAdd", null,
                                                 null,
                                                 false,
-                                                false, String.class.getName() ),
+                                                false, String.class.getName(), Collections.emptyList() ),
                 new ParameterAnnotationContent( "paramFromSetterDeprecated", null, "props.paramFromSetterDeprecated", null,
                                                 null,
                                                 false,
-                                                false, List.class.getName() )
+                                                false, List.class.getName(), Collections.singletonList("java.lang.String") )
             );
     }
 }

@@ -23,6 +23,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -50,16 +51,20 @@ public class ParameterAnnotationContent
 
     private String className;
 
-    public ParameterAnnotationContent( String fieldName, String className )
+    private final List<String> typeParameters;
+
+    public ParameterAnnotationContent( String fieldName, String className, List<String> typeParameters )
     {
         super( fieldName );
         this.className = className;
+        this.typeParameters = typeParameters;
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
-                                       Class<?> implementation, boolean required, boolean readonly, String className )
+                                       Class<?> implementation, boolean required, boolean readonly, String className,
+                                       List<String> typeParameters )
     {
-        this( fieldName, className );
+        this( fieldName, className, typeParameters );
         this.alias = alias;
         this.property = property;
         this.defaultValue = defaultValue;
@@ -177,6 +182,11 @@ public class ParameterAnnotationContent
         this.className = className;
     }
 
+    public List<String> getTypeParameters()
+    {
+        return typeParameters;
+    }
+
     @Override
     public String toString()
     {
@@ -185,6 +195,7 @@ public class ParameterAnnotationContent
         sb.append( "ParameterAnnotationContent" );
         sb.append( "{fieldName='" ).append( getFieldName() ).append( '\'' );
         sb.append( ", className='" ).append( getClassName() ).append( '\'' );
+        sb.append( ", typeParameters='" ).append( getTypeParameters() ).append( '\'' );
         sb.append( ", name='" ).append( name ).append( '\'' );
         sb.append( ", alias='" ).append( alias ).append( '\'' );
         sb.append( ", alias='" ).append( alias ).append( '\'' );
@@ -230,6 +241,10 @@ public class ParameterAnnotationContent
             return false;
         }
 
+        if ( !Objects.equals( typeParameters, that.typeParameters ) )
+        {
+            return false;
+        }
         if ( !Objects.equals( alias, that.alias ) )
         {
             return false;
@@ -253,7 +268,7 @@ public class ParameterAnnotationContent
     @Override
     public int hashCode()
     {
-        return Objects.hash( alias, getFieldName(), property, defaultValue, required, readonly,
-                             implementationClassName );
+        return Objects.hash( alias, getFieldName(), getClassName(), typeParameters, property, defaultValue, required,
+                             readonly, implementationClassName );
     }
 }

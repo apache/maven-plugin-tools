@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
@@ -698,7 +699,13 @@ public class JavaAnnotationsMojoDescriptorExtractor
                             + property, null );
                 }
                 parameter.setExpression( StringUtils.isEmpty( property ) ? "" : "${" + property + "}" );
-                parameter.setType( parameterAnnotationContent.getClassName() );
+                StringBuilder type = new StringBuilder( parameterAnnotationContent.getClassName() );
+                if ( !parameterAnnotationContent.getTypeParameters().isEmpty() )
+                {
+                    type.append( parameterAnnotationContent.getTypeParameters().stream()
+                            .collect( Collectors.joining( ", ", "<", ">" ) ) );
+                }
+                parameter.setType( type.toString() );
                 parameter.setSince( parameterAnnotationContent.getSince() );
                 parameter.setRequired( parameterAnnotationContent.required() );
 

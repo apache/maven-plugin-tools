@@ -19,6 +19,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * under the License.
  */
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +32,8 @@ public interface MojoParameterVisitor
     String getFieldName();
 
     String getClassName();
+
+    List<String> getTypeParameters();
 
     Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap();
 }
