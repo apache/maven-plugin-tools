@@ -107,7 +107,11 @@ public abstract class AbstractGeneratorMojo
     static String getDefaultGoalPrefix( MavenProject project )
     {
         String defaultGoalPrefix;
-        if ( "maven-plugin".equalsIgnoreCase( project.getArtifactId() ) )
+        if ( "maven-plugin-report-plugin".equalsIgnoreCase( project.getArtifactId() ) )
+        {
+            defaultGoalPrefix = "plugin-report";
+        }
+        else if ( "maven-plugin".equalsIgnoreCase( project.getArtifactId() ) )
         {
             defaultGoalPrefix = project.getGroupId().substring( project.getGroupId().lastIndexOf( '.' ) + 1 );
         }

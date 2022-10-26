@@ -19,27 +19,39 @@ package org.apache.maven.plugin.plugin;
  * under the License.
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
+import java.util.stream.Stream;
 
 import org.apache.maven.project.MavenProject;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 // at least one test class must be public for test-javadoc report
 public class DescriptorGeneratorMojoTest
 {
-    @Test
-    void defaultGoalPrefix()
+    public static Stream<Arguments> goalPrefixes()
     {
-        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-plugin-plugin" ) ),
-                    is( "plugin" ) );
-        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "maven-default-plugin" ) ),
-                    is( "default" ) );
-        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( null, "default-maven-plugin" ) ),
-                    is( "default" ) );
-        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( "foo.bar", "maven-plugin" ) ),
-                    is( "bar" ) );
-        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( "foo", "maven-plugin" ) ), is( "foo" ) );
+        return Stream.of(
+            arguments( null, "maven-plugin-plugin", "plugin" ),
+            arguments( null, "maven-plugin-report-plugin", "plugin-report" ),
+            arguments( null, "maven-default-plugin", "default" ),
+            arguments( null, "default-maven-plugin", "default" ),
+            arguments( null, "default-maven-plugin", "default" ),
+            arguments( "foo.bar", "maven-plugin", "bar" ),
+            arguments( "foo", "maven-plugin", "foo" )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("goalPrefixes")
+    void defaultGoalPrefix(String groupId, String artifactId, String expectedGoal)
+    {
+        assertThat( DescriptorGeneratorMojo.getDefaultGoalPrefix( newProject( groupId, artifactId ) ),
+                    is( expectedGoal ) );
     }
     
     private MavenProject newProject( final String groupId, final String artifactId )
