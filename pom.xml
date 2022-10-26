@@ -92,7 +92,6 @@
   </distributionManagement>
 
   <properties>
-    <surefire.version>2.22.2</surefire.version>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <mavenVersion>3.2.5</mavenVersion>
@@ -102,6 +101,8 @@
     <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <asmVersion>9.4</asmVersion>
+    <doxiaVersion>1.11.1</doxiaVersion>
+    <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
     <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
@@ -181,6 +182,46 @@
         <artifactId>maven-settings</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
+      <!-- doxia -->
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-sink-api</artifactId>
+        <version>${doxiaVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-site-renderer</artifactId>
+        <version>${doxia-sitetoolsVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-impl</artifactId>
+        <version>${reportingImplVersion}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>plexus-container-default</artifactId>
+            <groupId>org.codehaus.plexus</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
