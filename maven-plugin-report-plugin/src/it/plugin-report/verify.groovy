@@ -25,4 +25,5 @@ assert pluginInfo.isFile()
 
 assert !pluginInfo.text.contains('Memory')
 assert !pluginInfo.text.contains('Disk Space')
-assert !pluginInfo.text.contains('No minimum requirement.')
+// missing prerequisites in pom
+assert pluginInfo.text.contains('No minimum requirement.')

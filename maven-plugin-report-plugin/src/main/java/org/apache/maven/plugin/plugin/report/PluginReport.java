@@ -28,10 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
@@ -73,84 +75,11 @@ public class PluginReport
 {
     /**
      * Report output directory for mojos' documentation.
+     *
+     * @since 3.7.0
      */
     @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
     private File outputDirectory;
-
-    /**
-     * The file encoding of the source files.
-     *
-     * @deprecated not used in report, will be removed in the next major version
-     *
-     * @since 2.7
-     */
-    @Deprecated
-    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
-    private String encoding;
-
-    /**
-     * Specify some requirements to execute this plugin.
-     * Example:
-     * <pre>
-     * &lt;requirements&gt;
-     *   &lt;maven&gt;2.0&lt;/maven&gt;
-     *   &lt;jdk&gt;1.4&lt;/jdk&gt;
-     *   &lt;memory&gt;256m&lt;/memory&gt;
-     *   &lt;diskSpace&gt;1m&lt;/diskSpace&gt;
-     *   &lt;others&gt;
-     *     &lt;property&gt;
-     *       &lt;name&gt;SVN&lt;/name&gt;
-     *       &lt;value&gt;1.4.6&lt;/value&gt;
-     *     &lt;/property&gt;
-     *   &lt;/others&gt;
-     * &lt;/requirements&gt;
-     * </pre>
-     * <p>
-     * If not is specified, Maven requirement is extracted from
-     * <code>&lt;project&gt;&lt;prerequisites&gt;&lt;maven&gt;</code>
-     * and JDK requirement is extracted from maven-compiler-plugin configuration.
-     *
-     * @deprecated will be removed in the next major version, please don't use
-     */
-    @Deprecated
-    @Parameter
-    private Requirements requirements;
-
-    /**
-     * <p>
-     * The goal prefix that will appear before the ":".
-     * By default, this plugin applies a heuristic to derive a heuristic from
-     * the plugin's artifactId.
-     * </p>
-     * <p>
-     * It removes any occurrences of the regular expression <strong>-?maven-?</strong>,
-     * and then removes any occurrences of <strong>-?plugin-?</strong>.
-     * </p>
-     * <p>
-     * For example, horsefeature-maven-plugin becomes horsefeature.
-     * </p>
-     * <p>
-     * (There is a special case for maven-plugin-plugin: it is mapped to 'plugin')
-     * </p>
-     *
-     * @deprecated not used in report, will be removed in the next major version
-     *
-     * @since 2.4
-     */
-    @Deprecated
-    @Parameter( property = "goalPrefix" )
-    protected String goalPrefix;
-
-    /**
-     * Set this to "true" to skip invoking any goals or reports of the plugin.
-     *
-     * @deprecated use {@link #skip} parameter instead
-     *
-     * @since 2.8
-     */
-    @Deprecated
-    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
-    private boolean skipReport;
 
     /**
      * Set this to "true" to skip generating the report.
@@ -189,22 +118,8 @@ public class PluginReport
     @Parameter
     private List<RequirementsHistory> requirementsHistories = new ArrayList<>();
 
-    /**
-     * @since 3.5.1
-     */
     @Component
     private RuntimeInformation rtInfo;
-
-    /**
-     * Path to {@code plugin.xml} plugin descriptor to generate the report from.
-     *
-     * @since 3.7.0
-     * @deprecated No longer evaluated, use {@link #enhancedPluginXmlFile}.
-     */
-    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven/plugin.xml", required = true,
-                readonly = true )
-    @Deprecated
-    private File pluginXmlFile;
 
     /**
      * Path to enhanced plugin descriptor to generate the report from (must contain some XHTML values)
@@ -241,7 +156,7 @@ public class PluginReport
     protected void executeReport( Locale locale )
         throws MavenReportException
     {
-        if ( skip || skipReport )
+        if ( skip  )
         {
             getLog().info( "Maven Plugin Plugin Report generation skipped." );
             return;
@@ -254,7 +169,7 @@ public class PluginReport
 
         // Write the overview
         PluginOverviewRenderer r =
-            new PluginOverviewRenderer( getProject(), requirements, requirementsHistories, getSink(),
+            new PluginOverviewRenderer( getProject(), requirementsHistories, getSink(),
                                         pluginDescriptor, locale, hasExtensionsToLoad );
         r.render();
     }
@@ -346,8 +261,6 @@ public class PluginReport
     {
         private final MavenProject project;
 
-        private final Requirements requirements;
-
         private final List<RequirementsHistory> requirementsHistories;
 
         private final PluginDescriptor pluginDescriptor;
@@ -358,21 +271,18 @@ public class PluginReport
 
         /**
          * @param project               not null
-         * @param requirements          not null
          * @param requirementsHistories not null
          * @param sink                  not null
          * @param pluginDescriptor      not null
          * @param locale                not null
          */
-        PluginOverviewRenderer( MavenProject project, Requirements requirements,
+        PluginOverviewRenderer( MavenProject project,
                                 List<RequirementsHistory> requirementsHistories, Sink sink,
                                 PluginDescriptor pluginDescriptor, Locale locale, boolean hasExtensionsToLoad )
         {
             super( sink );
 
             this.project = project;
-
-            this.requirements = ( requirements == null ? new Requirements() : requirements );
 
             this.requirementsHistories = requirementsHistories;
 
@@ -492,7 +402,7 @@ public class PluginReport
 
             startTable();
 
-            String maven = discoverMavenRequirement( project, requirements );
+            String maven = discoverMavenRequirement( project );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.maven" ) );
             tableCell( ( maven != null
@@ -500,45 +410,13 @@ public class PluginReport
                 : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
-            String jdk = discoverJdkRequirement( project, requirements );
+            String jdk = discoverJdkRequirement( project );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.jdk" ) );
             tableCell(
                 ( jdk != null ? jdk : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
-            String memory = requirements.getMemory();
-            if ( StringUtils.isNotEmpty( memory ) )
-            {
-                sink.tableRow();
-                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.memory" ) );
-                tableCell( memory );
-                sink.tableRow_();
-            }
-
-            String diskSpace = requirements.getDiskSpace();
-            if ( StringUtils.isNotEmpty( diskSpace ) )
-            {
-                sink.tableRow();
-                tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.diskspace" ) );
-                tableCell( diskSpace );
-                sink.tableRow_();
-            }
-
-            if ( requirements.getOthers() != null && requirements.getOthers().size() > 0 )
-            {
-                for ( Iterator it = requirements.getOthers().keySet().iterator(); it.hasNext(); )
-                {
-                    String key = it.next().toString();
-
-                    sink.tableRow();
-                    tableCell( key );
-                    tableCell( ( StringUtils.isNotEmpty( requirements.getOthers().getProperty( key ) )
-                        ? requirements.getOthers().getProperty( key )
-                        : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
-                    sink.tableRow_();
-                }
-            }
             endTable();
 
             endSection();
@@ -668,25 +546,15 @@ public class PluginReport
 
         /**
          * Try to lookup on the Maven prerequisites property.
-         * If not specified, uses the value defined by the user.
          *
          * @param project      not null
-         * @param requirements not null
-         * @return the Maven version
+         * @return the Maven version or null if not specified
          */
-        private static String discoverMavenRequirement( MavenProject project, Requirements requirements )
+        private static String discoverMavenRequirement( MavenProject project )
         {
-            String maven = requirements.getMaven();
-            if ( maven == null )
-            {
-                maven = ( project.getPrerequisites() != null ? project.getPrerequisites().getMaven() : null );
-            }
-            if ( maven == null )
-            {
-                maven = "2.0";
-            }
-
-            return maven;
+            return Optional.ofNullable( project.getPrerequisites() )
+                .map( Prerequisites::getMaven )
+                .orElse( null );
         }
 
         /**
@@ -699,17 +567,10 @@ public class PluginReport
          * </ol>
          *
          * @param project      not null
-         * @param requirements not null
          * @return the JDK version
          */
-        private static String discoverJdkRequirement( MavenProject project, Requirements requirements )
+        private static String discoverJdkRequirement( MavenProject project )
         {
-            String jdk = requirements.getJdk();
-
-            if ( jdk != null )
-            {
-                return jdk;
-            }
 
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
             if ( compiler == null )
@@ -717,7 +578,7 @@ public class PluginReport
                 compiler = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
             }
 
-            jdk = getPluginParameter( compiler, "release" );
+            String jdk = getPluginParameter( compiler, "release" );
             if ( jdk != null )
             {
                 return jdk;
@@ -742,8 +603,6 @@ public class PluginReport
                 return jdk;
             }
 
-            // return "1.5" by default?
-
             String version = ( compiler == null ) ? null : compiler.getVersion();
 
             if ( version != null )
@@ -751,7 +610,7 @@ public class PluginReport
                 return "Default target for maven-compiler-plugin version " + version;
             }
 
-            return "Unknown";
+            return null;
         }
 
         private static Plugin getCompilerPlugin( Map<String, Plugin> pluginsAsMap )
