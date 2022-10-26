@@ -131,6 +131,19 @@ public class PluginReport
     private File enhancedPluginXmlFile;
 
     /**
+     * In case the internal javadoc site has not been generated when running this report goal
+     * (e.g. when using an aggregator javadoc report) link validation needs to be disabled by setting
+     * this value to {@code true}.
+     * This might have the drawback that some links being generated in the report might be broken
+     * in case not all parameter types and javadoc link references are resolvable through the sites being given to
+     * goal {@code plugin:descriptor}.
+     * 
+     * @since 3.7.0
+     */
+    @Parameter
+    private boolean disableInternalJavadocLinkValidation;
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -232,7 +245,8 @@ public class PluginReport
             File outputDir = outputDirectory;
             outputDir.mkdirs();
 
-            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale, getReportOutputDirectory() );
+            PluginXdocGenerator generator = new PluginXdocGenerator( getProject(), locale, getReportOutputDirectory(),
+                                                                     disableInternalJavadocLinkValidation );
             PluginToolsRequest pluginToolsRequest = new DefaultPluginToolsRequest( getProject(), pluginDescriptor );
             generator.execute( outputDir, pluginToolsRequest );
         }
