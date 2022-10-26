@@ -687,7 +687,7 @@ public class PluginDescriptorFilesGenerator
         }
     }
 
-    static URI getJavadocUrlForType( JavadocLinkGenerator javadocLinkGenerator,  String type )
+    static URI getJavadocUrlForType( JavadocLinkGenerator javadocLinkGenerator, String type )
     {
         final String binaryName;
         int startOfParameterType = type.indexOf( "<" );
