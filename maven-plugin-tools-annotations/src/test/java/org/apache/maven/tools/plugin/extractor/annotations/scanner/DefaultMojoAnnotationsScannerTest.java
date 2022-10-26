@@ -102,26 +102,26 @@ class DefaultMojoAnnotationsScannerTest
         parameter = annotatedClass.getParameters().get( "stringBooleanMap" );
         assertNotNull( parameter );
         assertEquals( "java.util.Map", parameter.getClassName() );
-        assertThat( parameter.getTypeParameters() ).contains( "java.lang.String", "java.lang.Boolean" );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.String", "java.lang.Boolean" );
 
         parameter = annotatedClass.getParameters().get( "integerCollection" );
         assertNotNull( parameter );
         assertEquals( "java.util.Collection", parameter.getClassName() );
-        assertThat( parameter.getTypeParameters() ).contains( "java.lang.Integer" );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Integer" );
 
         parameter = annotatedClass.getParameters().get( "nestedStringCollection" );
         assertNotNull( parameter );
         assertEquals( "java.util.Collection", parameter.getClassName() );
-        assertThat( parameter.getTypeParameters() ).contains( "java.util.Collection<java.lang.String>" );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.util.Collection<java.lang.String>" );
 
         parameter = annotatedClass.getParameters().get( "integerArrayCollection" );
         assertNotNull( parameter );
         assertEquals( "java.util.Collection", parameter.getClassName() );
-        assertThat( parameter.getTypeParameters() ).contains( "java.lang.Integer[]" );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Integer[]" );
 
         parameter = annotatedClass.getParameters().get( "numberList" );
         assertNotNull( parameter );
         assertEquals( "java.util.List", parameter.getClassName() );
-        assertThat( parameter.getTypeParameters() ).contains( "java.lang.Number" );
+        assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Number" );
     }
 }
