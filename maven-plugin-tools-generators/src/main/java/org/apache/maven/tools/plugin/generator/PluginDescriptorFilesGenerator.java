@@ -587,7 +587,8 @@ public class PluginDescriptorFilesGenerator
 
                 w.startElement( parameter.getName() );
 
-                String parameterType = parameter.getType();
+                // strip type by parameter type (generics) information for standard plugin descriptor
+                String parameterType = StringUtils.chomp( parameter.getType(), "<" );
                 if ( StringUtils.isNotEmpty( parameterType ) )
                 {
                     w.addAttribute( "implementation", parameterType );
