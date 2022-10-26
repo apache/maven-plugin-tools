@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.generator;
  */
 
 import org.apache.maven.model.Build;
+import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -114,12 +115,17 @@ public abstract class AbstractGeneratorTestCase
                 return basedir + "/target";
             }
         } );
-
+        extendPluginDescriptor( pluginDescriptor );
         generator.execute( destinationDirectory, new DefaultPluginToolsRequest( mavenProject, pluginDescriptor ) );
 
         validate( destinationDirectory );
 
         FileUtils.deleteDirectory( destinationDirectory );
+    }
+
+    protected void extendPluginDescriptor( PluginDescriptor pluginDescriptor ) throws DuplicateParameterException
+    {
+        // may be overwritten
     }
 
     // ----------------------------------------------------------------------
