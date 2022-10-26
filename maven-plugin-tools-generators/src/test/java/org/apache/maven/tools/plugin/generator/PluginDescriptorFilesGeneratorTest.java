@@ -1,5 +1,15 @@
 package org.apache.maven.tools.plugin.generator;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,17 +33,11 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.util.ReaderFactory;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -130,5 +134,20 @@ public class PluginDescriptorFilesGeneratorTest
         assertEquals( artifactId, dependency.getArtifactId() );
 
         assertEquals( version, dependency.getVersion() );
+    }
+
+    @Test
+    void testGetJavadocUrlForType() throws URISyntaxException
+    {
+        URI javadocBaseUri = new URI( "http://localhost/apidocs/" );
+        JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator( javadocBaseUri, "1.8" );
+        assertEquals( javadocBaseUri.resolve("java/lang/String.html"),
+                      PluginDescriptorFilesGenerator.getJavadocUrlForType( linkGenerator, "java.lang.String" ) );
+        assertEquals( javadocBaseUri.resolve("java/lang/String.html"),
+                      PluginDescriptorFilesGenerator.getJavadocUrlForType( linkGenerator, "java.lang.Collection<java.lang.String>" ) );
+        assertEquals( javadocBaseUri.resolve("java/lang/Integer.html"),
+                      PluginDescriptorFilesGenerator.getJavadocUrlForType( linkGenerator, "java.lang.Map<java.lang.String,java.lang.Integer>" ) );
+        assertEquals( javadocBaseUri.resolve("java/util/function/BiFunction.html"),
+                      PluginDescriptorFilesGenerator.getJavadocUrlForType( linkGenerator, "java.util.function.BiFunction<java.lang.String,java.lang.String,java.lang.String>" ) );
     }
 }

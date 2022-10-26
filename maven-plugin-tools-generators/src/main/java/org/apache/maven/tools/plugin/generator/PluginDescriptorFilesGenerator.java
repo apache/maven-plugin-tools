@@ -511,31 +511,8 @@ public class PluginDescriptorFilesGenerator
                         GeneratorUtils.element( w, "alias", parameter.getAlias() );
                     }
 
-                    GeneratorUtils.element( w, "type", parameter.getType() );
+                    writeParameterType( w, type, javadocLinkGenerator, parameter, mojoDescriptor.getGoal() );
 
-                    if ( type == DescriptorType.XHTML && javadocLinkGenerator != null )
-                    {
-                        // skip primitives which never has javadoc
-                        if ( parameter.getType().indexOf( '.' ) == -1 )
-                        {
-                            LOG.debug( "Javadoc URLs are not available for primitive types like {}",
-                                       parameter.getType() );
-                        }
-                        else
-                        {
-                            try
-                            {
-                                URI uri = javadocLinkGenerator.createLink( parameter.getType() );
-                                GeneratorUtils.element( w, "typeJavadocUrl", uri.toString() );
-                            } 
-                            catch ( IllegalArgumentException e )
-                            {
-                                LOG.warn( "Could not get javadoc URL for type {} of parameter {} from goal {}: {}",
-                                          parameter.getType(), parameter.getName(), mojoDescriptor.getGoal(),
-                                          e.getMessage() );
-                            }
-                        }
-                    }
                     if ( parameter.getSince() != null )
                     {
                         w.startElement( "since" );
@@ -663,6 +640,83 @@ public class PluginDescriptorFilesGenerator
         }
 
         w.endElement();
+    }
+
+    /**
+     * Writes parameter type information and potentially also the related javadoc URL.
+     * @param w
+     * @param type
+     * @param javadocLinkGenerator
+     * @param parameter
+     * @param goal
+     */
+    protected void writeParameterType( XMLWriter w, DescriptorType type, JavadocLinkGenerator javadocLinkGenerator,
+                                       Parameter parameter, String goal )
+    {
+        String parameterType = parameter.getType();
+        
+        if ( type == DescriptorType.STANDARD )
+        {
+            // strip type by parameter type (generics) information for standard plugin descriptor
+            parameterType = StringUtils.chomp( parameterType, "<" );
+        }
+        GeneratorUtils.element( w, "type", parameterType );
+
+        if ( type == DescriptorType.XHTML && javadocLinkGenerator != null )
+        {
+            // skip primitives which never has javadoc
+            if ( parameter.getType().indexOf( '.' ) == -1 )
+            {
+                LOG.debug( "Javadoc URLs are not available for primitive types like {}",
+                           parameter.getType() );
+            }
+            else
+            {
+                try
+                {
+                    URI javadocUrl = getJavadocUrlForType( javadocLinkGenerator, parameterType );
+                    GeneratorUtils.element( w, "typeJavadocUrl", javadocUrl.toString() );
+                } 
+                catch ( IllegalArgumentException e )
+                {
+                    LOG.warn( "Could not get javadoc URL for type {} of parameter {} from goal {}: {}",
+                              parameter.getType(), parameter.getName(), goal,
+                              e.getMessage() );
+                }
+            }
+        }
+    }
+
+    static URI getJavadocUrlForType( JavadocLinkGenerator javadocLinkGenerator,  String type )
+    {
+        final String binaryName;
+        int startOfParameterType = type.indexOf( "<" );
+        if ( startOfParameterType != -1 )
+        {
+            // parse parameter type
+            String mainType = type.substring( 0, startOfParameterType );
+            
+            // some heuristics here
+            String[] parameterTypes = type.substring( startOfParameterType + 1, type.lastIndexOf( ">" ) )
+                            .split( ",\\s*" );
+            switch ( parameterTypes.length )
+            {
+                case 1: // if only one parameter type, assume collection, first parameter type is most interesting
+                    binaryName = parameterTypes[0];
+                    break;
+                case 2: // if two parameter types assume map, second parameter type is most interesting
+                    binaryName = parameterTypes[1];
+                    break;
+                default:
+                    // all other cases link to main type
+                    binaryName = mainType;
+            }
+        }
+        else
+        {
+            binaryName = type;
+        }
+        return javadocLinkGenerator.createLink( binaryName );
     }
 
     /**

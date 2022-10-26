@@ -26,6 +26,9 @@ import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
@@ -52,4 +55,12 @@ public class PluginXdocGeneratorTest
 
     }
 
+    @Test
+    void testGetShortType()
+    {
+        assertEquals("String", PluginXdocGenerator.getShortType( "java.lang.String" ) );
+        assertEquals("List<String>", PluginXdocGenerator.getShortType( "java.util.List<java.lang.String>" ) );
+        assertEquals("Map<String,Integer>", PluginXdocGenerator.getShortType( "java.util.Map<java.lang.String,java.lang.Integer>" ) );
+        assertEquals("List<...>", PluginXdocGenerator.getShortType( "java.util.List<java.util.List<java.lang.String>>" ) );
+    }
 }

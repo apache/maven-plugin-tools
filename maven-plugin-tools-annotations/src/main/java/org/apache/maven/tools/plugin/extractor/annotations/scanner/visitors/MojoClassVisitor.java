@@ -20,6 +20,8 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.signature.SignatureReader;
+import org.objectweb.asm.util.TraceSignatureVisitor;
 
 /**
  * Visitor for Mojo classes.
@@ -117,9 +121,47 @@ public class MojoClassVisitor
     @Override
     public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
     {
-        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( name, Type.getType( desc ).getClassName() );
+        List<String> typeParameters = extractTypeParameters( access, signature, true );
+        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( name, Type.getType( desc ).getClassName(),
+                typeParameters );
         fieldVisitors.add( mojoFieldVisitor );
         return mojoFieldVisitor;
+    }
+
+    /**
+     * Parses the signature according to 
+     * <a href="https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.3.4">JVMS 4.3.4</a>
+     * and returns the type parameters.
+     * @param access
+     * @param signature
+     * @param isField
+     * @return the list of type parameters (may be empty)
+     */
+    private List<String> extractTypeParameters( int access, String signature, boolean isField )
+    {
+        if ( StringUtils.isEmpty( signature ) )
+        {
+            return Collections.emptyList();
+        }
+        TraceSignatureVisitor traceSignatureVisitor = new TraceSignatureVisitor( access );
+        SignatureReader signatureReader = new SignatureReader( signature );
+        if ( isField )
+        {
+            signatureReader.acceptType( traceSignatureVisitor );
+        }
+        else
+        {
+            signatureReader.accept( traceSignatureVisitor );
+        }
+        String declaration = traceSignatureVisitor.getDeclaration();
+        int startTypeParameters = declaration.indexOf( '<' );
+        if ( startTypeParameters == -1 )
+        {
+            return Collections.emptyList();
+        }
+        String typeParameters = declaration.substring( startTypeParameters + 1,
+                                                       declaration.lastIndexOf( '>' ) );
+        return Arrays.asList( typeParameters.split( ", " ) );
     }
 
     @Override
@@ -142,8 +184,9 @@ public class MojoClassVisitor
         {
             String fieldName = StringUtils.lowercaseFirstLetter( name.substring( 3 ) );
             String className = type.getArgumentTypes()[0].getClassName();
+            List<String> typeParameters = extractTypeParameters( access, signature, false );
 
-            MojoMethodVisitor mojoMethodVisitor = new MojoMethodVisitor( fieldName, className );
+            MojoMethodVisitor mojoMethodVisitor = new MojoMethodVisitor( fieldName, className, typeParameters );
             methodVisitors.add( mojoMethodVisitor );
             return mojoMethodVisitor;
         }

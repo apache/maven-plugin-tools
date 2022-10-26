@@ -546,13 +546,63 @@ public class PluginXdocGenerator
         w.endElement();
     }
 
+    static String getShortType( String type )
+    {
+        // split into type arguments and main type
+        int startTypeArguments = type.indexOf( '<' );
+        if ( startTypeArguments == -1 )
+        {
+            return getShortTypeOfSimpleType( type );
+        }
+        else
+        {
+            StringBuilder shortType = new StringBuilder();
+            shortType.append( getShortTypeOfSimpleType( type.substring( 0, startTypeArguments ) ) );
+            shortType.append( "<" )
+                .append( getShortTypeOfTypeArgument( 
+                        type.substring( startTypeArguments + 1, type.lastIndexOf( ">" ) ) ) )
+                .append( ">" );
+            return shortType.toString();
+        }
+        
+    }
+
+    private static String getShortTypeOfTypeArgument( String type )
+    {
+        String[] typeArguments = type.split( ",\\s*" );
+        StringBuilder shortType = new StringBuilder();
+        for ( int i = 0; i < typeArguments.length; i++ )
+        {
+            String typeArgument = typeArguments[i];
+            if ( typeArgument.contains( "<" ) )
+            {
+                // nested type arguments lead to ellipsis
+                return "...";
+            }
+            else
+            {
+                shortType.append( getShortTypeOfSimpleType( typeArgument ) );
+                if ( i < typeArguments.length - 1 )
+                {
+                    shortType.append( "," );
+                }
+            }
+        }
+        return shortType.toString();
+    }
+
+    private static String getShortTypeOfSimpleType( String type )
+    {
+        int index = type.lastIndexOf( '.' );
+        return type.substring( index + 1 );
+    }
+
     private String getLinkedType( Parameter parameter, boolean isShortType  )
     {
         final String typeValue;
         if ( isShortType )
         {
-            int index = parameter.getType().lastIndexOf( '.' );
-            typeValue = parameter.getType().substring( index + 1 );
+            typeValue = getShortType( parameter.getType() );
         }
         else
         {
@@ -568,12 +618,12 @@ public class PluginXdocGenerator
                 if ( javadocUrl.isAbsolute() 
                      || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
                 {
-                    return format( "pluginxdoc.mojodescriptor.parameter.type_link", 
-                                        new Object[] { typeValue, enhancedParameter.getTypeJavadocUrl() } );
+                    return format( "pluginxdoc.mojodescriptor.parameter.type_link",
+                                   new Object[] { escapeXml( typeValue ), enhancedParameter.getTypeJavadocUrl() } );
                 }
             }
         }
-        return typeValue;
+        return escapeXml( typeValue );
     }
 
     private boolean addUl( XMLWriter w, boolean addedUl, String content )

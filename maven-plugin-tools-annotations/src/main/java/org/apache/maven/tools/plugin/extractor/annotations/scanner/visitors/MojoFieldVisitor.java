@@ -20,6 +20,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  */
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
@@ -43,11 +44,14 @@ public class MojoFieldVisitor
 
     private String className;
 
-    MojoFieldVisitor( String fieldName, String className )
+    private final List<String> typeParameters;
+
+    MojoFieldVisitor( String fieldName, String className, List<String> typeParameters )
     {
         super( Opcodes.ASM9 );
         this.fieldName = fieldName;
         this.className = className;
+        this.typeParameters = typeParameters;
     }
 
     @Override
@@ -60,6 +64,12 @@ public class MojoFieldVisitor
     public String getFieldName()
     {
         return fieldName;
+    }
+
+    @Override
+    public List<String> getTypeParameters()
+    {
+        return typeParameters;
     }
 
     @Override
