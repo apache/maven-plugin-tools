@@ -20,7 +20,6 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  */
 
 import org.apache.maven.plugins.annotations.Parameter;
-import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -43,8 +42,6 @@ public class ParameterAnnotationContent
 
     private String defaultValue;
 
-    private String implementationClassName;
-
     private boolean required = false;
 
     private boolean readonly = false;
@@ -61,14 +58,13 @@ public class ParameterAnnotationContent
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
-                                       Class<?> implementation, boolean required, boolean readonly, String className,
+                                       boolean required, boolean readonly, String className,
                                        List<String> typeParameters )
     {
         this( fieldName, className, typeParameters );
         this.alias = alias;
         this.property = property;
         this.defaultValue = defaultValue;
-        this.implementationClassName = implementation != null ? implementation.getName() : null;
         this.required = required;
         this.readonly = readonly;
     }
@@ -115,33 +111,6 @@ public class ParameterAnnotationContent
     public void defaultValue( String defaultValue )
     {
         this.defaultValue = defaultValue;
-    }
-
-    public void implementation( Type implementation )
-    {
-
-        implementationClassName = implementation.getClassName();
-        if ( implementationClassName.equals( Object.class.getName() ) )
-        {
-            // Object is default value for implementation attribute
-            this.implementationClassName = null;
-        }
-    }
-
-    public String getImplementationClassName()
-    {
-        return implementationClassName;
-    }
-
-    @Override
-    public Class<?> implementation()
-    {
-        // needed for implementing @Parameter
-        // we don't have access to project class path,
-        // so loading class is not possible without build additional classLoader
-        // we only operate on classes names
-        throw new UnsupportedOperationException(
-            "please use getImplementationClassName instead of implementation method" );
     }
 
     @Override
@@ -201,7 +170,6 @@ public class ParameterAnnotationContent
         sb.append( ", alias='" ).append( alias ).append( '\'' );
         sb.append( ", property='" ).append( property ).append( '\'' );
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
-        sb.append( ", implementation='" ).append( implementationClassName ).append( '\'' );
         sb.append( ", required=" ).append( required );
         sb.append( ", readonly=" ).append( readonly );
         sb.append( '}' );
@@ -257,10 +225,6 @@ public class ParameterAnnotationContent
         {
             return false;
         }
-        if ( !Objects.equals( implementationClassName, that.implementationClassName ) )
-        {
-            return false;
-        }
 
         return true;
     }
@@ -269,6 +233,6 @@ public class ParameterAnnotationContent
     public int hashCode()
     {
         return Objects.hash( alias, getFieldName(), getClassName(), typeParameters, property, defaultValue, required,
-                             readonly, implementationClassName );
+                             readonly );
     }
 }
