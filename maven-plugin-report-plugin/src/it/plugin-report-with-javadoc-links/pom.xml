@@ -125,6 +125,9 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.4.1</version>
+        <configuration>
+          <excludePackageNames>org.internal</excludePackageNames>
+        </configuration>
         <reportSets>
           <reportSet>
             <reports>

@@ -1,4 +1,4 @@
-package org;
+package org.internal;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,42 +19,10 @@ package org;
  * under the License.
  */
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 /**
- * Some description
- * 
- * @see java.util.Collections
- *
+ * Bean which does not have javadoc
  */
-@Mojo( name = "test" )
-public class MyMojo
-    extends AbstractMojo
+public class PrivateBean
 {
-
-    /**
-     * beans parameter leveraging {@link SimpleBean}.
-     */
-    @Parameter
-    public Collection<SimpleBean> beans;
-
-    /**
-     * invalid javadoc reference {@link org.apache.maven.artifact.Artifact}.
-     */
-    @Parameter
-    public Map<String,Boolean> invalidReference;
-
-    @Parameter
-    org.internal.PrivateBean privateBean;
-
-    public void execute()
-    {
-        // intentional do nothing
-    }
-
+    public Integer field1;
 }

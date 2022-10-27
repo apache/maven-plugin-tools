@@ -637,8 +637,8 @@ public class PluginXdocGenerator
                 URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
                 // optionally check if link is valid
                 if ( javadocUrl.isAbsolute() 
-                     || !disableInternalJavadocLinkValidation 
-                        && JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
+                     || disableInternalJavadocLinkValidation 
+                     || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
                 {
                     return format( "pluginxdoc.mojodescriptor.parameter.type_link",
                                    new Object[] { escapeXml( typeValue ), enhancedParameter.getTypeJavadocUrl() } );

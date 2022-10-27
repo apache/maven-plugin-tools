@@ -228,7 +228,7 @@ public class PluginReport
      * 
      * @since 3.7.0
      */
-    @Parameter
+    @Parameter( property = "maven.plugin.report.disableInternalJavadocLinkValidation" )
     private boolean disableInternalJavadocLinkValidation;
 
     /**

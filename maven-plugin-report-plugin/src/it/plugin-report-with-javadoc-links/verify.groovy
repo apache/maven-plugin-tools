@@ -28,3 +28,6 @@ assert mojoDoc.text.contains('<td><code><a href="apidocs/org/SimpleBean.html">Co
 assert mojoDoc.text.contains('<li><b>Type</b>: <code><a href="apidocs/org/SimpleBean.html">java.util.Collection&lt;org.SimpleBean&gt;</a></code></li>') // type link in parameter details
 
 assert mojoDoc.text.contains('<div>invalid javadoc reference <code>org.apache.maven.artifact.Artifact</code>.</div>') // second parameter description with link being removed (as no javadoc site associated)
+
+// the third parameter contains an invalid link (as the internal link validation has been switched off)
+assert mojoDoc.text.contains(' <code><a href="apidocs/org/internal/PrivateBean.html">org.internal.PrivateBean</a></code>')
