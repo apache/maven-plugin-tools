@@ -86,7 +86,6 @@ public class MyMojo
                 alias = "myAlias",
                 property = "a.property",
                 defaultValue = "an expression, possibly with ${variables}",
-                implementation = "class of implementation in the case the parameter type is an interface"
                 readonly = <false|true>,
                 required = <false|true> )
     private String parameter;

@@ -695,7 +695,6 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 parameter.setName( name );
                 parameter.setAlias( parameterAnnotationContent.alias() );
                 parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
-                parameter.setImplementation( parameterAnnotationContent.getImplementationClassName() );
                 parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
                 parameter.setDescription( parameterAnnotationContent.getDescription() );
                 parameter.setEditable( !parameterAnnotationContent.readonly() );

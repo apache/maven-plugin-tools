@@ -46,12 +46,6 @@ public class FooMojo
     protected String bar;
 
     /**
-     * Interface type as parameter.
-     */
-    @Parameter( property = "fooInterface", implementation = FooInterfaceImpl.class )
-    protected FooInterface fooInterface;
-
-    /**
      * beer for non french folks
      * @deprecated wine is better
      */
