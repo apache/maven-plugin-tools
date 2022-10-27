@@ -253,7 +253,13 @@ public class JavadocLinkGenerator
         }
         else
         {
-            return Files.exists( baseDirectory.resolve( url.getPath() ) );
+            Path file = baseDirectory.resolve( url.getPath() );
+            boolean exists = Files.exists( file );
+            if ( !exists )
+            {
+                LOG.debug( "Could not find file given through '{}' in resolved path '{}'", url, file );
+            }
+            return exists;
         }
     }
 }

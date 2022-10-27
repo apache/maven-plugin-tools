@@ -25,12 +25,15 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -43,6 +46,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -52,6 +57,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class PluginXdocGenerator
     implements Generator
 {
+    /**
+     * Regular expression matching an XHTML link
+     * group 1 = link target, group 2 = link label
+     */
+    private static final Pattern HTML_LINK_PATTERN = Pattern.compile( "<a href=\\\"([^\\\"]*)\\\">(.*?)</a>" );
+
+    private static final Logger LOG = LoggerFactory.getLogger( PluginXdocGenerator.class );
+
     /**
      * locale
      */
@@ -67,6 +80,8 @@ public class PluginXdocGenerator
      * Used for resolving relative links to javadoc.
      */
     private final File reportOutputDirectory;
+
+    private final boolean disableInternalJavadocLinkValidation;
 
     /**
      * Default constructor using <code>Locale.ENGLISH</code> as locale.
@@ -84,14 +99,15 @@ public class PluginXdocGenerator
      */
     public PluginXdocGenerator( MavenProject project )
     {
-        this( project, Locale.ENGLISH, new File( "" ).getAbsoluteFile() );
+        this( project, Locale.ENGLISH, new File( "" ).getAbsoluteFile(), false );
     }
 
     /**
      * @param project not null.
      * @param locale  not null wanted locale.
      */
-    public PluginXdocGenerator( MavenProject project, Locale locale, File reportOutputDirectory )
+    public PluginXdocGenerator( MavenProject project, Locale locale, File reportOutputDirectory,
+                                boolean disableInternalJavadocLinkValidation )
     {
         this.project = project;
         if ( locale == null )
@@ -103,6 +119,7 @@ public class PluginXdocGenerator
             this.locale = locale;
         }
         this.reportOutputDirectory = reportOutputDirectory;
+        this.disableInternalJavadocLinkValidation = disableInternalJavadocLinkValidation;
     }
 
 
@@ -204,13 +221,14 @@ public class PluginXdocGenerator
                            + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
         w.endElement(); //p
 
+        String context = "goal " + mojoDescriptor.getGoal();
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDeprecated() ) )
         {
             w.startElement( "p" );
             w.writeMarkup( getString( "pluginxdoc.mojodescriptor.deprecated" ) );
             w.endElement(); // p
             w.startElement( "div" );
-            w.writeMarkup( mojoDescriptor.getDeprecated() );
+            w.writeMarkup( getXhtmlWithValidatedLinks( mojoDescriptor.getDeprecated(), context ) );
             w.endElement(); // div
         }
 
@@ -220,7 +238,7 @@ public class PluginXdocGenerator
         w.startElement( "div" );
         if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
         {
-            w.writeMarkup( mojoDescriptor.getDescription() );
+            w.writeMarkup( getXhtmlWithValidatedLinks( mojoDescriptor.getDescription(), context ) );
         }
         else
         {
@@ -408,8 +426,8 @@ public class PluginXdocGenerator
 
         if ( !list.isEmpty() )
         {
-            writeParameterSummary( list, w );
-            writeParameterDetails( list, w );
+            writeParameterSummary( list, w, mojoDescriptor.getGoal() );
+            writeParameterDetails( list, w, mojoDescriptor.getGoal() );
         }
         else
         {
@@ -457,7 +475,7 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterDetails( List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterDetails( List<Parameter> parameterList, XMLWriter w, String goal )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
@@ -470,17 +488,20 @@ public class PluginXdocGenerator
             w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_internal", parameter.getName() ) );
             w.endElement();
 
+            String context = "Parameter " + parameter.getName() + " in goal " + goal;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
                 w.startElement( "div" );
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() ) );
+                String deprecated = getXhtmlWithValidatedLinks( parameter.getDeprecated(), context );
+                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated", deprecated ) );
                 w.endElement(); // div
             }
 
             w.startElement( "div" );
             if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                w.writeMarkup( parameter.getDescription() );
+                
+                w.writeMarkup( getXhtmlWithValidatedLinks( parameter.getDescription(), context ) );
             }
             else
             {
@@ -613,9 +634,10 @@ public class PluginXdocGenerator
             EnhancedParameterWrapper enhancedParameter = (EnhancedParameterWrapper) parameter;
             if ( enhancedParameter.getTypeJavadocUrl() != null )
             {
-                // check if link is valid
                 URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
+                // optionally check if link is valid
                 if ( javadocUrl.isAbsolute() 
+                     || disableInternalJavadocLinkValidation 
                      || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
                 {
                     return format( "pluginxdoc.mojodescriptor.parameter.type_link",
@@ -676,20 +698,20 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterSummary( List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterSummary( List<Parameter> parameterList, XMLWriter w, String goal )
     {
         List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
         if ( !requiredParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
-                                requiredParams, w );
+                                requiredParams, w, goal );
         }
 
         List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
         if ( !optionalParams.isEmpty() )
         {
             writeParameterList( getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
-                                optionalParams, w );
+                                optionalParams, w, goal );
         }
     }
 
@@ -698,7 +720,7 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterList( String title, List<Parameter> parameterList, XMLWriter w )
+    private void writeParameterList( String title, List<Parameter> parameterList, XMLWriter w, String goal )
     {
         w.startElement( "subsection" );
         w.addAttribute( "name", title );
@@ -750,13 +772,15 @@ public class PluginXdocGenerator
             // description
             w.startElement( "td" );
             String description;
+            String context = "Parameter " + parameter.getName() + " in goal " + goal;
             if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
             {
-                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated", parameter.getDeprecated() );
+                String deprecated = getXhtmlWithValidatedLinks( parameter.getDescription(), context );
+                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated", deprecated );
             }
             else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
             {
-                description = parameter.getDescription();
+                description = getXhtmlWithValidatedLinks( parameter.getDescription(), context );
             }
             else
             {
@@ -883,4 +907,38 @@ public class PluginXdocGenerator
         return text;
     }
 
+    String getXhtmlWithValidatedLinks( String xhtmlText, String context )
+    {
+        if ( disableInternalJavadocLinkValidation )
+        {
+            return xhtmlText;
+        }
+        StringBuffer sanitizedXhtmlText = new StringBuffer();
+        // find all links which are not absolute
+        Matcher matcher = HTML_LINK_PATTERN.matcher( xhtmlText );
+        while ( matcher.find() )
+        {
+            URI link;
+            try
+            {
+                link = new URI( matcher.group( 1 ) );
+                if ( !link.isAbsolute() && !JavadocLinkGenerator.isLinkValid( link, reportOutputDirectory.toPath() ) )
+                {
+                    matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 2 ) );
+                    LOG.debug( "Removed invalid link {} in {}", link, context );
+                }
+                else
+                {
+                    matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 0 ) );
+                }
+            }
+            catch ( URISyntaxException e )
+            {
+                LOG.warn( "Invalid URI {} found in {}. Cannot validate, leave untouched", matcher.group( 1 ), context );
+                matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 0 ) );
+            }
+        }
+        matcher.appendTail( sanitizedXhtmlText );
+        return sanitizedXhtmlText.toString();
+    }
 }
