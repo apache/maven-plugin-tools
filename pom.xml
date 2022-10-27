@@ -103,7 +103,7 @@
     <asmVersion>9.4</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
-    <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
+    <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <project.build.outputTimestamp>2022-10-20T07:36:59Z</project.build.outputTimestamp>
