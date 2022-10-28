@@ -540,21 +540,30 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 return;
             }
 
-            // extract sources to target/maven-plugin-plugin-sources/${groupId}/${artifact}/sources
-            File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
+            if ( sourcesArtifact.getFile().isFile() )
+            {
+                // extract sources to target/maven-plugin-plugin-sources/${groupId}/${artifact}/sources
+                File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
                                               "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
                                                   + sourcesArtifact.getArtifactId() + "/" + sourcesArtifact.getVersion()
                                                   + "/" + sourcesArtifact.getClassifier() );
-            extractDirectory.mkdirs();
+                extractDirectory.mkdirs();
 
-            UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
-            unArchiver.setSourceFile( sourcesArtifact.getFile() );
-            unArchiver.setDestDirectory( extractDirectory );
-            unArchiver.extract();
+                UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
+                unArchiver.setSourceFile( sourcesArtifact.getFile() );
+                unArchiver.setDestDirectory( extractDirectory );
+                unArchiver.extract();
 
-            extendJavaProjectBuilder( builder,
-                                      Arrays.asList( extractDirectory ),
-                                      request.getDependencies() );
+                extendJavaProjectBuilder( builder,
+                                          Arrays.asList( extractDirectory ),
+                                          request.getDependencies() );
+            }
+            else if ( sourcesArtifact.getFile().isDirectory() )
+            {
+                extendJavaProjectBuilder( builder,
+                        Arrays.asList( sourcesArtifact.getFile() ),
+                        request.getDependencies() );
+            }
         }
         catch ( ArchiverException | NoSuchArchiverException e )
         {

@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.builder.TypeAssembler;
 import com.thoughtworks.qdox.library.ClassNameLibrary;
-import com.thoughtworks.qdox.library.SourceLibrary;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaModule;
@@ -81,13 +80,6 @@ public class JavaClassConverterContext
                                       Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                       JavadocLinkGenerator linkGenerator, int lineNumber )
     {
-        if ( !( mojoClass.getJavaClassLibrary() instanceof SourceLibrary )
-            || !( declaringClass.getJavaClassLibrary() instanceof SourceLibrary ) )
-        {
-            throw new IllegalStateException( "The given javaClasses must be loaded by SourceLibrary to have access to"
-                + "e.g. the imports statements in it" );
-        }
-
         this.mojoClass = mojoClass;
         this.declaringClass = declaringClass;
         this.javaProjectBuilder = javaProjectBuilder;
