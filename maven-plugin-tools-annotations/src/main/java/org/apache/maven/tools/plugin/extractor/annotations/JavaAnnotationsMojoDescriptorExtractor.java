@@ -288,7 +288,8 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 }
             }
 
-            Map<String, JavaAnnotatedElement> elementMap = extractParameterAnnotations( javaClass, javaClassesMap );
+            Map<String, JavaAnnotatedElement> fieldsMap = extractFieldsAnnotations( javaClass, javaClassesMap );
+            Map<String, JavaAnnotatedElement> methodsMap = extractMethodsAnnotations( javaClass, javaClassesMap );
 
             // populate parameters
             Map<String, ParameterAnnotationContent> parameters =
@@ -296,7 +297,16 @@ public class JavaAnnotationsMojoDescriptorExtractor
             parameters = new TreeMap<>( parameters );
             for ( Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet() )
             {
-                JavaAnnotatedElement element = elementMap.get( parameter.getKey() );
+                JavaAnnotatedElement element;
+                if ( parameter.getValue().isAnnotationOnMethod() )
+                {
+                    element = methodsMap.get( parameter.getKey() );
+                }
+                else
+                {
+                    element = fieldsMap.get( parameter.getKey() );
+                }
+
                 if ( element == null )
                 {
                     continue;
@@ -327,7 +337,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
             Map<String, ComponentAnnotationContent> components = entry.getValue().getComponents();
             for ( Map.Entry<String, ComponentAnnotationContent> component : components.entrySet() )
             {
-                JavaAnnotatedElement element = elementMap.get( component.getKey() );
+                JavaAnnotatedElement element = fieldsMap.get( component.getKey() );
                 if ( element == null )
                 {
                     continue;
@@ -423,13 +433,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     /**
      * extract fields that are either parameters or components.
-     * Also extract methods that are parameters
      *
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
-    private Map<String, JavaAnnotatedElement> extractParameterAnnotations( JavaClass javaClass,
-                                                                 Map<String, JavaClass> javaClassesMap )
+    private Map<String, JavaAnnotatedElement> extractFieldsAnnotations( JavaClass javaClass,
+                                                                        Map<String, JavaClass> javaClassesMap )
     {
         try
         {
@@ -441,15 +450,15 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
             if ( superClass != null )
             {
-                if ( !superClass.getFields().isEmpty() || !superClass.getMethods().isEmpty() )
+                if ( !superClass.getFields().isEmpty() )
                 {
-                    rawParams = extractParameterAnnotations( superClass, javaClassesMap );
+                    rawParams = extractFieldsAnnotations( superClass, javaClassesMap );
                 }
                 // maybe sources comes from scan of sources artifact
                 superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
-                if ( superClass != null && ( !superClass.getFields().isEmpty() || !superClass.getMethods().isEmpty() ) )
+                if ( superClass != null && !superClass.getFields().isEmpty() )
                 {
-                    rawParams = extractParameterAnnotations( superClass, javaClassesMap );
+                    rawParams = extractFieldsAnnotations( superClass, javaClassesMap );
                 }
             }
             else
@@ -461,6 +470,51 @@ public class JavaAnnotationsMojoDescriptorExtractor
             for ( JavaField field : javaClass.getFields() )
             {
                 rawParams.put( field.getName(), field );
+            }
+
+            return rawParams;
+        }
+        catch ( NoClassDefFoundError e )
+        {
+            getLogger().warn( "Failed extracting parameters from " + javaClass );
+            throw e;
+        }
+    }
+
+    /**
+     * extract methods that are parameters.
+     *
+     * @param javaClass not null
+     * @return map with Mojo parameters names as keys
+     */
+    private Map<String, JavaAnnotatedElement> extractMethodsAnnotations( JavaClass javaClass,
+                                                                        Map<String, JavaClass> javaClassesMap )
+    {
+        try
+        {
+            Map<String, JavaAnnotatedElement> rawParams = new TreeMap<>();
+
+            // we have to add the parent methods first, so that they will be overwritten by the local methods if
+            // that actually happens...
+            JavaClass superClass = javaClass.getSuperJavaClass();
+
+            if ( superClass != null )
+            {
+                if ( !superClass.getMethods().isEmpty() )
+                {
+                    rawParams = extractMethodsAnnotations( superClass, javaClassesMap );
+                }
+                // maybe sources comes from scan of sources artifact
+                superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
+                if ( superClass != null && !superClass.getMethods().isEmpty() )
+                {
+                    rawParams = extractMethodsAnnotations( superClass, javaClassesMap );
+                }
+            }
+            else
+            {
+
+                rawParams = new TreeMap<>();
             }
 
             for ( JavaMethod method : javaClass.getMethods() )
@@ -476,7 +530,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         }
         catch ( NoClassDefFoundError e )
         {
-            getLogger().warn( "Failed extracting parameters from " + javaClass );
+            getLogger().warn( "Failed extracting methods from " + javaClass );
             throw e;
         }
     }

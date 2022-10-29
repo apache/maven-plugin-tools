@@ -36,4 +36,6 @@ public interface MojoParameterVisitor
     List<String> getTypeParameters();
 
     Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap();
+
+    boolean isAnnotationOnMethod();
 }

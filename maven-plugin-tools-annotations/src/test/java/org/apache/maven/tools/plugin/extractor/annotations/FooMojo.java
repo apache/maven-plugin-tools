@@ -46,6 +46,14 @@ public class FooMojo
     protected String bar;
 
     /**
+     * Setter method for Parameter field
+     */
+    public void setBar( String bar )
+    {
+        this.bar = bar;
+    }
+
+    /**
      * beer for non french folks
      * @deprecated wine is better
      */
@@ -54,12 +62,17 @@ public class FooMojo
     protected String beer;
 
     /**
+     * Field for setter method
+     */
+    private String paramFromSetter;
+
+    /**
      * setter as parameter.
      */
     @Parameter( property = "props.paramFromSetter" )
     public void setParamFromSetter(String value)
     {
-        // empty
+        this.paramFromSetter = paramFromSetter;
     }
 
     /**

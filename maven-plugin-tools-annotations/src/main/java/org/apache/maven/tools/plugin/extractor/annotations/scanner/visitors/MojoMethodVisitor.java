@@ -86,4 +86,10 @@ public class MojoMethodVisitor extends MethodVisitor implements MojoParameterVis
     {
         return annotationVisitorMap;
     }
+
+    @Override
+    public boolean isAnnotationOnMethod()
+    {
+        return true;
+    }
 }

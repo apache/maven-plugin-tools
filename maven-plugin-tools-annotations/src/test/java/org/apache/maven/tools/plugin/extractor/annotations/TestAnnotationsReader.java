@@ -98,18 +98,18 @@ class TestAnnotationsReader
             .hasSize( 5 )
             .containsExactlyInAnyOrder(
                 new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false,
-                                                String.class.getName(), Collections.emptyList() ),
+                                                String.class.getName(), Collections.emptyList(), false ),
                 new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
-                                                String.class.getName(), Collections.emptyList() ),
+                                                String.class.getName(), Collections.emptyList(), false ),
                 new ParameterAnnotationContent( "paramFromSetter", null, "props.paramFromSetter", null,
                                                 false,
-                                                false, String.class.getName(), Collections.emptyList() ),
+                                                false, String.class.getName(), Collections.emptyList(), true ),
                 new ParameterAnnotationContent( "paramFromAdd", null, "props.paramFromAdd", null,
                                                 false,
-                                                false, String.class.getName(), Collections.emptyList() ),
+                                                false, String.class.getName(), Collections.emptyList(), true ),
                 new ParameterAnnotationContent( "paramFromSetterDeprecated", null, "props.paramFromSetterDeprecated", null,
                                                 false,
-                                                false, List.class.getName(), Collections.singletonList("java.lang.String") )
+                                                false, List.class.getName(), Collections.singletonList("java.lang.String"), true )
             );
     }
 }
