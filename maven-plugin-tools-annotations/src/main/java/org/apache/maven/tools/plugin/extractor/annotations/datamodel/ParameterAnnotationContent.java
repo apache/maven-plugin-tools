@@ -48,20 +48,24 @@ public class ParameterAnnotationContent
 
     private String className;
 
+    private boolean annotationOnMethod;
+
     private final List<String> typeParameters;
 
-    public ParameterAnnotationContent( String fieldName, String className, List<String> typeParameters )
+    public ParameterAnnotationContent( String fieldName, String className, List<String> typeParameters,
+                                       boolean annotationOnMethod )
     {
         super( fieldName );
         this.className = className;
         this.typeParameters = typeParameters;
+        this.annotationOnMethod = annotationOnMethod;
     }
 
     public ParameterAnnotationContent( String fieldName, String alias, String property, String defaultValue,
                                        boolean required, boolean readonly, String className,
-                                       List<String> typeParameters )
+                                       List<String> typeParameters, boolean annotationOnMethod )
     {
-        this( fieldName, className, typeParameters );
+        this( fieldName, className, typeParameters, annotationOnMethod );
         this.alias = alias;
         this.property = property;
         this.defaultValue = defaultValue;
@@ -156,6 +160,11 @@ public class ParameterAnnotationContent
         return typeParameters;
     }
 
+    public boolean isAnnotationOnMethod()
+    {
+        return annotationOnMethod;
+    }
+
     @Override
     public String toString()
     {
@@ -172,6 +181,7 @@ public class ParameterAnnotationContent
         sb.append( ", defaultValue='" ).append( defaultValue ).append( '\'' );
         sb.append( ", required=" ).append( required );
         sb.append( ", readonly=" ).append( readonly );
+        sb.append( ", methodSource=" ).append( annotationOnMethod );
         sb.append( '}' );
         return sb.toString();
     }
@@ -195,6 +205,11 @@ public class ParameterAnnotationContent
             return false;
         }
         if ( required != that.required )
+        {
+            return false;
+        }
+
+        if ( annotationOnMethod != that.annotationOnMethod )
         {
             return false;
         }
@@ -233,6 +248,6 @@ public class ParameterAnnotationContent
     public int hashCode()
     {
         return Objects.hash( alias, getFieldName(), getClassName(), typeParameters, property, defaultValue, required,
-                             readonly );
+                             readonly, annotationOnMethod );
     }
 }

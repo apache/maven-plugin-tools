@@ -90,4 +90,10 @@ public class MojoFieldVisitor
     {
         return className;
     }
+
+    @Override
+    public boolean isAnnotationOnMethod()
+    {
+        return false;
+    }
 }

@@ -303,7 +303,8 @@ public class DefaultMojoAnnotationsScanner
             {
                 ParameterAnnotationContent parameterAnnotationContent =
                     new ParameterAnnotationContent( parameterVisitor.getFieldName(), parameterVisitor.getClassName(),
-                                                    parameterVisitor.getTypeParameters() );
+                                                    parameterVisitor.getTypeParameters(),
+                                                    parameterVisitor.isAnnotationOnMethod() );
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = parameterVisitor.getAnnotationVisitorMap();
                 MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( Parameter.class.getName() );
