@@ -39,20 +39,31 @@ import java.lang.annotation.Target;
 public @interface Execute
 {
     /**
-     * lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
+     * Lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
+     * For custom lifecycle phase ids use {@link #customPhase()} instead.
+     * This value takes precedence over the {@link #customPhase()}.
      * @return the phase
      */
     LifecyclePhase phase() default LifecyclePhase.NONE;
 
     /**
-     * goal to fork. Note that specifying a phase overrides specifying a goal. The specified <code>goal</code> must be
+     * Custom lifecycle phase to fork. Note that specifying a {@link #phase} overrides the specified custom phase.
+     * Also specifying a custom phase overrides specifying a goal.
+     * This element should only be used for non-standard phases. For standard phases rather use {@link #phase()}.
+     * 
+     * @since 3.8.0
+     */
+    String customPhase() default "";
+
+    /**
+     * Goal to fork. Note that specifying a phase overrides specifying a goal. The specified <code>goal</code> must be
      * another goal of the same plugin.
      * @return the goal
      */
     String goal() default "";
 
     /**
-     * lifecycle id of the lifecycle that defines {@link #phase()}. Only valid in combination with {@link #phase()}. If
+     * Lifecycle id of the lifecycle that defines {@link #phase()}. Only valid in combination with {@link #phase()}. If
      * not specified, Maven will use the lifecycle of the current build.
      *
      * @see <a href="https://maven.apache.org/maven-plugin-api/lifecycle-mappings.html">Lifecycle Mappings</a>

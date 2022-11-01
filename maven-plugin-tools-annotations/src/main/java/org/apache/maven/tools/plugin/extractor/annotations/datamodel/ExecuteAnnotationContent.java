@@ -37,10 +37,18 @@ public class ExecuteAnnotationContent
 
     private LifecyclePhase phase;
 
+    private String customPhase;
+
     @Override
     public LifecyclePhase phase()
     {
         return this.phase;
+    }
+
+    @Override
+    public String customPhase()
+    {
+        return customPhase;
     }
 
     @Override
@@ -55,10 +63,14 @@ public class ExecuteAnnotationContent
         return this.lifecycle;
     }
 
-
     public void phase( String phase )
     {
         this.phase = LifecyclePhase.valueOf( phase );
+    }
+
+    public void customPhase( String customPhase )
+    {
+        this.customPhase = customPhase;
     }
 
     public void goal( String goal )
@@ -86,7 +98,10 @@ public class ExecuteAnnotationContent
         sb.append( "{goal='" ).append( goal ).append( '\'' );
         sb.append( ", lifecycle='" ).append( lifecycle ).append( '\'' );
         sb.append( ", phase=" ).append( phase );
+        sb.append( ", customPhase=" ).append( customPhase );
         sb.append( '}' );
         return sb.toString();
     }
+
+    
 }

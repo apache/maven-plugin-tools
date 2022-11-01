@@ -103,7 +103,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
     private static final GroupKey GROUP_KEY = new GroupKey( GroupKey.JAVA_GROUP, 100 );
 
     @Inject
-    private MojoAnnotationsScanner mojoAnnotationsScanner;
+    MojoAnnotationsScanner mojoAnnotationsScanner;
 
     @Inject
     private RepositorySystem repositorySystem;
@@ -723,6 +723,10 @@ public class JavaAnnotationsMojoDescriptorExtractor
                 if ( execute.phase() != null )
                 {
                     mojoDescriptor.setExecutePhase( execute.phase().id() );
+                }
+                else if ( StringUtils.isNotEmpty( execute.customPhase() ) )
+                {
+                    mojoDescriptor.setExecutePhase( execute.customPhase() );
                 }
             }
 

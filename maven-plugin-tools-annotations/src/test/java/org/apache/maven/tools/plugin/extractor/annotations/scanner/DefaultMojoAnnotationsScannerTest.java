@@ -21,19 +21,32 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.AbstractFooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.DeprecatedMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.ParametersWithGenericsMojo;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 class DefaultMojoAnnotationsScannerTest
@@ -123,5 +136,63 @@ class DefaultMojoAnnotationsScannerTest
         assertNotNull( parameter );
         assertEquals( "java.util.List", parameter.getClassName() );
         assertThat( parameter.getTypeParameters() ).containsExactly( "java.lang.Number" );
+    }
+
+    @Test
+    void scanFooMojoClass()
+        throws Exception
+    {
+        MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
+        request.setClassesDirectories( Collections.singletonList( new File( getBasedir(), "target/test-classes" ) ) );
+        request.setIncludePatterns( Arrays.asList( "**/FooMojo.class" ) );
+        request.setProject( new MavenProject() );
+
+        scanner.enableLogging( mock( Logger.class ) );
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanner.scan( request );
+
+        System.out.println( "mojoAnnotatedClasses:" + mojoAnnotatedClasses );
+
+        assertThat( mojoAnnotatedClasses ).isNotNull().isNotEmpty().hasSize( 1 );
+
+        MojoAnnotatedClass mojoAnnotatedClass = mojoAnnotatedClasses.values().iterator().next();
+
+        assertEquals( FooMojo.class.getName(), mojoAnnotatedClass.getClassName() );
+        assertEquals( AbstractFooMojo.class.getName(), mojoAnnotatedClass.getParentClassName() );
+
+        Mojo mojo = mojoAnnotatedClass.getMojo();
+
+        assertEquals( "foo", mojo.name() );
+        assertTrue( mojo.threadSafe() );
+        assertFalse( mojo.aggregator() );
+        assertEquals( LifecyclePhase.COMPILE, mojo.defaultPhase() );
+
+        Execute execute = mojoAnnotatedClass.getExecute();
+
+        assertEquals( "compiler", execute.goal() );
+        assertEquals( "my-lifecycle", execute.lifecycle() );
+        assertEquals( LifecyclePhase.PACKAGE, execute.phase() );
+
+        Collection<ComponentAnnotationContent> components = mojoAnnotatedClass.getComponents().values();
+        assertThat( components ).isNotNull().isNotEmpty().hasSize( 1 );
+
+        Collection<ParameterAnnotationContent> parameters = mojoAnnotatedClass.getParameters().values();
+        assertThat( parameters ).isNotNull()
+            .isNotEmpty()
+            .hasSize( 5 )
+            .containsExactlyInAnyOrder(
+                new ParameterAnnotationContent( "bar", null, "thebar", "coolbar", true, false,
+                                                String.class.getName(), Collections.emptyList(), false ),
+                new ParameterAnnotationContent( "beer", null, "thebeer", "coolbeer", false, false,
+                                                String.class.getName(), Collections.emptyList(), false ),
+                new ParameterAnnotationContent( "paramFromSetter", null, "props.paramFromSetter", null,
+                                                false,
+                                                false, String.class.getName(), Collections.emptyList(), true ),
+                new ParameterAnnotationContent( "paramFromAdd", null, "props.paramFromAdd", null,
+                                                false,
+                                                false, String.class.getName(), Collections.emptyList(), true ),
+                new ParameterAnnotationContent( "paramFromSetterDeprecated", null, "props.paramFromSetterDeprecated", null,
+                                                false,
+                                                false, List.class.getName(), Collections.singletonList("java.lang.String"), true )
+            );
     }
 }
