@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -52,6 +53,7 @@ import com.thoughtworks.qdox.model.JavaMethod;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -101,6 +103,43 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     private static final GroupKey GROUP_KEY = new GroupKey( GroupKey.JAVA_GROUP, 100 );
 
+    /**
+     * 
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.1">JVMS 4.1</a>
+     */
+    private static final Map<Short, String> MAJOR_CLASS_VERSION_TO_JAVA_STRING;
+    static
+    {
+        MAJOR_CLASS_VERSION_TO_JAVA_STRING = initClassVersionMap();
+    }
+ 
+    @SuppressWarnings( "checkstyle:magicnumber" )
+    private static Map<Short, String> initClassVersionMap()
+    {
+        Map<Short, String> classVersionMap = new HashMap<>();
+        classVersionMap.put( (short) 45, "1.1" );
+        classVersionMap.put( (short) 46, "1.2" );
+        classVersionMap.put( (short) 47, "1.3" );
+        classVersionMap.put( (short) 48, "1.4" );
+        classVersionMap.put( (short) 49, "1.5" );
+        classVersionMap.put( (short) 50, "1.6" );
+        classVersionMap.put( (short) 51, "1.7" );
+        classVersionMap.put( (short) 52, "1.8" );
+        classVersionMap.put( (short) 53, "9" );
+        classVersionMap.put( (short) 54, "10" );
+        classVersionMap.put( (short) 55, "11" );
+        classVersionMap.put( (short) 56, "12" );
+        classVersionMap.put( (short) 57, "13" );
+        classVersionMap.put( (short) 58, "14" );
+        classVersionMap.put( (short) 59, "15" );
+        classVersionMap.put( (short) 60, "16" );
+        classVersionMap.put( (short) 61, "17" );
+        classVersionMap.put( (short) 62, "18" );
+        classVersionMap.put( (short) 63, "19" );
+        classVersionMap.put( (short) 64, "20" );
+        return classVersionMap;
+    }
+
     @Inject
     MojoAnnotationsScanner mojoAnnotationsScanner;
 
@@ -140,6 +179,18 @@ public class JavaAnnotationsMojoDescriptorExtractor
     {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanAnnotations( request );
 
+        Optional<Short> requiredJavaVersion = mojoAnnotatedClasses.values().stream()
+                        .map( MojoAnnotatedClass::getClassVersion ).max( Short::compare );
+        if ( requiredJavaVersion.isPresent() )
+        {
+            String requiredJavaVersionString = MAJOR_CLASS_VERSION_TO_JAVA_STRING.get( requiredJavaVersion.get() );
+            if ( StringUtils.isBlank( request.getRequiredJavaVersion() )
+                                      || new ComparableVersion( request.getRequiredJavaVersion() ).compareTo( 
+                                             new ComparableVersion( requiredJavaVersionString ) ) < 0 )
+            {
+                request.setRequiredJavaVersion( requiredJavaVersionString );
+            }
+        }
         JavaProjectBuilder builder = scanJavadoc( request, mojoAnnotatedClasses.values() );
         Map<String, JavaClass> javaClassesMap = discoverClasses( builder );
 
@@ -174,7 +225,9 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
         mojoAnnotationsScannerRequest.setProject( request.getProject() );
 
-        return mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+        Map<String, MojoAnnotatedClass> result = mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
+        request.setUsedMavenApiVersion( mojoAnnotationsScannerRequest.getMavenApiVersion() );
+        return result;
     }
 
     private JavaProjectBuilder scanJavadoc( PluginToolsRequest request,

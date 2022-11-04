@@ -61,12 +61,16 @@ public class DefaultPluginToolsRequest
     private ArtifactRepository local;
 
     private URI internalJavadocBaseUrl;
-    
+
     private String internalJavadocVersion;
-    
+
     private List<URI> externalJavadocBaseUrls;
 
     private Settings settings;
+
+    private String requiredJavaVersion;
+
+    private String mavenApiVersion;
 
     public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
     {
@@ -252,4 +256,32 @@ public class DefaultPluginToolsRequest
     {
         return settings;
     }
+
+    @Override
+    public PluginToolsRequest setRequiredJavaVersion( String requiredJavaVersion )
+    {
+        this.requiredJavaVersion = requiredJavaVersion;
+        return this;
+    }
+    
+    @Override
+    public String getRequiredJavaVersion()
+    {
+        return requiredJavaVersion;
+    }
+
+    @Override
+    public PluginToolsRequest setUsedMavenApiVersion( String mavenApiVersion )
+    {
+        this.mavenApiVersion = mavenApiVersion;
+        return this;
+    }
+
+    @Override
+    public String getUsedMavenApiVersion()
+    {
+        return mavenApiVersion;
+    }
+
+    
 }

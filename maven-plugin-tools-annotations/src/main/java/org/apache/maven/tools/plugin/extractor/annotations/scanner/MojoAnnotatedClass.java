@@ -19,14 +19,14 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * under the License.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Olivier Lamy
@@ -35,6 +35,8 @@ import java.util.Map;
 public class MojoAnnotatedClass
 {
     private String className;
+
+    private short classVersion;
 
     private String parentClassName;
 
@@ -70,6 +72,17 @@ public class MojoAnnotatedClass
     public MojoAnnotatedClass setClassName( String className )
     {
         this.className = className;
+        return this;
+    }
+
+    public short getClassVersion()
+    {
+        return classVersion;
+    }
+
+    public MojoAnnotatedClass setClassVersion( short classVersion )
+    {
+        this.classVersion = classVersion;
         return this;
     }
 
@@ -157,6 +170,7 @@ public class MojoAnnotatedClass
         final StringBuilder sb = new StringBuilder();
         sb.append( "MojoAnnotatedClass" );
         sb.append( "{className='" ).append( className ).append( '\'' );
+        sb.append( ", classVersion=" ).append( classVersion );
         sb.append( ", parentClassName='" ).append( parentClassName ).append( '\'' );
         sb.append( ", mojo=" ).append( mojo );
         sb.append( ", execute=" ).append( execute );
@@ -165,4 +179,5 @@ public class MojoAnnotatedClass
         sb.append( '}' );
         return sb.toString();
     }
+
 }

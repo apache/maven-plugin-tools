@@ -197,4 +197,34 @@ public interface PluginToolsRequest
      * @since 3.7.0
      */
     Settings getSettings();
+    
+    /**
+     * 
+     * @param requiredJavaVersion the required java version for this plugin or {@code null} if unknown.
+     * @return This request.
+     * @since 3.8.0
+     */
+    PluginToolsRequest setRequiredJavaVersion( String requiredJavaVersion );
+
+    /**
+     * 
+     * @return the required java version for this plugin or {@code null} if unknown.
+     * @since 3.8.0
+     */
+    String getRequiredJavaVersion();
+
+    /**
+     * 
+     * @param mavenApiVersion
+     * @return his request.
+     * @since 3.8.0
+     */
+    PluginToolsRequest setUsedMavenApiVersion( String mavenApiVersion );
+
+    /**
+     * 
+     * @return the Maven API version being referenced or {@code null} if unknown
+     * @since 3.8.0
+     */
+    String getUsedMavenApiVersion();
 }

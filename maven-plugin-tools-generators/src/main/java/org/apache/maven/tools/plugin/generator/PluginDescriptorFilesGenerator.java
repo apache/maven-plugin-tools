@@ -36,6 +36,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
@@ -163,6 +164,20 @@ public class PluginDescriptorFilesGenerator
 
                 GeneratorUtils.element( w, "inheritedByDefault",
                                         String.valueOf( pluginDescriptor.isInheritedByDefault() ) );
+
+                if ( pluginDescriptor instanceof ExtendedPluginDescriptor )
+                {
+                    ExtendedPluginDescriptor extPluginDescriptor = (ExtendedPluginDescriptor) pluginDescriptor;
+                    if ( StringUtils.isNotBlank( extPluginDescriptor.getRequiredJavaVersion() ) )
+                    {
+                        GeneratorUtils.element( w, "requiredJavaVersion", 
+                                                extPluginDescriptor.getRequiredJavaVersion() );
+                    }
+                }
+                if ( StringUtils.isNotBlank( pluginDescriptor.getRequiredMavenVersion() ) )
+                {
+                    GeneratorUtils.element( w, "requiredMavenVersion", pluginDescriptor.getRequiredMavenVersion() );
+                }
             }
 
             w.startElement( "mojos" );

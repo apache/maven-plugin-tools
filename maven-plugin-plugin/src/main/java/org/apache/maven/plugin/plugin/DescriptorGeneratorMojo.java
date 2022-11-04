@@ -41,6 +41,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
@@ -70,6 +71,9 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {
+    private static final String VALUE_AUTO = "auto";
+    private static final String VALUE_NONE = "none";
+
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
      */
@@ -236,6 +240,43 @@ public class DescriptorGeneratorMojo
     private ArtifactRepository local;
 
     /**
+     * The required Java version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
+     * Maven versions. Can be either one of the following formats:
+     * 
+     * <ul>
+     * <li>One of the values as for <a href="https://maven.apache.org/pom.html#Activation">POM profile activation
+     * element {@code jdk}</a>, i.e. version ranges, version prefixes
+     * and negated version prefixes (starting with '!').</li>
+     * <li>{@code "auto"} to determine the minimum Java version from the binary class version being generated during
+     * compilation (determined by the extractor).</li>
+     * <li>{@code "none"} to not set a required Java version.</li>
+     * </ul>
+     * @since 3.8.0
+     */
+    @Parameter( defaultValue = VALUE_AUTO )
+    String requiredJavaVersion;
+
+    /**
+     * The required Maven version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
+     * Maven versions. Can be either one of the following formats:
+     * 
+     * <ul>
+     * <li>A version range which specifies the supported Maven versions. It can either use the usual mathematical
+     * syntax like {@code "[2.0.10,2.1.0),[3.0,)"} or use a single version like {@code "2.2.1"}. The latter is a short
+     * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
+     * <li>{@code "auto"} to determine the minimum Maven version from the POMs Maven prerequisite, or if not set the
+     * referenced Maven API version.</li>
+     * <li>{@code "none"} to not set a required Maven version.</li>
+     * </ul>
+     * This value (if not set to {@code "none"}) takes precedence over the 
+     * <a href="https://maven.apache.org/pom.html#Prerequisites">POMs Maven prerequisite</a> in Maven 4.
+     * 
+     * @since 3.8.0
+     */
+    @Parameter( defaultValue = VALUE_AUTO )
+    String requiredMavenVersion;
+
+    /**
      * The component used for scanning the source tree for mojos.
      */
     @Component
@@ -335,6 +376,7 @@ public class DescriptorGeneratorMojo
             request.setSettings( settings );
 
             mojoScanner.populatePluginDescriptor( request );
+            request.setPluginDescriptor( extendPluginDescriptor( request ) );
 
             outputDirectory.mkdirs();
 
@@ -359,6 +401,60 @@ public class DescriptorGeneratorMojo
                                                   + " in the POM and ensure the versions match.",
                                               e );
         }
+    }
+
+    private PluginDescriptor extendPluginDescriptor( PluginToolsRequest request )
+    {
+        ExtendedPluginDescriptor extendedPluginDescriptor = 
+                        new ExtendedPluginDescriptor( request.getPluginDescriptor() );
+        if ( !VALUE_NONE.equals( requiredJavaVersion ) )
+        {
+            extendedPluginDescriptor.setRequiredJavaVersion( getRequiredJavaVersion( request ) );
+        }
+        if ( !VALUE_NONE.equals( requiredMavenVersion ) )
+        {
+            extendedPluginDescriptor.setRequiredMavenVersion( getRequiredMavenVersion( request ) );
+        }
+        return extendedPluginDescriptor;
+    }
+
+    private String getRequiredMavenVersion( PluginToolsRequest request )
+    {
+        if ( !VALUE_AUTO.equals( requiredMavenVersion ) )
+        {
+            return requiredMavenVersion;
+        }
+        getLog().debug( "Trying to derive Maven version automatically from project prerequisites..." );
+        String requiredMavenVersion = project.getPrerequisites() != null ? project.getPrerequisites().getMaven()
+                                        : null;
+        if ( requiredMavenVersion == null )
+        {
+            getLog().debug( "Trying to derive Maven version automatically from referenced Maven Plugin API artifact "
+                            + "version..." );
+            requiredMavenVersion = request.getUsedMavenApiVersion();
+        }
+        if ( requiredMavenVersion == null )
+        {
+            getLog().warn( "Cannot determine the required Maven version automatically, it is recommended to "
+                + "configure some explicit value manually." );
+        }
+        return requiredMavenVersion;
+    }
+
+    private String getRequiredJavaVersion( PluginToolsRequest request )
+    {
+        if ( !VALUE_AUTO.equals( requiredJavaVersion ) )
+        {
+            return requiredJavaVersion;
+        }
+        String requiredJavaVersion = request.getRequiredJavaVersion();
+        if ( requiredJavaVersion == null )
+        {
+            getLog().warn( "Cannot determine the required Java version automatically, it is recommended to "
+                            + "configure some explicit value manually." );
+        }
+        
+        return requiredJavaVersion;
     }
 
     /**
