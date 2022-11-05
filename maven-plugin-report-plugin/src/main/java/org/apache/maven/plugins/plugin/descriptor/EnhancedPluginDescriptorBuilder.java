@@ -25,10 +25,12 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.EnhancedParameterWrapper;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.apache.maven.plugin.plugin.report.PluginReport;
 
+import java.io.Reader;
 import java.net.URI;
 
 /**
@@ -36,11 +38,13 @@ import java.net.URI;
  * {@link org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator} and
  * used by {@link PluginReport}.
  * Populates the slightly extended {@link Parameter} object {@link EnhancedParameterWrapper}.
+ * In addition populates all (optional) elements added after Maven Plugin API 3.2.5.
  */
 public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder
 {
     private final boolean requireAddingMissingParameterSinceField;
-    
+    private PlexusConfiguration configuration;
+
     public EnhancedPluginDescriptorBuilder( RuntimeInformation rtInfo )
     {
         this( rtInfo.isMavenVersion( "[,3.3.9]" ) );
@@ -49,6 +53,29 @@ public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder
     EnhancedPluginDescriptorBuilder( boolean requireAddingMissingParameterSinceField )
     {
         this.requireAddingMissingParameterSinceField = requireAddingMissingParameterSinceField;
+    }
+
+    /**
+     * Cache the returned configuration for additional evaluation in {@link #build(Reader, String)}.
+     */
+    @Override
+    public PlexusConfiguration buildConfiguration( Reader reader )
+        throws PlexusConfigurationException
+    {
+        configuration = super.buildConfiguration( reader );
+        return configuration;
+    }
+
+    @Override
+    public PluginDescriptor build( Reader reader, String source )
+        throws PlexusConfigurationException
+    {
+        PluginDescriptor pluginDescriptor = super.build( reader, source );
+        // elements added in plugin descriptor 1.1
+        ExtendedPluginDescriptor extendedPluginDescriptor = new ExtendedPluginDescriptor( pluginDescriptor );
+        extendedPluginDescriptor.setRequiredJavaVersion( configuration.getChild( "requiredJavaVersion" ).getValue() );
+        extendedPluginDescriptor.setRequiredMavenVersion( configuration.getChild( "requiredMavenVersion" ).getValue() );
+        return extendedPluginDescriptor;
     }
 
     @Override
