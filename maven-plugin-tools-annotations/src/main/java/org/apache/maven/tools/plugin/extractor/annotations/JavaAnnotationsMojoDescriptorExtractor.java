@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -85,6 +86,7 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
+import org.objectweb.asm.Opcodes;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
@@ -107,37 +109,30 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * 
      * @see <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.1">JVMS 4.1</a>
      */
-    private static final Map<Short, String> MAJOR_CLASS_VERSION_TO_JAVA_STRING;
+    private static final Map<Integer, String> CLASS_VERSION_TO_JAVA_STRING;
     static
     {
-        MAJOR_CLASS_VERSION_TO_JAVA_STRING = initClassVersionMap();
-    }
- 
-    @SuppressWarnings( "checkstyle:magicnumber" )
-    private static Map<Short, String> initClassVersionMap()
-    {
-        Map<Short, String> classVersionMap = new HashMap<>();
-        classVersionMap.put( (short) 45, "1.1" );
-        classVersionMap.put( (short) 46, "1.2" );
-        classVersionMap.put( (short) 47, "1.3" );
-        classVersionMap.put( (short) 48, "1.4" );
-        classVersionMap.put( (short) 49, "1.5" );
-        classVersionMap.put( (short) 50, "1.6" );
-        classVersionMap.put( (short) 51, "1.7" );
-        classVersionMap.put( (short) 52, "1.8" );
-        classVersionMap.put( (short) 53, "9" );
-        classVersionMap.put( (short) 54, "10" );
-        classVersionMap.put( (short) 55, "11" );
-        classVersionMap.put( (short) 56, "12" );
-        classVersionMap.put( (short) 57, "13" );
-        classVersionMap.put( (short) 58, "14" );
-        classVersionMap.put( (short) 59, "15" );
-        classVersionMap.put( (short) 60, "16" );
-        classVersionMap.put( (short) 61, "17" );
-        classVersionMap.put( (short) 62, "18" );
-        classVersionMap.put( (short) 63, "19" );
-        classVersionMap.put( (short) 64, "20" );
-        return classVersionMap;
+        CLASS_VERSION_TO_JAVA_STRING = new HashMap<>();
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_1, "1.1" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_2, "1.2" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_3, "1.3" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_4, "1.4" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_5, "1.5" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_6, "1.6" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_7, "1.7" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_8, "1.8" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V9, "9" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V10, "10" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V11, "11" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V12, "12" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V13, "13" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V14, "14" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V15, "15" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V16, "16" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V17, "17" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V18, "18" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V19, "19" );
+        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V20, "20" );
     }
 
     @Inject
@@ -173,22 +168,44 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return GROUP_KEY;
     }
 
+    /**
+     * Compares class file format versions.
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.1">JVMS 4.1</a>
+     *
+     */
+    @SuppressWarnings( "checkstyle:magicnumber" )
+    static final class ClassVersionComparator implements Comparator<Integer>
+    {
+        @Override
+        public int compare( Integer classVersion1, Integer classVersion2 )
+        {
+            // first compare major version (
+            int result = Integer.compare( classVersion1 & 0x00FF, classVersion2 & 0x00FF );
+            if ( result == 0 )
+            {
+                // compare minor version if major is equal
+                result = Integer.compare( classVersion1, classVersion2 );
+            }
+            return result;
+        }
+    }
+
     @Override
     public List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException
     {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanAnnotations( request );
 
-        Optional<Short> requiredJavaVersion = mojoAnnotatedClasses.values().stream()
-                        .map( MojoAnnotatedClass::getClassVersion ).max( Short::compare );
-        if ( requiredJavaVersion.isPresent() )
+        Optional<Integer> maxClassVersion = mojoAnnotatedClasses.values().stream()
+                        .map( MojoAnnotatedClass::getClassVersion ).max( new ClassVersionComparator() );
+        if ( maxClassVersion.isPresent() )
         {
-            String requiredJavaVersionString = MAJOR_CLASS_VERSION_TO_JAVA_STRING.get( requiredJavaVersion.get() );
+            String requiredJavaVersion = CLASS_VERSION_TO_JAVA_STRING.get( maxClassVersion.get() );
             if ( StringUtils.isBlank( request.getRequiredJavaVersion() )
                                       || new ComparableVersion( request.getRequiredJavaVersion() ).compareTo( 
-                                             new ComparableVersion( requiredJavaVersionString ) ) < 0 )
+                                             new ComparableVersion( requiredJavaVersion ) ) < 0 )
             {
-                request.setRequiredJavaVersion( requiredJavaVersionString );
+                request.setRequiredJavaVersion( requiredJavaVersion );
             }
         }
         JavaProjectBuilder builder = scanJavadoc( request, mojoAnnotatedClasses.values() );

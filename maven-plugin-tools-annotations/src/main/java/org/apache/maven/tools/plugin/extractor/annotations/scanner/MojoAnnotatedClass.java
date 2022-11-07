@@ -36,7 +36,7 @@ public class MojoAnnotatedClass
 {
     private String className;
 
-    private short classVersion;
+    private int classVersion;
 
     private String parentClassName;
 
@@ -75,12 +75,12 @@ public class MojoAnnotatedClass
         return this;
     }
 
-    public short getClassVersion()
+    public int getClassVersion()
     {
         return classVersion;
     }
 
-    public MojoAnnotatedClass setClassVersion( short classVersion )
+    public MojoAnnotatedClass setClassVersion( int classVersion )
     {
         this.classVersion = classVersion;
         return this;

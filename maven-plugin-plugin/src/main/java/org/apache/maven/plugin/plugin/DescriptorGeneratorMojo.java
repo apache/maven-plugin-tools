@@ -251,6 +251,7 @@ public class DescriptorGeneratorMojo
      * compilation (determined by the extractor).</li>
      * <li>{@code "none"} to not set a required Java version.</li>
      * </ul>
+     * 
      * @since 3.8.0
      */
     @Parameter( defaultValue = VALUE_AUTO )
@@ -265,7 +266,7 @@ public class DescriptorGeneratorMojo
      * syntax like {@code "[2.0.10,2.1.0),[3.0,)"} or use a single version like {@code "2.2.1"}. The latter is a short
      * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Maven version from the POMs Maven prerequisite, or if not set the
-     * referenced Maven API version.</li>
+     * referenced Maven Plugin API version.</li>
      * <li>{@code "none"} to not set a required Maven version.</li>
      * </ul>
      * This value (if not set to {@code "none"}) takes precedence over the 

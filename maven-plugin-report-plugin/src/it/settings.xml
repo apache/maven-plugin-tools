@@ -38,10 +38,12 @@ under the License.
           <id>local.central</id>
           <url>@localRepositoryUrl@</url>
           <releases>
-            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
           </releases>
           <snapshots>
-            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
           </snapshots>
         </repository>
       </repositories>
@@ -50,10 +52,12 @@ under the License.
           <id>local.central</id>
           <url>@localRepositoryUrl@</url>
           <releases>
-            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
           </releases>
           <snapshots>
-            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
           </snapshots>
         </pluginRepository>
       </pluginRepositories>

@@ -53,6 +53,11 @@ under the License.
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>@project.version@</version>
+          <configuration>
+            <extractors>
+              <extractor>java-javadoc</extractor><!-- this extractor does not generate automatic JDK/Maven requirements -->
+            </extractors>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

@@ -227,11 +227,9 @@ public class DefaultMojoAnnotationsScanner
         throws IOException, ExtractionException
     {
         MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( );
-        short classVersion;
         try
         {
             ClassReader rdr = new ClassReader( is );
-            classVersion = rdr.readShort( 6 );
             rdr.accept( mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
         }
         catch ( ArrayIndexOutOfBoundsException aiooe )
@@ -272,7 +270,7 @@ public class DefaultMojoAnnotationsScanner
             }
             mojoAnnotatedClass.setArtifact( artifact );
             mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
-            mojoAnnotatedClass.setClassVersion( classVersion );
+            mojoAnnotatedClass.setClassVersion( mojoClassVisitor.getVersion() );
         }
     }
 

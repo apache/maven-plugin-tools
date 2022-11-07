@@ -58,6 +58,8 @@ public class MojoClassVisitor
 
     private List<MojoMethodVisitor> methodVisitors = new ArrayList<>();
 
+    private int version;
+
     public MojoClassVisitor()
     {
         super( Opcodes.ASM9 );
@@ -66,6 +68,11 @@ public class MojoClassVisitor
     public MojoAnnotatedClass getMojoAnnotatedClass()
     {
         return mojoAnnotatedClass;
+    }
+
+    public int getVersion()
+    {
+        return version;
     }
 
     public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
@@ -97,6 +104,7 @@ public class MojoClassVisitor
     @Override
     public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
     {
+        this.version = version;
         mojoAnnotatedClass = new MojoAnnotatedClass();
         mojoAnnotatedClass.setClassName( Type.getObjectType( name ).getClassName() );
         if ( superName != null )
