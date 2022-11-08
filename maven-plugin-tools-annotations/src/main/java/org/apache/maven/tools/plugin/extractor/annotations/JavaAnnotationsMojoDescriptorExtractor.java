@@ -52,7 +52,6 @@ import com.thoughtworks.qdox.model.JavaMethod;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -673,7 +672,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
 
     private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
                                                     PluginDescriptor pluginDescriptor )
-        throws DuplicateParameterException, InvalidParameterException
+        throws InvalidPluginDescriptorException
     {
         List<MojoDescriptor> mojoDescriptors = new ArrayList<>( mojoAnnotatedClasses.size() );
         for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
@@ -715,14 +714,23 @@ public class JavaAnnotationsMojoDescriptorExtractor
             mojoDescriptor.setDeprecated( mojo.getDeprecated() );
             mojoDescriptor.setThreadSafe( mojo.threadSafe() );
 
-            ExecuteAnnotationContent execute = findExecuteInParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
-            if ( execute != null )
+            MojoAnnotatedClass mojoAnnotatedClassWithExecute =
+                            findClassWithExecuteAnnotationInParentHierarchy( mojoAnnotatedClass,
+                                                                                mojoAnnotatedClasses );
+            if ( mojoAnnotatedClassWithExecute != null && mojoAnnotatedClassWithExecute.getExecute() != null )
             {
+                ExecuteAnnotationContent execute = mojoAnnotatedClassWithExecute.getExecute();
                 mojoDescriptor.setExecuteGoal( execute.goal() );
                 mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
                 if ( execute.phase() != null )
                 {
                     mojoDescriptor.setExecutePhase( execute.phase().id() );
+                    if ( StringUtils.isNotEmpty( execute.customPhase() ) )
+                    {
+                        throw new InvalidPluginDescriptorException( "@Execute annotation must only use either 'phase' " 
+                                        + "or 'customPhase' but not both. Both are used though on "
+                                        + mojoAnnotatedClassWithExecute.getClassName(), null );
+                    }
                 }
                 else if ( StringUtils.isNotEmpty( execute.customPhase() ) )
                 {
@@ -824,12 +832,12 @@ public class JavaAnnotationsMojoDescriptorExtractor
         return mojoDescriptors;
     }
 
-    protected ExecuteAnnotationContent findExecuteInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
+    protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
                                                                  Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
     {
         if ( mojoAnnotatedClass.getExecute() != null )
         {
-            return mojoAnnotatedClass.getExecute();
+            return mojoAnnotatedClass;
         }
         String parentClassName = mojoAnnotatedClass.getParentClassName();
         if ( StringUtils.isEmpty( parentClassName ) )
@@ -841,7 +849,7 @@ public class JavaAnnotationsMojoDescriptorExtractor
         {
             return null;
         }
-        return findExecuteInParentHierarchy( parent, mojoAnnotatedClasses );
+        return findClassWithExecuteAnnotationInParentHierarchy( parent, mojoAnnotatedClasses );
     }
 
 

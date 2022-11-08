@@ -41,16 +41,16 @@ public @interface Execute
     /**
      * Lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
      * For custom lifecycle phase ids use {@link #customPhase()} instead.
-     * This value takes precedence over the {@link #customPhase()}.
+     * Only one of {@link #customPhase()} and {@link #phase()} must be set.
      * @return the phase
      */
     LifecyclePhase phase() default LifecyclePhase.NONE;
 
     /**
-     * Custom lifecycle phase to fork. Note that specifying a {@link #phase} overrides the specified custom phase.
-     * Also specifying a custom phase overrides specifying a goal.
+     * Custom lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
      * This element should only be used for non-standard phases. For standard phases rather use {@link #phase()}.
-     * 
+     * Only one of {@link #customPhase()} and {@link #phase()} must be set.
+     * @return the custom phase id
      * @since 3.8.0
      */
     String customPhase() default "";
