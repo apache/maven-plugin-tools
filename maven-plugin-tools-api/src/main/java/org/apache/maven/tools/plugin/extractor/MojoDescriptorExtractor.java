@@ -33,14 +33,14 @@ public interface MojoDescriptorExtractor
     /**
      * Returns the "name" (id) of the extractor.
      *
-     * @since TBD
+     * @since 3.7.0
      */
     String getName();
 
     /**
      * Returns {@code true} if extractor is deprecated.
      *
-     * @since TBD
+     * @since 3.7.0
      */
     boolean isDeprecated();
 
@@ -48,7 +48,7 @@ public interface MojoDescriptorExtractor
      * Returns the {@link GroupKey} of extractor, as {@link org.apache.maven.tools.plugin.scanner.MojoScanner} will
      * execute them grouped, and ordered within groups. Must never return {@code null}.
      *
-     * @since TBD
+     * @since 3.7.0
      */
     GroupKey getGroupKey();
 
@@ -63,4 +63,15 @@ public interface MojoDescriptorExtractor
      */
     List<MojoDescriptor> execute( PluginToolsRequest request )
         throws ExtractionException, InvalidPluginDescriptorException;
+
+    /**
+     * The default implementation returns {@code null}.
+     * @return the required java version or {@code null} if unknown
+     *
+     * @since 3.8.0
+     */
+    default String getRequiredJavaVersion()
+    {
+        return null;
+    }
 }

@@ -22,6 +22,18 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -43,18 +55,6 @@ import org.codehaus.plexus.util.reflection.Reflector;
 import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Mojo scanner with java annotations.
@@ -85,12 +85,19 @@ public class DefaultMojoAnnotationsScanner
             for ( Artifact dependency : request.getDependencies() )
             {
                 scan( mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true );
+                if ( request.getMavenApiVersion() == null
+                     && dependency.getArtifactId().equals( "maven-plugin-api" )
+                     && dependency.getGroupId().equals( "org.apache.maven" ) )
+                {
+                    request.setMavenApiVersion( dependency.getVersion() );
+                }
             }
 
             for ( File classDirectory : request.getClassesDirectories() )
             {
                 scan( mojoAnnotatedClasses, classDirectory, request.getIncludePatterns(),
                       request.getProject().getArtifact(), false );
+                
             }
         }
         catch ( IOException e )
@@ -210,7 +217,6 @@ public class DefaultMojoAnnotationsScanner
         throws IOException, ExtractionException
     {
         MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( );
-
         try
         {
             ClassReader rdr = new ClassReader( is );
@@ -254,6 +260,7 @@ public class DefaultMojoAnnotationsScanner
             }
             mojoAnnotatedClass.setArtifact( artifact );
             mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
+            mojoAnnotatedClass.setClassVersion( mojoClassVisitor.getVersion() );
         }
     }
 

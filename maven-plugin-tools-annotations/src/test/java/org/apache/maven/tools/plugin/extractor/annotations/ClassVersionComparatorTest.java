@@ -1,3 +1,5 @@
+package org.apache.maven.tools.plugin.extractor.annotations;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,14 +19,21 @@
  * under the License.
  */
 
-assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/report-mojo.html' ).isFile()
+import java.util.Comparator;
 
-def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
-assert pluginInfo.isFile()
+import net.bytebuddy.jar.asm.Opcodes;
+import org.junit.jupiter.api.Test;
 
-assert !pluginInfo.text.contains('Memory')
-assert !pluginInfo.text.contains('Disk Space')
-// check JDK and Maven requirements
-assert pluginInfo.text.contains('1.8')
-assert pluginInfo.text.contains('3.2.5')
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ClassVersionComparatorTest
+{
+    @Test
+    void testComparator()
+    {
+        Comparator<Integer> comparator = new JavaAnnotationsMojoDescriptorExtractor.ClassVersionComparator();
+        assertEquals( 0, Integer.signum( comparator.compare( Opcodes.V10, Opcodes.V10 ) ) );
+        assertEquals( 1, Integer.signum( comparator.compare( Opcodes.V11, Opcodes.V10 ) ) );
+        assertEquals( -1, Integer.signum( comparator.compare( Opcodes.V9, Opcodes.V10 ) ) );
+    }
+}

@@ -19,21 +19,20 @@ package org.apache.maven.tools.plugin;
  * under the License.
  */
 
+import java.util.Objects;
+
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 
 /**
- * Extensions to MojoDescriptor added to Maven 3, then are not available when run under Maven2.
+ * Extensions to {@link MojoDescriptor} not supported by Maven 3.2.5.
+ * 
  * @author Kristian Rosenvold
  */
 public class ExtendedMojoDescriptor
     extends MojoDescriptor
 {
     private final boolean containsXhtmlTextValues;
-
-    private boolean threadSafe = false;
-
-    private String requiresDependencyCollection = null;
 
     public ExtendedMojoDescriptor()
     {
@@ -49,30 +48,6 @@ public class ExtendedMojoDescriptor
         this.containsXhtmlTextValues = containsXhtmlTextValues;
     }
 
-    @Override
-    public boolean isThreadSafe()
-    {
-        return threadSafe;
-    }
-
-    @Override
-    public void setThreadSafe( boolean threadSafe )
-    {
-        this.threadSafe = threadSafe;
-    }
-
-    @Override
-    public String getDependencyCollectionRequired()
-    {
-        return requiresDependencyCollection;
-    }
-
-    @Override
-    public void setDependencyCollectionRequired( String requiresDependencyCollection )
-    {
-        this.requiresDependencyCollection = requiresDependencyCollection;
-    }
-    
     /**
      * Indicates if the methods {@link #getDescription()}, {@link #getDeprecated()}, {@link Parameter#getDescription()}
      * and {@link Parameter#getDeprecated()} return XHTML values.
@@ -83,5 +58,33 @@ public class ExtendedMojoDescriptor
     public boolean containsXhtmlTextValues()
     {
         return containsXhtmlTextValues;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash( containsXhtmlTextValues );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
+        {
+            return true;
+        }
+        if ( !super.equals( obj ) )
+        {
+            return false;
+        }
+        if ( getClass() != obj.getClass() )
+        {
+            return false;
+        }
+        ExtendedMojoDescriptor other = (ExtendedMojoDescriptor) obj;
+        return containsXhtmlTextValues == other.containsXhtmlTextValues;
     }
 }

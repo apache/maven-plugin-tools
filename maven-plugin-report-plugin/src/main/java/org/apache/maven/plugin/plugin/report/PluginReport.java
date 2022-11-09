@@ -49,6 +49,7 @@ import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
@@ -416,7 +417,7 @@ public class PluginReport
 
             startTable();
 
-            String maven = discoverMavenRequirement( project );
+            String maven = discoverMavenRequirement( project, pluginDescriptor );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.maven" ) );
             tableCell( ( maven != null
@@ -424,7 +425,7 @@ public class PluginReport
                 : getBundle( locale ).getString( "report.plugin.systemrequirements.nominimum" ) ) );
             sink.tableRow_();
 
-            String jdk = discoverJdkRequirement( project );
+            String jdk = discoverJdkRequirement( project, pluginDescriptor );
             sink.tableRow();
             tableCell( getBundle( locale ).getString( "report.plugin.systemrequirements.jdk" ) );
             tableCell(
@@ -559,40 +560,57 @@ public class PluginReport
         }
 
         /**
-         * Try to lookup on the Maven prerequisites property.
+         * Tries to determine the Maven requirement from either the plugin descriptor or (if not set) from the 
+         * Maven prerequisites element in the POM.
          *
          * @param project      not null
+         * @param pluginDescriptor the plugin descriptor (not null)
          * @return the Maven version or null if not specified
          */
-        private static String discoverMavenRequirement( MavenProject project )
+        private static String discoverMavenRequirement( MavenProject project, PluginDescriptor pluginDescriptor )
         {
+            if ( StringUtils.isNotBlank( pluginDescriptor.getRequiredMavenVersion() ) )
+            {
+                return pluginDescriptor.getRequiredMavenVersion();
+            }
             return Optional.ofNullable( project.getPrerequisites() )
                 .map( Prerequisites::getMaven )
                 .orElse( null );
         }
 
         /**
+         * Tries to determine the JDK requirement from the following sources (until one is found)
          * <ol>
-         * <li>use configured jdk requirement</li>
-         * <li>use <code>target</code> configuration of <code>org.apache.maven.plugins:maven-compiler-plugin</code></li>
-         * <li>use <code>target</code> configuration of <code>org.apache.maven.plugins:maven-compiler-plugin</code> in
-         * <code>pluginManagement</code></li>
-         * <li>use <code>maven.compiler.target</code> property</li>
+         * <li>use JDK requirement from plugin descriptor</li>
+         * <li>use {@code release} configuration of {@code org.apache.maven.plugins:maven-compiler-plugin}</li>
+         * <li>use {@code maven.compiler.release<} property</li>
+         * <li>use {@code target} configuration of {@code org.apache.maven.plugins:maven-compiler-plugin}</li>
+         * <li>use {@code maven.compiler.target} property</li>
          * </ol>
          *
          * @param project      not null
+         * @param pluginDescriptor the plugin descriptor (not null)
          * @return the JDK version
          */
-        private static String discoverJdkRequirement( MavenProject project )
+        private static String discoverJdkRequirement( MavenProject project, PluginDescriptor pluginDescriptor )
         {
-
+            String jdk = null;
+            if ( pluginDescriptor instanceof ExtendedPluginDescriptor )
+            {
+                ExtendedPluginDescriptor extPluginDescriptor = (ExtendedPluginDescriptor) pluginDescriptor;
+                jdk = extPluginDescriptor.getRequiredJavaVersion();
+            }
+            if ( jdk != null )
+            {
+                return jdk;
+            }
             Plugin compiler = getCompilerPlugin( project.getBuild().getPluginsAsMap() );
             if ( compiler == null )
             {
                 compiler = getCompilerPlugin( project.getPluginManagement().getPluginsAsMap() );
             }
 
-            String jdk = getPluginParameter( compiler, "release" );
+            jdk = getPluginParameter( compiler, "release" );
             if ( jdk != null )
             {
                 return jdk;

@@ -45,6 +45,8 @@ public class MojoAnnotationsScannerRequest
 
     private MavenProject project;
 
+    private String mavenApiVersion;
+
     public MojoAnnotationsScannerRequest()
     {
         // no o
@@ -98,5 +100,15 @@ public class MojoAnnotationsScannerRequest
     public void setProject( MavenProject project )
     {
         this.project = project;
+    }
+
+    public String getMavenApiVersion()
+    {
+        return mavenApiVersion;
+    }
+
+    public void setMavenApiVersion( String mavenApiVersion )
+    {
+        this.mavenApiVersion = mavenApiVersion;
     }
 }
