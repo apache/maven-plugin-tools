@@ -29,6 +29,8 @@
 
 Maven Plugin Tool for Java Annotated with Mojo Javadoc Tags
 
+ <<This Mojo descriptor extractor is deprecated and should no longer be used. Rely on {{{../maven-plugin-tools-annotations/index.html}Maven Plugin Tool for Annotations}} instead.>>
+
  The Maven Plugin Tool for Java is the <<<java-javadoc>>> implementation of
  {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors for plugins written in Java annotated with Mojo Javadoc Tags.

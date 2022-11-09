@@ -28,6 +28,8 @@
 
 Maven Plugin Tool for Beanshell
 
+ <<This Mojo descriptor extractor is deprecated and should no longer be used. With Maven 4 only Java based Mojos will be supported. Use Java and rely on {{{../maven-plugin-tools-annotations/index.html}Maven Plugin Tool for Annotations}} instead.>>
+
  The Maven Plugin Tool for Beanshell is the <<<bsh>>> implementation of
  {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
  to extract descriptors for plugins written in Beanshell.
