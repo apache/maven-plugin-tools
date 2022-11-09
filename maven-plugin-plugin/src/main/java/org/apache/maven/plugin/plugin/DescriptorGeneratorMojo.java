@@ -118,6 +118,13 @@ public class DescriptorGeneratorMojo
      *      &lt;extractor&gt;bsh&lt;/extractor&gt;
      *  &lt;/extractors&gt;
      * </pre>
+     * The extractors with the following names ship with {@code maven-plugin-tools}:
+     * <ol>
+     *  <li>{@code java-annotations}</li>
+     *  <li>{@code java-javadoc}, deprecated</li>
+     *  <li>{@code ant}, deprecated</li>
+     *  <li>{@code bsh}, deprecated</li>
+     * </ol>
      */
     @Parameter
     private Set<String> extractors;
