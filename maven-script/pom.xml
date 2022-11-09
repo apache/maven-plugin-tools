@@ -30,7 +30,7 @@ under the License.
   <packaging>pom</packaging>
 
   <name>Maven Script Mojo Support</name>
-  <description>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.</description>
+  <description>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java. Scripting support is deprecated, with Maven 4 only Java based Mojos will be supported.</description>
 
   <modules>
     <module>maven-plugin-tools-ant</module>

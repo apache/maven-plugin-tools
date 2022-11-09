@@ -37,7 +37,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
+ * @deprecated Scripting support for Mojos is deprecated and is planned to be removed in Maven 4.0
  * @author jdcasey
  */
 @Deprecated
@@ -48,7 +48,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     @Override
     public boolean isDeprecated()
     {
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
