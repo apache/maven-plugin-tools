@@ -30,8 +30,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,9 +86,10 @@ public class DefaultMojoAnnotationsScanner
             {
                 scan( mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true );
                 if ( request.getMavenApiVersion() == null
-                     && dependency.getFile().getName().contains( "maven-plugin-api" ) )
+                     && dependency.getArtifactId().equals( "maven-plugin-api" )
+                     && dependency.getGroupId().equals( "org.apache.maven" ) )
                 {
-                    request.setMavenApiVersion( getSpecificationVersionOfJar( dependency.getFile() ) );
+                    request.setMavenApiVersion( dependency.getVersion() );
                 }
             }
 
@@ -129,15 +128,6 @@ public class DefaultMojoAnnotationsScanner
         }
 
         mojoAnnotatedClasses.putAll( scanResult );
-    }
-
-    private String getSpecificationVersionOfJar( File file ) throws IOException
-    {
-        try ( JarFile jarFile = new JarFile( file ) )
-        {
-            // https://maven.apache.org/shared/maven-archiver/examples/manifest.html
-            return jarFile.getManifest().getMainAttributes().getValue( Attributes.Name.SPECIFICATION_VERSION );
-        }
     }
 
     /**

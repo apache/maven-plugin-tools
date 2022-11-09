@@ -100,6 +100,9 @@
     <slf4jVersion>1.7.5</slf4jVersion>
     <antVersion>1.10.12</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
+    <!-- whenever the ASM version is updated also the 
+    maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
+    needs to be updated as well -->
     <asmVersion>9.4</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>

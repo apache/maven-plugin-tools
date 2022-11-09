@@ -72,7 +72,6 @@ public class DescriptorGeneratorMojo
     extends AbstractGeneratorMojo
 {
     private static final String VALUE_AUTO = "auto";
-    private static final String VALUE_NONE = "none";
 
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
@@ -249,7 +248,6 @@ public class DescriptorGeneratorMojo
      * and negated version prefixes (starting with '!').</li>
      * <li>{@code "auto"} to determine the minimum Java version from the binary class version being generated during
      * compilation (determined by the extractor).</li>
-     * <li>{@code "none"} to not set a required Java version.</li>
      * </ul>
      * 
      * @since 3.8.0
@@ -267,7 +265,6 @@ public class DescriptorGeneratorMojo
      * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Maven version from the POMs Maven prerequisite, or if not set the
      * referenced Maven Plugin API version.</li>
-     * <li>{@code "none"} to not set a required Maven version.</li>
      * </ul>
      * This value (if not set to {@code "none"}) takes precedence over the 
      * <a href="https://maven.apache.org/pom.html#Prerequisites">POMs Maven prerequisite</a> in Maven 4.
@@ -408,14 +405,8 @@ public class DescriptorGeneratorMojo
     {
         ExtendedPluginDescriptor extendedPluginDescriptor = 
                         new ExtendedPluginDescriptor( request.getPluginDescriptor() );
-        if ( !VALUE_NONE.equals( requiredJavaVersion ) )
-        {
-            extendedPluginDescriptor.setRequiredJavaVersion( getRequiredJavaVersion( request ) );
-        }
-        if ( !VALUE_NONE.equals( requiredMavenVersion ) )
-        {
-            extendedPluginDescriptor.setRequiredMavenVersion( getRequiredMavenVersion( request ) );
-        }
+        extendedPluginDescriptor.setRequiredJavaVersion( getRequiredJavaVersion( request ) );
+        extendedPluginDescriptor.setRequiredMavenVersion( getRequiredMavenVersion( request ) );
         return extendedPluginDescriptor;
     }
 
