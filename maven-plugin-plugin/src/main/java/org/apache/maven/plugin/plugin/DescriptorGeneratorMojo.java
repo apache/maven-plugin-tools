@@ -186,9 +186,9 @@ public class DescriptorGeneratorMojo
      * all given links should have a fetchable {@code /package-list} or {@code /element-list} file.
      * For instance:
      * <pre>
-     * &lt;links&gt;
-     *   &lt;link&gt;https://docs.oracle.com/javase/8/docs/api/&lt;/link&gt;
-     * &lt;links&gt;
+     * &lt;externalJavadocBaseUrls&gt;
+     *   &lt;externalJavadocBaseUrl&gt;https://docs.oracle.com/javase/8/docs/api/&lt;/externalJavadocBaseUrl&gt;
+     * &lt;externalJavadocBaseUrls&gt;
      * </pre>
      * is valid because <code>https://docs.oracle.com/javase/8/docs/api/package-list</code> exists.
      * See <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/javadoc.html#standard-doclet-options">
