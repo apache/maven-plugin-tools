@@ -29,17 +29,11 @@ under the License.
 
   <name>Maven Integration Test :: v4api</name>
   <description>
-    Test plugin-plugin, which tests maven-plugin-tools-api and 
-    maven-plugin-tools-java. This will generate a plugin descriptor from 
-    java-based mojo sources, install the plugin, and then use it.
+    Test maven-plugin-plugin support for the Maven 4.x api.
   </description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- pom properties values not taken into account since invoker defines properties -->
-    <!-- that override what's defined in pom -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -70,16 +64,7 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
-        <configuration>
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
         <executions>
-          <execution>
-            <id>mojo-descriptor</id>
-            <goals>
-              <goal>descriptor</goal>
-            </goals>
-          </execution>
           <execution>
             <id>help-goal</id>
             <goals>
