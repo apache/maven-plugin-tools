@@ -36,7 +36,10 @@ import org.apache.maven.api.settings.Settings;
 import java.nio.file.Path;
 
 /**
- * Touches a test file.
+ * Test mojo for the v4 api plugin descriptor generation.
+ * This mojo is not actually runnable because:
+ *  - it's using a custom lifecycle which is not defined
+ *  - it has a @Component dependency on ArtifactInstaller (hint=test) which does not exist
  *
  * @since 1.2
  */
