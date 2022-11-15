@@ -34,9 +34,14 @@
     <module>javasample-maven-plugin</module>
   </modules>
 
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
+      <groupId>org.apache.maven</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>@plexusUtilsVersion@</version>
     </dependency>

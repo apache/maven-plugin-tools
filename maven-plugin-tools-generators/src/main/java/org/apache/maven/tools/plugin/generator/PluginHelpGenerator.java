@@ -57,6 +57,7 @@ public class PluginHelpGenerator
     private String helpPackageName;
     private String goalPrefix;
     private MavenProject mavenProject;
+    private boolean useMaven4Api;
     private VelocityComponent velocityComponent;
 
     /**
@@ -75,6 +76,10 @@ public class PluginHelpGenerator
         throws GeneratorException
     {
         String helpImplementation = getImplementation();
+
+        useMaven4Api = mavenProject.getDependencies().stream()
+                        .anyMatch( dep -> "org.apache.maven".equals( dep.getGroupId() )
+                                && "maven-api-core".equals( dep.getArtifactId() ) );
 
         try
         {
@@ -142,8 +147,8 @@ public class PluginHelpGenerator
         StringWriter stringWriter = new StringWriter();
 
         // plugin-tools sources are UTF-8 (and even ASCII in this case))
-        try ( InputStream is = //
-                 Thread.currentThread().getContextClassLoader().getResourceAsStream( "help-class-source.vm" ); //
+        try ( InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                    useMaven4Api ? "help-class-source-v4.vm" : "help-class-source.vm" ); //
              InputStreamReader isReader = new InputStreamReader( is, UTF_8 ) )
         {
             //isReader =

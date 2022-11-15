@@ -43,6 +43,7 @@
 
   <properties>
     <it.debug>true</it.debug>
+    <javaVersion>8</javaVersion>
   </properties>
 
   <dependencies>
@@ -135,7 +136,7 @@
 
     <!-- plexus -->
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
+      <groupId>org.apache.maven</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>

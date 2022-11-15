@@ -33,6 +33,7 @@ public class ExtendedMojoDescriptor
     extends MojoDescriptor
 {
     private final boolean containsXhtmlTextValues;
+    private boolean v4Api;
 
     public ExtendedMojoDescriptor()
     {
@@ -58,6 +59,16 @@ public class ExtendedMojoDescriptor
     public boolean containsXhtmlTextValues()
     {
         return containsXhtmlTextValues;
+    }
+
+    public boolean isV4Api()
+    {
+        return v4Api;
+    }
+
+    public void setV4Api( boolean v4Api )
+    {
+        this.v4Api = v4Api;
     }
 
     @Override

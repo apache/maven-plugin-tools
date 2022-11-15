@@ -223,8 +223,7 @@ public class AntMojoWrapper
             if ( mavenProject != null && session != null && pathTranslator != null )
             {
                 ExpressionEvaluator exprEvaluator =
-                    new PluginParameterExpressionEvaluator( session, mojoExecution, pathTranslator, logger,
-                                                            mavenProject, mavenProject.getProperties() );
+                    new PluginParameterExpressionEvaluator( session, mojoExecution );
                 
                 PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper( antProject );
                 propertyHelper.setNext( new AntPropertyHelper( exprEvaluator, mavenProject.getArtifacts(), getLog() ) );
