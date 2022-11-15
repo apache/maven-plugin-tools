@@ -159,14 +159,16 @@ public class DescriptorGeneratorMojo
 
     /**
      * List of {@code groupId:artifactId} strings of artifact coordinates that are to be excluded from "expected
-     * provided scope" check. Default value: {@code ["org.apache.maven:maven-archiver", "org.apache.maven:maven-jxr"]}.
+     * provided scope" check. Default value:
+     * {@code ["org.apache.maven:maven-archiver", "org.apache.maven:maven-jxr", "org.apache.maven:plexus-utils"]}.
      *
      * @since 3.6.3
      */
     @Parameter
     private List<String> expectedProvidedScopeExclusions = Arrays.asList(
         "org.apache.maven:maven-archiver",
-        "org.apache.maven:maven-jxr" );
+        "org.apache.maven:maven-jxr",
+        "org.apache.maven:plexus-utils" );
 
     /**
      * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos, to filter
