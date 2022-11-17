@@ -30,7 +30,7 @@ def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 assert mojo.goal.text() == 'first'
 assert mojo.implementation.text() == 'org.apache.maven.its.v4api.FirstMojo'
 assert mojo.language.text() == 'java'
-assert mojo.description.text() == 'Touches a test file.'
+assert mojo.description.text().startsWith('Test mojo for the v4 api plugin descriptor generation.')
 assert mojo.requiresDependencyResolution.text() == 'test'
 assert mojo.requiresDependencyCollection.text() == ''
 assert mojo.requiresProject.text() == 'true'
