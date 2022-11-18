@@ -37,6 +37,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,7 +146,7 @@ public class AntMojoWrapperTest
 
         File pluginXmlFile = Paths.get( resource.toURI() ).toFile();
 
-        File jarFile = File.createTempFile( "AntMojoWrapperTest.", ".test.jar" );
+        File jarFile = Files.createTempFile( "AntMojoWrapperTest.", ".test.jar" ).toFile();
         jarFile.deleteOnExit();
 
         JarArchiver archiver = new JarArchiver();
