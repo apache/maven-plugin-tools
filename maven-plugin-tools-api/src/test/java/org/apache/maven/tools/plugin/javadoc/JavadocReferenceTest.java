@@ -45,6 +45,8 @@ class JavadocReferenceTest
                       JavadocReference.parse( "package.Class#member(ArgType1,ArgType2) label" ) );
         assertEquals( new JavadocReference( Optional.of("my.module"), Optional.of( "package.Class" ), Optional.of( "member(ArgType1,ArgType2)" ), Optional.of("label") ),
                       JavadocReference.parse( "my.module/package.Class#member(ArgType1,ArgType2) label" ) );
+        assertEquals( new JavadocReference( Optional.empty(), Optional.empty(), Optional.of( "member" ), Optional.of("label with spaces") ),
+                JavadocReference.parse( "#member label with spaces" ) );
     }
 
 }
