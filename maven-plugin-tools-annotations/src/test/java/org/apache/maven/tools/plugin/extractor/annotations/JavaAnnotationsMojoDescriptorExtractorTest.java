@@ -19,24 +19,18 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;

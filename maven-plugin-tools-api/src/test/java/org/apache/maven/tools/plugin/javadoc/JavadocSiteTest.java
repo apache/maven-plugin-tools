@@ -22,14 +22,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.opentest4j.AssertionFailedError;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests against the locally available javadoc sites. Doesn't require internet connectivity.
@@ -94,6 +100,16 @@ class JavadocSiteTest
     {
         JavadocSite site = getLocalJavadocSite( jdkName, version );
         assertUrlValid( site.createLink( new FullyQualifiedJavadocReference( "org.apache.maven.tools.plugin.extractor.annotations.converter.test", "CurrentClass", false ) ) );
+    }
+
+    @Test
+    void testGetPackageAndClassName()
+    {
+        assertEquals( new AbstractMap.SimpleEntry<>( "java.util", "Map" ), JavadocSite.getPackageAndClassName( Map.class.getName() ) );
+        assertEquals( new AbstractMap.SimpleEntry<>( "java.util", "Map.Entry" ), JavadocSite.getPackageAndClassName( Map.Entry.class.getName() ) );
+        assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "java.util.Map$0001Entry" ) ); // some local class
+        assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "java.util." ) );
+        assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "int" ) );
     }
 
     static JavadocSite getLocalJavadocSite( String name, JavadocLinkGenerator.JavadocToolVersionRange version )

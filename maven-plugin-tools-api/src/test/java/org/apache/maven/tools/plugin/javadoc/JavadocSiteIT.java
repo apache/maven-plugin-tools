@@ -82,4 +82,13 @@ class JavadocSiteIT
                                                                                              "CASE_INSENSITIVE_ORDER",
                                                                                              MemberType.FIELD, true ) ) );
     }
+    
+    @ParameterizedTest
+    @MethodSource( "javadocBaseUrls" )
+    void testNestedClass( URI javadocBaseUrl )
+            throws IOException
+    {
+        JavadocSite site = new JavadocSite( javadocBaseUrl, null );
+        JavadocSiteTest.assertUrlValid( site.createLink( new FullyQualifiedJavadocReference( "java.util", "Map.Entry", true ) ) );
+    }
 }

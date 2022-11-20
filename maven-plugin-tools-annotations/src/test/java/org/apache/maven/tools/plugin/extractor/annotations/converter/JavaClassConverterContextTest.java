@@ -22,7 +22,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.Objects;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -101,6 +100,10 @@ class JavaClassConverterContextTest
         assertEquals( new FullyQualifiedJavadocReference( "org.apache.maven.tools.plugin.extractor.annotations.converter.test.other",
                                                           "OtherClassOtherPackage.EmbeddedEnum", false ),
                       context.resolveReference( ( JavadocReference.parse( "OtherClassOtherPackage.EmbeddedEnum" ) ) ) );
+        
+        // nested class from JDK
+        assertEquals( new FullyQualifiedJavadocReference( "java.util", "Map.Entry", true ),
+                context.resolveReference( JavadocReference.parse( "java.util.Map.Entry" ) ) );
     }
 
     @Test

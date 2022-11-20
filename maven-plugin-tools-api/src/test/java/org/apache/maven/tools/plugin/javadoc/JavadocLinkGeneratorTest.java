@@ -22,6 +22,7 @@ package org.apache.maven.tools.plugin.javadoc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.codehaus.plexus.languages.java.version.JavaVersion;
@@ -91,6 +92,7 @@ class JavadocLinkGeneratorTest
         throws URISyntaxException
     {
         URI javadocBaseUri = getClass().getResource( "/javadoc/" + jdkName + "/" ).toURI();
+        
         JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator( javadocBaseUri, version );
         // invalid link for primitives
         assertThrows( IllegalArgumentException.class, () -> linkGenerator.createLink( "boolean" ) );
@@ -99,6 +101,11 @@ class JavadocLinkGeneratorTest
                                                        "java/lang/String.html",
                                                        null ) ),
                       linkGenerator.createLink( "java.lang.String[]" ) );
+        // link for nested class
+        assertEquals( javadocBaseUri.resolve( new URI( null,
+                                                       "java/util/Map.Entry.html",
+                                                       null ) ),
+                      linkGenerator.createLink( Map.Entry.class.getName() ) );
 
     }
 
