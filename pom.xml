@@ -23,7 +23,7 @@
   <parent>
     <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
-    <version>37</version>
+    <version>39</version>
     <relativePath />
   </parent>
 
@@ -377,6 +377,22 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <configuration>
+          <java>
+            <includes>
+              <include>src/**/*.java</include>
+            </includes>
+            <excludes>
+              <exclude>**/it/source-encoding/</exclude>
+            </excludes>
+          </java>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
