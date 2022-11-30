@@ -41,7 +41,7 @@
     </dependency>
     <!-- plexus -->
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
