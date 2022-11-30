@@ -107,7 +107,7 @@
     <asmVersion>9.4</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
-    <plexusUtilsVersion>4.0.0-alpha-2</plexusUtilsVersion>
+    <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <project.build.outputTimestamp>2022-10-30T09:30:18Z</project.build.outputTimestamp>
@@ -238,7 +238,7 @@
       </dependency>
       <!-- plexus -->
       <dependency>
-        <groupId>org.apache.maven</groupId>
+        <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>${plexusUtilsVersion}</version>
       </dependency>
