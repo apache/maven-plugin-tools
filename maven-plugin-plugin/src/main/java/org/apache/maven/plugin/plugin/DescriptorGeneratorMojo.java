@@ -448,14 +448,15 @@ public class DescriptorGeneratorMojo
         {
             return requiredJavaVersion;
         }
-        String requiredJavaVersion = request.getRequiredJavaVersion();
-        if ( requiredJavaVersion == null )
+        String minRequiredJavaVersion = request.getRequiredJavaVersion();
+        if ( minRequiredJavaVersion == null )
         {
-            getLog().warn( "Cannot determine the required Java version automatically, it is recommended to "
+            getLog().warn( "Cannot determine the minimally required Java version automatically, it is recommended to "
                             + "configure some explicit value manually." );
+            return null;
         }
         
-        return requiredJavaVersion;
+        return "[" + minRequiredJavaVersion + ",)";
     }
 
     /**

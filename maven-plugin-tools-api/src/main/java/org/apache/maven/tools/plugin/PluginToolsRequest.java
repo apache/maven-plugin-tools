@@ -200,7 +200,7 @@ public interface PluginToolsRequest
     
     /**
      * 
-     * @param requiredJavaVersion the required java version for this plugin or {@code null} if unknown.
+     * @param requiredJavaVersion the minimally required java version for this plugin or {@code null} if unknown.
      * @return This request.
      * @since 3.8.0
      */
@@ -208,7 +208,7 @@ public interface PluginToolsRequest
 
     /**
      * 
-     * @return the required java version for this plugin or {@code null} if unknown.
+     * @return the minimally required java version for this plugin or {@code null} if unknown.
      * @since 3.8.0
      */
     String getRequiredJavaVersion();
