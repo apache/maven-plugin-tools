@@ -200,7 +200,8 @@ public interface PluginToolsRequest
     
     /**
      * 
-     * @param requiredJavaVersion the minimally required java version for this plugin or {@code null} if unknown.
+     * @param requiredJavaVersion the required Java version for this plugin or {@code null} if unknown.
+     *  Must be a value according to semantics of {@link org.eclipse.aether.version.VersionConstraint}.
      * @return This request.
      * @since 3.8.0
      */
@@ -208,7 +209,8 @@ public interface PluginToolsRequest
 
     /**
      * 
-     * @return the minimally required java version for this plugin or {@code null} if unknown.
+     * @return the required Java version for this plugin or {@code null} if unknown.
+     *  Is a value according to semantics of {@link org.eclipse.aether.version.VersionConstraint}.
      * @since 3.8.0
      */
     String getRequiredJavaVersion();
