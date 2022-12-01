@@ -107,9 +107,19 @@ class JavadocSiteTest
     {
         assertEquals( new AbstractMap.SimpleEntry<>( "java.util", "Map" ), JavadocSite.getPackageAndClassName( Map.class.getName() ) );
         assertEquals( new AbstractMap.SimpleEntry<>( "java.util", "Map.Entry" ), JavadocSite.getPackageAndClassName( Map.Entry.class.getName() ) );
+        assertEquals( new AbstractMap.SimpleEntry<>( "org.apache.maven.tools.plugin.javadoc", "JavadocSiteTest.NestedClass.DeeplyNestedClass" ),
+                JavadocSite.getPackageAndClassName( NestedClass.DeeplyNestedClass.class.getName() ) );
         assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "java.util.Map$0001Entry" ) ); // some local class
         assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "java.util." ) );
         assertThrows( IllegalArgumentException.class, () -> JavadocSite.getPackageAndClassName( "int" ) );
+    }
+
+    public static final class NestedClass
+    {
+        public static final class DeeplyNestedClass
+        {
+            
+        }
     }
 
     static JavadocSite getLocalJavadocSite( String name, JavadocLinkGenerator.JavadocToolVersionRange version )
