@@ -46,11 +46,11 @@ public class JavadocReference
     private final Optional<String> label;
 
     /*
-     * Test at https://regex101.com/r/eDzWNx/1
+     * Test at https://regex101.com/r/eDzWNx
      * Captures several groups: module name (1), package name and/or class name (2), member (3), label (4)
      */
     private static final Pattern REFERENCE_VALUE_PATTERN =
-        Pattern.compile( "^\\s*(?:(.+)/)??([^#\\s/]+)?(?:#([^\\s\\(]+(?:\\([^\\)]*\\))?))?(?: +([^\\s/]+)\\s*)?$" );
+        Pattern.compile( "^\\s*(?:(.+)/)??([^#\\s/]+)?(?:#([^\\s\\(]+(?:\\([^\\)]*\\))?))?(?: +(.*))?$" );
 
     private static final int GROUP_INDEX_MODULE = 1;
 
