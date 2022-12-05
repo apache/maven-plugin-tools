@@ -278,7 +278,7 @@ class JavadocSite
     }
 
     /**
-     * Splits up a given binary name into package name and class name part.
+     * Splits up a given binary class name into package name and simple class name part.
      * @param binaryName a binary name according to 
      * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
      * @return a key value pair where the key is the package name and the value the class name
@@ -286,25 +286,38 @@ class JavadocSite
      */
     static Map.Entry<String, String> getPackageAndClassName( String binaryName )
     {
-     // assume binary name according to https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1
+        // assume binary name according to https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1
         int indexOfDollar = binaryName.indexOf( '$' );
+        int indexOfDotBetweenPackageAndClass;
         if ( indexOfDollar >= 0 ) 
         {
-            // emit some warning, as non resolvable: unclear which type of member follows if it is non digit
-            throw new IllegalArgumentException( "Can only resolve binary names of top level classes" );
+            // check following character
+            if ( Character.isDigit( binaryName.charAt( indexOfDollar + 1 ) ) )
+            {
+                // emit some warning, as non resolvable: unclear which type of member follows if it is non digit
+                throw new IllegalArgumentException( "Can only resolve binary names of member classes, "
+                        + "but not local or anonymous classes" );
+            }
+            // member is class, field or method....
+            indexOfDotBetweenPackageAndClass = binaryName.lastIndexOf( '.', indexOfDollar );
+            // replace dollar by dot
+            binaryName = binaryName.replace( '$', '.' );
+        } 
+        else
+        {
+            indexOfDotBetweenPackageAndClass = binaryName.lastIndexOf( '.' );
         }
-        int indexOfLastDot = binaryName.lastIndexOf( '.' );
-        if ( indexOfLastDot < 0 )
+        if ( indexOfDotBetweenPackageAndClass < 0 )
         {
             throw new IllegalArgumentException( "Resolving primitives is not supported. "
                 + "Binary name must contain at least one dot: " + binaryName );
         }
-        if ( indexOfLastDot == binaryName.length() - 1 )
+        if ( indexOfDotBetweenPackageAndClass == binaryName.length() - 1 )
         {
             throw new IllegalArgumentException( "Invalid binary name ending with a dot: " + binaryName );
         }
-        String packageName = binaryName.substring( 0, indexOfLastDot );
-        String className = binaryName.substring( indexOfLastDot + 1, binaryName.length() );
+        String packageName = binaryName.substring( 0, indexOfDotBetweenPackageAndClass );
+        String className = binaryName.substring( indexOfDotBetweenPackageAndClass + 1, binaryName.length() );
         return new AbstractMap.SimpleEntry<>( packageName, className );
     }
 
