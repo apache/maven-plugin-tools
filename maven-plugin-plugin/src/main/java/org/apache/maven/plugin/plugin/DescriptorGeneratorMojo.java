@@ -318,7 +318,7 @@ public class DescriptorGeneratorMojo
             Set<Artifact> wrongScopedArtifacts = dependenciesNotInProvidedScope();
             if ( !wrongScopedArtifacts.isEmpty() )
             {
-                StringBuilder errorMessage = new StringBuilder(
+                StringBuilder message = new StringBuilder(
                     LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
                         + "Please make sure that dependencies listed below declared in POM" + LS
                         + "have set '<scope>provided</scope>' as well." + LS + LS
@@ -326,11 +326,11 @@ public class DescriptorGeneratorMojo
                 );
                 for ( Artifact artifact : wrongScopedArtifacts )
                 {
-                    errorMessage.append( " * " ).append( artifact ).append( LS );
+                    message.append( " * " ).append( artifact ).append( LS );
                 }
-                errorMessage.append( LS ).append( LS );
+                message.append( LS ).append( LS );
 
-                getLog().warn( errorMessage.toString() );
+                getLog().warn( message.toString() );
             }
         }
 
