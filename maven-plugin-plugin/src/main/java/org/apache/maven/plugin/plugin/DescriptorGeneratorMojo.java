@@ -253,7 +253,7 @@ public class DescriptorGeneratorMojo
                         && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
                         && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
-            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+            getLog().warn( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
                                 + "plugins in the Group Id org.apache.maven.plugins" + LS
                                 + "Please change your artifactId to the format ___-maven-plugin" + LS
                                 + "In the future this error will break the build." + LS + LS );
@@ -270,7 +270,7 @@ public class DescriptorGeneratorMojo
             Set<Artifact> wrongScopedArtifacts = dependenciesNotInProvidedScope();
             if ( !wrongScopedArtifacts.isEmpty() )
             {
-                StringBuilder errorMessage = new StringBuilder(
+                StringBuilder message = new StringBuilder(
                     LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
                         + "Please make sure that dependencies listed below declared in POM" + LS
                         + "have set '<scope>provided</scope>' as well." + LS + LS
@@ -278,11 +278,11 @@ public class DescriptorGeneratorMojo
                 );
                 for ( Artifact artifact : wrongScopedArtifacts )
                 {
-                    errorMessage.append( " * " ).append( artifact ).append( LS );
+                    message.append( " * " ).append( artifact ).append( LS );
                 }
-                errorMessage.append( LS ).append( LS );
+                message.append( LS ).append( LS );
 
-                getLog().error( errorMessage.toString() );
+                getLog().warn( message.toString() );
             }
         }
 
