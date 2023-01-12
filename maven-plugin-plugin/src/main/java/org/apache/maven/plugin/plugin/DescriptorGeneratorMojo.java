@@ -301,7 +301,7 @@ public class DescriptorGeneratorMojo
                         && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
                         && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
         {
-            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+            getLog().warn( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
                                 + "plugins in the Group Id org.apache.maven.plugins" + LS
                                 + "Please change your artifactId to the format ___-maven-plugin" + LS
                                 + "In the future this error will break the build." + LS + LS );
@@ -330,7 +330,7 @@ public class DescriptorGeneratorMojo
                 }
                 errorMessage.append( LS ).append( LS );
 
-                getLog().error( errorMessage.toString() );
+                getLog().warn( errorMessage.toString() );
             }
         }
 
