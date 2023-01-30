@@ -92,7 +92,7 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <maven4Version>4.0.0-alpha-2</maven4Version>
+    <maven4Version>4.0.0-alpha-4</maven4Version>
     <mavenVersion>3.2.5</mavenVersion>
     <!-- SLF4J version must match the version exported from the mavenVersion, 
     https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
