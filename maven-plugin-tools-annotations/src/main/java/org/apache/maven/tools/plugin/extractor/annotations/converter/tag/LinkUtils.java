@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -31,71 +30,71 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility methods for dealing with links generated from Javadoc tags.
  */
-public class LinkUtils
-{
+public class LinkUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger( LinkUtils.class );
+    private static final Logger LOG = LoggerFactory.getLogger(LinkUtils.class);
 
-    private LinkUtils()
-    {
+    private LinkUtils() {
         // only static methods
     }
 
-    public static String createLink( String referenceValue, ConverterContext context )
-    {
-        return createLink( referenceValue, context, UnaryOperator.identity() );
+    public static String createLink(String referenceValue, ConverterContext context) {
+        return createLink(referenceValue, context, UnaryOperator.identity());
     }
 
-    public static String createLink( String referenceValue, ConverterContext context,
-                                     UnaryOperator<String> labelDecorator )
-    {
-        try
-        {
-            JavadocReference reference = JavadocReference.parse( referenceValue );
-            FullyQualifiedJavadocReference fqReference = context.resolveReference( reference );
-            if ( !context.canGetUrl() )
-            {
-                return getReferenceLabel( fqReference, context, labelDecorator, "no javadoc sites associated" );
+    public static String createLink(
+            String referenceValue, ConverterContext context, UnaryOperator<String> labelDecorator) {
+        try {
+            JavadocReference reference = JavadocReference.parse(referenceValue);
+            FullyQualifiedJavadocReference fqReference = context.resolveReference(reference);
+            if (!context.canGetUrl()) {
+                return getReferenceLabel(fqReference, context, labelDecorator, "no javadoc sites associated");
             }
-            return createLink( referenceValue, fqReference, context, labelDecorator );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            LOG.warn( "Unresolvable link in javadoc tag with value {} found in {}: {}", referenceValue,
-                      context.getLocation(), e.getMessage() );
-            return labelDecorator.apply( referenceValue ) + "<!-- this link could not be resolved -->";
+            return createLink(referenceValue, fqReference, context, labelDecorator);
+        } catch (IllegalArgumentException e) {
+            LOG.warn(
+                    "Unresolvable link in javadoc tag with value {} found in {}: {}",
+                    referenceValue,
+                    context.getLocation(),
+                    e.getMessage());
+            return labelDecorator.apply(referenceValue) + "<!-- this link could not be resolved -->";
         }
     }
 
-    private static String createLink( String referenceValue, FullyQualifiedJavadocReference fqReference, 
-                                      ConverterContext context, UnaryOperator<String> labelDecorator )
-    {
+    private static String createLink(
+            String referenceValue,
+            FullyQualifiedJavadocReference fqReference,
+            ConverterContext context,
+            UnaryOperator<String> labelDecorator) {
         StringBuilder link = new StringBuilder();
-        try
-        {
-            link.append( "<a href=\"" );
-            link.append( context.getUrl( fqReference ).toString() );
-            link.append( "\">" );
-            String label = getReferenceLabel( fqReference, context );
-            label = labelDecorator.apply( label );
-            link.append( label );
-            link.append( "</a>" );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            LOG.warn( "Could not get javadoc URL for reference {} at {} (fully qualified {}): {}", referenceValue,
-                      fqReference, context.getLocation(), e.getMessage() );
-            return getReferenceLabel( fqReference, context, labelDecorator,
-                                      "reference not found in associated javadoc sites" );
+        try {
+            link.append("<a href=\"");
+            link.append(context.getUrl(fqReference).toString());
+            link.append("\">");
+            String label = getReferenceLabel(fqReference, context);
+            label = labelDecorator.apply(label);
+            link.append(label);
+            link.append("</a>");
+        } catch (IllegalArgumentException e) {
+            LOG.warn(
+                    "Could not get javadoc URL for reference {} at {} (fully qualified {}): {}",
+                    referenceValue,
+                    fqReference,
+                    context.getLocation(),
+                    e.getMessage());
+            return getReferenceLabel(
+                    fqReference, context, labelDecorator, "reference not found in associated javadoc sites");
         }
         return link.toString();
     }
 
-    private static String getReferenceLabel( FullyQualifiedJavadocReference fqReference, ConverterContext context,
-                                      UnaryOperator<String> labelDecorator, String htmlComment ) 
-    {
-        String label = getReferenceLabel( fqReference, context );
-        return labelDecorator.apply( label ) + "<!-- " + htmlComment + " -->";
+    private static String getReferenceLabel(
+            FullyQualifiedJavadocReference fqReference,
+            ConverterContext context,
+            UnaryOperator<String> labelDecorator,
+            String htmlComment) {
+        String label = getReferenceLabel(fqReference, context);
+        return labelDecorator.apply(label) + "<!-- " + htmlComment + " -->";
     }
 
     /**
@@ -103,61 +102,49 @@ public class LinkUtils
      * @see <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html#JSWOR656"> javadoc: How
      *      a Name Appears</a>
      */
-    private static String getReferenceLabel( FullyQualifiedJavadocReference fqReference, ConverterContext context )
-    {
-        if ( fqReference.getLabel().isPresent() )
-        {
+    private static String getReferenceLabel(FullyQualifiedJavadocReference fqReference, ConverterContext context) {
+        if (fqReference.getLabel().isPresent()) {
             return fqReference.getLabel().get();
-        }
-        else
-        {
+        } else {
             Optional<String> packageName;
             Optional<String> moduleName;
             Optional<String> className = fqReference.getClassName();
-            if ( Optional.of( context.getPackageName() ).equals( fqReference.getPackageName() )
-                && context.getModuleName().equals( fqReference.getModuleName() ) )
-            {
+            if (Optional.of(context.getPackageName()).equals(fqReference.getPackageName())
+                    && context.getModuleName().equals(fqReference.getModuleName())) {
                 packageName = Optional.empty();
                 moduleName = Optional.empty();
-                if ( context.isReferencedBy( fqReference ) )
-                {
+                if (context.isReferencedBy(fqReference)) {
                     className = Optional.empty();
                 }
-            }
-            else
-            {
+            } else {
                 packageName = fqReference.getPackageName();
                 moduleName = fqReference.getModuleName();
             }
-            return createLabel( moduleName, packageName, className, fqReference.getMember() );
+            return createLabel(moduleName, packageName, className, fqReference.getMember());
         }
     }
 
-    private static String createLabel( Optional<String> moduleName, Optional<String> packageName,
-                                       Optional<String> className, Optional<String> member )
-    {
+    private static String createLabel(
+            Optional<String> moduleName,
+            Optional<String> packageName,
+            Optional<String> className,
+            Optional<String> member) {
         StringBuilder sb = new StringBuilder();
-        if ( packageName.isPresent() && !"java.lang".equals( packageName.get() ) )
-        {
-            sb.append( packageName.get() );
+        if (packageName.isPresent() && !"java.lang".equals(packageName.get())) {
+            sb.append(packageName.get());
         }
-        if ( className.isPresent() )
-        {
-            if ( sb.length() > 0 )
-            {
-                sb.append( '.' );
+        if (className.isPresent()) {
+            if (sb.length() > 0) {
+                sb.append('.');
             }
-            sb.append( className.get() );
+            sb.append(className.get());
         }
-        if ( member.isPresent() )
-        {
-            if ( sb.length() > 0 )
-            {
-                sb.append( '.' );
+        if (member.isPresent()) {
+            if (sb.length() > 0) {
+                sb.append('.');
             }
-            sb.append( member.get() );
+            sb.append(member.get());
         }
         return sb.toString();
     }
-
 }

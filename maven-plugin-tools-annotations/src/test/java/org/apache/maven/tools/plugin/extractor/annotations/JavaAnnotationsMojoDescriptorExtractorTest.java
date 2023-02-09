@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -43,53 +43,53 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
-class JavaAnnotationsMojoDescriptorExtractorTest
-{
-    @TempDir 
+class JavaAnnotationsMojoDescriptorExtractorTest {
+    @TempDir
     private Path targetDir;
 
-    MojoDescriptor extractDescriptorFromMojoClass( Class<? extends AbstractMojo> mojoClass ) throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException
-    {
+    MojoDescriptor extractDescriptorFromMojoClass(Class<? extends AbstractMojo> mojoClass)
+            throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
         // copy class to an empty tmp directory
-        Path sourceClass = Paths.get( mojoClass.getResource( mojoClass.getSimpleName() + ".class" ).toURI() );
-        Files.copy( sourceClass, targetDir.resolve( sourceClass.getFileName() ) );
+        Path sourceClass = Paths.get(
+                mojoClass.getResource(mojoClass.getSimpleName() + ".class").toURI());
+        Files.copy(sourceClass, targetDir.resolve(sourceClass.getFileName()));
         JavaAnnotationsMojoDescriptorExtractor mojoDescriptorExtractor = new JavaAnnotationsMojoDescriptorExtractor();
         DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
-        scanner.enableLogging( mock( Logger.class ) );
+        scanner.enableLogging(mock(Logger.class));
         mojoDescriptorExtractor.mojoAnnotationsScanner = scanner;
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         MavenProject mavenProject = new MavenProject();
         Artifact artifact = new DefaultArtifact("groupId", "artifactId", "1.0.0", null, "jar", "classifier", null);
-        mavenProject.setArtifact( artifact );
-        mavenProject.getBuild().setOutputDirectory( targetDir.toString() );
-        List<MojoDescriptor> mojoDescriptors = mojoDescriptorExtractor.execute( new DefaultPluginToolsRequest( mavenProject, pluginDescriptor ) );
-        assertEquals( 1, mojoDescriptors.size() );
+        mavenProject.setArtifact(artifact);
+        mavenProject.getBuild().setOutputDirectory(targetDir.toString());
+        List<MojoDescriptor> mojoDescriptors =
+                mojoDescriptorExtractor.execute(new DefaultPluginToolsRequest(mavenProject, pluginDescriptor));
+        assertEquals(1, mojoDescriptors.size());
         // there should be only one mojo contained in the one class
-        return mojoDescriptors.get( 0 );
+        return mojoDescriptors.get(0);
     }
 
     @Test
-    void assertFooMojo() throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException
-    {
-        MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass( FooMojo.class );
-        assertEquals( "package", mojoDescriptor.getExecutePhase() );
-        assertEquals( "compiler", mojoDescriptor.getExecuteGoal() );
-        assertEquals( "my-lifecycle", mojoDescriptor.getExecuteLifecycle() );
+    void assertFooMojo() throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
+        MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass(FooMojo.class);
+        assertEquals("package", mojoDescriptor.getExecutePhase());
+        assertEquals("compiler", mojoDescriptor.getExecuteGoal());
+        assertEquals("my-lifecycle", mojoDescriptor.getExecuteLifecycle());
     }
 
     @Test
-    void assertExecuteMojo( ) throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException
-    {
-        MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass( ExecuteMojo.class );
-        assertEquals( "my-phase-id", mojoDescriptor.getExecutePhase() );
-        assertEquals( "compiler", mojoDescriptor.getExecuteGoal() );
-        assertEquals( "my-lifecycle", mojoDescriptor.getExecuteLifecycle() );
+    void assertExecuteMojo()
+            throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
+        MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass(ExecuteMojo.class);
+        assertEquals("my-phase-id", mojoDescriptor.getExecutePhase());
+        assertEquals("compiler", mojoDescriptor.getExecuteGoal());
+        assertEquals("my-lifecycle", mojoDescriptor.getExecuteLifecycle());
     }
 
     @Test
-    void assertExecute2Mojo( ) throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException
-    {
+    void assertExecute2Mojo()
+            throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
         // two conflicting phase ids set
-        assertThrows( InvalidPluginDescriptorException.class, () -> extractDescriptorFromMojoClass( Execute2Mojo.class ) );
+        assertThrows(InvalidPluginDescriptorException.class, () -> extractDescriptorFromMojoClass(Execute2Mojo.class));
     }
 }

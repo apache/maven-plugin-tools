@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,52 +40,44 @@ import org.codehaus.plexus.util.StringUtils;
  * @author jdcasey
  */
 @Deprecated
-public abstract class AbstractScriptedMojoDescriptorExtractor
-    extends AbstractLogEnabled
-    implements MojoDescriptorExtractor
-{
+public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLogEnabled
+        implements MojoDescriptorExtractor {
     @Override
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return true;
     }
 
     /** {@inheritDoc} */
     @Override
-    public List<MojoDescriptor> execute( PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
-        getLogger().debug( "Running: " + getClass().getName() );
-        String metadataExtension = getMetadataFileExtension( request );
-        String scriptExtension = getScriptFileExtension( request );
-        
+    public List<MojoDescriptor> execute(PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
+        getLogger().debug("Running: " + getClass().getName());
+        String metadataExtension = getMetadataFileExtension(request);
+        String scriptExtension = getScriptFileExtension(request);
+
         MavenProject project = request.getProject();
 
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings("unchecked")
         Map<String, Set<File>> scriptFilesKeyedByBasedir =
-            gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), scriptExtension, request );
+                gatherFilesByBasedir(project.getBasedir(), project.getScriptSourceRoots(), scriptExtension, request);
 
         List<MojoDescriptor> mojoDescriptors;
-        if ( !StringUtils.isEmpty( metadataExtension ) )
-        {
-            @SuppressWarnings( "unchecked" )
-            Map<String, Set<File>> metadataFilesKeyedByBasedir =
-                gatherFilesByBasedir( project.getBasedir(), project.getScriptSourceRoots(), metadataExtension,
-                                      request );
+        if (!StringUtils.isEmpty(metadataExtension)) {
+            @SuppressWarnings("unchecked")
+            Map<String, Set<File>> metadataFilesKeyedByBasedir = gatherFilesByBasedir(
+                    project.getBasedir(), project.getScriptSourceRoots(), metadataExtension, request);
 
-            mojoDescriptors = extractMojoDescriptorsFromMetadata( metadataFilesKeyedByBasedir, request );
-        }
-        else
-        {
-            mojoDescriptors = extractMojoDescriptors( scriptFilesKeyedByBasedir, request );
+            mojoDescriptors = extractMojoDescriptorsFromMetadata(metadataFilesKeyedByBasedir, request);
+        } else {
+            mojoDescriptors = extractMojoDescriptors(scriptFilesKeyedByBasedir, request);
         }
 
-        copyScriptsToOutputDirectory( scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request );
+        copyScriptsToOutputDirectory(
+                scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request);
 
-        if ( !mojoDescriptors.isEmpty() )
-        {
-            getLogger().warn( "Scripting support for mojos is deprecated and is planned to be removed in Maven 4." );
-            getLogger().warn( "Found " + mojoDescriptors.size() + " scripted mojos." );
+        if (!mojoDescriptors.isEmpty()) {
+            getLogger().warn("Scripting support for mojos is deprecated and is planned to be removed in Maven 4.");
+            getLogger().warn("Found " + mojoDescriptors.size() + " scripted mojos.");
         }
 
         return mojoDescriptors;
@@ -98,47 +89,39 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param request the request
      * @throws ExtractionException if any
      */
-    protected void copyScriptsToOutputDirectory( Map<String, Set<File>> scriptFilesKeyedByBasedir,
-                                                 String outputDirectory, PluginToolsRequest request )
-        throws ExtractionException
-    {
-        File outputDir = new File( outputDirectory );
+    protected void copyScriptsToOutputDirectory(
+            Map<String, Set<File>> scriptFilesKeyedByBasedir, String outputDirectory, PluginToolsRequest request)
+            throws ExtractionException {
+        File outputDir = new File(outputDirectory);
 
-        if ( !outputDir.exists() )
-        {
+        if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
 
-        for ( Map.Entry<String, Set<File>> entry : scriptFilesKeyedByBasedir.entrySet() )
-        {
-            File sourceDir = new File( entry.getKey() );
+        for (Map.Entry<String, Set<File>> entry : scriptFilesKeyedByBasedir.entrySet()) {
+            File sourceDir = new File(entry.getKey());
 
             Set<File> scripts = entry.getValue();
 
-            for ( File scriptFile : scripts )
-            {
-                String relativePath = scriptFile.getPath().substring( sourceDir.getPath().length() );
+            for (File scriptFile : scripts) {
+                String relativePath =
+                        scriptFile.getPath().substring(sourceDir.getPath().length());
 
-                if ( relativePath.charAt( 0 ) == File.separatorChar )
-                {
-                    relativePath = relativePath.substring( 1 );
+                if (relativePath.charAt(0) == File.separatorChar) {
+                    relativePath = relativePath.substring(1);
                 }
 
-                File outputFile = new File( outputDir, relativePath ).getAbsoluteFile();
+                File outputFile = new File(outputDir, relativePath).getAbsoluteFile();
 
-                if ( !outputFile.getParentFile().exists() )
-                {
+                if (!outputFile.getParentFile().exists()) {
                     outputFile.getParentFile().mkdirs();
                 }
 
-                try
-                {
-                    FileUtils.copyFile( scriptFile, outputFile );
-                }
-                catch ( IOException e )
-                {
+                try {
+                    FileUtils.copyFile(scriptFile, outputFile);
+                } catch (IOException e) {
                     throw new ExtractionException(
-                        "Cannot copy script file: " + scriptFile + " to output: " + outputFile, e );
+                            "Cannot copy script file: " + scriptFile + " to output: " + outputFile, e);
                 }
             }
         }
@@ -151,46 +134,42 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param request the request
      * @return map with subdirs paths as key
      */
-    protected Map<String, Set<File>> gatherFilesByBasedir( File basedir, List<String> directories,
-                                                           String scriptFileExtension, PluginToolsRequest request )
-    {
+    protected Map<String, Set<File>> gatherFilesByBasedir(
+            File basedir, List<String> directories, String scriptFileExtension, PluginToolsRequest request) {
         Map<String, Set<File>> sourcesByBasedir = new TreeMap<>();
 
-        for ( String resourceDir : directories )
-        {
+        for (String resourceDir : directories) {
             Set<File> sources = new HashSet<>();
 
-            getLogger().debug( "Scanning script dir: " + resourceDir + " with extractor: " + getClass().getName() );
-            File dir = new File( resourceDir );
-            if ( !dir.isAbsolute() )
-            {
-                dir = new File( basedir, resourceDir ).getAbsoluteFile();
+            getLogger()
+                    .debug("Scanning script dir: " + resourceDir + " with extractor: "
+                            + getClass().getName());
+            File dir = new File(resourceDir);
+            if (!dir.isAbsolute()) {
+                dir = new File(basedir, resourceDir).getAbsoluteFile();
             }
 
             resourceDir = dir.getPath();
 
-            if ( dir.exists() )
-            {
+            if (dir.exists()) {
                 DirectoryScanner scanner = new DirectoryScanner();
 
-                scanner.setBasedir( dir );
+                scanner.setBasedir(dir);
                 scanner.addDefaultExcludes();
-                scanner.setIncludes( new String[]{"**/*" + scriptFileExtension} );
+                scanner.setIncludes(new String[] {"**/*" + scriptFileExtension});
                 scanner.scan();
 
                 String[] relativePaths = scanner.getIncludedFiles();
 
-                for ( String relativePath : relativePaths )
-                {
-                    File scriptFile = new File( dir, relativePath ).getAbsoluteFile();
+                for (String relativePath : relativePaths) {
+                    File scriptFile = new File(dir, relativePath).getAbsoluteFile();
 
-                    if ( scriptFile.isFile() && relativePath.endsWith( scriptFileExtension ) )
-                    {
-                        sources.add( scriptFile );
+                    if (scriptFile.isFile() && relativePath.endsWith(scriptFileExtension)) {
+                        sources.add(scriptFile);
                     }
                 }
 
-                sourcesByBasedir.put( resourceDir, sources );
+                sourcesByBasedir.put(resourceDir, sources);
             }
         }
 
@@ -206,10 +185,9 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      */
-    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata( Map<String, Set<File>> metadataFilesByBasedir,
-                                                                       PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
+    protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata(
+            Map<String, Set<File>> metadataFilesByBasedir, PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
         return null;
     }
 
@@ -218,8 +196,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param request the request
      * @return always null
      */
-    protected String getMetadataFileExtension( PluginToolsRequest request )
-    {
+    protected String getMetadataFileExtension(PluginToolsRequest request) {
         return null;
     }
 
@@ -232,10 +209,9 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      */
-    protected List<MojoDescriptor> extractMojoDescriptors( Map<String, Set<File>> scriptFilesKeyedByBasedir,
-                                                           PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
+    protected List<MojoDescriptor> extractMojoDescriptors(
+            Map<String, Set<File>> scriptFilesKeyedByBasedir, PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
         return null;
     }
 
@@ -243,6 +219,5 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
      * @param request the request
      * @return the file extension like <code>.bsh</code> for BeanShell.
      */
-    protected abstract String getScriptFileExtension( PluginToolsRequest request );
-
+    protected abstract String getScriptFileExtension(PluginToolsRequest request);
 }

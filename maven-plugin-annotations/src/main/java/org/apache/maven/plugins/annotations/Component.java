@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -35,11 +34,10 @@ import java.lang.annotation.Target;
  * @since 3.0
  */
 @Documented
-@Retention( RetentionPolicy.CLASS )
-@Target( { ElementType.FIELD } )
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.FIELD})
 @Inherited
-public @interface Component
-{
+public @interface Component {
     /**
      * role of the component to inject.
      * @return the role

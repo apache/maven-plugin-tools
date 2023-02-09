@@ -1,5 +1,3 @@
-package org.apache.maven.script.ant;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.script.ant;
 
 import java.io.File;
 import java.util.Collections;
@@ -40,9 +39,7 @@ import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class AntPropertyHelper
-    extends PropertyHelper
-{
+public class AntPropertyHelper extends PropertyHelper {
     private static final String DEPENDENCY_PREFIX = "maven.dependency.";
     private Log log;
     private ExpressionEvaluator exprEvaluator;
@@ -54,8 +51,7 @@ public class AntPropertyHelper
      * @param project
      * @param l
      */
-    public AntPropertyHelper( MavenProject project, Log l )
-    {
+    public AntPropertyHelper(MavenProject project, Log l) {
         mavenProject = project;
         log = l;
     }
@@ -66,9 +62,8 @@ public class AntPropertyHelper
      * @param exprEvaluator
      * @param l
      */
-    public AntPropertyHelper( ExpressionEvaluator exprEvaluator, Log l )
-    {
-        this( exprEvaluator, Collections.<Artifact>emptySet(), l );
+    public AntPropertyHelper(ExpressionEvaluator exprEvaluator, Log l) {
+        this(exprEvaluator, Collections.<Artifact>emptySet(), l);
     }
 
     /**
@@ -76,70 +71,56 @@ public class AntPropertyHelper
      * @param artifacts
      * @param l
      */
-    public AntPropertyHelper( ExpressionEvaluator exprEvaluator, Set<Artifact> artifacts, Log l )
-    {
+    public AntPropertyHelper(ExpressionEvaluator exprEvaluator, Set<Artifact> artifacts, Log l) {
         this.mavenProject = null;
         this.exprEvaluator = exprEvaluator;
         this.log = l;
 
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             String key = DEPENDENCY_PREFIX + artifact.getGroupId() + "." + artifact.getArtifactId()
-                + ( artifact.getClassifier() != null ? "." + artifact.getClassifier() : "" )
-                + ( artifact.getType() != null ? "." + artifact.getType() : "" ) + ".path";
+                    + (artifact.getClassifier() != null ? "." + artifact.getClassifier() : "")
+                    + (artifact.getType() != null ? "." + artifact.getType() : "") + ".path";
 
-            log.debug( "Storing: " + key + "=" + artifact.getFile().getPath() );
+            log.debug("Storing: " + key + "=" + artifact.getFile().getPath());
 
-            artifactMap.put( key, artifact.getFile().getPath() );
+            artifactMap.put(key, artifact.getFile().getPath());
         }
     }
 
     /**
      * @see org.apache.tools.ant.PropertyHelper#getPropertyHook(java.lang.String, java.lang.String, boolean)
      */
-    public synchronized Object getPropertyHook( String ns, String name, boolean user )
-    {
-        if ( log.isDebugEnabled() )
-        {
-            log.debug( "getProperty(ns=" + ns + ", name=" + name + ", user=" + user + ")" );
+    public synchronized Object getPropertyHook(String ns, String name, boolean user) {
+        if (log.isDebugEnabled()) {
+            log.debug("getProperty(ns=" + ns + ", name=" + name + ", user=" + user + ")");
         }
 
         /* keep old behaviour */
-        if ( mavenProject != null )
-        {
-            return getPropertyHook( ns, name, user, mavenProject );
+        if (mavenProject != null) {
+            return getPropertyHook(ns, name, user, mavenProject);
         }
-
 
         Object val = null;
 
-        if ( name.startsWith( DEPENDENCY_PREFIX ) )
-        {
-            val = artifactMap.get( name );
+        if (name.startsWith(DEPENDENCY_PREFIX)) {
+            val = artifactMap.get(name);
         }
 
-        if ( val == null )
-        {
-            try
-            {
-                val = exprEvaluator.evaluate( "${" + name + "}" );
-            }
-            catch ( ExpressionEvaluationException e )
-            {
-                if ( log.isErrorEnabled() )
-                {
-                    log.error( "Failed to evaluate expression", e );
+        if (val == null) {
+            try {
+                val = exprEvaluator.evaluate("${" + name + "}");
+            } catch (ExpressionEvaluationException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("Failed to evaluate expression", e);
                 }
             }
         }
 
-        if ( val == null )
-        {
-            val = super.getPropertyHook( ns, name, user );
+        if (val == null) {
+            val = super.getPropertyHook(ns, name, user);
 
-            if ( val == null )
-            {
-                val = System.getProperty( name );
+            if (val == null) {
+                val = System.getProperty(name);
             }
         }
 
@@ -154,52 +135,31 @@ public class AntPropertyHelper
      * @param mavenProject
      * @return The property value.
      */
-    private Object getPropertyHook( String ns, String name, boolean user, MavenProject mavenProject )
-    {
+    private Object getPropertyHook(String ns, String name, boolean user, MavenProject mavenProject) {
         Object val = null;
-        try
-        {
-            if ( name.startsWith( DEPENDENCY_PREFIX ) )
-            {
-                val = artifactMap.get( name );
+        try {
+            if (name.startsWith(DEPENDENCY_PREFIX)) {
+                val = artifactMap.get(name);
+            } else if (name.startsWith("project.")) {
+                val = ReflectionValueExtractor.evaluate(name, mavenProject, true);
+            } else if (name.equals("basedir")) {
+                val = ReflectionValueExtractor.evaluate("basedir.path", mavenProject, false);
             }
-            else if ( name.startsWith( "project." ) )
-            {
-                val = ReflectionValueExtractor.evaluate(
-                    name,
-                    mavenProject,
-                    true
-                );
-            }
-            else if ( name.equals( "basedir" ) )
-            {
-                val = ReflectionValueExtractor.evaluate(
-                    "basedir.path",
-                    mavenProject,
-                    false
-                );
-            }
-        }
-        catch ( Exception e )
-        {
-            if ( log.isWarnEnabled() )
-            {
-                log.warn( "Error evaluating expression '" + name + "'", e );
+        } catch (Exception e) {
+            if (log.isWarnEnabled()) {
+                log.warn("Error evaluating expression '" + name + "'", e);
             }
         }
 
-        if ( val == null )
-        {
-            val = super.getPropertyHook( ns, name, user );
-            if ( val == null )
-            {
-                val = System.getProperty( name );
+        if (val == null) {
+            val = super.getPropertyHook(ns, name, user);
+            if (val == null) {
+                val = System.getProperty(name);
             }
         }
 
-        if ( val instanceof File )
-        {
-            val = ( (File) val ).getAbsoluteFile();
+        if (val instanceof File) {
+            val = ((File) val).getAbsoluteFile();
         }
 
         return val;

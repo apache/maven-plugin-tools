@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.util.stubs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin.util.stubs;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,38 +16,30 @@ package org.apache.maven.tools.plugin.util.stubs;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.util.stubs;
 
 import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 
 /**
  * Dummy Mojo.
  */
-public class MojoStub
-    extends AbstractMojo
-{
+public class MojoStub extends AbstractMojo {
     /** {@inheritDoc} */
     @Override
-    public Map getPluginContext()
-    {
+    public Map getPluginContext() {
         return super.getPluginContext();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setPluginContext( Map pluginContext )
-    {
-        super.setPluginContext( pluginContext );
+    public void setPluginContext(Map pluginContext) {
+        super.setPluginContext(pluginContext);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-
-    }
+    public void execute() throws MojoExecutionException {}
 }

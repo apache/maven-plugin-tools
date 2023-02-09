@@ -1,4 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,20 +16,17 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 
-public class OtherClass
-{
+public class OtherClass {
     String field1;
     public static String STATIC_1 = "STATIC 1";
-    /** 
-     * Test {@value} 
+    /**
+     * Test {@value}
      */
     public static final String STATIC_2 = "STATIC 2";
 
     protected static Long STATIC_3 = 3l;
 
-    enum EmbeddedEnum
-    {
-
-    }
+    enum EmbeddedEnum {}
 }

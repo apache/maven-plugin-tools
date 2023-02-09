@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.javadoc;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.javadoc;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.javadoc;
 
 import java.io.File;
 import java.net.URL;
@@ -29,7 +28,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
@@ -41,7 +39,6 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
-
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,77 +52,69 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author jdcasey
  */
 // at least one test class must be public for test-javadoc report
-public class JavaMojoDescriptorExtractorTest
-{
+public class JavaMojoDescriptorExtractorTest {
     private File root;
 
     @BeforeEach
-    void setUp()
-    {
-        File sourceFile = fileOf( "dir-flag.txt" );
+    void setUp() {
+        File sourceFile = fileOf("dir-flag.txt");
         root = sourceFile.getParentFile();
     }
 
-    private File fileOf( String classpathResource )
-    {
+    private File fileOf(String classpathResource) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL resource = cl.getResource( classpathResource );
+        URL resource = cl.getResource(classpathResource);
 
         File result = null;
-        if ( resource != null )
-        {
-            result = FileUtils.toFile( resource );
+        if (resource != null) {
+            result = FileUtils.toFile(resource);
         }
 
         return result;
     }
 
-    private PluginToolsRequest createRequest( String directory )
-    {
+    private PluginToolsRequest createRequest(String directory) {
         Model model = new Model();
-        model.setArtifactId( "maven-unitTesting-plugin" );
+        model.setArtifactId("maven-unitTesting-plugin");
 
-        MavenProject project = new MavenProject( model );
+        MavenProject project = new MavenProject(model);
         Build build = new Build();
-        build.setDirectory( new File( "target" ).getAbsolutePath() );
-        project.setBuild( build );
+        build.setDirectory(new File("target").getAbsolutePath());
+        project.setBuild(build);
 
-        project.setFile( new File( root, "pom.xml" ) );
-        project.addCompileSourceRoot( new File( root, directory ).getPath() );
+        project.setFile(new File(root, "pom.xml"));
+        project.addCompileSourceRoot(new File(root, directory).getPath());
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
-        pluginDescriptor.setGoalPrefix( "test" );
-        pluginDescriptor.setDependencies( new ArrayList<ComponentDependency>() );
+        pluginDescriptor.setGoalPrefix("test");
+        pluginDescriptor.setDependencies(new ArrayList<ComponentDependency>());
 
-        return new DefaultPluginToolsRequest( project, pluginDescriptor ).setEncoding( "UTF-8" );
+        return new DefaultPluginToolsRequest(project, pluginDescriptor).setEncoding("UTF-8");
     }
 
     /**
      * generate plugin.xml for a test resources directory content.
      */
-    protected PluginDescriptor generate( String directory )
-        throws Exception
-    {
+    protected PluginDescriptor generate(String directory) throws Exception {
         JavaJavadocMojoDescriptorExtractor extractor = new JavaJavadocMojoDescriptorExtractor();
-        extractor.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "test" ) );
-        PluginToolsRequest request = createRequest( directory );
+        extractor.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "test"));
+        PluginToolsRequest request = createRequest(directory);
 
-        List<MojoDescriptor> mojoDescriptors = extractor.execute( request );
+        List<MojoDescriptor> mojoDescriptors = extractor.execute(request);
 
         // to ensure order against plugin-expected.xml
-        PluginUtils.sortMojos( mojoDescriptors );
+        PluginUtils.sortMojos(mojoDescriptors);
 
-        for ( MojoDescriptor mojoDescriptor : mojoDescriptors )
-        {
+        for (MojoDescriptor mojoDescriptor : mojoDescriptors) {
             // to ensure order against plugin-expected.xml
-            PluginUtils.sortMojoParameters( mojoDescriptor.getParameters() );
+            PluginUtils.sortMojoParameters(mojoDescriptor.getParameters());
 
-            request.getPluginDescriptor().addMojo( mojoDescriptor );
+            request.getPluginDescriptor().addMojo(mojoDescriptor);
         }
 
         Generator descriptorGenerator = new PluginDescriptorFilesGenerator();
 
-        descriptorGenerator.execute( new File( root, directory ), request );
+        descriptorGenerator.execute(new File(root, directory), request);
 
         return request.getPluginDescriptor();
     }
@@ -133,76 +122,67 @@ public class JavaMojoDescriptorExtractorTest
     /**
      * compare mojos from generated plugin.xml against plugin-expected.xml
      */
-    protected void checkExpected( String directory )
-        throws Exception
-    {
-        File testDirectory = new File( root, directory );
+    protected void checkExpected(String directory) throws Exception {
+        File testDirectory = new File(root, directory);
 
-        XMLUnit.setIgnoreWhitespace( true );
-        XMLUnit.setIgnoreComments( true );
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreComments(true);
 
         Document expected = XMLUnit.buildControlDocument(
-            FileUtils.fileRead( new File( testDirectory, "plugin-expected.xml" ), "UTF-8" ) );
-        Document actual =
-            XMLUnit.buildTestDocument( FileUtils.fileRead( new File( testDirectory, "plugin.xml" ), "UTF-8" ) );
+                FileUtils.fileRead(new File(testDirectory, "plugin-expected.xml"), "UTF-8"));
+        Document actual = XMLUnit.buildTestDocument(FileUtils.fileRead(new File(testDirectory, "plugin.xml"), "UTF-8"));
 
-        Diff diff = XMLUnit.compareXML( expected, actual );
+        Diff diff = XMLUnit.compareXML(expected, actual);
 
-        assertTrue( diff.identical(), "generated plugin.xml is not identical as plugin-expected.xml for " + directory + ": " + diff );
+        assertTrue(
+                diff.identical(),
+                "generated plugin.xml is not identical as plugin-expected.xml for " + directory + ": " + diff);
     }
 
     /**
      * extract plugin descriptor for test resources directory and check against plugin-expected.xml
      */
-    protected List<MojoDescriptor> extract( String directory )
-        throws Exception
-    {
-        PluginDescriptor descriptor = generate( directory );
+    protected List<MojoDescriptor> extract(String directory) throws Exception {
+        PluginDescriptor descriptor = generate(directory);
 
-        checkExpected( directory );
+        checkExpected(directory);
 
         return descriptor.getMojos();
     }
 
     @Test
-    void testShouldFindTwoMojoDescriptorsInTestSourceDirectory()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "source" );
+    void testShouldFindTwoMojoDescriptorsInTestSourceDirectory() throws Exception {
+        List<MojoDescriptor> results = extract("source");
 
-        assertEquals( 2, results.size(), "Extracted mojos" );
+        assertEquals(2, results.size(), "Extracted mojos");
     }
 
     @Test
-    void testShouldPropagateImplementationParameter()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "source2" );
+    void testShouldPropagateImplementationParameter() throws Exception {
+        List<MojoDescriptor> results = extract("source2");
 
-        assertEquals( 1, results.size() );
+        assertEquals(1, results.size());
 
-        MojoDescriptor mojoDescriptor = results.get( 0 );
+        MojoDescriptor mojoDescriptor = results.get(0);
 
         List<Parameter> parameters = mojoDescriptor.getParameters();
 
-        assertEquals( 1, parameters.size() );
+        assertEquals(1, parameters.size());
 
-        Parameter parameter = parameters.get( 0 );
+        Parameter parameter = parameters.get(0);
 
-        assertEquals( "source2.sub.MyBla", parameter.getImplementation(), "Implementation parameter" );
+        assertEquals("source2.sub.MyBla", parameter.getImplementation(), "Implementation parameter");
     }
 
     @Test
-    void testMaven30Parameters()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "source2" );
+    void testMaven30Parameters() throws Exception {
+        List<MojoDescriptor> results = extract("source2");
 
-        assertEquals( 1, results.size() );
+        assertEquals(1, results.size());
 
-        ExtendedMojoDescriptor mojoDescriptor = (ExtendedMojoDescriptor) results.get( 0 );
-        assertTrue( mojoDescriptor.isThreadSafe() );
-        assertEquals( "test", mojoDescriptor.getDependencyCollectionRequired() );
+        ExtendedMojoDescriptor mojoDescriptor = (ExtendedMojoDescriptor) results.get(0);
+        assertTrue(mojoDescriptor.isThreadSafe());
+        assertEquals("test", mojoDescriptor.getDependencyCollectionRequired());
     }
 
     /**
@@ -211,12 +191,10 @@ public class JavaMojoDescriptorExtractorTest
      * @throws Exception
      */
     @Test
-    void testAnnotationInPlugin()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "source3" );
+    void testAnnotationInPlugin() throws Exception {
+        List<MojoDescriptor> results = extract("source3");
 
-        assertTrue( results.isEmpty() );
+        assertTrue(results.isEmpty());
     }
 
     /**
@@ -224,38 +202,30 @@ public class JavaMojoDescriptorExtractorTest
      * generics.
      */
     @Test
-    void testJava15SyntaxParsing()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "java-1.5" );
+    void testJava15SyntaxParsing() throws Exception {
+        List<MojoDescriptor> results = extract("java-1.5");
 
-        assertEquals( 1, results.size() );
+        assertEquals(1, results.size());
     }
 
     @Test
-    void testSingleTypeImportWithFullyQualifiedClassName()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "MPLUGIN-314" );
+    void testSingleTypeImportWithFullyQualifiedClassName() throws Exception {
+        List<MojoDescriptor> results = extract("MPLUGIN-314");
 
-        assertEquals( 1, results.size() );
+        assertEquals(1, results.size());
     }
 
     @Test
-    void testMethodReferenceInEnumConstructor()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "MPLUGIN-320" );
+    void testMethodReferenceInEnumConstructor() throws Exception {
+        List<MojoDescriptor> results = extract("MPLUGIN-320");
 
-        assertTrue( results.isEmpty() );
+        assertTrue(results.isEmpty());
     }
 
     @Test
-    void testEnumWithRegexPattern()
-        throws Exception
-    {
-        List<MojoDescriptor> results = extract( "MPLUGIN-290" );
+    void testEnumWithRegexPattern() throws Exception {
+        List<MojoDescriptor> results = extract("MPLUGIN-290");
 
-        assertTrue( results.isEmpty() );
+        assertTrue(results.isEmpty());
     }
 }

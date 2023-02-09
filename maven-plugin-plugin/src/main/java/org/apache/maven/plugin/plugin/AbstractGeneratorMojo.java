@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,13 +33,11 @@ import org.apache.maven.project.MavenProject;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  */
-public abstract class AbstractGeneratorMojo
-    extends AbstractMojo
-{
+public abstract class AbstractGeneratorMojo extends AbstractMojo {
     /**
      * The project currently being built.
      */
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     /**
@@ -54,16 +51,16 @@ public abstract class AbstractGeneratorMojo
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
+    @Parameter(defaultValue = "false", property = "maven.plugin.skip")
     private boolean skip;
 
     /**
      * Maven plugin packaging types. Default is single "maven-plugin".
-     * 
+     *
      * @since 3.3
      */
     @Parameter
-    private List<String> packagingTypes = Collections.singletonList( "maven-plugin" );
+    private List<String> packagingTypes = Collections.singletonList("maven-plugin");
 
     /**
      * System/OS line separator: used to format console messages.
@@ -73,51 +70,38 @@ public abstract class AbstractGeneratorMojo
     protected abstract void generate() throws MojoExecutionException;
 
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( !packagingTypes.contains( project.getPackaging() ) )
-        {
-            getLog().info( "Unsupported packaging type " + project.getPackaging() + ", execution skipped" );
+    public void execute() throws MojoExecutionException {
+        if (!packagingTypes.contains(project.getPackaging())) {
+            getLog().info("Unsupported packaging type " + project.getPackaging() + ", execution skipped");
             return;
         }
 
-        if ( skip )
-        {
-            getLog().warn( "Execution skipped" );
+        if (skip) {
+            getLog().warn("Execution skipped");
             return;
         }
 
-        String defaultGoalPrefix = getDefaultGoalPrefix( project );
+        String defaultGoalPrefix = getDefaultGoalPrefix(project);
 
-        if ( goalPrefix == null )
-        {
+        if (goalPrefix == null) {
             goalPrefix = defaultGoalPrefix;
-        }
-        else if ( !goalPrefix.equals( defaultGoalPrefix ) )
-        {
-            getLog().warn(
-                LS + LS + "Goal prefix is specified as: '" + goalPrefix + "'. " + "Maven currently expects it to be '"
-                    + defaultGoalPrefix + "'." + LS );
+        } else if (!goalPrefix.equals(defaultGoalPrefix)) {
+            getLog().warn(LS + LS + "Goal prefix is specified as: '" + goalPrefix + "'. "
+                    + "Maven currently expects it to be '" + defaultGoalPrefix + "'." + LS);
         }
 
         generate();
     }
 
-    static String getDefaultGoalPrefix( MavenProject project )
-    {
+    static String getDefaultGoalPrefix(MavenProject project) {
         String defaultGoalPrefix;
-        if ( "maven-plugin-report-plugin".equalsIgnoreCase( project.getArtifactId() ) )
-        {
+        if ("maven-plugin-report-plugin".equalsIgnoreCase(project.getArtifactId())) {
             defaultGoalPrefix = "plugin-report";
-        }
-        else if ( "maven-plugin".equalsIgnoreCase( project.getArtifactId() ) )
-        {
-            defaultGoalPrefix = project.getGroupId().substring( project.getGroupId().lastIndexOf( '.' ) + 1 );
-        }
-        else
-        {
-            defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        } else if ("maven-plugin".equalsIgnoreCase(project.getArtifactId())) {
+            defaultGoalPrefix =
+                    project.getGroupId().substring(project.getGroupId().lastIndexOf('.') + 1);
+        } else {
+            defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId(project.getArtifactId());
         }
         return defaultGoalPrefix;
     }

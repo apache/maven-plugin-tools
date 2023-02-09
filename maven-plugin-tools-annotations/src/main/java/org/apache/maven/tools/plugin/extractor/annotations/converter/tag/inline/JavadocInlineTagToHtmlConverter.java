@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.JavadocTagToHtmlConverter;
 
@@ -26,6 +25,4 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.Javadoc
  * <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#inline-tags">
  * Javadoc inline tag</a> to HTML format.
  */
-public abstract class JavadocInlineTagToHtmlConverter extends JavadocTagToHtmlConverter
-{
-}
+public abstract class JavadocInlineTagToHtmlConverter extends JavadocTagToHtmlConverter {}

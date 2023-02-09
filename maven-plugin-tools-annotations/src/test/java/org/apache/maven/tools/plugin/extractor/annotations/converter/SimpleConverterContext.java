@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,9 +37,7 @@ import org.apache.maven.tools.plugin.javadoc.JavadocReference;
  * Only generates internal {@link FullyQualifiedJavadocReference}s.
  *
  */
-public class SimpleConverterContext
-    implements ConverterContext
-{
+public class SimpleConverterContext implements ConverterContext {
 
     private final String packageName;
 
@@ -50,173 +47,142 @@ public class SimpleConverterContext
 
     private final Map<String, Object> attributes;
 
-    public SimpleConverterContext( String packageName, URI javadocBaseUrl, JavadocReference... unresolvableReferences )
-    {
-        this( packageName,
-             (ref) -> new JavadocLinkGenerator( javadocBaseUrl, "11" ).createLink( ref ),
-             unresolvableReferences );
+    public SimpleConverterContext(String packageName, URI javadocBaseUrl, JavadocReference... unresolvableReferences) {
+        this(
+                packageName,
+                (ref) -> new JavadocLinkGenerator(javadocBaseUrl, "11").createLink(ref),
+                unresolvableReferences);
     }
 
-    public SimpleConverterContext( String packageName, 
-                                   Function<FullyQualifiedJavadocReference, URI> urlSupplier,
-                                   JavadocReference... unresolvableReferences )
-    {
+    public SimpleConverterContext(
+            String packageName,
+            Function<FullyQualifiedJavadocReference, URI> urlSupplier,
+            JavadocReference... unresolvableReferences) {
         super();
         this.packageName = packageName;
         this.unresolvableReferences = new ArrayList<>();
         this.urlSupplier = urlSupplier;
-        if ( unresolvableReferences != null )
-        {
-            this.unresolvableReferences.addAll( Arrays.asList( unresolvableReferences ) );
+        if (unresolvableReferences != null) {
+            this.unresolvableReferences.addAll(Arrays.asList(unresolvableReferences));
         }
         attributes = new HashMap<>();
     }
 
     @Override
-    public Optional<String> getModuleName()
-    {
+    public Optional<String> getModuleName() {
         return Optional.empty();
     }
 
     @Override
-    public String getPackageName()
-    {
+    public String getPackageName() {
         return packageName;
     }
 
     @Override
-    public String getLocation()
-    {
+    public String getLocation() {
         return "customlocation:0";
     }
 
     @Override
-    public FullyQualifiedJavadocReference resolveReference( JavadocReference reference )
-    {
-        if ( unresolvableReferences.contains( reference ) )
-        {
-            throw new IllegalArgumentException( "Unresolvable reference" + reference );
+    public FullyQualifiedJavadocReference resolveReference(JavadocReference reference) {
+        if (unresolvableReferences.contains(reference)) {
+            throw new IllegalArgumentException("Unresolvable reference" + reference);
         }
         final String packageName;
         final Optional<String> className;
-        if ( reference.getPackageNameClassName().isPresent() )
-        {
+        if (reference.getPackageNameClassName().isPresent()) {
             String packageNameClassName = reference.getPackageNameClassName().get();
             // first character lowercase, assume package name
-            if ( Character.isLowerCase( packageNameClassName.charAt( 0 ) ) )
-            {
+            if (Character.isLowerCase(packageNameClassName.charAt(0))) {
                 // find last "."
-                int lastDotIndex = packageNameClassName.lastIndexOf( '.' ); // nested classes not supported
-                if ( Character.isUpperCase( packageNameClassName.charAt( lastDotIndex + 1 ) ) )
-                {
-                    packageName = packageNameClassName.substring( 0, lastDotIndex );
-                    className = Optional.of( packageNameClassName.substring( lastDotIndex + 1 ) );
-                }
-                else
-                {
+                int lastDotIndex = packageNameClassName.lastIndexOf('.'); // nested classes not supported
+                if (Character.isUpperCase(packageNameClassName.charAt(lastDotIndex + 1))) {
+                    packageName = packageNameClassName.substring(0, lastDotIndex);
+                    className = Optional.of(packageNameClassName.substring(lastDotIndex + 1));
+                } else {
                     packageName = packageNameClassName;
                     className = Optional.empty();
                 }
-            }
-            else
-            {
+            } else {
                 packageName = this.packageName;
-                className = Optional.of( packageNameClassName );
+                className = Optional.of(packageNameClassName);
             }
-        }
-        else
-        {
+        } else {
             className = Optional.empty();
             packageName = this.packageName;
         }
         Optional<String> normalizedMember = reference.getMember();
         MemberType memberType = null;
-        if (reference.getMember().isPresent())
-        {
+        if (reference.getMember().isPresent()) {
             String member = reference.getMember().get();
             // normalize (i.e. strip argument names and whitespaces)
-            int indexOfOpeningParentheses = member.indexOf( '(' );
-            int indexOfClosingParentheses = member.indexOf( ')' );
-            if (indexOfOpeningParentheses >= 0 && indexOfClosingParentheses >= 0)
-            {
+            int indexOfOpeningParentheses = member.indexOf('(');
+            int indexOfClosingParentheses = member.indexOf(')');
+            if (indexOfOpeningParentheses >= 0 && indexOfClosingParentheses >= 0) {
                 StringBuilder methodArguments = new StringBuilder("(");
                 boolean isFirstArgument = true;
-                for (String methodArgument : member.substring( indexOfOpeningParentheses + 1, indexOfClosingParentheses ).split("\\s*,\\s*"))
-                {
+                for (String methodArgument : member.substring(indexOfOpeningParentheses + 1, indexOfClosingParentheses)
+                        .split("\\s*,\\s*")) {
                     String argumentType;
-                    int indexOfSpace = methodArgument.indexOf( ' ' );
-                    if (indexOfSpace >= 0)
-                    {
-                        argumentType = methodArgument.substring( 0, indexOfSpace );
-                    }
-                    else
-                    {
+                    int indexOfSpace = methodArgument.indexOf(' ');
+                    if (indexOfSpace >= 0) {
+                        argumentType = methodArgument.substring(0, indexOfSpace);
+                    } else {
                         argumentType = methodArgument;
                     }
-                    if (isFirstArgument)
-                    {
+                    if (isFirstArgument) {
                         isFirstArgument = false;
-                    }
-                    else
-                    {
+                    } else {
                         methodArguments.append(',');
                     }
                     methodArguments.append(argumentType);
                 }
-                methodArguments.append( ')' );
-                normalizedMember = Optional.of( member.substring( 0, indexOfOpeningParentheses ) + methodArguments.toString() );
+                methodArguments.append(')');
+                normalizedMember =
+                        Optional.of(member.substring(0, indexOfOpeningParentheses) + methodArguments.toString());
                 memberType = MemberType.METHOD;
-            }
-            else
-            {
+            } else {
                 memberType = MemberType.FIELD;
             }
         }
-        return new FullyQualifiedJavadocReference( packageName, className, normalizedMember,
-                                                   Optional.ofNullable( memberType ), reference.getLabel(), false );
+        return new FullyQualifiedJavadocReference(
+                packageName, className, normalizedMember, Optional.ofNullable(memberType), reference.getLabel(), false);
     }
 
     @Override
-    public URI getUrl( FullyQualifiedJavadocReference reference )
-    {
-        return urlSupplier.apply( reference );
+    public URI getUrl(FullyQualifiedJavadocReference reference) {
+        return urlSupplier.apply(reference);
     }
 
     @Override
-    public boolean isReferencedBy( FullyQualifiedJavadocReference reference )
-    {
+    public boolean isReferencedBy(FullyQualifiedJavadocReference reference) {
         return false;
     }
 
     @Override
-    public String getStaticFieldValue( FullyQualifiedJavadocReference reference )
-    {
+    public String getStaticFieldValue(FullyQualifiedJavadocReference reference) {
         return "some field value";
     }
 
     @Override
-    public URI getInternalJavadocSiteBaseUrl()
-    {
-        return URI.create( "https://javadoc.example.com" );
+    public URI getInternalJavadocSiteBaseUrl() {
+        return URI.create("https://javadoc.example.com");
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T setAttribute( String name, T value )
-    {
-        return (T) attributes.put( name, value );
+    public <T> T setAttribute(String name, T value) {
+        return (T) attributes.put(name, value);
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T getAttribute( String name, Class<T> clazz, T defaultValue )
-    {
-        return (T) attributes.getOrDefault( name, defaultValue );
+    public <T> T getAttribute(String name, Class<T> clazz, T defaultValue) {
+        return (T) attributes.getOrDefault(name, defaultValue);
     }
 
     @Override
-    public boolean canGetUrl()
-    {
+    public boolean canGetUrl() {
         return true;
     }
 }

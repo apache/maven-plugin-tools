@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,45 +30,37 @@ import org.objectweb.asm.Opcodes;
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoAnnotationVisitor
-    extends AnnotationVisitor
-{
+public class MojoAnnotationVisitor extends AnnotationVisitor {
     private String annotationClassName;
 
     private Map<String, Object> annotationValues = new HashMap<>();
 
-    MojoAnnotationVisitor( String annotationClassName )
-    {
-        super( Opcodes.ASM9 );
+    MojoAnnotationVisitor(String annotationClassName) {
+        super(Opcodes.ASM9);
         this.annotationClassName = annotationClassName;
     }
 
-    public Map<String, Object> getAnnotationValues()
-    {
+    public Map<String, Object> getAnnotationValues() {
         return annotationValues;
     }
 
     @Override
-    public void visit( String name, Object value )
-    {
-        annotationValues.put( name, value );
+    public void visit(String name, Object value) {
+        annotationValues.put(name, value);
     }
 
     @Override
-    public void visitEnum( String name, String desc, String value )
-    {
-        annotationValues.put( name, value );
+    public void visitEnum(String name, String desc, String value) {
+        annotationValues.put(name, value);
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation( String name, String desc )
-    {
-        return new MojoAnnotationVisitor( this.annotationClassName );
+    public AnnotationVisitor visitAnnotation(String name, String desc) {
+        return new MojoAnnotationVisitor(this.annotationClassName);
     }
 
     @Override
-    public AnnotationVisitor visitArray( String s )
-    {
-        return new MojoAnnotationVisitor( this.annotationClassName );
+    public AnnotationVisitor visitArray(String s) {
+        return new MojoAnnotationVisitor(this.annotationClassName);
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator.stubs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin.generator.stubs;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator.stubs;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator.stubs;
 
 import java.util.Locale;
 
@@ -29,56 +28,44 @@ import org.apache.maven.reporting.MavenReportException;
 /**
  * Dummy report.
  */
-public class MavenReportStub
-    extends AbstractMavenReport
-{
+public class MavenReportStub extends AbstractMavenReport {
     /** {@inheritDoc} */
     @Override
-    protected void executeReport( Locale locale )
-        throws MavenReportException
-    {
-
-    }
+    protected void executeReport(Locale locale) throws MavenReportException {}
 
     /** {@inheritDoc} */
     @Override
-    protected String getOutputDirectory()
-    {
+    protected String getOutputDirectory() {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected Renderer getSiteRenderer()
-    {
+    protected Renderer getSiteRenderer() {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription( Locale locale )
-    {
+    public String getDescription(Locale locale) {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getName( Locale locale )
-    {
+    public String getName(Locale locale) {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return null;
     }
 }

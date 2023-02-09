@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +34,7 @@ import org.objectweb.asm.Type;
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoFieldVisitor
-    extends FieldVisitor implements MojoParameterVisitor
-{
+public class MojoFieldVisitor extends FieldVisitor implements MojoParameterVisitor {
     private String fieldName;
 
     private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<>();
@@ -46,54 +43,46 @@ public class MojoFieldVisitor
 
     private final List<String> typeParameters;
 
-    MojoFieldVisitor( String fieldName, String className, List<String> typeParameters )
-    {
-        super( Opcodes.ASM9 );
+    MojoFieldVisitor(String fieldName, String className, List<String> typeParameters) {
+        super(Opcodes.ASM9);
         this.fieldName = fieldName;
         this.className = className;
         this.typeParameters = typeParameters;
     }
 
     @Override
-    public Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap()
-    {
+    public Map<String, MojoAnnotationVisitor> getAnnotationVisitorMap() {
         return annotationVisitorMap;
     }
 
     @Override
-    public String getFieldName()
-    {
+    public String getFieldName() {
         return fieldName;
     }
 
     @Override
-    public List<String> getTypeParameters()
-    {
+    public List<String> getTypeParameters() {
         return typeParameters;
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation( String desc, boolean visible )
-    {
-        String annotationClassName = Type.getType( desc ).getClassName();
-        if ( !MojoAnnotationsScanner.FIELD_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
-        {
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        String annotationClassName = Type.getType(desc).getClassName();
+        if (!MojoAnnotationsScanner.FIELD_LEVEL_ANNOTATIONS.contains(annotationClassName)) {
             return null;
         }
-        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( annotationClassName );
-        annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );
+        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor(annotationClassName);
+        annotationVisitorMap.put(annotationClassName, mojoAnnotationVisitor);
         return mojoAnnotationVisitor;
     }
 
     @Override
-    public String getClassName()
-    {
+    public String getClassName() {
         return className;
     }
 
     @Override
-    public boolean isAnnotationOnMethod()
-    {
+    public boolean isAnnotationOnMethod() {
         return false;
     }
 }

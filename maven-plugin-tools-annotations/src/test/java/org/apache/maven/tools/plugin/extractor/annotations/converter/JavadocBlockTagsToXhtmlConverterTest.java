@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -31,58 +30,58 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class JavadocBlockTagsToXhtmlConverterTest
-{
+class JavadocBlockTagsToXhtmlConverterTest {
     private final ConverterContext context;
     private final JavadocBlockTagsToXhtmlConverter converter;
     private final JavadocInlineTagsToXhtmlConverter inlineTagsConverter;
 
     public JavadocBlockTagsToXhtmlConverterTest() {
-        URI baseUrl = URI.create( "https://javadoc.example.com/" );
-        context = new SimpleConverterContext( "my.package", baseUrl );
+        URI baseUrl = URI.create("https://javadoc.example.com/");
+        context = new SimpleConverterContext("my.package", baseUrl);
         inlineTagsConverter = JavadocInlineTagsToXhtmlConverterTest.createInlineTagConverter();
         Map<String, JavadocBlockTagToHtmlConverter> blockTagConverters = new HashMap<>();
-        blockTagConverters.put( "see", new SeeTagConverter() );
-        converter =
-            new JavadocBlockTagsToXhtmlConverter( inlineTagsConverter, blockTagConverters );
+        blockTagConverters.put("see", new SeeTagConverter());
+        converter = new JavadocBlockTagsToXhtmlConverter(inlineTagsConverter, blockTagConverters);
     }
 
     @Test
-    void testSee()
-    {
-        assertEquals( "<br /><strong>See also:</strong> \"Some reference\"", converter.convert( "see", "\"Some reference\"" , context ) );
-        assertEquals( ", <a href=\"example.com\">Example</a>", converter.convert( "see", "<a href=\"example.com\">Example</a>", context ) );
-        
+    void testSee() {
+        assertEquals(
+                "<br /><strong>See also:</strong> \"Some reference\"",
+                converter.convert("see", "\"Some reference\"", context));
+        assertEquals(
+                ", <a href=\"example.com\">Example</a>",
+                converter.convert("see", "<a href=\"example.com\">Example</a>", context));
+
         // new context should start again with "See also:"
-        ConverterContext context2 = new SimpleConverterContext( "my.package", URI.create( "https://javadoc.example.com/" ) );
-        assertEquals( "<br /><strong>See also:</strong> <a href=\"example.com\">Example</a>", converter.convert( "see", "<a href=\"example.com\">Example</a>", context2 ) );
+        ConverterContext context2 =
+                new SimpleConverterContext("my.package", URI.create("https://javadoc.example.com/"));
+        assertEquals(
+                "<br /><strong>See also:</strong> <a href=\"example.com\">Example</a>",
+                converter.convert("see", "<a href=\"example.com\">Example</a>", context2));
     }
 
     @Test
-    void testExceptionInTag()
-    {
-        URI baseUrl = URI.create( "https://javadoc.example.com/" );
-        ConverterContext context = new SimpleConverterContext( "my.package", baseUrl )
-        {
+    void testExceptionInTag() {
+        URI baseUrl = URI.create("https://javadoc.example.com/");
+        ConverterContext context = new SimpleConverterContext("my.package", baseUrl) {
             @Override
-            public FullyQualifiedJavadocReference resolveReference( JavadocReference reference )
-            {
-                throw new IllegalArgumentException( "Some exception" );
+            public FullyQualifiedJavadocReference resolveReference(JavadocReference reference) {
+                throw new IllegalArgumentException("Some exception");
             }
         };
         Map<String, JavadocBlockTagToHtmlConverter> blockTagConverters = new HashMap<>();
-        blockTagConverters.put( "example", new JavadocBlockTagToHtmlConverter()
-            {
-                @Override
-                public String convert( String text, ConverterContext context )
-                {
-                    throw new IllegalArgumentException( "Some exception" );
-                }
+        blockTagConverters.put("example", new JavadocBlockTagToHtmlConverter() {
+            @Override
+            public String convert(String text, ConverterContext context) {
+                throw new IllegalArgumentException("Some exception");
             }
-        );
+        });
         JavadocBlockTagsToXhtmlConverter converter =
-                        new JavadocBlockTagsToXhtmlConverter( inlineTagsConverter, blockTagConverters );
+                new JavadocBlockTagsToXhtmlConverter(inlineTagsConverter, blockTagConverters);
         String test = "Class#field";
-        assertEquals( "@example Class#field<!-- error processing javadoc tag 'example': Some exception-->", converter.convert( "example", test, context ) );
+        assertEquals(
+                "@example Class#field<!-- error processing javadoc tag 'example': Some exception-->",
+                converter.convert("example", test, context));
     }
 }

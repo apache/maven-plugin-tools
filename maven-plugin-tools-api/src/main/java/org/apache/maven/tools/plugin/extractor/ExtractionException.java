@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,15 +16,14 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
 
 /**
  * Wrap errors when extraction exception occurred.
  *
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
-public class ExtractionException
-    extends Exception
-{
+public class ExtractionException extends Exception {
     /** serialVersionUID */
     static final long serialVersionUID = 9074953540861573535L;
 
@@ -34,16 +31,14 @@ public class ExtractionException
      * @param message given message
      * @param cause given cause
      */
-    public ExtractionException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public ExtractionException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     /**
      * @param message a given message
      */
-    public ExtractionException( String message )
-    {
-        super( message );
+    public ExtractionException(String message) {
+        super(message);
     }
 }

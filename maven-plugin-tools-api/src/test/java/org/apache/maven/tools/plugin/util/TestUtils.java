@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,55 +16,49 @@ package org.apache.maven.tools.plugin.util;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.junit.jupiter.api.Test;
+package org.apache.maven.tools.plugin.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author jdcasey
  */
-public class TestUtils
-{
+public class TestUtils {
 
     @Test
-    void testDirnameFunction_METATEST() throws UnsupportedEncodingException
-    {
-        String classname = getClass().getName().replace( '.', '/' ) + ".class";
-        String basedir = TestUtils.dirname( classname );
+    void testDirnameFunction_METATEST() throws UnsupportedEncodingException {
+        String classname = getClass().getName().replace('.', '/') + ".class";
+        String basedir = TestUtils.dirname(classname);
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL resource = cl.getResource( classname );
+        URL resource = cl.getResource(classname);
 
-        assertEquals( URLDecoder.decode( resource.getPath(), "UTF-8" ), basedir + classname );
+        assertEquals(URLDecoder.decode(resource.getPath(), "UTF-8"), basedir + classname);
     }
 
-    public static String dirname( String file )
-    {
+    public static String dirname(String file) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL fileResource = cl.getResource( file );
+        URL fileResource = cl.getResource(file);
 
         String fullPath = fileResource.getPath();
 
-        String path = fullPath.substring( 0, fullPath.length() - file.length() );
+        String path = fullPath.substring(0, fullPath.length() - file.length());
 
-        try
-        {
+        try {
             /*
              * FIXME: URL encoding and HTML form encoding are not the same. Use FileUtils.toFile(URL) from plexus-utils
              * once PLXUTILS-56 is released.
              */
             // necessary for JDK 1.5+, where spaces are escaped to %20
-            return URLDecoder.decode( path, "UTF-8" );
-        }
-        catch ( UnsupportedEncodingException e )
-        {
-            throw new Error( "Broken JVM, UTF-8 must be supported", e );
+            return URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new Error("Broken JVM, UTF-8 must be supported", e);
         }
     }
-
 }

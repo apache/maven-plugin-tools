@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,27 +16,27 @@ package org.apache.maven.tools.plugin.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.scanner;
+
+import java.util.Set;
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
-import java.util.Set;
-
 /**
  * @author jdcasey
  *
  */
-public interface MojoScanner
-{
+public interface MojoScanner {
     /**
      * @param request not null
      * @throws ExtractionException if any
      * @throws InvalidPluginDescriptorException if any
      * @since 2.5
      */
-    void populatePluginDescriptor( PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException;
+    void populatePluginDescriptor(PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException;
 
     /**
      * <p>
@@ -51,6 +49,5 @@ public interface MojoScanner
      * all the scanner's extractors are considered active. Set entries that are <code>null</code> or
      * empty ("") will be ignored.
      */
-    void setActiveExtractors( Set<String> extractors );
-
+    void setActiveExtractors(Set<String> extractors);
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,18 +16,18 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
+
+import java.util.List;
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 
-import java.util.List;
-
 /**
  * @author jdcasey
  */
-public interface MojoDescriptorExtractor
-{
+public interface MojoDescriptorExtractor {
     /**
      * Returns the "name" (id) of the extractor.
      *
@@ -61,8 +59,8 @@ public interface MojoDescriptorExtractor
      * @throws InvalidPluginDescriptorException if any
      * @since 2.5
      */
-    List<MojoDescriptor> execute( PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException;
+    List<MojoDescriptor> execute(PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException;
 
     /**
      * The default implementation returns {@code null}.
@@ -70,8 +68,7 @@ public interface MojoDescriptorExtractor
      *
      * @since 3.8.0
      */
-    default String getRequiredJavaVersion()
-    {
+    default String getRequiredJavaVersion() {
         return null;
     }
 }

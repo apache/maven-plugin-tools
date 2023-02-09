@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,13 +16,13 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class AnnotatedContent
-{
+public class AnnotatedContent {
 
     private String description;
 
@@ -32,34 +30,27 @@ public class AnnotatedContent
 
     private String deprecated;
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getSince()
-    {
+    public String getSince() {
         return since;
     }
 
-    public void setSince( String since )
-    {
+    public void setSince(String since) {
         this.since = since;
     }
 
-    public String getDeprecated()
-    {
+    public String getDeprecated() {
         return deprecated;
     }
 
-    public void setDeprecated( String deprecated )
-    {
+    public void setDeprecated(String deprecated) {
         this.deprecated = deprecated;
     }
-
 }

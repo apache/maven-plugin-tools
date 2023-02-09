@@ -1,5 +1,3 @@
-package org;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org;
 
 import java.util.Collection;
 import java.util.Map;
@@ -28,14 +27,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Some description
- * 
+ *
  * @see java.util.Collections
  *
  */
-@Mojo( name = "test" )
-public class MyMojo
-    extends AbstractMojo
-{
+@Mojo(name = "test")
+public class MyMojo extends AbstractMojo {
 
     /**
      * beans parameter leveraging {@link SimpleBean}.
@@ -47,14 +44,12 @@ public class MyMojo
      * invalid javadoc reference {@link org.apache.maven.artifact.Artifact}.
      */
     @Parameter
-    public Map<String,Boolean> invalidReference;
+    public Map<String, Boolean> invalidReference;
 
     @Parameter
     org.internal.PrivateBean privateBean;
 
-    public void execute()
-    {
+    public void execute() {
         // intentional do nothing
     }
-
 }

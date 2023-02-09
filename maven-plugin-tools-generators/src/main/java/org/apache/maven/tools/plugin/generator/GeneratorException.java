@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,16 +16,14 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class GeneratorException
-    extends Exception
-{
-    public GeneratorException( String s, Throwable throwable )
-    {
-        super( s, throwable );
+public class GeneratorException extends Exception {
+    public GeneratorException(String s, Throwable throwable) {
+        super(s, throwable);
     }
 }

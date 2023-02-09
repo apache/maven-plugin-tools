@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,22 +16,18 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Does nothing special.
- * 
+ *
  * @goal second
  * @requiresDependencyCollection compile
  * @threadSafe
  */
-public class SecondMojo
-    extends AbstractMojo
-{
+public class SecondMojo extends AbstractMojo {
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

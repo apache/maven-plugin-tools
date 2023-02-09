@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,15 +16,16 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProjectHelper;
 
 /**
@@ -35,42 +34,39 @@ import org.apache.maven.project.MavenProjectHelper;
  * @since since-text
  * @deprecated deprecated-text
  */
-@Mojo( name = "maximal",
-    aggregator = true,
-    configurator = "configurator-hint",
-    requiresDependencyResolution = ResolutionScope.COMPILE,
-    requiresDependencyCollection = ResolutionScope.TEST,
-    defaultPhase = LifecyclePhase.PACKAGE,
-    executionStrategy = "always",
-    instantiationStrategy = InstantiationStrategy.SINGLETON,
-    inheritByDefault = false,
-    requiresDirectInvocation = true,
-    requiresOnline = true,
-    requiresProject = false,
-    requiresReports = true,
-    threadSafe = true )
-@Execute( phase = LifecyclePhase.COMPILE )
-public class Maximal
-    extends AbstractMojo
-{
+@Mojo(
+        name = "maximal",
+        aggregator = true,
+        configurator = "configurator-hint",
+        requiresDependencyResolution = ResolutionScope.COMPILE,
+        requiresDependencyCollection = ResolutionScope.TEST,
+        defaultPhase = LifecyclePhase.PACKAGE,
+        executionStrategy = "always",
+        instantiationStrategy = InstantiationStrategy.SINGLETON,
+        inheritByDefault = false,
+        requiresDirectInvocation = true,
+        requiresOnline = true,
+        requiresProject = false,
+        requiresReports = true,
+        threadSafe = true)
+@Execute(phase = LifecyclePhase.COMPILE)
+public class Maximal extends AbstractMojo {
     /**
      * Parameter description.
      *
      * @since since-text
      * @deprecated deprecated-text
      */
-    @Parameter( alias = "myAlias",
-        property = "aProperty",
-        defaultValue = "${anExpression}",
-        readonly = true,
-        required = true )
+    @Parameter(
+            alias = "myAlias",
+            property = "aProperty",
+            defaultValue = "${anExpression}",
+            readonly = true,
+            required = true)
     private String param;
 
-    @Component( role = MavenProjectHelper.class, hint = "test" )
+    @Component(role = MavenProjectHelper.class, hint = "test")
     private Object projectHelper;
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

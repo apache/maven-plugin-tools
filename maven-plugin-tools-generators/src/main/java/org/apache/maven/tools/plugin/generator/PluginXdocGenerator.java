@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,16 +53,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * Generate <a href="https://maven.apache.org/doxia/references/xdoc-format.html">xdoc documentation</a> for each mojo.
  */
-public class PluginXdocGenerator
-    implements Generator
-{
+public class PluginXdocGenerator implements Generator {
     /**
      * Regular expression matching an XHTML link
      * group 1 = link target, group 2 = link label
      */
-    private static final Pattern HTML_LINK_PATTERN = Pattern.compile( "<a href=\\\"([^\\\"]*)\\\">(.*?)</a>" );
+    private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">(.*?)</a>");
 
-    private static final Logger LOG = LoggerFactory.getLogger( PluginXdocGenerator.class );
+    private static final Logger LOG = LoggerFactory.getLogger(PluginXdocGenerator.class);
 
     /**
      * locale
@@ -87,9 +84,8 @@ public class PluginXdocGenerator
      * Default constructor using <code>Locale.ENGLISH</code> as locale.
      * Used only in test cases.
      */
-    public PluginXdocGenerator()
-    {
-        this( null );
+    public PluginXdocGenerator() {
+        this(null);
     }
 
     /**
@@ -97,55 +93,44 @@ public class PluginXdocGenerator
      *
      * @param project not null Maven project.
      */
-    public PluginXdocGenerator( MavenProject project )
-    {
-        this( project, Locale.ENGLISH, new File( "" ).getAbsoluteFile(), false );
+    public PluginXdocGenerator(MavenProject project) {
+        this(project, Locale.ENGLISH, new File("").getAbsoluteFile(), false);
     }
 
     /**
      * @param project not null.
      * @param locale  not null wanted locale.
      */
-    public PluginXdocGenerator( MavenProject project, Locale locale, File reportOutputDirectory,
-                                boolean disableInternalJavadocLinkValidation )
-    {
+    public PluginXdocGenerator(
+            MavenProject project,
+            Locale locale,
+            File reportOutputDirectory,
+            boolean disableInternalJavadocLinkValidation) {
         this.project = project;
-        if ( locale == null )
-        {
+        if (locale == null) {
             this.locale = Locale.ENGLISH;
-        }
-        else
-        {
+        } else {
             this.locale = locale;
         }
         this.reportOutputDirectory = reportOutputDirectory;
         this.disableInternalJavadocLinkValidation = disableInternalJavadocLinkValidation;
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public void execute( File destinationDirectory, PluginToolsRequest request )
-        throws GeneratorException
-    {
-        try
-        {
-            if ( request.getPluginDescriptor().getMojos() != null )
-            {
+    public void execute(File destinationDirectory, PluginToolsRequest request) throws GeneratorException {
+        try {
+            if (request.getPluginDescriptor().getMojos() != null) {
                 List<MojoDescriptor> mojos = request.getPluginDescriptor().getMojos();
-                for ( MojoDescriptor descriptor : mojos )
-                {
-                    processMojoDescriptor( descriptor, destinationDirectory );
+                for (MojoDescriptor descriptor : mojos) {
+                    processMojoDescriptor(descriptor, destinationDirectory);
                 }
             }
+        } catch (IOException e) {
+            throw new GeneratorException(e.getMessage(), e);
         }
-        catch ( IOException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
-        }
-
     }
 
     /**
@@ -153,14 +138,11 @@ public class PluginXdocGenerator
      * @param destinationDirectory not null
      * @throws IOException if any
      */
-    protected void processMojoDescriptor( MojoDescriptor mojoDescriptor, File destinationDirectory )
-        throws IOException
-    {
-        File outputFile = new File( destinationDirectory, getMojoFilename( mojoDescriptor, "xml" ) );
-        try ( Writer writer = new OutputStreamWriter( new CachingOutputStream( outputFile ), UTF_8 ) )
-        {
-            XMLWriter w = new PrettyPrintXMLWriter( new PrintWriter( writer ), UTF_8.name(), null );
-            writeBody( mojoDescriptor, w );
+    protected void processMojoDescriptor(MojoDescriptor mojoDescriptor, File destinationDirectory) throws IOException {
+        File outputFile = new File(destinationDirectory, getMojoFilename(mojoDescriptor, "xml"));
+        try (Writer writer = new OutputStreamWriter(new CachingOutputStream(outputFile), UTF_8)) {
+            XMLWriter w = new PrettyPrintXMLWriter(new PrintWriter(writer), UTF_8.name(), null);
+            writeBody(mojoDescriptor, w);
 
             writer.flush();
         }
@@ -171,8 +153,7 @@ public class PluginXdocGenerator
      * @param ext  not null
      * @return the output file name
      */
-    private String getMojoFilename( MojoDescriptor mojo, String ext )
-    {
+    private String getMojoFilename(MojoDescriptor mojo, String ext) {
         return mojo.getGoal() + "-mojo." + ext;
     }
 
@@ -180,22 +161,21 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeBody( MojoDescriptor mojoDescriptor, XMLWriter w )
-    {
-        w.startElement( "document" );
-        w.addAttribute( "xmlns", "http://maven.apache.org/XDOC/2.0" );
-        w.addAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        w.addAttribute( "xsi:schemaLocation",
-                        "http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd" );
+    private void writeBody(MojoDescriptor mojoDescriptor, XMLWriter w) {
+        w.startElement("document");
+        w.addAttribute("xmlns", "http://maven.apache.org/XDOC/2.0");
+        w.addAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        w.addAttribute(
+                "xsi:schemaLocation", "http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd");
 
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 
-        w.startElement( "properties" );
+        w.startElement("properties");
 
-        w.startElement( "title" );
-        w.writeText( mojoDescriptor.getFullGoalName() );
+        w.startElement("title");
+        w.writeText(mojoDescriptor.getFullGoalName());
         w.endElement(); // title
 
         w.endElement(); // properties
@@ -204,51 +184,47 @@ public class PluginXdocGenerator
         //
         // ----------------------------------------------------------------------
 
-        w.startElement( "body" );
+        w.startElement("body");
 
-        w.startElement( "section" );
+        w.startElement("section");
 
-        w.addAttribute( "name", mojoDescriptor.getFullGoalName() );
+        w.addAttribute("name", mojoDescriptor.getFullGoalName());
 
-        writeReportNotice( mojoDescriptor, w );
+        writeReportNotice(mojoDescriptor, w);
 
-        w.startElement( "p" );
-        w.writeMarkup( getString( "pluginxdoc.mojodescriptor.fullname" ) );
-        w.endElement(); //p
-        w.startElement( "p" );
-        w.writeMarkup( mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
-                           + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
-                           + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal() );
-        w.endElement(); //p
+        w.startElement("p");
+        w.writeMarkup(getString("pluginxdoc.mojodescriptor.fullname"));
+        w.endElement(); // p
+        w.startElement("p");
+        w.writeMarkup(mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
+                + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
+                + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal());
+        w.endElement(); // p
 
         String context = "goal " + mojoDescriptor.getGoal();
-        if ( StringUtils.isNotEmpty( mojoDescriptor.getDeprecated() ) )
-        {
-            w.startElement( "p" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.deprecated" ) );
+        if (StringUtils.isNotEmpty(mojoDescriptor.getDeprecated())) {
+            w.startElement("p");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.deprecated"));
             w.endElement(); // p
-            w.startElement( "div" );
-            w.writeMarkup( getXhtmlWithValidatedLinks( mojoDescriptor.getDeprecated(), context ) );
+            w.startElement("div");
+            w.writeMarkup(getXhtmlWithValidatedLinks(mojoDescriptor.getDeprecated(), context));
             w.endElement(); // div
         }
 
-        w.startElement( "p" );
-        w.writeMarkup( getString( "pluginxdoc.description" ) );
-        w.endElement(); //p
-        w.startElement( "div" );
-        if ( StringUtils.isNotEmpty( mojoDescriptor.getDescription() ) )
-        {
-            w.writeMarkup( getXhtmlWithValidatedLinks( mojoDescriptor.getDescription(), context ) );
-        }
-        else
-        {
-            w.writeText( getString( "pluginxdoc.nodescription" ) );
+        w.startElement("p");
+        w.writeMarkup(getString("pluginxdoc.description"));
+        w.endElement(); // p
+        w.startElement("div");
+        if (StringUtils.isNotEmpty(mojoDescriptor.getDescription())) {
+            w.writeMarkup(getXhtmlWithValidatedLinks(mojoDescriptor.getDescription(), context));
+        } else {
+            w.writeText(getString("pluginxdoc.nodescription"));
         }
         w.endElement(); // div
 
-        writeGoalAttributes( mojoDescriptor, w );
+        writeGoalAttributes(mojoDescriptor, w);
 
-        writeGoalParameterTable( mojoDescriptor, w );
+        writeGoalParameterTable(mojoDescriptor, w);
 
         w.endElement(); // section
 
@@ -261,14 +237,12 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeReportNotice( MojoDescriptor mojoDescriptor, XMLWriter w )
-    {
-        if ( GeneratorUtils.isMavenReport( mojoDescriptor.getImplementation(), project ) )
-        {
-            w.startElement( "p" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.notice.note" ) );
-            w.writeText( getString( "pluginxdoc.mojodescriptor.notice.isMavenReport" ) );
-            w.endElement(); //p
+    private void writeReportNotice(MojoDescriptor mojoDescriptor, XMLWriter w) {
+        if (GeneratorUtils.isMavenReport(mojoDescriptor.getImplementation(), project)) {
+            w.startElement("p");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.notice.note"));
+            w.writeText(getString("pluginxdoc.mojodescriptor.notice.isMavenReport"));
+            w.endElement(); // p
         }
     }
 
@@ -276,140 +250,125 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeGoalAttributes( MojoDescriptor mojoDescriptor, XMLWriter w )
-    {
-        w.startElement( "p" );
-        w.writeMarkup( getString( "pluginxdoc.mojodescriptor.attributes" ) );
-        w.endElement(); //p
+    private void writeGoalAttributes(MojoDescriptor mojoDescriptor, XMLWriter w) {
+        w.startElement("p");
+        w.writeMarkup(getString("pluginxdoc.mojodescriptor.attributes"));
+        w.endElement(); // p
 
         boolean addedUl = false;
         String value;
-        if ( mojoDescriptor.isProjectRequired() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.projectRequired" ) );
-            w.endElement(); //li
-        }
-
-        if ( mojoDescriptor.isRequiresReports() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.reportingMojo" ) );
+        if (mojoDescriptor.isProjectRequired()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.projectRequired"));
             w.endElement(); // li
         }
 
-        if ( mojoDescriptor.isAggregator() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.aggregator" ) );
-            w.endElement(); //li
+        if (mojoDescriptor.isRequiresReports()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.reportingMojo"));
+            w.endElement(); // li
         }
 
-        if ( mojoDescriptor.isDirectInvocationOnly() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.directInvocationOnly" ) );
-            w.endElement(); //li
+        if (mojoDescriptor.isAggregator()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.aggregator"));
+            w.endElement(); // li
+        }
+
+        if (mojoDescriptor.isDirectInvocationOnly()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.directInvocationOnly"));
+            w.endElement(); // li
         }
 
         value = mojoDescriptor.isDependencyResolutionRequired();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyResolutionRequired", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.dependencyResolutionRequired", value));
+            w.endElement(); // li
         }
 
-        if ( mojoDescriptor instanceof ExtendedMojoDescriptor )
-        {
+        if (mojoDescriptor instanceof ExtendedMojoDescriptor) {
             ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
 
             value = extendedMojoDescriptor.getDependencyCollectionRequired();
-            if ( StringUtils.isNotEmpty( value ) )
-            {
-                addedUl = addUl( w, addedUl );
-                w.startElement( "li" );
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.dependencyCollectionRequired", value ) );
-                w.endElement(); //li
+            if (StringUtils.isNotEmpty(value)) {
+                addedUl = addUl(w, addedUl);
+                w.startElement("li");
+                w.writeMarkup(format("pluginxdoc.mojodescriptor.dependencyCollectionRequired", value));
+                w.endElement(); // li
             }
         }
 
-        addedUl = addUl( w, addedUl );
-        w.startElement( "li" );
-        w.writeMarkup( getString( mojoDescriptor.isThreadSafe()
-                ? "pluginxdoc.mojodescriptor.threadSafe"
-                : "pluginxdoc.mojodescriptor.notThreadSafe" ) );
-        w.endElement(); //li
+        addedUl = addUl(w, addedUl);
+        w.startElement("li");
+        w.writeMarkup(getString(
+                mojoDescriptor.isThreadSafe()
+                        ? "pluginxdoc.mojodescriptor.threadSafe"
+                        : "pluginxdoc.mojodescriptor.notThreadSafe"));
+        w.endElement(); // li
 
         value = mojoDescriptor.getSince();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.since", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.since", value));
+            w.endElement(); // li
         }
 
         value = mojoDescriptor.getPhase();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.phase", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.phase", value));
+            w.endElement(); // li
         }
 
         value = mojoDescriptor.getExecutePhase();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.executePhase", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.executePhase", value));
+            w.endElement(); // li
         }
 
         value = mojoDescriptor.getExecuteGoal();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.executeGoal", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.executeGoal", value));
+            w.endElement(); // li
         }
 
         value = mojoDescriptor.getExecuteLifecycle();
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.executeLifecycle", value ) );
-            w.endElement(); //li
+        if (StringUtils.isNotEmpty(value)) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.executeLifecycle", value));
+            w.endElement(); // li
         }
 
-        if ( mojoDescriptor.isOnlineRequired() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.onlineRequired" ) );
-            w.endElement(); //li
+        if (mojoDescriptor.isOnlineRequired()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.onlineRequired"));
+            w.endElement(); // li
         }
 
-        if ( !mojoDescriptor.isInheritedByDefault() )
-        {
-            addedUl = addUl( w, addedUl );
-            w.startElement( "li" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.inheritedByDefault" ) );
-            w.endElement(); //li
+        if (!mojoDescriptor.isInheritedByDefault()) {
+            addedUl = addUl(w, addedUl);
+            w.startElement("li");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.inheritedByDefault"));
+            w.endElement(); // li
         }
 
-        if ( addedUl )
-        {
-            w.endElement(); //ul
+        if (addedUl) {
+            w.endElement(); // ul
         }
     }
 
@@ -417,26 +376,22 @@ public class PluginXdocGenerator
      * @param mojoDescriptor not null
      * @param w              not null
      */
-    private void writeGoalParameterTable( MojoDescriptor mojoDescriptor, XMLWriter w )
-    {
+    private void writeGoalParameterTable(MojoDescriptor mojoDescriptor, XMLWriter w) {
         List<Parameter> parameterList = mojoDescriptor.getParameters();
 
         // remove components and read-only parameters
-        List<Parameter> list = filterParameters( parameterList );
+        List<Parameter> list = filterParameters(parameterList);
 
-        if ( !list.isEmpty() )
-        {
-            writeParameterSummary( list, w, mojoDescriptor.getGoal() );
-            writeParameterDetails( list, w, mojoDescriptor.getGoal() );
-        }
-        else
-        {
-            w.startElement( "subsection" );
-            w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameters" ) );
+        if (!list.isEmpty()) {
+            writeParameterSummary(list, w, mojoDescriptor.getGoal());
+            writeParameterDetails(list, w, mojoDescriptor.getGoal());
+        } else {
+            w.startElement("subsection");
+            w.addAttribute("name", getString("pluginxdoc.mojodescriptor.parameters"));
 
-            w.startElement( "p" );
-            w.writeMarkup( getString( "pluginxdoc.mojodescriptor.noParameter" ) );
-            w.endElement(); //p
+            w.startElement("p");
+            w.writeMarkup(getString("pluginxdoc.mojodescriptor.noParameter"));
+            w.endElement(); // p
 
             w.endElement();
         }
@@ -448,21 +403,16 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @return the parameters list without components.
      */
-    private List<Parameter> filterParameters( List<Parameter> parameterList )
-    {
+    private List<Parameter> filterParameters(List<Parameter> parameterList) {
         List<Parameter> filtered = new ArrayList<>();
 
-        if ( parameterList != null )
-        {
-            for ( Parameter parameter : parameterList )
-            {
-                if ( parameter.isEditable() )
-                {
+        if (parameterList != null) {
+            for (Parameter parameter : parameterList) {
+                if (parameter.isEditable()) {
                     String expression = parameter.getExpression();
 
-                    if ( expression == null || !expression.startsWith( "${component." ) )
-                    {
-                        filtered.add( parameter );
+                    if (expression == null || !expression.startsWith("${component.")) {
+                        filtered.add(parameter);
                     }
                 }
             }
@@ -475,205 +425,167 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterDetails( List<Parameter> parameterList, XMLWriter w, String goal )
-    {
-        w.startElement( "subsection" );
-        w.addAttribute( "name", getString( "pluginxdoc.mojodescriptor.parameter.details" ) );
+    private void writeParameterDetails(List<Parameter> parameterList, XMLWriter w, String goal) {
+        w.startElement("subsection");
+        w.addAttribute("name", getString("pluginxdoc.mojodescriptor.parameter.details"));
 
-        for ( Iterator<Parameter> parameters = parameterList.iterator(); parameters.hasNext(); )
-        {
+        for (Iterator<Parameter> parameters = parameterList.iterator(); parameters.hasNext(); ) {
             Parameter parameter = parameters.next();
 
-            w.startElement( "h4" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_internal", parameter.getName() ) );
+            w.startElement("h4");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.parameter.name_internal", parameter.getName()));
             w.endElement();
 
             String context = "Parameter " + parameter.getName() + " in goal " + goal;
-            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
-            {
-                w.startElement( "div" );
-                String deprecated = getXhtmlWithValidatedLinks( parameter.getDeprecated(), context );
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.deprecated", deprecated ) );
+            if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
+                w.startElement("div");
+                String deprecated = getXhtmlWithValidatedLinks(parameter.getDeprecated(), context);
+                w.writeMarkup(format("pluginxdoc.mojodescriptor.parameter.deprecated", deprecated));
                 w.endElement(); // div
             }
 
-            w.startElement( "div" );
-            if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
-            {
-                
-                w.writeMarkup( getXhtmlWithValidatedLinks( parameter.getDescription(), context ) );
-            }
-            else
-            {
-                w.writeMarkup( getString( "pluginxdoc.nodescription" ) );
+            w.startElement("div");
+            if (StringUtils.isNotEmpty(parameter.getDescription())) {
+
+                w.writeMarkup(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
+            } else {
+                w.writeMarkup(getString("pluginxdoc.nodescription"));
             }
             w.endElement(); // div
 
             boolean addedUl = false;
-            addedUl = addUl( w, addedUl, parameter.getType() );
-            String typeValue = getLinkedType( parameter, false );
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.type" ), typeValue, w );
+            addedUl = addUl(w, addedUl, parameter.getType());
+            String typeValue = getLinkedType(parameter, false);
+            writeDetail(getString("pluginxdoc.mojodescriptor.parameter.type"), typeValue, w);
 
-            if ( StringUtils.isNotEmpty( parameter.getSince() ) )
-            {
-                addedUl = addUl( w, addedUl );
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.since" ), parameter.getSince(), w );
+            if (StringUtils.isNotEmpty(parameter.getSince())) {
+                addedUl = addUl(w, addedUl);
+                writeDetail(getString("pluginxdoc.mojodescriptor.parameter.since"), parameter.getSince(), w);
             }
 
-            if ( parameter.isRequired() )
-            {
-                addedUl = addUl( w, addedUl );
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.yes" ),
-                             w );
-            }
-            else
-            {
-                addedUl = addUl( w, addedUl );
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.required" ), getString( "pluginxdoc.no" ),
-                             w );
+            if (parameter.isRequired()) {
+                addedUl = addUl(w, addedUl);
+                writeDetail(getString("pluginxdoc.mojodescriptor.parameter.required"), getString("pluginxdoc.yes"), w);
+            } else {
+                addedUl = addUl(w, addedUl);
+                writeDetail(getString("pluginxdoc.mojodescriptor.parameter.required"), getString("pluginxdoc.no"), w);
             }
 
             String expression = parameter.getExpression();
-            addedUl = addUl( w, addedUl, expression );
-            String property = getPropertyFromExpression( expression );
-            if ( property == null )
-            {
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.expression" ), expression, w );
-            }
-            else
-            {
-                writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.property" ), property, w );
+            addedUl = addUl(w, addedUl, expression);
+            String property = getPropertyFromExpression(expression);
+            if (property == null) {
+                writeDetail(getString("pluginxdoc.mojodescriptor.parameter.expression"), expression, w);
+            } else {
+                writeDetail(getString("pluginxdoc.mojodescriptor.parameter.property"), property, w);
             }
 
-            addedUl = addUl( w, addedUl, parameter.getDefaultValue() );
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.default" ),
-                         escapeXml( parameter.getDefaultValue() ), w );
+            addedUl = addUl(w, addedUl, parameter.getDefaultValue());
+            writeDetail(
+                    getString("pluginxdoc.mojodescriptor.parameter.default"),
+                    escapeXml(parameter.getDefaultValue()),
+                    w);
 
-            addedUl = addUl( w, addedUl, parameter.getAlias() );
-            writeDetail( getString( "pluginxdoc.mojodescriptor.parameter.alias" ), escapeXml( parameter.getAlias() ),
-                         w );
+            addedUl = addUl(w, addedUl, parameter.getAlias());
+            writeDetail(getString("pluginxdoc.mojodescriptor.parameter.alias"), escapeXml(parameter.getAlias()), w);
 
-            if ( addedUl )
-            {
-                w.endElement(); //ul
+            if (addedUl) {
+                w.endElement(); // ul
             }
 
-            if ( parameters.hasNext() )
-            {
-                w.writeMarkup( "<hr/>" );
+            if (parameters.hasNext()) {
+                w.writeMarkup("<hr/>");
             }
         }
 
         w.endElement();
     }
 
-    static String getShortType( String type )
-    {
+    static String getShortType(String type) {
         // split into type arguments and main type
-        int startTypeArguments = type.indexOf( '<' );
-        if ( startTypeArguments == -1 )
-        {
-            return getShortTypeOfSimpleType( type );
-        }
-        else
-        {
+        int startTypeArguments = type.indexOf('<');
+        if (startTypeArguments == -1) {
+            return getShortTypeOfSimpleType(type);
+        } else {
             StringBuilder shortType = new StringBuilder();
-            shortType.append( getShortTypeOfSimpleType( type.substring( 0, startTypeArguments ) ) );
-            shortType.append( "<" )
-                .append( getShortTypeOfTypeArgument( 
-                        type.substring( startTypeArguments + 1, type.lastIndexOf( ">" ) ) ) )
-                .append( ">" );
+            shortType.append(getShortTypeOfSimpleType(type.substring(0, startTypeArguments)));
+            shortType
+                    .append("<")
+                    .append(getShortTypeOfTypeArgument(type.substring(startTypeArguments + 1, type.lastIndexOf(">"))))
+                    .append(">");
             return shortType.toString();
         }
-        
     }
 
-    private static String getShortTypeOfTypeArgument( String type )
-    {
-        String[] typeArguments = type.split( ",\\s*" );
+    private static String getShortTypeOfTypeArgument(String type) {
+        String[] typeArguments = type.split(",\\s*");
         StringBuilder shortType = new StringBuilder();
-        for ( int i = 0; i < typeArguments.length; i++ )
-        {
+        for (int i = 0; i < typeArguments.length; i++) {
             String typeArgument = typeArguments[i];
-            if ( typeArgument.contains( "<" ) )
-            {
+            if (typeArgument.contains("<")) {
                 // nested type arguments lead to ellipsis
                 return "...";
-            }
-            else
-            {
-                shortType.append( getShortTypeOfSimpleType( typeArgument ) );
-                if ( i < typeArguments.length - 1 )
-                {
-                    shortType.append( "," );
+            } else {
+                shortType.append(getShortTypeOfSimpleType(typeArgument));
+                if (i < typeArguments.length - 1) {
+                    shortType.append(",");
                 }
             }
         }
         return shortType.toString();
     }
 
-    private static String getShortTypeOfSimpleType( String type )
-    {
-        int index = type.lastIndexOf( '.' );
-        return type.substring( index + 1 );
+    private static String getShortTypeOfSimpleType(String type) {
+        int index = type.lastIndexOf('.');
+        return type.substring(index + 1);
     }
 
-    private String getLinkedType( Parameter parameter, boolean isShortType  )
-    {
+    private String getLinkedType(Parameter parameter, boolean isShortType) {
         final String typeValue;
-        if ( isShortType )
-        {
-            typeValue = getShortType( parameter.getType() );
-        }
-        else
-        {
+        if (isShortType) {
+            typeValue = getShortType(parameter.getType());
+        } else {
             typeValue = parameter.getType();
         }
-        if ( parameter instanceof EnhancedParameterWrapper )
-        {
+        if (parameter instanceof EnhancedParameterWrapper) {
             EnhancedParameterWrapper enhancedParameter = (EnhancedParameterWrapper) parameter;
-            if ( enhancedParameter.getTypeJavadocUrl() != null )
-            {
+            if (enhancedParameter.getTypeJavadocUrl() != null) {
                 URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
                 // optionally check if link is valid
-                if ( javadocUrl.isAbsolute() 
-                     || disableInternalJavadocLinkValidation 
-                     || JavadocLinkGenerator.isLinkValid( javadocUrl, reportOutputDirectory.toPath() ) )
-                {
-                    return format( "pluginxdoc.mojodescriptor.parameter.type_link",
-                                   new Object[] { escapeXml( typeValue ), enhancedParameter.getTypeJavadocUrl() } );
+                if (javadocUrl.isAbsolute()
+                        || disableInternalJavadocLinkValidation
+                        || JavadocLinkGenerator.isLinkValid(javadocUrl, reportOutputDirectory.toPath())) {
+                    return format(
+                            "pluginxdoc.mojodescriptor.parameter.type_link",
+                            new Object[] {escapeXml(typeValue), enhancedParameter.getTypeJavadocUrl()});
                 }
             }
         }
-        return escapeXml( typeValue );
+        return escapeXml(typeValue);
     }
 
-    private boolean addUl( XMLWriter w, boolean addedUl, String content )
-    {
-        if ( StringUtils.isNotEmpty( content ) )
-        {
-            return addUl( w, addedUl );
+    private boolean addUl(XMLWriter w, boolean addedUl, String content) {
+        if (StringUtils.isNotEmpty(content)) {
+            return addUl(w, addedUl);
         }
         return addedUl;
     }
 
-    private boolean addUl( XMLWriter w, boolean addedUl )
-    {
-        if ( !addedUl )
-        {
-            w.startElement( "ul" );
+    private boolean addUl(XMLWriter w, boolean addedUl) {
+        if (!addedUl) {
+            w.startElement("ul");
             addedUl = true;
         }
         return addedUl;
     }
 
-    private String getPropertyFromExpression( String expression )
-    {
-        if ( StringUtils.isNotEmpty( expression ) && expression.startsWith( "${" ) && expression.endsWith( "}" )
-            && !expression.substring( 2 ).contains( "${" ) )
-        {
+    private String getPropertyFromExpression(String expression) {
+        if (StringUtils.isNotEmpty(expression)
+                && expression.startsWith("${")
+                && expression.endsWith("}")
+                && !expression.substring(2).contains("${")) {
             // expression="${xxx}" -> property="xxx"
-            return expression.substring( 2, expression.length() - 1 );
+            return expression.substring(2, expression.length() - 1);
         }
         // no property can be extracted
         return null;
@@ -684,13 +596,11 @@ public class PluginXdocGenerator
      * @param value could be null
      * @param w     not null
      */
-    private void writeDetail( String param, String value, XMLWriter w )
-    {
-        if ( StringUtils.isNotEmpty( value ) )
-        {
-            w.startElement( "li" );
-            w.writeMarkup( format( "pluginxdoc.detail", new String[]{ param, value } ) );
-            w.endElement(); //li
+    private void writeDetail(String param, String value, XMLWriter w) {
+        if (StringUtils.isNotEmpty(value)) {
+            w.startElement("li");
+            w.writeMarkup(format("pluginxdoc.detail", new String[] {param, value}));
+            w.endElement(); // li
         }
     }
 
@@ -698,20 +608,15 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterSummary( List<Parameter> parameterList, XMLWriter w, String goal )
-    {
-        List<Parameter> requiredParams = getParametersByRequired( true, parameterList );
-        if ( !requiredParams.isEmpty() )
-        {
-            writeParameterList( getString( "pluginxdoc.mojodescriptor.requiredParameters" ),
-                                requiredParams, w, goal );
+    private void writeParameterSummary(List<Parameter> parameterList, XMLWriter w, String goal) {
+        List<Parameter> requiredParams = getParametersByRequired(true, parameterList);
+        if (!requiredParams.isEmpty()) {
+            writeParameterList(getString("pluginxdoc.mojodescriptor.requiredParameters"), requiredParams, w, goal);
         }
 
-        List<Parameter> optionalParams = getParametersByRequired( false, parameterList );
-        if ( !optionalParams.isEmpty() )
-        {
-            writeParameterList( getString( "pluginxdoc.mojodescriptor.optionalParameters" ),
-                                optionalParams, w, goal );
+        List<Parameter> optionalParams = getParametersByRequired(false, parameterList);
+        if (!optionalParams.isEmpty()) {
+            writeParameterList(getString("pluginxdoc.mojodescriptor.optionalParameters"), optionalParams, w, goal);
         }
     }
 
@@ -720,100 +625,87 @@ public class PluginXdocGenerator
      * @param parameterList  not null
      * @param w              not null
      */
-    private void writeParameterList( String title, List<Parameter> parameterList, XMLWriter w, String goal )
-    {
-        w.startElement( "subsection" );
-        w.addAttribute( "name", title );
+    private void writeParameterList(String title, List<Parameter> parameterList, XMLWriter w, String goal) {
+        w.startElement("subsection");
+        w.addAttribute("name", title);
 
-        w.startElement( "table" );
-        w.addAttribute( "border", "0" );
+        w.startElement("table");
+        w.addAttribute("border", "0");
 
-        w.startElement( "tr" );
-        w.startElement( "th" );
-        w.writeText( getString( "pluginxdoc.mojodescriptor.parameter.name" ) );
-        w.endElement(); //th
-        w.startElement( "th" );
-        w.writeText( getString( "pluginxdoc.mojodescriptor.parameter.type" ) );
-        w.endElement(); //th
-        w.startElement( "th" );
-        w.writeText( getString( "pluginxdoc.mojodescriptor.parameter.since" ) );
-        w.endElement(); //th
-        w.startElement( "th" );
-        w.writeText( getString( "pluginxdoc.mojodescriptor.parameter.description" ) );
-        w.endElement(); //th
-        w.endElement(); //tr
+        w.startElement("tr");
+        w.startElement("th");
+        w.writeText(getString("pluginxdoc.mojodescriptor.parameter.name"));
+        w.endElement(); // th
+        w.startElement("th");
+        w.writeText(getString("pluginxdoc.mojodescriptor.parameter.type"));
+        w.endElement(); // th
+        w.startElement("th");
+        w.writeText(getString("pluginxdoc.mojodescriptor.parameter.since"));
+        w.endElement(); // th
+        w.startElement("th");
+        w.writeText(getString("pluginxdoc.mojodescriptor.parameter.description"));
+        w.endElement(); // th
+        w.endElement(); // tr
 
-        for ( Parameter parameter : parameterList )
-        {
-            w.startElement( "tr" );
+        for (Parameter parameter : parameterList) {
+            w.startElement("tr");
 
             // name
-            w.startElement( "td" );
-            w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.name_link", parameter.getName() ) );
-            w.endElement(); //td
+            w.startElement("td");
+            w.writeMarkup(format("pluginxdoc.mojodescriptor.parameter.name_link", parameter.getName()));
+            w.endElement(); // td
 
-            //type
-            w.startElement( "td" );
-            w.writeMarkup( "<code>" + getLinkedType( parameter, true ) + "</code>" );
-            w.endElement(); //td
+            // type
+            w.startElement("td");
+            w.writeMarkup("<code>" + getLinkedType(parameter, true) + "</code>");
+            w.endElement(); // td
 
             // since
-            w.startElement( "td" );
-            if ( StringUtils.isNotEmpty( parameter.getSince() ) )
-            {
-                w.writeMarkup( "<code>" + parameter.getSince() + "</code>" );
+            w.startElement("td");
+            if (StringUtils.isNotEmpty(parameter.getSince())) {
+                w.writeMarkup("<code>" + parameter.getSince() + "</code>");
+            } else {
+                w.writeMarkup("<code>-</code>");
             }
-            else
-            {
-                w.writeMarkup( "<code>-</code>" );
-            }
-            w.endElement(); //td
+            w.endElement(); // td
 
             // description
-            w.startElement( "td" );
+            w.startElement("td");
             String description;
             String context = "Parameter " + parameter.getName() + " in goal " + goal;
-            if ( StringUtils.isNotEmpty( parameter.getDeprecated() ) )
-            {
-                String deprecated = getXhtmlWithValidatedLinks( parameter.getDescription(), context );
-                description = format( "pluginxdoc.mojodescriptor.parameter.deprecated", deprecated );
+            if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
+                String deprecated = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
+                description = format("pluginxdoc.mojodescriptor.parameter.deprecated", deprecated);
+            } else if (StringUtils.isNotEmpty(parameter.getDescription())) {
+                description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
+            } else {
+                description = getString("pluginxdoc.nodescription");
             }
-            else if ( StringUtils.isNotEmpty( parameter.getDescription() ) )
-            {
-                description = getXhtmlWithValidatedLinks( parameter.getDescription(), context );
-            }
-            else
-            {
-                description = getString( "pluginxdoc.nodescription" );
-            }
-            w.writeMarkup( description + "<br/>" );
+            w.writeMarkup(description + "<br/>");
 
-            if ( StringUtils.isNotEmpty( parameter.getDefaultValue() ) )
-            {
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.defaultValue",
-                                       escapeXml( parameter.getDefaultValue() ) ) );
-                w.writeMarkup( "<br/>" );
+            if (StringUtils.isNotEmpty(parameter.getDefaultValue())) {
+                w.writeMarkup(format(
+                        "pluginxdoc.mojodescriptor.parameter.defaultValue", escapeXml(parameter.getDefaultValue())));
+                w.writeMarkup("<br/>");
             }
 
-            String property = getPropertyFromExpression( parameter.getExpression() );
-            if ( property != null )
-            {
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.property.description", property ) );
-                w.writeMarkup( "<br/>" );
+            String property = getPropertyFromExpression(parameter.getExpression());
+            if (property != null) {
+                w.writeMarkup(format("pluginxdoc.mojodescriptor.parameter.property.description", property));
+                w.writeMarkup("<br/>");
             }
 
-            if ( StringUtils.isNotEmpty( parameter.getAlias() ) )
-            {
-                w.writeMarkup( format( "pluginxdoc.mojodescriptor.parameter.alias.description",
-                                       escapeXml( parameter.getAlias() ) ) );
+            if (StringUtils.isNotEmpty(parameter.getAlias())) {
+                w.writeMarkup(format(
+                        "pluginxdoc.mojodescriptor.parameter.alias.description", escapeXml(parameter.getAlias())));
             }
 
-            w.endElement(); //td
-            w.endElement(); //tr
+            w.endElement(); // td
+            w.endElement(); // tr
         }
 
-        w.endElement(); //table
-        w.endElement(); //section
+        w.endElement(); // table
+        w.endElement(); // section
     }
 
     /**
@@ -821,15 +713,12 @@ public class PluginXdocGenerator
      * @param parameterList not null
      * @return list of parameters depending the value of <code>required</code>
      */
-    private List<Parameter> getParametersByRequired( boolean required, List<Parameter> parameterList )
-    {
+    private List<Parameter> getParametersByRequired(boolean required, List<Parameter> parameterList) {
         List<Parameter> list = new ArrayList<>();
 
-        for ( Parameter parameter : parameterList )
-        {
-            if ( parameter.isRequired() == required )
-            {
-                list.add( parameter );
+        for (Parameter parameter : parameterList) {
+            if (parameter.isRequired() == required) {
+                list.add(parameter);
             }
         }
 
@@ -841,9 +730,8 @@ public class PluginXdocGenerator
      *
      * @return The resource bundle for the <code>locale</code> instance variable.
      */
-    private ResourceBundle getBundle()
-    {
-        return ResourceBundle.getBundle( "pluginxdoc", locale, getClass().getClassLoader() );
+    private ResourceBundle getBundle() {
+        return ResourceBundle.getBundle("pluginxdoc", locale, getClass().getClassLoader());
     }
 
     /**
@@ -851,9 +739,8 @@ public class PluginXdocGenerator
      * @return Localized, text identified by <code>key</code>.
      * @see #getBundle()
      */
-    private String getString( String key )
-    {
-        return getBundle().getString( key );
+    private String getString(String key) {
+        return getBundle().getString(key);
     }
 
     /**
@@ -864,9 +751,8 @@ public class PluginXdocGenerator
      * @return Localized, formatted text identified by <code>key</code>.
      * @see #format(String, Object[])
      */
-    private String format( String key, Object arg1 )
-    {
-        return format( key, new Object[]{ arg1 } );
+    private String format(String key, Object arg1) {
+        return format(key, new Object[] {arg1});
     }
 
     /**
@@ -877,68 +763,56 @@ public class PluginXdocGenerator
      * @param args not null
      * @return Localized, formatted text identified by <code>key</code>.
      */
-    private String format( String key, Object[] args )
-    {
-        String pattern = getString( key );
+    private String format(String key, Object[] args) {
+        String pattern = getString(key);
         // we don't need quoting so spare us the confusion in the resource bundle to double them up in some keys
-        pattern = StringUtils.replace( pattern, "'", "''" );
+        pattern = StringUtils.replace(pattern, "'", "''");
 
-        MessageFormat messageFormat = new MessageFormat( "" );
-        messageFormat.setLocale( locale );
-        messageFormat.applyPattern( pattern );
+        MessageFormat messageFormat = new MessageFormat("");
+        messageFormat.setLocale(locale);
+        messageFormat.applyPattern(pattern);
 
-        return messageFormat.format( args );
+        return messageFormat.format(args);
     }
 
     /**
      * @param text the string to escape
      * @return A string escaped with XML entities
      */
-    private String escapeXml( String text )
-    {
-        if ( text != null )
-        {
-            text = text.replace( "&", "&amp;" );
-            text = text.replace( "<", "&lt;" );
-            text = text.replace( ">", "&gt;" );
-            text = text.replace( "\"", "&quot;" );
-            text = text.replace( "\'", "&apos;" );
+    private String escapeXml(String text) {
+        if (text != null) {
+            text = text.replace("&", "&amp;");
+            text = text.replace("<", "&lt;");
+            text = text.replace(">", "&gt;");
+            text = text.replace("\"", "&quot;");
+            text = text.replace("\'", "&apos;");
         }
         return text;
     }
 
-    String getXhtmlWithValidatedLinks( String xhtmlText, String context )
-    {
-        if ( disableInternalJavadocLinkValidation )
-        {
+    String getXhtmlWithValidatedLinks(String xhtmlText, String context) {
+        if (disableInternalJavadocLinkValidation) {
             return xhtmlText;
         }
         StringBuffer sanitizedXhtmlText = new StringBuffer();
         // find all links which are not absolute
-        Matcher matcher = HTML_LINK_PATTERN.matcher( xhtmlText );
-        while ( matcher.find() )
-        {
+        Matcher matcher = HTML_LINK_PATTERN.matcher(xhtmlText);
+        while (matcher.find()) {
             URI link;
-            try
-            {
-                link = new URI( matcher.group( 1 ) );
-                if ( !link.isAbsolute() && !JavadocLinkGenerator.isLinkValid( link, reportOutputDirectory.toPath() ) )
-                {
-                    matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 2 ) );
-                    LOG.debug( "Removed invalid link {} in {}", link, context );
+            try {
+                link = new URI(matcher.group(1));
+                if (!link.isAbsolute() && !JavadocLinkGenerator.isLinkValid(link, reportOutputDirectory.toPath())) {
+                    matcher.appendReplacement(sanitizedXhtmlText, matcher.group(2));
+                    LOG.debug("Removed invalid link {} in {}", link, context);
+                } else {
+                    matcher.appendReplacement(sanitizedXhtmlText, matcher.group(0));
                 }
-                else
-                {
-                    matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 0 ) );
-                }
-            }
-            catch ( URISyntaxException e )
-            {
-                LOG.warn( "Invalid URI {} found in {}. Cannot validate, leave untouched", matcher.group( 1 ), context );
-                matcher.appendReplacement( sanitizedXhtmlText, matcher.group( 0 ) );
+            } catch (URISyntaxException e) {
+                LOG.warn("Invalid URI {} found in {}. Cannot validate, leave untouched", matcher.group(1), context);
+                matcher.appendReplacement(sanitizedXhtmlText, matcher.group(0));
             }
         }
-        matcher.appendTail( sanitizedXhtmlText );
+        matcher.appendTail(sanitizedXhtmlText);
         return sanitizedXhtmlText.toString();
     }
 }

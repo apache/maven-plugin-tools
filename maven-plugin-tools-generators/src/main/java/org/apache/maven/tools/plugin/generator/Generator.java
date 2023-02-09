@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,18 +16,18 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.tools.plugin.PluginToolsRequest;
+package org.apache.maven.tools.plugin.generator;
 
 import java.io.File;
+
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 
 /**
  * Generate something, for instance a plugin report, from a plugin descriptor.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
-public interface Generator
-{
+public interface Generator {
 
     /**
      * Execute the generation for a given plugin descriptor.
@@ -37,9 +35,8 @@ public interface Generator
      * @param destinationDirectory required
      * @param request required
      * @throws GeneratorException if any
-     * 
+     *
      * @since 2.5
      */
-    void execute( File destinationDirectory, PluginToolsRequest request )
-        throws GeneratorException;
+    void execute(File destinationDirectory, PluginToolsRequest request) throws GeneratorException;
 }

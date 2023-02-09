@@ -1,5 +1,3 @@
-package org.apache.maven.plugins;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,36 +16,33 @@ package org.apache.maven.plugins;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins;
 
+import java.io.File;
+
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-
-import java.io.File;
 
 /**
  * Touches a test file.
  *
  */
-public abstract class AbstractFirstMojo
-    extends AbstractMojo
-{
+public abstract class AbstractFirstMojo extends AbstractMojo {
 
     /**
      * Project directory.
      */
-    @Parameter( defaultValue = "${basedir}", readonly = true )
+    @Parameter(defaultValue = "${basedir}", readonly = true)
     protected File basedir;
 
-    @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
-                required = true )
+    @Parameter(property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt", required = true)
     protected File touchFile;
 
     /**
      *
      */
-    @Component( role = ArtifactMetadataSource.class, hint = "maven" )
+    @Component(role = ArtifactMetadataSource.class, hint = "maven")
     protected ArtifactMetadataSource artifactMetadataSource;
-
 }

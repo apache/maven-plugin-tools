@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,7 @@ import java.util.Map;
  *
  * @author Slawomir Jaranowski
  */
-public interface MojoParameterVisitor
-{
+public interface MojoParameterVisitor {
     String getFieldName();
 
     String getClassName();

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.javadoc;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.javadoc;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.javadoc;
 
 /**
  * List of all Javadoc annotations used to describe a java Mojo.
@@ -25,9 +24,8 @@ package org.apache.maven.tools.plugin.extractor.javadoc;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
  */
-@SuppressWarnings( "checkstyle:interfaceistype" )
-public interface JavadocMojoAnnotation
-{
+@SuppressWarnings("checkstyle:interfaceistype")
+public interface JavadocMojoAnnotation {
     // ----------------------------------------------------------------------
     // Descriptor for type i.e. Mojo
     // ----------------------------------------------------------------------
@@ -262,7 +260,6 @@ public interface JavadocMojoAnnotation
      */
     String REQUIRES_DEPENDENCY_COLLECTION = "requiresDependencyCollection";
 
-
     /**
      * <p>
      * Refer to <code>&#64;requiresDirectInvocation &lt;true|false&gt;</code>.
@@ -321,7 +318,6 @@ public interface JavadocMojoAnnotation
      * </p>
      */
     String THREAD_SAFE = "threadSafe";
-
 
     // ----------------------------------------------------------------------
     // Descriptor for fields i.e. parameters
@@ -504,5 +500,4 @@ public interface JavadocMojoAnnotation
      * </p>
      */
     String DEPRECATED = "deprecated";
-
 }

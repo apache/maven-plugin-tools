@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,245 +37,197 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * Extensions to {@link PluginDescriptor} not supported by Maven 3.2.5.
  * This is a wrapper around an existing PluginDescriptor.
  */
-public class ExtendedPluginDescriptor extends PluginDescriptor
-{
+public class ExtendedPluginDescriptor extends PluginDescriptor {
     private final PluginDescriptor delegate;
     private String requiredJavaVersion;
 
-    public ExtendedPluginDescriptor( PluginDescriptor delegate )
-    {
+    public ExtendedPluginDescriptor(PluginDescriptor delegate) {
         this.delegate = delegate;
-        // populate the fields feeding the final methods of ComponentSetDescriptor 
+        // populate the fields feeding the final methods of ComponentSetDescriptor
         // which can't be overridden by this wrapper
-        this.setIsolatedRealm( delegate.isIsolatedRealm() );
-        this.setDependencies( delegate.getDependencies() );
-        this.setComponents( delegate.getComponents() );
+        this.setIsolatedRealm(delegate.isIsolatedRealm());
+        this.setDependencies(delegate.getDependencies());
+        this.setComponents(delegate.getComponents());
     }
 
-    public void setRequiredJavaVersion( String requiredJavaVersion )
-    {
+    public void setRequiredJavaVersion(String requiredJavaVersion) {
         this.requiredJavaVersion = requiredJavaVersion;
     }
 
-    public String getRequiredJavaVersion()
-    {
+    public String getRequiredJavaVersion() {
         return requiredJavaVersion;
     }
 
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( this == obj )
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( !super.equals( obj ) )
-        {
+        if (!super.equals(obj)) {
             return false;
         }
-        if ( getClass() != obj.getClass() )
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ExtendedPluginDescriptor other = (ExtendedPluginDescriptor) obj;
-        return Objects.equals( delegate, other.delegate )
-            && Objects.equals( requiredJavaVersion, other.requiredJavaVersion );
+        return Objects.equals(delegate, other.delegate)
+                && Objects.equals(requiredJavaVersion, other.requiredJavaVersion);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash( delegate, requiredJavaVersion );
+        result = prime * result + Objects.hash(delegate, requiredJavaVersion);
         return result;
     }
 
     /* -- START delegate methods --*/
-    public List<MojoDescriptor> getMojos()
-    {
+    public List<MojoDescriptor> getMojos() {
         return delegate.getMojos();
     }
 
-    public void addMojo( MojoDescriptor mojoDescriptor )
-        throws DuplicateMojoDescriptorException
-    {
-        delegate.addMojo( mojoDescriptor );
+    public void addMojo(MojoDescriptor mojoDescriptor) throws DuplicateMojoDescriptorException {
+        delegate.addMojo(mojoDescriptor);
     }
 
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return delegate.getGroupId();
     }
 
-    public void setGroupId( String groupId )
-    {
-        delegate.setGroupId( groupId );
+    public void setGroupId(String groupId) {
+        delegate.setGroupId(groupId);
     }
 
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return delegate.getArtifactId();
     }
 
-    public void setArtifactId( String artifactId )
-    {
-        delegate.setArtifactId( artifactId );
+    public void setArtifactId(String artifactId) {
+        delegate.setArtifactId(artifactId);
     }
 
-    public String getPluginLookupKey()
-    {
+    public String getPluginLookupKey() {
         return delegate.getPluginLookupKey();
     }
 
-    public String getId()
-    {
+    public String getId() {
         return delegate.getId();
     }
 
-    public String getGoalPrefix()
-    {
+    public String getGoalPrefix() {
         return delegate.getGoalPrefix();
     }
 
-    public void setGoalPrefix( String goalPrefix )
-    {
-        delegate.setGoalPrefix( goalPrefix );
+    public void setGoalPrefix(String goalPrefix) {
+        delegate.setGoalPrefix(goalPrefix);
     }
 
-    public void setVersion( String version )
-    {
-        delegate.setVersion( version );
+    public void setVersion(String version) {
+        delegate.setVersion(version);
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return delegate.getVersion();
     }
 
-    public void setSource( String source )
-    {
-        delegate.setSource( source );
+    public void setSource(String source) {
+        delegate.setSource(source);
     }
 
-    public String getSource()
-    {
+    public String getSource() {
         return delegate.getSource();
     }
 
-    public boolean isInheritedByDefault()
-    {
+    public boolean isInheritedByDefault() {
         return delegate.isInheritedByDefault();
     }
 
-    public void setInheritedByDefault( boolean inheritedByDefault )
-    {
-        delegate.setInheritedByDefault( inheritedByDefault );
+    public void setInheritedByDefault(boolean inheritedByDefault) {
+        delegate.setInheritedByDefault(inheritedByDefault);
     }
 
-    public List<Artifact> getArtifacts()
-    {
+    public List<Artifact> getArtifacts() {
         return delegate.getArtifacts();
     }
 
-    public void setArtifacts( List<Artifact> artifacts )
-    {
-        delegate.setArtifacts( artifacts );
+    public void setArtifacts(List<Artifact> artifacts) {
+        delegate.setArtifacts(artifacts);
     }
 
-    public Map<String, Artifact> getArtifactMap()
-    {
+    public Map<String, Artifact> getArtifactMap() {
         return delegate.getArtifactMap();
     }
 
-    public MojoDescriptor getMojo( String goal )
-    {
-        return delegate.getMojo( goal );
+    public MojoDescriptor getMojo(String goal) {
+        return delegate.getMojo(goal);
     }
 
-    public void setClassRealm( ClassRealm classRealm )
-    {
-        delegate.setClassRealm( classRealm );
+    public void setClassRealm(ClassRealm classRealm) {
+        delegate.setClassRealm(classRealm);
     }
 
-    public ClassRealm getClassRealm()
-    {
+    public ClassRealm getClassRealm() {
         return delegate.getClassRealm();
     }
 
-    public void setIntroducedDependencyArtifacts( Set<Artifact> introducedDependencyArtifacts )
-    {
-        delegate.setIntroducedDependencyArtifacts( introducedDependencyArtifacts );
+    public void setIntroducedDependencyArtifacts(Set<Artifact> introducedDependencyArtifacts) {
+        delegate.setIntroducedDependencyArtifacts(introducedDependencyArtifacts);
     }
 
-    public Set<Artifact> getIntroducedDependencyArtifacts()
-    {
+    public Set<Artifact> getIntroducedDependencyArtifacts() {
         return delegate.getIntroducedDependencyArtifacts();
     }
 
-    public void setName( String name )
-    {
-        delegate.setName( name );
+    public void setName(String name) {
+        delegate.setName(name);
     }
 
-    public String getName()
-    {
+    public String getName() {
         return delegate.getName();
     }
 
-    public void setDescription( String description )
-    {
-        delegate.setDescription( description );
+    public void setDescription(String description) {
+        delegate.setDescription(description);
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return delegate.getDescription();
     }
 
-    public void setRequiredMavenVersion( String requiredMavenVersion )
-    {
-        delegate.setRequiredMavenVersion( requiredMavenVersion );
+    public void setRequiredMavenVersion(String requiredMavenVersion) {
+        delegate.setRequiredMavenVersion(requiredMavenVersion);
     }
 
-    public String getRequiredMavenVersion()
-    {
+    public String getRequiredMavenVersion() {
         return delegate.getRequiredMavenVersion();
     }
 
-    public void setPlugin( Plugin plugin )
-    {
-        delegate.setPlugin( plugin );
+    public void setPlugin(Plugin plugin) {
+        delegate.setPlugin(plugin);
     }
 
     @Override
-    public Plugin getPlugin()
-    {
+    public Plugin getPlugin() {
         return delegate.getPlugin();
     }
 
     @Override
-    public Artifact getPluginArtifact()
-    {
+    public Artifact getPluginArtifact() {
         return delegate.getPluginArtifact();
     }
 
     @Override
-    public void setPluginArtifact( Artifact pluginArtifact )
-    {
-        delegate.setPluginArtifact( pluginArtifact );
+    public void setPluginArtifact(Artifact pluginArtifact) {
+        delegate.setPluginArtifact(pluginArtifact);
     }
 
     @Override
-    public Lifecycle getLifecycleMapping( String lifecycleId )
-        throws IOException, XmlPullParserException
-    {
-        return delegate.getLifecycleMapping( lifecycleId );
+    public Lifecycle getLifecycleMapping(String lifecycleId) throws IOException, XmlPullParserException {
+        return delegate.getLifecycleMapping(lifecycleId);
     }
 
-    public PluginDescriptor clone()
-    {
+    public PluginDescriptor clone() {
         return delegate.clone();
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import java.util.Comparator;
 
@@ -26,14 +25,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ClassVersionComparatorTest
-{
+class ClassVersionComparatorTest {
     @Test
-    void testComparator()
-    {
+    void testComparator() {
         Comparator<Integer> comparator = new JavaAnnotationsMojoDescriptorExtractor.ClassVersionComparator();
-        assertEquals( 0, Integer.signum( comparator.compare( Opcodes.V10, Opcodes.V10 ) ) );
-        assertEquals( 1, Integer.signum( comparator.compare( Opcodes.V11, Opcodes.V10 ) ) );
-        assertEquals( -1, Integer.signum( comparator.compare( Opcodes.V9, Opcodes.V10 ) ) );
+        assertEquals(0, Integer.signum(comparator.compare(Opcodes.V10, Opcodes.V10)));
+        assertEquals(1, Integer.signum(comparator.compare(Opcodes.V11, Opcodes.V10)));
+        assertEquals(-1, Integer.signum(comparator.compare(Opcodes.V9, Opcodes.V10)));
     }
 }

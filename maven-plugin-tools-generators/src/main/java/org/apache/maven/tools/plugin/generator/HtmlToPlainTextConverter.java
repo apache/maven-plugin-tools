@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.jsoup.Jsoup;
@@ -31,89 +30,69 @@ import org.jsoup.select.NodeVisitor;
 
 /**
  * Replaces (X)HTML content by plain text equivalent.
- * Based on work from 
+ * Based on work from
  * <a href="https://github.com/jhy/jsoup/blob/master/src/main/java/org/jsoup/examples/HtmlToPlainText.java">
  * JSoup Example: HtmlToPlainText</a>.
  */
-public class HtmlToPlainTextConverter implements Converter
-{
+public class HtmlToPlainTextConverter implements Converter {
     @Override
-    public String convert( String text )
-    {
-        if ( StringUtils.isBlank( text ) )
-        {
+    public String convert(String text) {
+        if (StringUtils.isBlank(text)) {
             return text;
         }
-        Document document = Jsoup.parse( text );
-        return getPlainText( document );
+        Document document = Jsoup.parse(text);
+        return getPlainText(document);
     }
 
     /**
      * Format an Element to plain-text
-     * 
+     *
      * @param element the root element to format
      * @return formatted text
      */
-    private String getPlainText( Element element )
-    {
+    private String getPlainText(Element element) {
         FormattingVisitor formatter = new FormattingVisitor();
-        NodeTraversor.traverse( formatter, element ); // walk the DOM, and call .head() and .tail() for each node
+        NodeTraversor.traverse(formatter, element); // walk the DOM, and call .head() and .tail() for each node
 
         return formatter.toString();
     }
 
     // the formatting rules, implemented in a breadth-first DOM traverse
-    private static class FormattingVisitor
-        implements NodeVisitor
-    {
+    private static class FormattingVisitor implements NodeVisitor {
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
 
         // hit when the node is first seen
-        public void head( Node node, int depth )
-        {
+        public void head(Node node, int depth) {
             String name = node.nodeName();
-            if ( node instanceof TextNode )
-            {
-                accum.append( ( (TextNode) node ).text() ); // TextNodes carry all user-readable text in the DOM.
-            }
-            else if ( name.equals( "li" ) )
-            {
-                accum.append( "\n * " );
-            }
-            else if ( name.equals( "dt" ) )
-            {
-                accum.append( "  " );
-            }
-            else if ( StringUtil.in( name, "p", "h1", "h2", "h3", "h4", "h5", "tr" ) )
-            {
-                accum.append( "\n" );
+            if (node instanceof TextNode) {
+                accum.append(((TextNode) node).text()); // TextNodes carry all user-readable text in the DOM.
+            } else if (name.equals("li")) {
+                accum.append("\n * ");
+            } else if (name.equals("dt")) {
+                accum.append("  ");
+            } else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr")) {
+                accum.append("\n");
             }
         }
 
         // hit when all of the node's children (if any) have been visited
-        public void tail( Node node, int depth )
-        {
+        public void tail(Node node, int depth) {
             String name = node.nodeName();
-            if ( StringUtil.in( name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5" ) )
-            {
-                accum.append( "\n" );
-            }
-            else if ( name.equals( "a" ) )
-            {
+            if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+                accum.append("\n");
+            } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
-                String link = node.absUrl( "href" );
-                if ( !link.isEmpty() )
-                {
-                    accum.append( String.format( " <%s>", link ) );
+                String link = node.absUrl("href");
+                if (!link.isEmpty()) {
+                    accum.append(String.format(" <%s>", link));
                 }
             }
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             // collate multiple consecutive spaces
-            return accum.toString().replaceAll( " +", " " ).replace( "\n ", "\n" );
+            return accum.toString().replaceAll(" +", " ").replace("\n ", "\n");
         }
     }
 }

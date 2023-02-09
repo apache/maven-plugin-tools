@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package foo;
 
 import java.util.*;
 
@@ -23,18 +24,13 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Test for gleaning of source files with Java 1.5 features
- * 
+ *
  * @goal test
  */
-public class MyMojo
-    extends AbstractMojo
-{
+public class MyMojo extends AbstractMojo {
 
     // cf. MPLUGIN-152
-    private static final Map<String, String> map1 = Collections.<String, String> emptyMap();
+    private static final Map<String, String> map1 = Collections.<String, String>emptyMap();
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

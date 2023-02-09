@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
@@ -26,10 +25,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 
 @Deprecated
-@Mojo( name = "mplugin-396" )
-public class MPlugin396Mojo
-    extends AbstractMojo
-{
+@Mojo(name = "mplugin-396")
+public class MPlugin396Mojo extends AbstractMojo {
     @Deprecated
     @Parameter
     private String param;
@@ -37,7 +34,5 @@ public class MPlugin396Mojo
     @Component
     private MavenProjectHelper projectHelper;
 
-    public void execute()
-    {
-    }
+    public void execute() {}
 }

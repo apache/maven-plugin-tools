@@ -1,4 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,9 +16,9 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 
-public class SuperClass
-{
+public class SuperClass {
 
     protected Integer superField1;
 }
