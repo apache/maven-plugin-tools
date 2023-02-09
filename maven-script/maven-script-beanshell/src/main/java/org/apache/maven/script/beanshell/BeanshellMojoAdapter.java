@@ -1,5 +1,3 @@
-package org.apache.maven.script.beanshell;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.script.beanshell;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.script.beanshell;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.script.beanshell;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -34,39 +33,29 @@ import org.codehaus.plexus.component.factory.bsh.BshComponent;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class BeanshellMojoAdapter
-    extends AbstractMojo
-    implements BshComponent
-{
+public class BeanshellMojoAdapter extends AbstractMojo implements BshComponent {
     private Mojo mojo;
 
     private Interpreter interpreter;
 
-    public BeanshellMojoAdapter( Mojo mojo, Interpreter interpreter )
-    {
+    public BeanshellMojoAdapter(Mojo mojo, Interpreter interpreter) {
         this.mojo = mojo;
         this.interpreter = interpreter;
     }
 
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        try
-        {
-            interpreter.set( "logger", getLog() );
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        try {
+            interpreter.set("logger", getLog());
 
             // TODO: set out, err to a print stream that will log at info, error respectively
-        }
-        catch ( EvalError evalError )
-        {
-            throw new MojoExecutionException( "Unable to establish mojo", evalError );
+        } catch (EvalError evalError) {
+            throw new MojoExecutionException("Unable to establish mojo", evalError);
         }
 
         mojo.execute();
     }
 
-    public Interpreter getInterpreter()
-    {
+    public Interpreter getInterpreter() {
         return interpreter;
     }
 }

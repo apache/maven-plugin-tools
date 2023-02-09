@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.annotations;
 
 /**
  * Dependencies resolution scopes available before
@@ -29,48 +28,45 @@ package org.apache.maven.plugins.annotations;
  * @author Hervé Boutemy
  * @since 3.0
  */
-public enum ResolutionScope
-{
+public enum ResolutionScope {
     /**
      * empty resolution scope
      */
-    NONE( null ),
+    NONE(null),
     /**
      * <code>compile</code> resolution scope
      * = <code>compile</code> + <code>system</code> + <code>provided</code> dependencies
      */
-    COMPILE( "compile" ),
+    COMPILE("compile"),
     /**
      * <code>compile+runtime</code> resolution scope (Maven 3 only)
      * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> dependencies
      */
-    COMPILE_PLUS_RUNTIME( "compile+runtime" ),
+    COMPILE_PLUS_RUNTIME("compile+runtime"),
     /**
      * <code>runtime</code> resolution scope
      * = <code>compile</code> + <code>runtime</code> dependencies
      */
-    RUNTIME( "runtime" ),
+    RUNTIME("runtime"),
     /**
      * <code>runtime+system</code> resolution scope (Maven 3 only)
      * = <code>compile</code> + <code>system</code> + <code>runtime</code> dependencies
      */
-    RUNTIME_PLUS_SYSTEM( "runtime+system" ),
+    RUNTIME_PLUS_SYSTEM("runtime+system"),
     /**
      * <code>test</code> resolution scope
      * = <code>compile</code> + <code>system</code> + <code>provided</code> + <code>runtime</code> + <code>test</code>
      * dependencies
      */
-    TEST( "test" );
+    TEST("test");
 
     private final String id;
 
-    ResolutionScope( String id )
-    {
+    ResolutionScope(String id) {
         this.id = id;
     }
 
-    public String id()
-    {
+    public String id() {
         return this.id;
     }
 }

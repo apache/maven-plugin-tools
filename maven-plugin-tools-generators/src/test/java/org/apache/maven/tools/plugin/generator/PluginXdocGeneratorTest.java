@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,51 +34,57 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  */
-public class PluginXdocGeneratorTest
-    extends AbstractGeneratorTestCase
-{
+public class PluginXdocGeneratorTest extends AbstractGeneratorTestCase {
 
     // inherits tests from base class
 
     @Override
-    protected void validate( File destinationDirectory )
-        throws Exception
-    {
-        File docFile = new File( destinationDirectory, "testGoal-mojo.xml" );
-        Xpp3Dom actual = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( docFile ) );
+    protected void validate(File destinationDirectory) throws Exception {
+        File docFile = new File(destinationDirectory, "testGoal-mojo.xml");
+        Xpp3Dom actual = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(docFile));
 
-        InputStream expectedAsStream = getClass().getResourceAsStream( "/expected-testGoal-mojo.xml" );
+        InputStream expectedAsStream = getClass().getResourceAsStream("/expected-testGoal-mojo.xml");
 
-        Xpp3Dom expected = Xpp3DomBuilder.build( ReaderFactory.newXmlReader( expectedAsStream ) );
+        Xpp3Dom expected = Xpp3DomBuilder.build(ReaderFactory.newXmlReader(expectedAsStream));
 
-        Assertions.assertEquals( expected, actual );
-
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void testGetShortType()
-    {
-        assertEquals("String", PluginXdocGenerator.getShortType( "java.lang.String" ) );
-        assertEquals("List<String>", PluginXdocGenerator.getShortType( "java.util.List<java.lang.String>" ) );
-        assertEquals("Map<String,Integer>", PluginXdocGenerator.getShortType( "java.util.Map<java.lang.String,java.lang.Integer>" ) );
-        assertEquals("List<...>", PluginXdocGenerator.getShortType( "java.util.List<java.util.List<java.lang.String>>" ) );
+    void testGetShortType() {
+        assertEquals("String", PluginXdocGenerator.getShortType("java.lang.String"));
+        assertEquals("List<String>", PluginXdocGenerator.getShortType("java.util.List<java.lang.String>"));
+        assertEquals(
+                "Map<String,Integer>",
+                PluginXdocGenerator.getShortType("java.util.Map<java.lang.String,java.lang.Integer>"));
+        assertEquals("List<...>", PluginXdocGenerator.getShortType("java.util.List<java.util.List<java.lang.String>>"));
     }
 
     @Test
-    void testGetXhtmlWithValidatedLinks()
-    {
-        File baseDir = new File( this.getClass().getResource( "" ).getFile() );
-        PluginXdocGenerator xdocGenerator = new PluginXdocGenerator( null, Locale.ROOT, baseDir, false );
-        PluginXdocGenerator xdocGeneratorWithDisabledLinkValidator = new PluginXdocGenerator( null, Locale.ROOT, baseDir, true );
-        String externalLink = "test<a href=\"http://example.com/test\">External Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
-        assertEquals( externalLink, xdocGenerator.getXhtmlWithValidatedLinks( externalLink, "test" ) );
-        assertEquals( externalLink, xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks( externalLink, "test" ) );
-        String validInternalLink = "test<a href=\"PluginXdocGeneratorTest.class\">Internal Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
-        assertEquals( validInternalLink, xdocGenerator.getXhtmlWithValidatedLinks( validInternalLink, "test" ) );
-        assertEquals( validInternalLink, xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks( validInternalLink, "test" ) );
-        String invalidInternalLink = "test<a href=\"PluginXdocGeneratorTestinvalid.class\">Internal Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
-        String sanitizedInvalidInternalLink = "testInternal Link..and a second<a href=\"http://localhost/example\">link</a>end";
-        assertEquals( sanitizedInvalidInternalLink, xdocGenerator.getXhtmlWithValidatedLinks( invalidInternalLink, "test" ) );
-        assertEquals( invalidInternalLink, xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks( invalidInternalLink, "test" ) );
+    void testGetXhtmlWithValidatedLinks() {
+        File baseDir = new File(this.getClass().getResource("").getFile());
+        PluginXdocGenerator xdocGenerator = new PluginXdocGenerator(null, Locale.ROOT, baseDir, false);
+        PluginXdocGenerator xdocGeneratorWithDisabledLinkValidator =
+                new PluginXdocGenerator(null, Locale.ROOT, baseDir, true);
+        String externalLink =
+                "test<a href=\"http://example.com/test\">External Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
+        assertEquals(externalLink, xdocGenerator.getXhtmlWithValidatedLinks(externalLink, "test"));
+        assertEquals(
+                externalLink, xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks(externalLink, "test"));
+        String validInternalLink =
+                "test<a href=\"PluginXdocGeneratorTest.class\">Internal Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
+        assertEquals(validInternalLink, xdocGenerator.getXhtmlWithValidatedLinks(validInternalLink, "test"));
+        assertEquals(
+                validInternalLink,
+                xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks(validInternalLink, "test"));
+        String invalidInternalLink =
+                "test<a href=\"PluginXdocGeneratorTestinvalid.class\">Internal Link</a>..and a second<a href=\"http://localhost/example\">link</a>end";
+        String sanitizedInvalidInternalLink =
+                "testInternal Link..and a second<a href=\"http://localhost/example\">link</a>end";
+        assertEquals(
+                sanitizedInvalidInternalLink, xdocGenerator.getXhtmlWithValidatedLinks(invalidInternalLink, "test"));
+        assertEquals(
+                invalidInternalLink,
+                xdocGeneratorWithDisabledLinkValidator.getXhtmlWithValidatedLinks(invalidInternalLink, "test"));
     }
 }

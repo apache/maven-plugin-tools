@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -95,44 +94,41 @@ import org.objectweb.asm.Opcodes;
  * @author Olivier Lamy
  * @since 3.0
  */
-@Named( JavaAnnotationsMojoDescriptorExtractor.NAME )
+@Named(JavaAnnotationsMojoDescriptorExtractor.NAME)
 @Singleton
-public class JavaAnnotationsMojoDescriptorExtractor
-    extends AbstractLogEnabled
-    implements MojoDescriptorExtractor
-{
+public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled implements MojoDescriptorExtractor {
     public static final String NAME = "java-annotations";
 
-    private static final GroupKey GROUP_KEY = new GroupKey( GroupKey.JAVA_GROUP, 100 );
+    private static final GroupKey GROUP_KEY = new GroupKey(GroupKey.JAVA_GROUP, 100);
 
     /**
-     * 
+     *
      * @see <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.1">JVMS 4.1</a>
      */
     private static final Map<Integer, String> CLASS_VERSION_TO_JAVA_STRING;
-    static
-    {
+
+    static {
         CLASS_VERSION_TO_JAVA_STRING = new HashMap<>();
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_1, "1.1" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_2, "1.2" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_3, "1.3" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_4, "1.4" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_5, "1.5" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_6, "1.6" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_7, "1.7" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V1_8, "1.8" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V9, "9" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V10, "10" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V11, "11" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V12, "12" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V13, "13" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V14, "14" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V15, "15" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V16, "16" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V17, "17" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V18, "18" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V19, "19" );
-        CLASS_VERSION_TO_JAVA_STRING.put( Opcodes.V20, "20" );
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_1, "1.1");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_2, "1.2");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_3, "1.3");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_4, "1.4");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_5, "1.5");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_6, "1.6");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_7, "1.7");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V1_8, "1.8");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V9, "9");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V10, "10");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V11, "11");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V12, "12");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V13, "13");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V14, "14");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V15, "15");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V16, "16");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V17, "17");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V18, "18");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V19, "19");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V20, "20");
     }
 
     @Inject
@@ -151,20 +147,17 @@ public class JavaAnnotationsMojoDescriptorExtractor
     private JavadocBlockTagsToXhtmlConverter javadocBlockTagsToHtmlConverter;
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return false; // this is the "current way" to write Java Mojos
     }
 
     @Override
-    public GroupKey getGroupKey()
-    {
+    public GroupKey getGroupKey() {
         return GROUP_KEY;
     }
 
@@ -173,84 +166,76 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @see <a href="https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-4.html#jvms-4.1">JVMS 4.1</a>
      *
      */
-    @SuppressWarnings( "checkstyle:magicnumber" )
-    static final class ClassVersionComparator implements Comparator<Integer>
-    {
+    @SuppressWarnings("checkstyle:magicnumber")
+    static final class ClassVersionComparator implements Comparator<Integer> {
         @Override
-        public int compare( Integer classVersion1, Integer classVersion2 )
-        {
+        public int compare(Integer classVersion1, Integer classVersion2) {
             // first compare major version (
-            int result = Integer.compare( classVersion1 & 0x00FF, classVersion2 & 0x00FF );
-            if ( result == 0 )
-            {
+            int result = Integer.compare(classVersion1 & 0x00FF, classVersion2 & 0x00FF);
+            if (result == 0) {
                 // compare minor version if major is equal
-                result = Integer.compare( classVersion1, classVersion2 );
+                result = Integer.compare(classVersion1, classVersion2);
             }
             return result;
         }
     }
 
     @Override
-    public List<MojoDescriptor> execute( PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
-        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanAnnotations( request );
+    public List<MojoDescriptor> execute(PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
+        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanAnnotations(request);
 
         Optional<Integer> maxClassVersion = mojoAnnotatedClasses.values().stream()
-                        .map( MojoAnnotatedClass::getClassVersion ).max( new ClassVersionComparator() );
-        if ( maxClassVersion.isPresent() )
-        {
-            String requiredJavaVersion = CLASS_VERSION_TO_JAVA_STRING.get( maxClassVersion.get() );
-            if ( StringUtils.isBlank( request.getRequiredJavaVersion() )
-                                      || new ComparableVersion( request.getRequiredJavaVersion() ).compareTo( 
-                                             new ComparableVersion( requiredJavaVersion ) ) < 0 )
-            {
-                request.setRequiredJavaVersion( requiredJavaVersion );
+                .map(MojoAnnotatedClass::getClassVersion)
+                .max(new ClassVersionComparator());
+        if (maxClassVersion.isPresent()) {
+            String requiredJavaVersion = CLASS_VERSION_TO_JAVA_STRING.get(maxClassVersion.get());
+            if (StringUtils.isBlank(request.getRequiredJavaVersion())
+                    || new ComparableVersion(request.getRequiredJavaVersion())
+                                    .compareTo(new ComparableVersion(requiredJavaVersion))
+                            < 0) {
+                request.setRequiredJavaVersion(requiredJavaVersion);
             }
         }
-        JavaProjectBuilder builder = scanJavadoc( request, mojoAnnotatedClasses.values() );
-        Map<String, JavaClass> javaClassesMap = discoverClasses( builder );
+        JavaProjectBuilder builder = scanJavadoc(request, mojoAnnotatedClasses.values());
+        Map<String, JavaClass> javaClassesMap = discoverClasses(builder);
 
         final JavadocLinkGenerator linkGenerator;
-        if ( request.getInternalJavadocBaseUrl() != null || ( request.getExternalJavadocBaseUrls() != null
-             && !request.getExternalJavadocBaseUrls().isEmpty() ) )
-        {
-            linkGenerator =  new JavadocLinkGenerator( request.getInternalJavadocBaseUrl(),
-                                                       request.getInternalJavadocVersion(),
-                                                       request.getExternalJavadocBaseUrls(),
-                                                       request.getSettings() );
-        }
-        else
-        {
+        if (request.getInternalJavadocBaseUrl() != null
+                || (request.getExternalJavadocBaseUrls() != null
+                        && !request.getExternalJavadocBaseUrls().isEmpty())) {
+            linkGenerator = new JavadocLinkGenerator(
+                    request.getInternalJavadocBaseUrl(),
+                    request.getInternalJavadocVersion(),
+                    request.getExternalJavadocBaseUrls(),
+                    request.getSettings());
+        } else {
             linkGenerator = null;
         }
 
-        populateDataFromJavadoc( builder, mojoAnnotatedClasses, javaClassesMap, linkGenerator );
+        populateDataFromJavadoc(builder, mojoAnnotatedClasses, javaClassesMap, linkGenerator);
 
-        return toMojoDescriptors( mojoAnnotatedClasses, request.getPluginDescriptor() );
+        return toMojoDescriptors(mojoAnnotatedClasses, request.getPluginDescriptor());
     }
 
-    private Map<String, MojoAnnotatedClass> scanAnnotations( PluginToolsRequest request )
-        throws ExtractionException
-    {
+    private Map<String, MojoAnnotatedClass> scanAnnotations(PluginToolsRequest request) throws ExtractionException {
         MojoAnnotationsScannerRequest mojoAnnotationsScannerRequest = new MojoAnnotationsScannerRequest();
 
-        File output = new File( request.getProject().getBuild().getOutputDirectory() );
-        mojoAnnotationsScannerRequest.setClassesDirectories( Arrays.asList( output ) );
+        File output = new File(request.getProject().getBuild().getOutputDirectory());
+        mojoAnnotationsScannerRequest.setClassesDirectories(Arrays.asList(output));
 
-        mojoAnnotationsScannerRequest.setDependencies( request.getDependencies() );
+        mojoAnnotationsScannerRequest.setDependencies(request.getDependencies());
 
-        mojoAnnotationsScannerRequest.setProject( request.getProject() );
+        mojoAnnotationsScannerRequest.setProject(request.getProject());
 
-        Map<String, MojoAnnotatedClass> result = mojoAnnotationsScanner.scan( mojoAnnotationsScannerRequest );
-        request.setUsedMavenApiVersion( mojoAnnotationsScannerRequest.getMavenApiVersion() );
+        Map<String, MojoAnnotatedClass> result = mojoAnnotationsScanner.scan(mojoAnnotationsScannerRequest);
+        request.setUsedMavenApiVersion(mojoAnnotationsScannerRequest.getMavenApiVersion());
         return result;
     }
 
-    private JavaProjectBuilder scanJavadoc( PluginToolsRequest request,
-                                            Collection<MojoAnnotatedClass> mojoAnnotatedClasses )
-        throws ExtractionException
-    {
+    private JavaProjectBuilder scanJavadoc(
+            PluginToolsRequest request, Collection<MojoAnnotatedClass> mojoAnnotatedClasses)
+            throws ExtractionException {
         // found artifact from reactors to scan sources
         // we currently only scan sources from reactors
         List<MavenProject> mavenProjects = new ArrayList<>();
@@ -258,183 +243,149 @@ public class JavaAnnotationsMojoDescriptorExtractor
         // if we need to scan sources from external artifacts
         Set<Artifact> externalArtifacts = new HashSet<>();
 
-        JavaProjectBuilder builder = new JavaProjectBuilder( new SortedClassLibraryBuilder( ) );
-        builder.setEncoding( request.getEncoding() );
-        extendJavaProjectBuilder( builder, request.getProject() );
+        JavaProjectBuilder builder = new JavaProjectBuilder(new SortedClassLibraryBuilder());
+        builder.setEncoding(request.getEncoding());
+        extendJavaProjectBuilder(builder, request.getProject());
 
-        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses )
-        {
-            if ( Objects.equals( mojoAnnotatedClass.getArtifact().getArtifactId(),
-                                     request.getProject().getArtifact().getArtifactId() ) )
-            {
+        for (MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses) {
+            if (Objects.equals(
+                    mojoAnnotatedClass.getArtifact().getArtifactId(),
+                    request.getProject().getArtifact().getArtifactId())) {
                 continue;
             }
 
-            if ( !isMojoAnnnotatedClassCandidate( mojoAnnotatedClass ) )
-            {
+            if (!isMojoAnnnotatedClassCandidate(mojoAnnotatedClass)) {
                 // we don't scan sources for classes without mojo annotations
                 continue;
             }
 
             MavenProject mavenProject =
-                getFromProjectReferences( mojoAnnotatedClass.getArtifact(), request.getProject() );
+                    getFromProjectReferences(mojoAnnotatedClass.getArtifact(), request.getProject());
 
-            if ( mavenProject != null )
-            {
-                mavenProjects.add( mavenProject );
-            }
-            else
-            {
-                externalArtifacts.add( mojoAnnotatedClass.getArtifact() );
+            if (mavenProject != null) {
+                mavenProjects.add(mavenProject);
+            } else {
+                externalArtifacts.add(mojoAnnotatedClass.getArtifact());
             }
         }
 
         // try to get artifact with sources classifier, extract somewhere then scan for @since, @deprecated
-        for ( Artifact artifact : externalArtifacts )
-        {
+        for (Artifact artifact : externalArtifacts) {
             // parameter for test-sources too ?? olamy I need that for it test only
-            if ( StringUtils.equalsIgnoreCase( "tests", artifact.getClassifier() ) )
-            {
-                extendJavaProjectBuilderWithSourcesJar( builder, artifact, request, "test-sources" );
+            if (StringUtils.equalsIgnoreCase("tests", artifact.getClassifier())) {
+                extendJavaProjectBuilderWithSourcesJar(builder, artifact, request, "test-sources");
+            } else {
+                extendJavaProjectBuilderWithSourcesJar(builder, artifact, request, "sources");
             }
-            else
-            {
-                extendJavaProjectBuilderWithSourcesJar( builder, artifact, request, "sources" );
-            }
-
         }
 
-        for ( MavenProject mavenProject : mavenProjects )
-        {
-            extendJavaProjectBuilder( builder, mavenProject );
+        for (MavenProject mavenProject : mavenProjects) {
+            extendJavaProjectBuilder(builder, mavenProject);
         }
 
         return builder;
     }
 
-    private boolean isMojoAnnnotatedClassCandidate( MojoAnnotatedClass mojoAnnotatedClass )
-    {
+    private boolean isMojoAnnnotatedClassCandidate(MojoAnnotatedClass mojoAnnotatedClass) {
         return mojoAnnotatedClass != null && mojoAnnotatedClass.hasAnnotations();
     }
 
     /**
      * from sources scan to get @since and @deprecated and description of classes and fields.
      */
-    protected void populateDataFromJavadoc( JavaProjectBuilder javaProjectBuilder,
-                                            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
-                                            Map<String, JavaClass> javaClassesMap,
-                                            JavadocLinkGenerator linkGenerator )
-    {
+    protected void populateDataFromJavadoc(
+            JavaProjectBuilder javaProjectBuilder,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+            Map<String, JavaClass> javaClassesMap,
+            JavadocLinkGenerator linkGenerator) {
 
-        for ( Map.Entry<String, MojoAnnotatedClass> entry : mojoAnnotatedClasses.entrySet() )
-        {
-            JavaClass javaClass = javaClassesMap.get( entry.getKey() );
-            if ( javaClass == null )
-            {
+        for (Map.Entry<String, MojoAnnotatedClass> entry : mojoAnnotatedClasses.entrySet()) {
+            JavaClass javaClass = javaClassesMap.get(entry.getKey());
+            if (javaClass == null) {
                 continue;
             }
             // populate class-level content
             MojoAnnotationContent mojoAnnotationContent = entry.getValue().getMojo();
-            if ( mojoAnnotationContent != null )
-            {
-                JavaClassConverterContext context =
-                                new JavaClassConverterContext( javaClass, javaProjectBuilder,
-                                                                mojoAnnotatedClasses, linkGenerator,
-                                                                javaClass.getLineNumber() );
-                mojoAnnotationContent.setDescription(
-                    getDescriptionFromElement( javaClass, context ) );
+            if (mojoAnnotationContent != null) {
+                JavaClassConverterContext context = new JavaClassConverterContext(
+                        javaClass, javaProjectBuilder, mojoAnnotatedClasses, linkGenerator, javaClass.getLineNumber());
+                mojoAnnotationContent.setDescription(getDescriptionFromElement(javaClass, context));
 
-                DocletTag since = findInClassHierarchy( javaClass, "since" );
-                if ( since != null )
-                {
-                    mojoAnnotationContent.setSince( getRawValueFromTaglet ( since, context ) );
+                DocletTag since = findInClassHierarchy(javaClass, "since");
+                if (since != null) {
+                    mojoAnnotationContent.setSince(getRawValueFromTaglet(since, context));
                 }
 
-                DocletTag deprecated = findInClassHierarchy( javaClass, "deprecated" );
-                if ( deprecated != null )
-                {
-                    mojoAnnotationContent.setDeprecated( getRawValueFromTaglet ( deprecated, context ) );
+                DocletTag deprecated = findInClassHierarchy(javaClass, "deprecated");
+                if (deprecated != null) {
+                    mojoAnnotationContent.setDeprecated(getRawValueFromTaglet(deprecated, context));
                 }
             }
 
-            Map<String, JavaAnnotatedElement> fieldsMap = extractFieldsAnnotations( javaClass, javaClassesMap );
-            Map<String, JavaAnnotatedElement> methodsMap = extractMethodsAnnotations( javaClass, javaClassesMap );
+            Map<String, JavaAnnotatedElement> fieldsMap = extractFieldsAnnotations(javaClass, javaClassesMap);
+            Map<String, JavaAnnotatedElement> methodsMap = extractMethodsAnnotations(javaClass, javaClassesMap);
 
             // populate parameters
             Map<String, ParameterAnnotationContent> parameters =
-                    getParametersParentHierarchy( entry.getValue(), mojoAnnotatedClasses );
-            parameters = new TreeMap<>( parameters );
-            for ( Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet() )
-            {
+                    getParametersParentHierarchy(entry.getValue(), mojoAnnotatedClasses);
+            parameters = new TreeMap<>(parameters);
+            for (Map.Entry<String, ParameterAnnotationContent> parameter : parameters.entrySet()) {
                 JavaAnnotatedElement element;
-                if ( parameter.getValue().isAnnotationOnMethod() )
-                {
-                    element = methodsMap.get( parameter.getKey() );
-                }
-                else
-                {
-                    element = fieldsMap.get( parameter.getKey() );
+                if (parameter.getValue().isAnnotationOnMethod()) {
+                    element = methodsMap.get(parameter.getKey());
+                } else {
+                    element = fieldsMap.get(parameter.getKey());
                 }
 
-                if ( element == null )
-                {
+                if (element == null) {
                     continue;
                 }
 
-                JavaClassConverterContext context =
-                    new JavaClassConverterContext( javaClass, ( (JavaMember) element ).getDeclaringClass(),
-                                                   javaProjectBuilder, mojoAnnotatedClasses,
-                                                   linkGenerator, element.getLineNumber() );
+                JavaClassConverterContext context = new JavaClassConverterContext(
+                        javaClass, ((JavaMember) element).getDeclaringClass(),
+                        javaProjectBuilder, mojoAnnotatedClasses,
+                        linkGenerator, element.getLineNumber());
                 ParameterAnnotationContent parameterAnnotationContent = parameter.getValue();
-                parameterAnnotationContent.setDescription(
-                    getDescriptionFromElement( element, context ) );
+                parameterAnnotationContent.setDescription(getDescriptionFromElement(element, context));
 
-                DocletTag deprecated = element.getTagByName( "deprecated" );
-                if ( deprecated != null )
-                {
-                    parameterAnnotationContent.setDeprecated( getRawValueFromTaglet ( deprecated, context ) );
+                DocletTag deprecated = element.getTagByName("deprecated");
+                if (deprecated != null) {
+                    parameterAnnotationContent.setDeprecated(getRawValueFromTaglet(deprecated, context));
                 }
 
-                DocletTag since = element.getTagByName( "since" );
-                if ( since != null )
-                {
-                    parameterAnnotationContent.setSince( getRawValueFromTaglet ( since, context ) );
+                DocletTag since = element.getTagByName("since");
+                if (since != null) {
+                    parameterAnnotationContent.setSince(getRawValueFromTaglet(since, context));
                 }
             }
 
             // populate components
-            Map<String, ComponentAnnotationContent> components = entry.getValue().getComponents();
-            for ( Map.Entry<String, ComponentAnnotationContent> component : components.entrySet() )
-            {
-                JavaAnnotatedElement element = fieldsMap.get( component.getKey() );
-                if ( element == null )
-                {
+            Map<String, ComponentAnnotationContent> components =
+                    entry.getValue().getComponents();
+            for (Map.Entry<String, ComponentAnnotationContent> component : components.entrySet()) {
+                JavaAnnotatedElement element = fieldsMap.get(component.getKey());
+                if (element == null) {
                     continue;
                 }
 
-                JavaClassConverterContext context =
-                    new JavaClassConverterContext( javaClass, ( (JavaMember) element ).getDeclaringClass(),
-                                                   javaProjectBuilder, mojoAnnotatedClasses,
-                                                   linkGenerator, javaClass.getLineNumber() );
+                JavaClassConverterContext context = new JavaClassConverterContext(
+                        javaClass, ((JavaMember) element).getDeclaringClass(),
+                        javaProjectBuilder, mojoAnnotatedClasses,
+                        linkGenerator, javaClass.getLineNumber());
                 ComponentAnnotationContent componentAnnotationContent = component.getValue();
-                componentAnnotationContent.setDescription(
-                    getDescriptionFromElement( element, context ) );
+                componentAnnotationContent.setDescription(getDescriptionFromElement(element, context));
 
-                DocletTag deprecated = element.getTagByName( "deprecated" );
-                if ( deprecated != null )
-                {
-                    componentAnnotationContent.setDeprecated( getRawValueFromTaglet ( deprecated, context ) );
+                DocletTag deprecated = element.getTagByName("deprecated");
+                if (deprecated != null) {
+                    componentAnnotationContent.setDeprecated(getRawValueFromTaglet(deprecated, context));
                 }
 
-                DocletTag since = element.getTagByName( "since" );
-                if ( since != null )
-                {
-                    componentAnnotationContent.setSince( getRawValueFromTaglet ( since, context ) );
+                DocletTag since = element.getTagByName("since");
+                if (since != null) {
+                    componentAnnotationContent.setSince(getRawValueFromTaglet(since, context));
                 }
             }
-
         }
-
     }
 
     /**
@@ -444,30 +395,25 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param context the context with which to call the converter
      * @return the generated description
      */
-    String getDescriptionFromElement( JavaAnnotatedElement element, JavaClassConverterContext context )
-    {
+    String getDescriptionFromElement(JavaAnnotatedElement element, JavaClassConverterContext context) {
 
         String comment = element.getComment();
-        if ( comment == null )
-        {
+        if (comment == null) {
             return null;
         }
-        StringBuilder description = new StringBuilder( javadocInlineTagsToHtmlConverter.convert( comment, context ) );
-        for ( DocletTag docletTag : element.getTags() )
-        {
+        StringBuilder description = new StringBuilder(javadocInlineTagsToHtmlConverter.convert(comment, context));
+        for (DocletTag docletTag : element.getTags()) {
             // also consider see block tags
-            if ( "see".equals( docletTag.getName() ) )
-            {
-                description.append( javadocBlockTagsToHtmlConverter.convert( docletTag, context ) );
+            if ("see".equals(docletTag.getName())) {
+                description.append(javadocBlockTagsToHtmlConverter.convert(docletTag, context));
             }
         }
         return description.toString();
     }
 
-    String getRawValueFromTaglet( DocletTag docletTag, ConverterContext context )
-    {
+    String getRawValueFromTaglet(DocletTag docletTag, ConverterContext context) {
         // just resolve inline tags and convert to XHTML
-        return javadocInlineTagsToHtmlConverter.convert( docletTag.getValue(), context );
+        return javadocInlineTagsToHtmlConverter.convert(docletTag.getValue(), context);
     }
 
     /**
@@ -475,42 +421,31 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param tagName   not null
      * @return docletTag instance
      */
-    private DocletTag findInClassHierarchy( JavaClass javaClass, String tagName )
-    {
-        try
-        {
-            DocletTag tag = javaClass.getTagByName( tagName );
+    private DocletTag findInClassHierarchy(JavaClass javaClass, String tagName) {
+        try {
+            DocletTag tag = javaClass.getTagByName(tagName);
 
-            if ( tag == null )
-            {
+            if (tag == null) {
                 JavaClass superClass = javaClass.getSuperJavaClass();
 
-                if ( superClass != null )
-                {
-                    tag = findInClassHierarchy( superClass, tagName );
+                if (superClass != null) {
+                    tag = findInClassHierarchy(superClass, tagName);
                 }
             }
 
             return tag;
-        }
-        catch ( NoClassDefFoundError e )
-        {
-            if ( e.getMessage().replace( '/', '.' )
-                    .contains( MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE ) )
-            {
+        } catch (NoClassDefFoundError e) {
+            if (e.getMessage().replace('/', '.').contains(MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE)) {
                 return null;
             }
             String str;
-            try
-            {
+            try {
                 str = javaClass.getFullyQualifiedName();
-            }
-            catch ( Throwable t )
-            {
+            } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            getLogger().warn( "Failed extracting tag '" + tagName + "' from class " + str );
-            throw (NoClassDefFoundError) new NoClassDefFoundError( e.getMessage() ).initCause( e );
+            getLogger().warn("Failed extracting tag '" + tagName + "' from class " + str);
+            throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
 
@@ -520,46 +455,36 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
-    private Map<String, JavaAnnotatedElement> extractFieldsAnnotations( JavaClass javaClass,
-                                                                        Map<String, JavaClass> javaClassesMap )
-    {
-        try
-        {
+    private Map<String, JavaAnnotatedElement> extractFieldsAnnotations(
+            JavaClass javaClass, Map<String, JavaClass> javaClassesMap) {
+        try {
             Map<String, JavaAnnotatedElement> rawParams = new TreeMap<>();
 
             // we have to add the parent fields first, so that they will be overwritten by the local fields if
             // that actually happens...
             JavaClass superClass = javaClass.getSuperJavaClass();
 
-            if ( superClass != null )
-            {
-                if ( !superClass.getFields().isEmpty() )
-                {
-                    rawParams = extractFieldsAnnotations( superClass, javaClassesMap );
+            if (superClass != null) {
+                if (!superClass.getFields().isEmpty()) {
+                    rawParams = extractFieldsAnnotations(superClass, javaClassesMap);
                 }
                 // maybe sources comes from scan of sources artifact
-                superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
-                if ( superClass != null && !superClass.getFields().isEmpty() )
-                {
-                    rawParams = extractFieldsAnnotations( superClass, javaClassesMap );
+                superClass = javaClassesMap.get(superClass.getFullyQualifiedName());
+                if (superClass != null && !superClass.getFields().isEmpty()) {
+                    rawParams = extractFieldsAnnotations(superClass, javaClassesMap);
                 }
-            }
-            else
-            {
+            } else {
 
                 rawParams = new TreeMap<>();
             }
 
-            for ( JavaField field : javaClass.getFields() )
-            {
-                rawParams.put( field.getName(), field );
+            for (JavaField field : javaClass.getFields()) {
+                rawParams.put(field.getName(), field);
             }
 
             return rawParams;
-        }
-        catch ( NoClassDefFoundError e )
-        {
-            getLogger().warn( "Failed extracting parameters from " + javaClass );
+        } catch (NoClassDefFoundError e) {
+            getLogger().warn("Failed extracting parameters from " + javaClass);
             throw e;
         }
     }
@@ -570,480 +495,411 @@ public class JavaAnnotationsMojoDescriptorExtractor
      * @param javaClass not null
      * @return map with Mojo parameters names as keys
      */
-    private Map<String, JavaAnnotatedElement> extractMethodsAnnotations( JavaClass javaClass,
-                                                                        Map<String, JavaClass> javaClassesMap )
-    {
-        try
-        {
+    private Map<String, JavaAnnotatedElement> extractMethodsAnnotations(
+            JavaClass javaClass, Map<String, JavaClass> javaClassesMap) {
+        try {
             Map<String, JavaAnnotatedElement> rawParams = new TreeMap<>();
 
             // we have to add the parent methods first, so that they will be overwritten by the local methods if
             // that actually happens...
             JavaClass superClass = javaClass.getSuperJavaClass();
 
-            if ( superClass != null )
-            {
-                if ( !superClass.getMethods().isEmpty() )
-                {
-                    rawParams = extractMethodsAnnotations( superClass, javaClassesMap );
+            if (superClass != null) {
+                if (!superClass.getMethods().isEmpty()) {
+                    rawParams = extractMethodsAnnotations(superClass, javaClassesMap);
                 }
                 // maybe sources comes from scan of sources artifact
-                superClass = javaClassesMap.get( superClass.getFullyQualifiedName() );
-                if ( superClass != null && !superClass.getMethods().isEmpty() )
-                {
-                    rawParams = extractMethodsAnnotations( superClass, javaClassesMap );
+                superClass = javaClassesMap.get(superClass.getFullyQualifiedName());
+                if (superClass != null && !superClass.getMethods().isEmpty()) {
+                    rawParams = extractMethodsAnnotations(superClass, javaClassesMap);
                 }
-            }
-            else
-            {
+            } else {
 
                 rawParams = new TreeMap<>();
             }
 
-            for ( JavaMethod method : javaClass.getMethods() )
-            {
-                if ( isPublicSetterMethod( method ) )
-                {
+            for (JavaMethod method : javaClass.getMethods()) {
+                if (isPublicSetterMethod(method)) {
                     rawParams.put(
-                        StringUtils.lowercaseFirstLetter( method.getName().substring( 3 ) ), method );
+                            StringUtils.lowercaseFirstLetter(method.getName().substring(3)), method);
                 }
             }
 
             return rawParams;
-        }
-        catch ( NoClassDefFoundError e )
-        {
-            if ( e.getMessage().replace( '/', '.' )
-                    .contains( MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE ) )
-            {
+        } catch (NoClassDefFoundError e) {
+            if (e.getMessage().replace('/', '.').contains(MojoAnnotationsScanner.V4_API_PLUGIN_PACKAGE)) {
                 return new TreeMap<>();
             }
             String str;
-            try
-            {
+            try {
                 str = javaClass.getFullyQualifiedName();
-            }
-            catch ( Throwable t )
-            {
+            } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            getLogger().warn( "Failed extracting methods from " + str );
-            throw (NoClassDefFoundError) new NoClassDefFoundError( e.getMessage() ).initCause( e );
+            getLogger().warn("Failed extracting methods from " + str);
+            throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
 
-    private boolean isPublicSetterMethod( JavaMethod method )
-    {
+    private boolean isPublicSetterMethod(JavaMethod method) {
         return method.isPublic()
-            && !method.isStatic()
-            && method.getName().length() > 3
-            && ( method.getName().startsWith( "add" ) || method.getName().startsWith( "set" ) )
-            && "void".equals( method.getReturnType().getValue() )
-            && method.getParameters().size() == 1;
+                && !method.isStatic()
+                && method.getName().length() > 3
+                && (method.getName().startsWith("add") || method.getName().startsWith("set"))
+                && "void".equals(method.getReturnType().getValue())
+                && method.getParameters().size() == 1;
     }
 
-    protected Map<String, JavaClass> discoverClasses( JavaProjectBuilder builder )
-    {
+    protected Map<String, JavaClass> discoverClasses(JavaProjectBuilder builder) {
         Collection<JavaClass> javaClasses = builder.getClasses();
 
-        if ( javaClasses == null || javaClasses.size() < 1 )
-        {
+        if (javaClasses == null || javaClasses.size() < 1) {
             return Collections.emptyMap();
         }
 
-        Map<String, JavaClass> javaClassMap = new HashMap<>( javaClasses.size() );
+        Map<String, JavaClass> javaClassMap = new HashMap<>(javaClasses.size());
 
-        for ( JavaClass javaClass : javaClasses )
-        {
-            javaClassMap.put( javaClass.getFullyQualifiedName(), javaClass );
+        for (JavaClass javaClass : javaClasses) {
+            javaClassMap.put(javaClass.getFullyQualifiedName(), javaClass);
         }
 
         return javaClassMap;
     }
 
-    protected void extendJavaProjectBuilderWithSourcesJar( JavaProjectBuilder builder,
-                                                           Artifact artifact, PluginToolsRequest request,
-                                                           String classifier )
-        throws ExtractionException
-    {
-        try
-        {
-            Artifact sourcesArtifact =
-                repositorySystem.createArtifactWithClassifier( artifact.getGroupId(), artifact.getArtifactId(),
-                                                               artifact.getVersion(), artifact.getType(), classifier );
+    protected void extendJavaProjectBuilderWithSourcesJar(
+            JavaProjectBuilder builder, Artifact artifact, PluginToolsRequest request, String classifier)
+            throws ExtractionException {
+        try {
+            Artifact sourcesArtifact = repositorySystem.createArtifactWithClassifier(
+                    artifact.getGroupId(),
+                    artifact.getArtifactId(),
+                    artifact.getVersion(),
+                    artifact.getType(),
+                    classifier);
 
             ArtifactResolutionRequest req = new ArtifactResolutionRequest();
-            req.setArtifact( sourcesArtifact );
-            req.setLocalRepository( request.getLocal() );
-            req.setRemoteRepositories( request.getRemoteRepos() );
-            ArtifactResolutionResult res = repositorySystem.resolve( req );
-            if ( res.hasMissingArtifacts() || res.hasExceptions() )
-            {
-                getLogger().warn(
-                    "Unable to get sources artifact for " + artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
-                    + artifact.getVersion() + ". Some javadoc tags (@since, @deprecated and comments) won't be used" );
+            req.setArtifact(sourcesArtifact);
+            req.setLocalRepository(request.getLocal());
+            req.setRemoteRepositories(request.getRemoteRepos());
+            ArtifactResolutionResult res = repositorySystem.resolve(req);
+            if (res.hasMissingArtifacts() || res.hasExceptions()) {
+                getLogger()
+                        .warn("Unable to get sources artifact for " + artifact.getGroupId() + ":"
+                                + artifact.getArtifactId() + ":" + artifact.getVersion()
+                                + ". Some javadoc tags (@since, @deprecated and comments) won't be used");
                 return;
             }
 
-            if ( sourcesArtifact.getFile() == null || !sourcesArtifact.getFile().exists() )
-            {
+            if (sourcesArtifact.getFile() == null || !sourcesArtifact.getFile().exists()) {
                 // could not get artifact sources
                 return;
             }
 
-            if ( sourcesArtifact.getFile().isFile() )
-            {
+            if (sourcesArtifact.getFile().isFile()) {
                 // extract sources to target/maven-plugin-plugin-sources/${groupId}/${artifact}/sources
-                File extractDirectory = new File( request.getProject().getBuild().getDirectory(),
-                                              "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
-                                                  + sourcesArtifact.getArtifactId() + "/" + sourcesArtifact.getVersion()
-                                                  + "/" + sourcesArtifact.getClassifier() );
+                File extractDirectory = new File(
+                        request.getProject().getBuild().getDirectory(),
+                        "maven-plugin-plugin-sources/" + sourcesArtifact.getGroupId() + "/"
+                                + sourcesArtifact.getArtifactId() + "/" + sourcesArtifact.getVersion()
+                                + "/" + sourcesArtifact.getClassifier());
                 extractDirectory.mkdirs();
 
-                UnArchiver unArchiver = archiverManager.getUnArchiver( "jar" );
-                unArchiver.setSourceFile( sourcesArtifact.getFile() );
-                unArchiver.setDestDirectory( extractDirectory );
+                UnArchiver unArchiver = archiverManager.getUnArchiver("jar");
+                unArchiver.setSourceFile(sourcesArtifact.getFile());
+                unArchiver.setDestDirectory(extractDirectory);
                 unArchiver.extract();
 
-                extendJavaProjectBuilder( builder,
-                                          Arrays.asList( extractDirectory ),
-                                          request.getDependencies() );
+                extendJavaProjectBuilder(builder, Arrays.asList(extractDirectory), request.getDependencies());
+            } else if (sourcesArtifact.getFile().isDirectory()) {
+                extendJavaProjectBuilder(builder, Arrays.asList(sourcesArtifact.getFile()), request.getDependencies());
             }
-            else if ( sourcesArtifact.getFile().isDirectory() )
-            {
-                extendJavaProjectBuilder( builder,
-                        Arrays.asList( sourcesArtifact.getFile() ),
-                        request.getDependencies() );
-            }
-        }
-        catch ( ArchiverException | NoSuchArchiverException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
+        } catch (ArchiverException | NoSuchArchiverException e) {
+            throw new ExtractionException(e.getMessage(), e);
         }
     }
 
-    private void extendJavaProjectBuilder( JavaProjectBuilder builder,
-                                           final MavenProject project )
-    {
+    private void extendJavaProjectBuilder(JavaProjectBuilder builder, final MavenProject project) {
         List<File> sources = new ArrayList<>();
 
-        for ( String source : project.getCompileSourceRoots() )
-        {
-            sources.add( new File( source ) );
+        for (String source : project.getCompileSourceRoots()) {
+            sources.add(new File(source));
         }
 
         // TODO be more dynamic
-        File generatedPlugin = new File( project.getBasedir(), "target/generated-sources/plugin" );
-        if ( !project.getCompileSourceRoots().contains( generatedPlugin.getAbsolutePath() )
-            && generatedPlugin.exists() )
-        {
-            sources.add( generatedPlugin );
+        File generatedPlugin = new File(project.getBasedir(), "target/generated-sources/plugin");
+        if (!project.getCompileSourceRoots().contains(generatedPlugin.getAbsolutePath()) && generatedPlugin.exists()) {
+            sources.add(generatedPlugin);
         }
-        extendJavaProjectBuilder( builder, sources, project.getArtifacts() );
+        extendJavaProjectBuilder(builder, sources, project.getArtifacts());
     }
 
-    private void extendJavaProjectBuilder( JavaProjectBuilder builder,
-                                           List<File> sourceDirectories,
-                                           Set<Artifact> artifacts )
-    {
+    private void extendJavaProjectBuilder(
+            JavaProjectBuilder builder, List<File> sourceDirectories, Set<Artifact> artifacts) {
 
-        // Build isolated Classloader with only the artifacts of the project (none of this plugin) 
-        List<URL> urls = new ArrayList<>( artifacts.size() );
-        for ( Artifact artifact : artifacts )
-        {
-            try
-            {
-                urls.add( artifact.getFile().toURI().toURL() );
-            }
-            catch ( MalformedURLException e )
-            {
+        // Build isolated Classloader with only the artifacts of the project (none of this plugin)
+        List<URL> urls = new ArrayList<>(artifacts.size());
+        for (Artifact artifact : artifacts) {
+            try {
+                urls.add(artifact.getFile().toURI().toURL());
+            } catch (MalformedURLException e) {
                 // noop
             }
         }
-        builder.addClassLoader( new URLClassLoader( urls.toArray( new URL[0] ), ClassLoader.getSystemClassLoader() ) );
+        builder.addClassLoader(new URLClassLoader(urls.toArray(new URL[0]), ClassLoader.getSystemClassLoader()));
 
-        for ( File source : sourceDirectories )
-        {
-            builder.addSourceTree( source );
+        for (File source : sourceDirectories) {
+            builder.addSourceTree(source);
         }
     }
 
-    private List<MojoDescriptor> toMojoDescriptors( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
-                                                    PluginDescriptor pluginDescriptor )
-        throws InvalidPluginDescriptorException
-    {
-        List<MojoDescriptor> mojoDescriptors = new ArrayList<>( mojoAnnotatedClasses.size() );
-        for ( MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values() )
-        {
+    private List<MojoDescriptor> toMojoDescriptors(
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, PluginDescriptor pluginDescriptor)
+            throws InvalidPluginDescriptorException {
+        List<MojoDescriptor> mojoDescriptors = new ArrayList<>(mojoAnnotatedClasses.size());
+        for (MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses.values()) {
             // no mojo so skip it
-            if ( mojoAnnotatedClass.getMojo() == null )
-            {
+            if (mojoAnnotatedClass.getMojo() == null) {
                 continue;
             }
 
-            ExtendedMojoDescriptor mojoDescriptor = new ExtendedMojoDescriptor( true );
+            ExtendedMojoDescriptor mojoDescriptor = new ExtendedMojoDescriptor(true);
 
-            //mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
-            //mojoDescriptor.setRoleHint( "default" );
-            mojoDescriptor.setImplementation( mojoAnnotatedClass.getClassName() );
-            mojoDescriptor.setLanguage( "java" );
+            // mojoDescriptor.setRole( mojoAnnotatedClass.getClassName() );
+            // mojoDescriptor.setRoleHint( "default" );
+            mojoDescriptor.setImplementation(mojoAnnotatedClass.getClassName());
+            mojoDescriptor.setLanguage("java");
 
-            mojoDescriptor.setV4Api( mojoAnnotatedClass.isV4Api() );
+            mojoDescriptor.setV4Api(mojoAnnotatedClass.isV4Api());
 
             MojoAnnotationContent mojo = mojoAnnotatedClass.getMojo();
 
-            mojoDescriptor.setDescription( mojo.getDescription() );
-            mojoDescriptor.setSince( mojo.getSince() );
-            mojo.setDeprecated( mojo.getDeprecated() );
+            mojoDescriptor.setDescription(mojo.getDescription());
+            mojoDescriptor.setSince(mojo.getSince());
+            mojo.setDeprecated(mojo.getDeprecated());
 
-            mojoDescriptor.setProjectRequired( mojo.requiresProject() );
+            mojoDescriptor.setProjectRequired(mojo.requiresProject());
 
-            mojoDescriptor.setRequiresReports( mojo.requiresReports() );
+            mojoDescriptor.setRequiresReports(mojo.requiresReports());
 
-            mojoDescriptor.setComponentConfigurator( mojo.configurator() );
+            mojoDescriptor.setComponentConfigurator(mojo.configurator());
 
-            mojoDescriptor.setInheritedByDefault( mojo.inheritByDefault() );
+            mojoDescriptor.setInheritedByDefault(mojo.inheritByDefault());
 
-            mojoDescriptor.setInstantiationStrategy( mojo.instantiationStrategy().id() );
+            mojoDescriptor.setInstantiationStrategy(mojo.instantiationStrategy().id());
 
-            mojoDescriptor.setAggregator( mojo.aggregator() );
-            mojoDescriptor.setDependencyResolutionRequired( mojo.requiresDependencyResolution().id() );
-            mojoDescriptor.setDependencyCollectionRequired( mojo.requiresDependencyCollection().id() );
+            mojoDescriptor.setAggregator(mojo.aggregator());
+            mojoDescriptor.setDependencyResolutionRequired(
+                    mojo.requiresDependencyResolution().id());
+            mojoDescriptor.setDependencyCollectionRequired(
+                    mojo.requiresDependencyCollection().id());
 
-            mojoDescriptor.setDirectInvocationOnly( mojo.requiresDirectInvocation() );
-            mojoDescriptor.setDeprecated( mojo.getDeprecated() );
-            mojoDescriptor.setThreadSafe( mojo.threadSafe() );
+            mojoDescriptor.setDirectInvocationOnly(mojo.requiresDirectInvocation());
+            mojoDescriptor.setDeprecated(mojo.getDeprecated());
+            mojoDescriptor.setThreadSafe(mojo.threadSafe());
 
             MojoAnnotatedClass mojoAnnotatedClassWithExecute =
-                            findClassWithExecuteAnnotationInParentHierarchy( mojoAnnotatedClass,
-                                                                                mojoAnnotatedClasses );
-            if ( mojoAnnotatedClassWithExecute != null && mojoAnnotatedClassWithExecute.getExecute() != null )
-            {
+                    findClassWithExecuteAnnotationInParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
+            if (mojoAnnotatedClassWithExecute != null && mojoAnnotatedClassWithExecute.getExecute() != null) {
                 ExecuteAnnotationContent execute = mojoAnnotatedClassWithExecute.getExecute();
-                mojoDescriptor.setExecuteGoal( execute.goal() );
-                mojoDescriptor.setExecuteLifecycle( execute.lifecycle() );
-                if ( execute.phase() != null )
-                {
-                    mojoDescriptor.setExecutePhase( execute.phase().id() );
-                    if ( StringUtils.isNotEmpty( execute.customPhase() ) )
-                    {
-                        throw new InvalidPluginDescriptorException( "@Execute annotation must only use either 'phase' " 
+                mojoDescriptor.setExecuteGoal(execute.goal());
+                mojoDescriptor.setExecuteLifecycle(execute.lifecycle());
+                if (execute.phase() != null) {
+                    mojoDescriptor.setExecutePhase(execute.phase().id());
+                    if (StringUtils.isNotEmpty(execute.customPhase())) {
+                        throw new InvalidPluginDescriptorException(
+                                "@Execute annotation must only use either 'phase' "
                                         + "or 'customPhase' but not both. Both are used though on "
-                                        + mojoAnnotatedClassWithExecute.getClassName(), null );
+                                        + mojoAnnotatedClassWithExecute.getClassName(),
+                                null);
                     }
-                }
-                else if ( StringUtils.isNotEmpty( execute.customPhase() ) )
-                {
-                    mojoDescriptor.setExecutePhase( execute.customPhase() );
+                } else if (StringUtils.isNotEmpty(execute.customPhase())) {
+                    mojoDescriptor.setExecutePhase(execute.customPhase());
                 }
             }
 
-            mojoDescriptor.setExecutionStrategy( mojo.executionStrategy() );
+            mojoDescriptor.setExecutionStrategy(mojo.executionStrategy());
             // ???
-            //mojoDescriptor.alwaysExecute(mojo.a)
+            // mojoDescriptor.alwaysExecute(mojo.a)
 
-            mojoDescriptor.setGoal( mojo.name() );
-            mojoDescriptor.setOnlineRequired( mojo.requiresOnline() );
+            mojoDescriptor.setGoal(mojo.name());
+            mojoDescriptor.setOnlineRequired(mojo.requiresOnline());
 
-            mojoDescriptor.setPhase( mojo.defaultPhase().id() );
+            mojoDescriptor.setPhase(mojo.defaultPhase().id());
 
             // Parameter annotations
             Map<String, ParameterAnnotationContent> parameters =
-                    getParametersParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
+                    getParametersParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
 
-            for ( ParameterAnnotationContent parameterAnnotationContent : new TreeSet<>( parameters.values() ) )
-            {
+            for (ParameterAnnotationContent parameterAnnotationContent : new TreeSet<>(parameters.values())) {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
-                    new org.apache.maven.plugin.descriptor.Parameter();
-                String name =
-                    StringUtils.isEmpty( parameterAnnotationContent.name() ) ? parameterAnnotationContent.getFieldName()
-                                    : parameterAnnotationContent.name();
-                parameter.setName( name );
-                parameter.setAlias( parameterAnnotationContent.alias() );
-                parameter.setDefaultValue( parameterAnnotationContent.defaultValue() );
-                parameter.setDeprecated( parameterAnnotationContent.getDeprecated() );
-                parameter.setDescription( parameterAnnotationContent.getDescription() );
-                parameter.setEditable( !parameterAnnotationContent.readonly() );
+                        new org.apache.maven.plugin.descriptor.Parameter();
+                String name = StringUtils.isEmpty(parameterAnnotationContent.name())
+                        ? parameterAnnotationContent.getFieldName()
+                        : parameterAnnotationContent.name();
+                parameter.setName(name);
+                parameter.setAlias(parameterAnnotationContent.alias());
+                parameter.setDefaultValue(parameterAnnotationContent.defaultValue());
+                parameter.setDeprecated(parameterAnnotationContent.getDeprecated());
+                parameter.setDescription(parameterAnnotationContent.getDescription());
+                parameter.setEditable(!parameterAnnotationContent.readonly());
                 String property = parameterAnnotationContent.property();
-                if ( StringUtils.contains( property, '$' ) || StringUtils.contains( property, '{' )
-                    || StringUtils.contains( property, '}' ) )
-                {
+                if (StringUtils.contains(property, '$')
+                        || StringUtils.contains(property, '{')
+                        || StringUtils.contains(property, '}')) {
                     throw new InvalidParameterException(
-                        "Invalid property for parameter '" + parameter.getName() + "', " + "forbidden characters ${}: "
-                            + property, null );
+                            "Invalid property for parameter '" + parameter.getName() + "', "
+                                    + "forbidden characters ${}: " + property,
+                            null);
                 }
-                parameter.setExpression( StringUtils.isEmpty( property ) ? "" : "${" + property + "}" );
-                StringBuilder type = new StringBuilder( parameterAnnotationContent.getClassName() );
-                if ( !parameterAnnotationContent.getTypeParameters().isEmpty() )
-                {
-                    type.append( parameterAnnotationContent.getTypeParameters().stream()
-                            .collect( Collectors.joining( ", ", "<", ">" ) ) );
+                parameter.setExpression(StringUtils.isEmpty(property) ? "" : "${" + property + "}");
+                StringBuilder type = new StringBuilder(parameterAnnotationContent.getClassName());
+                if (!parameterAnnotationContent.getTypeParameters().isEmpty()) {
+                    type.append(parameterAnnotationContent.getTypeParameters().stream()
+                            .collect(Collectors.joining(", ", "<", ">")));
                 }
-                parameter.setType( type.toString() );
-                parameter.setSince( parameterAnnotationContent.getSince() );
-                parameter.setRequired( parameterAnnotationContent.required() );
+                parameter.setType(type.toString());
+                parameter.setSince(parameterAnnotationContent.getSince());
+                parameter.setRequired(parameterAnnotationContent.required());
 
-                mojoDescriptor.addParameter( parameter );
+                mojoDescriptor.addParameter(parameter);
             }
 
             // Component annotations
             Map<String, ComponentAnnotationContent> components =
-                    getComponentsParentHierarchy( mojoAnnotatedClass, mojoAnnotatedClasses );
+                    getComponentsParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
 
-            for ( ComponentAnnotationContent componentAnnotationContent : new TreeSet<>( components.values() ) )
-            {
+            for (ComponentAnnotationContent componentAnnotationContent : new TreeSet<>(components.values())) {
                 org.apache.maven.plugin.descriptor.Parameter parameter =
-                    new org.apache.maven.plugin.descriptor.Parameter();
-                parameter.setName( componentAnnotationContent.getFieldName() );
+                        new org.apache.maven.plugin.descriptor.Parameter();
+                parameter.setName(componentAnnotationContent.getFieldName());
 
                 // recognize Maven-injected objects as components annotations instead of parameters
-                String expression = PluginUtils.MAVEN_COMPONENTS.get( componentAnnotationContent.getRoleClassName() );
-                if ( expression == null )
-                {
+                String expression = PluginUtils.MAVEN_COMPONENTS.get(componentAnnotationContent.getRoleClassName());
+                if (expression == null) {
                     // normal component
-                    parameter.setRequirement( new Requirement( componentAnnotationContent.getRoleClassName(),
-                                                               componentAnnotationContent.hint() ) );
-                }
-                else
-                {
+                    parameter.setRequirement(new Requirement(
+                            componentAnnotationContent.getRoleClassName(), componentAnnotationContent.hint()));
+                } else {
                     // not a component but a Maven object to be transformed into an expression/property: deprecated
-                    getLogger().warn( "Deprecated @Component annotation for '" + parameter.getName() + "' field in "
-                                          + mojoAnnotatedClass.getClassName()
-                                          + ": replace with @Parameter( defaultValue = \"" + expression
-                                          + "\", readonly = true )" );
-                    parameter.setDefaultValue( expression );
-                    parameter.setType( componentAnnotationContent.getRoleClassName() );
-                    parameter.setRequired( true );
+                    getLogger()
+                            .warn("Deprecated @Component annotation for '" + parameter.getName() + "' field in "
+                                    + mojoAnnotatedClass.getClassName()
+                                    + ": replace with @Parameter( defaultValue = \"" + expression
+                                    + "\", readonly = true )");
+                    parameter.setDefaultValue(expression);
+                    parameter.setType(componentAnnotationContent.getRoleClassName());
+                    parameter.setRequired(true);
                 }
-                parameter.setDeprecated( componentAnnotationContent.getDeprecated() );
-                parameter.setSince( componentAnnotationContent.getSince() );
+                parameter.setDeprecated(componentAnnotationContent.getDeprecated());
+                parameter.setSince(componentAnnotationContent.getSince());
 
                 // same behaviour as JavaMojoDescriptorExtractor
-                //parameter.setRequired( ... );
-                parameter.setEditable( false );
+                // parameter.setRequired( ... );
+                parameter.setEditable(false);
 
-                mojoDescriptor.addParameter( parameter );
+                mojoDescriptor.addParameter(parameter);
             }
 
-            mojoDescriptor.setPluginDescriptor( pluginDescriptor );
+            mojoDescriptor.setPluginDescriptor(pluginDescriptor);
 
-            mojoDescriptors.add( mojoDescriptor );
+            mojoDescriptors.add(mojoDescriptor);
         }
         return mojoDescriptors;
     }
 
-    protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy( MojoAnnotatedClass mojoAnnotatedClass,
-                                                                 Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
-    {
-        if ( mojoAnnotatedClass.getExecute() != null )
-        {
+    protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy(
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        if (mojoAnnotatedClass.getExecute() != null) {
             return mojoAnnotatedClass;
         }
         String parentClassName = mojoAnnotatedClass.getParentClassName();
-        if ( StringUtils.isEmpty( parentClassName ) )
-        {
+        if (StringUtils.isEmpty(parentClassName)) {
             return null;
         }
-        MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
-        if ( parent == null )
-        {
+        MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);
+        if (parent == null) {
             return null;
         }
-        return findClassWithExecuteAnnotationInParentHierarchy( parent, mojoAnnotatedClasses );
+        return findClassWithExecuteAnnotationInParentHierarchy(parent, mojoAnnotatedClasses);
     }
 
-
     protected Map<String, ParameterAnnotationContent> getParametersParentHierarchy(
-            MojoAnnotatedClass mojoAnnotatedClass,
-            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
-    {
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
         List<ParameterAnnotationContent> parameterAnnotationContents = new ArrayList<>();
 
         parameterAnnotationContents =
-            getParametersParent( mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses );
+                getParametersParent(mojoAnnotatedClass, parameterAnnotationContents, mojoAnnotatedClasses);
 
         // move to parent first to build the Map
-        Collections.reverse( parameterAnnotationContents );
+        Collections.reverse(parameterAnnotationContents);
 
-        Map<String, ParameterAnnotationContent> map = new HashMap<>( parameterAnnotationContents.size() );
+        Map<String, ParameterAnnotationContent> map = new HashMap<>(parameterAnnotationContents.size());
 
-        for ( ParameterAnnotationContent parameterAnnotationContent : parameterAnnotationContents )
-        {
-            map.put( parameterAnnotationContent.getFieldName(), parameterAnnotationContent );
+        for (ParameterAnnotationContent parameterAnnotationContent : parameterAnnotationContents) {
+            map.put(parameterAnnotationContent.getFieldName(), parameterAnnotationContent);
         }
         return map;
     }
 
-    protected List<ParameterAnnotationContent> getParametersParent( MojoAnnotatedClass mojoAnnotatedClass,
-                                                        List<ParameterAnnotationContent> parameterAnnotationContents,
-                                                        Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
-    {
-        parameterAnnotationContents.addAll( mojoAnnotatedClass.getParameters().values() );
+    protected List<ParameterAnnotationContent> getParametersParent(
+            MojoAnnotatedClass mojoAnnotatedClass,
+            List<ParameterAnnotationContent> parameterAnnotationContents,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        parameterAnnotationContents.addAll(mojoAnnotatedClass.getParameters().values());
         String parentClassName = mojoAnnotatedClass.getParentClassName();
-        if ( parentClassName != null )
-        {
-            MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
-            if ( parent != null )
-            {
-                return getParametersParent( parent, parameterAnnotationContents, mojoAnnotatedClasses );
+        if (parentClassName != null) {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);
+            if (parent != null) {
+                return getParametersParent(parent, parameterAnnotationContents, mojoAnnotatedClasses);
             }
         }
         return parameterAnnotationContents;
     }
 
     protected Map<String, ComponentAnnotationContent> getComponentsParentHierarchy(
-            MojoAnnotatedClass mojoAnnotatedClass,
-            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
-    {
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
         List<ComponentAnnotationContent> componentAnnotationContents = new ArrayList<>();
 
         componentAnnotationContents =
-            getComponentParent( mojoAnnotatedClass, componentAnnotationContents, mojoAnnotatedClasses );
+                getComponentParent(mojoAnnotatedClass, componentAnnotationContents, mojoAnnotatedClasses);
 
         // move to parent first to build the Map
-        Collections.reverse( componentAnnotationContents );
+        Collections.reverse(componentAnnotationContents);
 
-        Map<String, ComponentAnnotationContent> map = new HashMap<>( componentAnnotationContents.size() );
+        Map<String, ComponentAnnotationContent> map = new HashMap<>(componentAnnotationContents.size());
 
-        for ( ComponentAnnotationContent componentAnnotationContent : componentAnnotationContents )
-        {
-            map.put( componentAnnotationContent.getFieldName(), componentAnnotationContent );
+        for (ComponentAnnotationContent componentAnnotationContent : componentAnnotationContents) {
+            map.put(componentAnnotationContent.getFieldName(), componentAnnotationContent);
         }
         return map;
     }
 
-    protected List<ComponentAnnotationContent> getComponentParent( MojoAnnotatedClass mojoAnnotatedClass,
-                                                       List<ComponentAnnotationContent> componentAnnotationContents,
-                                                       Map<String, MojoAnnotatedClass> mojoAnnotatedClasses )
-    {
-        componentAnnotationContents.addAll( mojoAnnotatedClass.getComponents().values() );
+    protected List<ComponentAnnotationContent> getComponentParent(
+            MojoAnnotatedClass mojoAnnotatedClass,
+            List<ComponentAnnotationContent> componentAnnotationContents,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        componentAnnotationContents.addAll(mojoAnnotatedClass.getComponents().values());
         String parentClassName = mojoAnnotatedClass.getParentClassName();
-        if ( parentClassName != null )
-        {
-            MojoAnnotatedClass parent = mojoAnnotatedClasses.get( parentClassName );
-            if ( parent != null )
-            {
-                return getComponentParent( parent, componentAnnotationContents, mojoAnnotatedClasses );
+        if (parentClassName != null) {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);
+            if (parent != null) {
+                return getComponentParent(parent, componentAnnotationContents, mojoAnnotatedClasses);
             }
         }
         return componentAnnotationContents;
     }
 
-    protected MavenProject getFromProjectReferences( Artifact artifact, MavenProject project )
-    {
-        if ( project.getProjectReferences() == null || project.getProjectReferences().isEmpty() )
-        {
+    protected MavenProject getFromProjectReferences(Artifact artifact, MavenProject project) {
+        if (project.getProjectReferences() == null
+                || project.getProjectReferences().isEmpty()) {
             return null;
         }
         Collection<MavenProject> mavenProjects = project.getProjectReferences().values();
-        for ( MavenProject mavenProject : mavenProjects )
-        {
-            if ( Objects.equals( mavenProject.getId(), artifact.getId() ) )
-            {
+        for (MavenProject mavenProject : mavenProjects) {
+            if (Objects.equals(mavenProject.getId(), artifact.getId())) {
                 return mavenProject;
             }
         }
         return null;
     }
-
 }

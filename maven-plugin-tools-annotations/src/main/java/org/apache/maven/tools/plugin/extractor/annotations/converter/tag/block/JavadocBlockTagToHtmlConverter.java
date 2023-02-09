@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.JavadocTagToHtmlConverter;
 
@@ -27,7 +26,4 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.Javadoc
  * Javadoc block tag</a> to HTML format.
  * The resolved HTML format may still contain other javadoc inline tags.
  */
-public abstract class JavadocBlockTagToHtmlConverter extends JavadocTagToHtmlConverter
-{
-
-}
+public abstract class JavadocBlockTagToHtmlConverter extends JavadocTagToHtmlConverter {}

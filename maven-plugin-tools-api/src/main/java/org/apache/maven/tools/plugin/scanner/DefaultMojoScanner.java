@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +16,18 @@ package org.apache.maven.tools.plugin.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.scanner;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -34,22 +41,11 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author jdcasey
  */
 @Named
-public class DefaultMojoScanner
-    extends AbstractLogEnabled
-    implements MojoScanner
-{
+public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanner {
 
     private Map<String, MojoDescriptorExtractor> mojoDescriptorExtractors;
 
@@ -64,18 +60,16 @@ public class DefaultMojoScanner
      * @param extractors not null
      */
     @Inject
-    public DefaultMojoScanner( Map<String, MojoDescriptorExtractor> extractors )
-    {
+    public DefaultMojoScanner(Map<String, MojoDescriptorExtractor> extractors) {
         this.mojoDescriptorExtractors = extractors;
 
-        this.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "standalone-scanner-logger" ) );
+        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "standalone-scanner-logger"));
     }
 
     /**
      * Empty constructor
      */
-    public DefaultMojoScanner()
-    {
+    public DefaultMojoScanner() {
         // nop
     }
 
@@ -83,127 +77,105 @@ public class DefaultMojoScanner
      * {@inheritDoc}
      */
     @Override
-    public void populatePluginDescriptor( PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
+    public void populatePluginDescriptor(PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
         Logger logger = getLogger();
 
         int numMojoDescriptors = 0;
 
         List<MojoDescriptorExtractor> orderedExtractors = getOrderedExtractors();
 
-        logger.debug( "Using " + orderedExtractors.size() + " mojo extractors." );
+        logger.debug("Using " + orderedExtractors.size() + " mojo extractors.");
 
         HashMap<String, Integer> groupStats = new HashMap<>();
 
-        for ( MojoDescriptorExtractor extractor : orderedExtractors )
-        {
+        for (MojoDescriptorExtractor extractor : orderedExtractors) {
             GroupKey groupKey = extractor.getGroupKey();
             String extractorId = extractor.getName();
 
-            logger.debug( "Applying " + extractorId + " mojo extractor" );
+            logger.debug("Applying " + extractorId + " mojo extractor");
 
-            List<MojoDescriptor> extractorDescriptors = extractor.execute( request );
+            List<MojoDescriptor> extractorDescriptors = extractor.execute(request);
 
             int extractorDescriptorsCount = extractorDescriptors.size();
 
-            logger.info( extractorId + " mojo extractor found " + extractorDescriptorsCount
-                             + " mojo descriptor" + ( extractorDescriptorsCount > 1 ? "s" : "" ) + "." );
+            logger.info(extractorId + " mojo extractor found " + extractorDescriptorsCount + " mojo descriptor"
+                    + (extractorDescriptorsCount > 1 ? "s" : "") + ".");
             numMojoDescriptors += extractorDescriptorsCount;
 
-            if ( extractor.isDeprecated() &&  extractorDescriptorsCount > 0 )
-            {
-                logger.warn( "" );
-                logger.warn( "Deprecated extractor " + extractorId
-                             + " extracted " + extractorDescriptorsCount
-                             + " descriptor" + ( extractorDescriptorsCount > 1 ? "s" : "" )
-                             + ". Upgrade your Mojo definitions." );
-                if ( GroupKey.JAVA_GROUP.equals( groupKey.getGroup() ) )
-                {
-                    logger.warn( "You should use Mojo Annotations instead of Javadoc tags." );
+            if (extractor.isDeprecated() && extractorDescriptorsCount > 0) {
+                logger.warn("");
+                logger.warn("Deprecated extractor " + extractorId
+                        + " extracted " + extractorDescriptorsCount
+                        + " descriptor" + (extractorDescriptorsCount > 1 ? "s" : "")
+                        + ". Upgrade your Mojo definitions.");
+                if (GroupKey.JAVA_GROUP.equals(groupKey.getGroup())) {
+                    logger.warn("You should use Mojo Annotations instead of Javadoc tags.");
                 }
-                logger.warn( "" );
+                logger.warn("");
             }
 
-            if ( groupStats.containsKey( groupKey.getGroup() ) )
-            {
-                groupStats.put( groupKey.getGroup(),
-                    groupStats.get( groupKey.getGroup() ) + extractorDescriptorsCount );
-            }
-            else
-            {
-                groupStats.put( groupKey.getGroup(), extractorDescriptorsCount );
+            if (groupStats.containsKey(groupKey.getGroup())) {
+                groupStats.put(groupKey.getGroup(), groupStats.get(groupKey.getGroup()) + extractorDescriptorsCount);
+            } else {
+                groupStats.put(groupKey.getGroup(), extractorDescriptorsCount);
             }
 
-            for ( MojoDescriptor descriptor : extractorDescriptors )
-            {
-                logger.debug( "Adding mojo: " + descriptor + " to plugin descriptor." );
+            for (MojoDescriptor descriptor : extractorDescriptors) {
+                logger.debug("Adding mojo: " + descriptor + " to plugin descriptor.");
 
-                descriptor.setPluginDescriptor( request.getPluginDescriptor() );
+                descriptor.setPluginDescriptor(request.getPluginDescriptor());
 
-                request.getPluginDescriptor().addMojo( descriptor );
+                request.getPluginDescriptor().addMojo(descriptor);
             }
         }
 
-        logger.debug( "Discovered descriptors by groups: " + groupStats );
+        logger.debug("Discovered descriptors by groups: " + groupStats);
 
-        if ( numMojoDescriptors == 0 && !request.isSkipErrorNoDescriptorsFound() )
-        {
-            throw new InvalidPluginDescriptorException(
-                "No mojo definitions were found for plugin: " + request.getPluginDescriptor().getPluginLookupKey()
-                    + "." );
+        if (numMojoDescriptors == 0 && !request.isSkipErrorNoDescriptorsFound()) {
+            throw new InvalidPluginDescriptorException("No mojo definitions were found for plugin: "
+                    + request.getPluginDescriptor().getPluginLookupKey() + ".");
         }
     }
 
     /**
      * Returns a list of extractors sorted by {@link MojoDescriptorExtractor#getGroupKey()}s, never {@code null}.
      */
-    private List<MojoDescriptorExtractor> getOrderedExtractors() throws ExtractionException
-    {
+    private List<MojoDescriptorExtractor> getOrderedExtractors() throws ExtractionException {
         Set<String> extractors = activeExtractors;
 
-        if ( extractors == null )
-        {
-            extractors = new HashSet<>( mojoDescriptorExtractors.keySet() );
+        if (extractors == null) {
+            extractors = new HashSet<>(mojoDescriptorExtractors.keySet());
         }
 
         ArrayList<MojoDescriptorExtractor> orderedExtractors = new ArrayList<>();
-        for ( String extractorId : extractors )
-        {
-            MojoDescriptorExtractor extractor = mojoDescriptorExtractors.get( extractorId );
+        for (String extractorId : extractors) {
+            MojoDescriptorExtractor extractor = mojoDescriptorExtractors.get(extractorId);
 
-            if ( extractor == null )
-            {
-                throw new ExtractionException( "No mojo extractor with '" + extractorId + "' id." );
+            if (extractor == null) {
+                throw new ExtractionException("No mojo extractor with '" + extractorId + "' id.");
             }
 
-            orderedExtractors.add( extractor );
+            orderedExtractors.add(extractor);
         }
 
-        Collections.sort( orderedExtractors, MojoDescriptorExtractorComparator.INSTANCE );
+        Collections.sort(orderedExtractors, MojoDescriptorExtractorComparator.INSTANCE);
 
         return orderedExtractors;
     }
 
     @Override
-    public void setActiveExtractors( Set<String> extractors )
-    {
-        if ( extractors == null )
-        {
+    public void setActiveExtractors(Set<String> extractors) {
+        if (extractors == null) {
             this.activeExtractors = null;
-        }
-        else
-        {
+        } else {
             this.activeExtractors = new HashSet<>();
 
-            for ( String extractor : extractors )
-            {
-                if ( StringUtils.isNotEmpty( extractor ) )
-                {
-                    this.activeExtractors.add( extractor );
+            for (String extractor : extractors) {
+                if (StringUtils.isNotEmpty(extractor)) {
+                    this.activeExtractors.add(extractor);
                 }
             }
         }
     }
-
 }

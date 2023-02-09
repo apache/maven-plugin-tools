@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,78 +16,67 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.plugins.annotations.Component;
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 import java.lang.annotation.Annotation;
+
+import org.apache.maven.plugins.annotations.Component;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class ComponentAnnotationContent
-    extends AnnotatedField
-    implements Component
-{
+public class ComponentAnnotationContent extends AnnotatedField implements Component {
     private String roleClassName;
 
     private String hint;
 
-    public ComponentAnnotationContent( String fieldName )
-    {
-        super( fieldName );
+    public ComponentAnnotationContent(String fieldName) {
+        super(fieldName);
     }
 
-    public ComponentAnnotationContent( String fieldName, String role, String hint )
-    {
-        this( fieldName );
+    public ComponentAnnotationContent(String fieldName, String role, String hint) {
+        this(fieldName);
         this.roleClassName = role;
         this.hint = hint;
     }
 
     @Override
-    public Class<?> role()
-    {
+    public Class<?> role() {
         // not used
         return null;
     }
 
-    public void setRoleClassName( String roleClassName )
-    {
+    public void setRoleClassName(String roleClassName) {
         this.roleClassName = roleClassName;
     }
 
-    public String getRoleClassName()
-    {
+    public String getRoleClassName() {
         return roleClassName;
     }
 
     @Override
-    public String hint()
-    {
+    public String hint() {
         return hint == null ? "" : hint;
     }
 
-    public void hint( String hint )
-    {
+    public void hint(String hint) {
         this.hint = hint;
     }
 
     @Override
-    public Class<? extends Annotation> annotationType()
-    {
+    public Class<? extends Annotation> annotationType() {
         return null;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( super.toString() );
-        sb.append( "ComponentAnnotationContent" );
-        sb.append( "{role='" ).append( roleClassName ).append( '\'' );
-        sb.append( ", hint='" ).append( hint ).append( '\'' );
-        sb.append( '}' );
+        sb.append(super.toString());
+        sb.append("ComponentAnnotationContent");
+        sb.append("{role='").append(roleClassName).append('\'');
+        sb.append(", hint='").append(hint).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import java.util.List;
 
@@ -32,23 +31,20 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * @author Olivier Lamy
  */
-@Mojo( name = "foo", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true )
-@Execute( goal = "compiler", lifecycle = "my-lifecycle", phase = LifecyclePhase.PACKAGE )
-public class FooMojo
-    extends AbstractFooMojo
-{
+@Mojo(name = "foo", defaultPhase = LifecyclePhase.COMPILE, threadSafe = true)
+@Execute(goal = "compiler", lifecycle = "my-lifecycle", phase = LifecyclePhase.PACKAGE)
+public class FooMojo extends AbstractFooMojo {
     /**
      * the cool bar to go
      * @since 1.0
      */
-    @Parameter( property = "thebar", required = true, defaultValue = "coolbar" )
+    @Parameter(property = "thebar", required = true, defaultValue = "coolbar")
     protected String bar;
 
     /**
      * Setter method for Parameter field
      */
-    public void setBar( String bar )
-    {
+    public void setBar(String bar) {
         this.bar = bar;
     }
 
@@ -57,7 +53,7 @@ public class FooMojo
      * @deprecated wine is better
      */
     @Deprecated
-    @Parameter( property = "thebeer", defaultValue = "coolbeer" )
+    @Parameter(property = "thebeer", defaultValue = "coolbeer")
     protected String beer;
 
     /**
@@ -68,18 +64,16 @@ public class FooMojo
     /**
      * setter as parameter.
      */
-    @Parameter( property = "props.paramFromSetter" )
-    public void setParamFromSetter(String value)
-    {
+    @Parameter(property = "props.paramFromSetter")
+    public void setParamFromSetter(String value) {
         this.paramFromSetter = paramFromSetter;
     }
 
     /**
      * add method as parameter.
      */
-    @Parameter( property = "props.paramFromAdd" )
-    public void addParamFromAdd(String value)
-    {
+    @Parameter(property = "props.paramFromAdd")
+    public void addParamFromAdd(String value) {
         // empty
     }
 
@@ -89,9 +83,8 @@ public class FooMojo
      * @deprecated reason of deprecation
      */
     @Deprecated
-    @Parameter( property = "props.paramFromSetterDeprecated" )
-    public void setParamFromSetterDeprecated( List<String> value)
-    {
+    @Parameter(property = "props.paramFromSetterDeprecated")
+    public void setParamFromSetterDeprecated(List<String> value) {
         // empty
     }
 
@@ -99,27 +92,21 @@ public class FooMojo
      * Static methods should be excluded.
      */
     @Parameter
-    public static void setStaticMethod( String value )
-    {
+    public static void setStaticMethod(String value) {
         // empty
     }
 
     /**
      *
      */
-    @Component( role = ArtifactMetadataSource.class, hint = "maven" )
+    @Component(role = ArtifactMetadataSource.class, hint = "maven")
     protected ArtifactMetadataSource artifactMetadataSource;
 
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
+    public void execute() throws MojoExecutionException {
         // nothing
     }
 
     @Deprecated
-    public void deprecatedMethod(String value)
-    {
-
-    }
+    public void deprecatedMethod(String value) {}
 }

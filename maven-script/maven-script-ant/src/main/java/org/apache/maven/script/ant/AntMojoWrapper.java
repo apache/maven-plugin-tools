@@ -1,5 +1,3 @@
-package org.apache.maven.script.ant;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.script.ant;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,14 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.script.ant;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -45,25 +51,15 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class AntMojoWrapper
-    extends AbstractMojo
-    implements ContextEnabled, MapOrientedComponent, LogEnabled
-{
+public class AntMojoWrapper extends AbstractMojo implements ContextEnabled, MapOrientedComponent, LogEnabled {
 
     private Map<String, Object> pluginContext;
-    
+
     private final AntScriptInvoker scriptInvoker;
 
     private Project antProject;
@@ -73,122 +69,101 @@ public class AntMojoWrapper
     private MojoExecution mojoExecution;
 
     private MavenSession session;
-    
+
     private PathTranslator pathTranslator;
 
     private Logger logger;
-    
+
     private transient List<String> unconstructedParts = new ArrayList<>();
 
-    public AntMojoWrapper( AntScriptInvoker scriptInvoker )
-    {
+    public AntMojoWrapper(AntScriptInvoker scriptInvoker) {
         this.scriptInvoker = scriptInvoker;
     }
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( antProject == null )
-        {
+    public void execute() throws MojoExecutionException {
+        if (antProject == null) {
             antProject = scriptInvoker.getProject();
         }
-        
+
         Map<String, Object> allConfig = new HashMap<>();
-        if ( pluginContext != null && !pluginContext.isEmpty() )
-        {
-            allConfig.putAll( pluginContext );
+        if (pluginContext != null && !pluginContext.isEmpty()) {
+            allConfig.putAll(pluginContext);
         }
-        
-        @SuppressWarnings( "unchecked" )
+
+        @SuppressWarnings("unchecked")
         Map<String, PathTranslator> refs = scriptInvoker.getReferences();
-        if ( refs != null )
-        {
-            allConfig.putAll( refs );
-            
-            for ( Map.Entry<String, PathTranslator> entry : refs.entrySet() )
-            {
-                if ( entry.getKey().startsWith( PathTranslator.class.getName() ) )
-                {
+        if (refs != null) {
+            allConfig.putAll(refs);
+
+            for (Map.Entry<String, PathTranslator> entry : refs.entrySet()) {
+                if (entry.getKey().startsWith(PathTranslator.class.getName())) {
                     pathTranslator = entry.getValue();
                 }
             }
         }
 
-        mavenProject = (MavenProject) allConfig.get( "project" );
-        
-        mojoExecution = (MojoExecution) allConfig.get( "mojoExecution" );
-        
-        session = (MavenSession) allConfig.get( "session" );
-        
+        mavenProject = (MavenProject) allConfig.get("project");
+
+        mojoExecution = (MojoExecution) allConfig.get("mojoExecution");
+
+        session = (MavenSession) allConfig.get("session");
+
         unpackFileBasedResources();
 
         addClasspathReferences();
-        
-        if ( logger.isDebugEnabled() && !unconstructedParts.isEmpty() )
-        {
+
+        if (logger.isDebugEnabled() && !unconstructedParts.isEmpty()) {
             StringBuilder buffer = new StringBuilder();
-            
-            buffer.append( "The following standard Maven Ant-mojo support objects could not be created:\n\n" );
-            
-            for ( String part : unconstructedParts )
-            {
-                buffer.append( "\n-  " ).append( part );
+
+            buffer.append("The following standard Maven Ant-mojo support objects could not be created:\n\n");
+
+            for (String part : unconstructedParts) {
+                buffer.append("\n-  ").append(part);
             }
-            
-            buffer.append( "\n\nMaven project, session, mojo-execution, or path-translation parameter "
-                + "information is " );
-            buffer.append( "\nmissing from this mojo's plugin descriptor." );
-            buffer.append( "\n\nPerhaps this Ant-based mojo depends on maven-script-ant < 2.1.0, " );
-            buffer.append( "or used maven-plugin-tools-ant < 2.2 during release?\n\n" );
-            
-            logger.debug( buffer.toString() );
+
+            buffer.append(
+                    "\n\nMaven project, session, mojo-execution, or path-translation parameter " + "information is ");
+            buffer.append("\nmissing from this mojo's plugin descriptor.");
+            buffer.append("\n\nPerhaps this Ant-based mojo depends on maven-script-ant < 2.1.0, ");
+            buffer.append("or used maven-plugin-tools-ant < 2.2 during release?\n\n");
+
+            logger.debug(buffer.toString());
         }
 
-        try
-        {
+        try {
             scriptInvoker.invoke();
+        } catch (AntComponentExecutionException e) {
+            throw new MojoExecutionException("Failed to execute: " + e.getMessage(), e);
         }
-        catch ( AntComponentExecutionException e )
-        {
-            throw new MojoExecutionException( "Failed to execute: " + e.getMessage(), e );
-        }
-        
+
         unconstructedParts.clear();
     }
 
-    public void setPluginContext( Map pluginContext )
-    {
+    public void setPluginContext(Map pluginContext) {
         this.pluginContext = pluginContext;
     }
 
-    public Map getPluginContext()
-    {
+    public Map getPluginContext() {
         return pluginContext;
     }
 
-    public void addComponentRequirement( ComponentRequirement requirementDescriptor, Object requirementValue )
-        throws ComponentConfigurationException
-    {
-        scriptInvoker.addComponentRequirement( requirementDescriptor, requirementValue );
+    public void addComponentRequirement(ComponentRequirement requirementDescriptor, Object requirementValue)
+            throws ComponentConfigurationException {
+        scriptInvoker.addComponentRequirement(requirementDescriptor, requirementValue);
     }
 
-    public void setComponentConfiguration( Map componentConfiguration )
-        throws ComponentConfigurationException
-    {
-        scriptInvoker.setComponentConfiguration( componentConfiguration );
+    public void setComponentConfiguration(Map componentConfiguration) throws ComponentConfigurationException {
+        scriptInvoker.setComponentConfiguration(componentConfiguration);
         antProject = scriptInvoker.getProject();
     }
 
-    private void unpackFileBasedResources()
-        throws MojoExecutionException
-    {
-        if ( mojoExecution == null || mavenProject == null )
-        {
-            unconstructedParts.add( "Unpacked Ant build scripts (in Maven build directory)." );
-            
+    private void unpackFileBasedResources() throws MojoExecutionException {
+        if (mojoExecution == null || mavenProject == null) {
+            unconstructedParts.add("Unpacked Ant build scripts (in Maven build directory).");
+
             return;
         }
-        
+
         // What we need to write out any resources in the plugin to the target directory of the
         // mavenProject using the Ant-based plugin:
         //
@@ -196,188 +171,154 @@ public class AntMojoWrapper
         // 2. Need a reference to the ${basedir} of the mavenProject
 
         PluginDescriptor pluginDescriptor = mojoExecution.getMojoDescriptor().getPluginDescriptor();
-        
+
         File pluginJar = pluginDescriptor.getPluginArtifact().getFile();
 
         String resourcesPath = pluginDescriptor.getArtifactId();
 
-        File outputDirectory = new File( mavenProject.getBuild().getDirectory() );
+        File outputDirectory = new File(mavenProject.getBuild().getDirectory());
 
-        try
-        {
-            ZipUnArchiver ua = new ZipUnArchiver( pluginJar );
+        try {
+            ZipUnArchiver ua = new ZipUnArchiver(pluginJar);
 
-            ua.extract( resourcesPath, outputDirectory );
-        }
-        catch ( ArchiverException e )
-        {
-            throw new MojoExecutionException( "Error extracting resources from your Ant-based plugin.", e );
+            ua.extract(resourcesPath, outputDirectory);
+        } catch (ArchiverException e) {
+            throw new MojoExecutionException("Error extracting resources from your Ant-based plugin.", e);
         }
     }
 
-    private void addClasspathReferences()
-        throws MojoExecutionException
-    {
-        try
-        {
-            if ( mavenProject != null && session != null && pathTranslator != null )
-            {
-                ExpressionEvaluator exprEvaluator =
-                    new PluginParameterExpressionEvaluator( session, mojoExecution );
-                
-                PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper( antProject );
-                propertyHelper.setNext( new AntPropertyHelper( exprEvaluator, mavenProject.getArtifacts(), getLog() ) );
-            }
-            else
-            {
-                unconstructedParts.add( "Maven parameter expression evaluator for Ant properties." );
+    private void addClasspathReferences() throws MojoExecutionException {
+        try {
+            if (mavenProject != null && session != null && pathTranslator != null) {
+                ExpressionEvaluator exprEvaluator = new PluginParameterExpressionEvaluator(session, mojoExecution);
+
+                PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(antProject);
+                propertyHelper.setNext(new AntPropertyHelper(exprEvaluator, mavenProject.getArtifacts(), getLog()));
+            } else {
+                unconstructedParts.add("Maven parameter expression evaluator for Ant properties.");
             }
 
-            @SuppressWarnings( "unchecked" )
+            @SuppressWarnings("unchecked")
             Map<String, Object> references = scriptInvoker.getReferences();
 
-            if ( mavenProject != null )
-            {
+            if (mavenProject != null) {
 
                 // Compile classpath
-                Path p = new Path( antProject );
+                Path p = new Path(antProject);
 
-                p.setPath( StringUtils.join( mavenProject.getCompileClasspathElements().iterator(),
-                                             File.pathSeparator ) );
+                p.setPath(StringUtils.join(
+                        mavenProject.getCompileClasspathElements().iterator(), File.pathSeparator));
 
                 /* maven.dependency.classpath it's deprecated as it's equal to maven.compile.classpath */
-                references.put( "maven.dependency.classpath", p );
-                antProject.addReference( "maven.dependency.classpath", p );
-                
-                references.put( "maven.compile.classpath", p );
-                antProject.addReference( "maven.compile.classpath", p );
+                references.put("maven.dependency.classpath", p);
+                antProject.addReference("maven.dependency.classpath", p);
+
+                references.put("maven.compile.classpath", p);
+                antProject.addReference("maven.compile.classpath", p);
 
                 // Runtime classpath
-                p = new Path( antProject );
+                p = new Path(antProject);
 
-                p.setPath( StringUtils.join( mavenProject.getRuntimeClasspathElements().iterator(),
-                                             File.pathSeparator ) );
+                p.setPath(StringUtils.join(
+                        mavenProject.getRuntimeClasspathElements().iterator(), File.pathSeparator));
 
-                references.put( "maven.runtime.classpath", p );
-                antProject.addReference( "maven.runtime.classpath", p );
+                references.put("maven.runtime.classpath", p);
+                antProject.addReference("maven.runtime.classpath", p);
 
                 // Test classpath
-                p = new Path( antProject );
+                p = new Path(antProject);
 
-                p.setPath( StringUtils.join( mavenProject.getTestClasspathElements().iterator(),
-                                             File.pathSeparator ) );
+                p.setPath(
+                        StringUtils.join(mavenProject.getTestClasspathElements().iterator(), File.pathSeparator));
 
-                references.put( "maven.test.classpath", p );
-                antProject.addReference( "maven.test.classpath", p );
+                references.put("maven.test.classpath", p);
+                antProject.addReference("maven.test.classpath", p);
 
+            } else {
+                unconstructedParts.add("Maven standard project-based classpath references.");
             }
-            else
-            {
-                unconstructedParts.add( "Maven standard project-based classpath references." );
-            }
-            
-            if ( mojoExecution != null )
-            {
+
+            if (mojoExecution != null) {
                 // Plugin dependency classpath
-                Path p =
-                    getPathFromArtifacts( mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifacts(),
-                                          antProject );
-                
-                references.put( "maven.plugin.classpath", p );
-                antProject.addReference( "maven.plugin.classpath", p );
+                Path p = getPathFromArtifacts(
+                        mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifacts(), antProject);
+
+                references.put("maven.plugin.classpath", p);
+                antProject.addReference("maven.plugin.classpath", p);
+            } else {
+                unconstructedParts.add("Maven standard plugin-based classpath references.");
             }
-            else
-            {
-                unconstructedParts.add( "Maven standard plugin-based classpath references." );
-            }
-        }
-        catch ( DependencyResolutionRequiredException e )
-        {
-            throw new MojoExecutionException( "Error creating classpath references for Ant-based plugin scripts.", e );
+        } catch (DependencyResolutionRequiredException e) {
+            throw new MojoExecutionException("Error creating classpath references for Ant-based plugin scripts.", e);
         }
     }
 
-    public Path getPathFromArtifacts( Collection<Artifact> artifacts, Project antProject )
-        throws DependencyResolutionRequiredException
-    {
-        List<String> list = new ArrayList<>( artifacts.size() );
+    public Path getPathFromArtifacts(Collection<Artifact> artifacts, Project antProject)
+            throws DependencyResolutionRequiredException {
+        List<String> list = new ArrayList<>(artifacts.size());
 
-        for ( Artifact a : artifacts )
-        {
+        for (Artifact a : artifacts) {
             File file = a.getFile();
 
-            if ( file == null )
-            {
-                throw new DependencyResolutionRequiredException( a );
+            if (file == null) {
+                throw new DependencyResolutionRequiredException(a);
             }
 
-            list.add( file.getPath() );
+            list.add(file.getPath());
         }
 
-        Path p = new Path( antProject );
+        Path p = new Path(antProject);
 
-        p.setPath( StringUtils.join( list.iterator(), File.pathSeparator ) );
+        p.setPath(StringUtils.join(list.iterator(), File.pathSeparator));
 
         return p;
     }
 
-    public Project getAntProject()
-    {
+    public Project getAntProject() {
         return antProject;
     }
 
-    public void setAntProject( Project antProject )
-    {
+    public void setAntProject(Project antProject) {
         this.antProject = antProject;
     }
 
-    public MavenProject getMavenProject()
-    {
+    public MavenProject getMavenProject() {
         return mavenProject;
     }
 
-    public void setMavenProject( MavenProject mavenProject )
-    {
+    public void setMavenProject(MavenProject mavenProject) {
         this.mavenProject = mavenProject;
     }
 
-    public MojoExecution getMojoExecution()
-    {
+    public MojoExecution getMojoExecution() {
         return mojoExecution;
     }
 
-    public void setMojoExecution( MojoExecution mojoExecution )
-    {
+    public void setMojoExecution(MojoExecution mojoExecution) {
         this.mojoExecution = mojoExecution;
     }
 
-    public MavenSession getSession()
-    {
+    public MavenSession getSession() {
         return session;
     }
 
-    public void setSession( MavenSession session )
-    {
+    public void setSession(MavenSession session) {
         this.session = session;
     }
 
-    public PathTranslator getPathTranslator()
-    {
+    public PathTranslator getPathTranslator() {
         return pathTranslator;
     }
 
-    public void setPathTranslator( PathTranslator pathTranslator )
-    {
+    public void setPathTranslator(PathTranslator pathTranslator) {
         this.pathTranslator = pathTranslator;
     }
 
-    public AntScriptInvoker getScriptInvoker()
-    {
+    public AntScriptInvoker getScriptInvoker() {
         return scriptInvoker;
     }
 
-    public void enableLogging( Logger logger )
-    {
+    public void enableLogging(Logger logger) {
         this.logger = logger;
     }
 }

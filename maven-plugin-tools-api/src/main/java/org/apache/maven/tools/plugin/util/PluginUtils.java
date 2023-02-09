@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.util;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.util;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,10 +36,8 @@ import org.codehaus.plexus.util.StringUtils;
  * @author jdcasey
  *
  */
-public final class PluginUtils
-{
-    private PluginUtils()
-    {
+public final class PluginUtils {
+    private PluginUtils() {
         // nop
     }
 
@@ -48,30 +45,30 @@ public final class PluginUtils
      * Expression associated with class types to recognize Maven objects (injected in fact as parameters by <a
      * href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
      * maven-core's PluginParameterExpressionEvaluator</a>) like components ("real" components are injected by Plexus).
-     * 
+     *
      * @deprecated wrong approach (fake components), documented parameter default values instead to learn people how to
      *             discover them
      */
     @Deprecated
     public static final Map<String, String> MAVEN_COMPONENTS;
-    static
-    {
+
+    static {
         Map<String, String> mavenComponents = new HashMap<>();
 
-        mavenComponents.put( "org.apache.maven.execution.MavenSession", "${session}" );
-        mavenComponents.put( "org.apache.maven.project.MavenProject", "${project}" );
-        mavenComponents.put( "org.apache.maven.plugin.MojoExecution", "${mojoExecution}" );
-        mavenComponents.put( "org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}" );
-        mavenComponents.put( "org.apache.maven.settings.Settings", "${settings}" );
+        mavenComponents.put("org.apache.maven.execution.MavenSession", "${session}");
+        mavenComponents.put("org.apache.maven.project.MavenProject", "${project}");
+        mavenComponents.put("org.apache.maven.plugin.MojoExecution", "${mojoExecution}");
+        mavenComponents.put("org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}");
+        mavenComponents.put("org.apache.maven.settings.Settings", "${settings}");
 
-        mavenComponents.put( "org.apache.maven.api.Session", "${session}" );
-        mavenComponents.put( "org.apache.maven.api.Project", "${project}" );
-        mavenComponents.put( "org.apache.maven.api.MojoExecution", "${mojoExecution}" );
+        mavenComponents.put("org.apache.maven.api.Session", "${session}");
+        mavenComponents.put("org.apache.maven.api.Project", "${project}");
+        mavenComponents.put("org.apache.maven.api.MojoExecution", "${mojoExecution}");
         // TODO: apiv4: add PluginDescriptor to the api ?
-        //mavenComponents.put( "org.apache.maven.api.descriptor.PluginDescriptor", "${plugin}" );
-        mavenComponents.put( "org.apache.maven.api.settings.Settings", "${settings}" );
+        // mavenComponents.put( "org.apache.maven.api.descriptor.PluginDescriptor", "${plugin}" );
+        mavenComponents.put("org.apache.maven.api.settings.Settings", "${settings}");
 
-        MAVEN_COMPONENTS = Collections.unmodifiableMap( mavenComponents );
+        MAVEN_COMPONENTS = Collections.unmodifiableMap(mavenComponents);
     }
 
     /**
@@ -79,9 +76,8 @@ public final class PluginUtils
      * @param include not null
      * @return list of included files with default SCM excluded files
      */
-    public static String[] findSources( String basedir, String include )
-    {
-        return PluginUtils.findSources( basedir, include, null );
+    public static String[] findSources(String basedir, String include) {
+        return PluginUtils.findSources(basedir, include, null);
     }
 
     /**
@@ -90,18 +86,14 @@ public final class PluginUtils
      * @param exclude could be null
      * @return list of included files
      */
-    public static String[] findSources( String basedir, String include, String exclude )
-    {
+    public static String[] findSources(String basedir, String include, String exclude) {
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir( basedir );
-        scanner.setIncludes( new String[] { include } );
-        if ( !StringUtils.isEmpty( exclude ) )
-        {
-            scanner.setExcludes( new String[] { exclude, StringUtils.join( FileUtils.getDefaultExcludes(), "," ) } );
-        }
-        else
-        {
-            scanner.setExcludes( FileUtils.getDefaultExcludes() );
+        scanner.setBasedir(basedir);
+        scanner.setIncludes(new String[] {include});
+        if (!StringUtils.isEmpty(exclude)) {
+            scanner.setExcludes(new String[] {exclude, StringUtils.join(FileUtils.getDefaultExcludes(), ",")});
+        } else {
+            scanner.setExcludes(FileUtils.getDefaultExcludes());
         }
 
         scanner.scan();
@@ -115,19 +107,15 @@ public final class PluginUtils
      * @param mojoDescriptors The mojo descriptors to sort, may be <code>null</code>.
      * @see MojoDescriptor#getGoal()
      */
-    public static void sortMojos( List<MojoDescriptor> mojoDescriptors )
-    {
-        if ( mojoDescriptors != null )
-        {
-            Collections.sort( mojoDescriptors, new Comparator<MojoDescriptor>()
-            {
+    public static void sortMojos(List<MojoDescriptor> mojoDescriptors) {
+        if (mojoDescriptors != null) {
+            Collections.sort(mojoDescriptors, new Comparator<MojoDescriptor>() {
                 /** {@inheritDoc} */
                 @Override
-                public int compare( MojoDescriptor mojo0, MojoDescriptor mojo1 )
-                {
-                    return mojo0.getGoal().compareToIgnoreCase( mojo1.getGoal() );
+                public int compare(MojoDescriptor mojo0, MojoDescriptor mojo1) {
+                    return mojo0.getGoal().compareToIgnoreCase(mojo1.getGoal());
                 }
-            } );
+            });
         }
     }
 
@@ -138,19 +126,15 @@ public final class PluginUtils
      * @see Parameter#getName()
      * @since 2.4.4
      */
-    public static void sortMojoParameters( List<Parameter> parameters )
-    {
-        if ( parameters != null )
-        {
-            Collections.sort( parameters, new Comparator<Parameter>()
-            {
+    public static void sortMojoParameters(List<Parameter> parameters) {
+        if (parameters != null) {
+            Collections.sort(parameters, new Comparator<Parameter>() {
                 /** {@inheritDoc} */
                 @Override
-                public int compare( Parameter parameter1, Parameter parameter2 )
-                {
-                    return parameter1.getName().compareToIgnoreCase( parameter2.getName() );
+                public int compare(Parameter parameter1, Parameter parameter2) {
+                    return parameter1.getName().compareToIgnoreCase(parameter2.getName());
                 }
-            } );
+            });
         }
     }
 }

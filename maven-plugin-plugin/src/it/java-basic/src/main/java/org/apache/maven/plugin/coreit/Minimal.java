@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProjectHelper;
@@ -26,9 +25,7 @@ import org.apache.maven.project.MavenProjectHelper;
 /**
  * @goal minimal
  */
-public class Minimal
-    extends AbstractMojo
-{
+public class Minimal extends AbstractMojo {
     /**
      * @parameter
      */
@@ -39,8 +36,5 @@ public class Minimal
      */
     private MavenProjectHelper projectHelper;
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

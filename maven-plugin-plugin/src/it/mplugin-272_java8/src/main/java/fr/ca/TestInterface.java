@@ -1,5 +1,3 @@
-package fr.ca;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,13 +16,12 @@ package fr.ca;
  * specific language governing permissions and limitations
  * under the License.
  */
+package fr.ca;
 
 public interface TestInterface {
 
     /**
      * Java 8 required to support such default method implementation
      */
-    public default void foo(){
-
-    }
+    public default void foo() {}
 }

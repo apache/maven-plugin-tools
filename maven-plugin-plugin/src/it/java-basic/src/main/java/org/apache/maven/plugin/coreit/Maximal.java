@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +16,9 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Checks maximum annotations with non-default values.
@@ -43,9 +41,7 @@ import org.apache.maven.project.MavenProjectHelper;
  * @since since-text
  * @deprecated deprecated-text
  */
-public class Maximal
-    extends AbstractMojo
-{
+public class Maximal extends AbstractMojo {
     /**
      * Parameter description.
      *
@@ -64,8 +60,5 @@ public class Maximal
      */
     private Object projectHelper;
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

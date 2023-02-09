@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,11 +32,10 @@ import java.lang.annotation.Target;
  * @since 3.0
  */
 @Documented
-@Retention( RetentionPolicy.CLASS )
-@Target( ElementType.TYPE )
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.TYPE)
 @Inherited
-public @interface Execute
-{
+public @interface Execute {
     /**
      * Lifecycle phase to fork. Note that specifying a phase overrides specifying a goal.
      * For custom lifecycle phase ids use {@link #customPhase()} instead.

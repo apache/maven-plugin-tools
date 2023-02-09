@@ -1,5 +1,3 @@
-package test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -8,9 +6,9 @@ package test;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,16 +16,13 @@ package test;
  * specific language governing permissions and limitations
  * under the License.
  */
+package test;
 
-public class ClassB
-{
+public class ClassB {
 
     /**
      * For the test we want to trigger a linkage error when resolving ClassA. However, we want this error to occur when
      * analyzing ClassB and not when loading ClassB itself.
      */
-    public void triggerLazyLinkageError(ClassA param)
-    {
-    }
-
+    public void triggerLazyLinkageError(ClassA param) {}
 }

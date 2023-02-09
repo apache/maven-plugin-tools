@@ -1,4 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,52 +16,34 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 
 import java.util.Collection;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.other.OtherClassOtherPackage;
 
-public class CurrentClass
-    extends SuperClass
-{
+public class CurrentClass extends SuperClass {
 
     public String field1;
 
-    public CurrentClass()
-    {
+    public CurrentClass() {}
 
-    }
+    public void noParamMethod() {}
 
-    public void noParamMethod()
-    {
-
-    }
-
-    public void simpleParamMethod( Integer intValue )
-    {
-
-    }
+    public void simpleParamMethod(Integer intValue) {}
 
     /**
      * @param intValue
      * @param enumValue
      */
-    public void complexParamMethod( int intValue, OtherClassOtherPackage.EmbeddedEnum enumValue )
-    {
-
-    }
+    public void complexParamMethod(int intValue, OtherClassOtherPackage.EmbeddedEnum enumValue) {}
 
     /**
      * @param intValues
      * @param multiDimensionalStringValues
      */
-    public void arrayParamMethod( int[] intValues, String[][][] multiDimensionalStringValues )
-    {
+    public void arrayParamMethod(int[] intValues, String[][][] multiDimensionalStringValues) {}
 
-    }
-
-    public void genericsParamMethod( Collection<Collection<String>> myCollection, java.util.function.BiConsumer<String, Integer> function)
-    {
-
-    }
+    public void genericsParamMethod(
+            Collection<Collection<String>> myCollection, java.util.function.BiConsumer<String, Integer> function) {}
 }

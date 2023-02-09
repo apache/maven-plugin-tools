@@ -1,5 +1,3 @@
-package source;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package source;
  * specific language governing permissions and limitations
  * under the License.
  */
+package source;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
@@ -27,9 +26,7 @@ import org.apache.maven.tools.plugin.scanner.MojoScanner;
  *
  * @goal default-values
  */
-public class Default
-    extends AbstractMojo
-{
+public class Default extends AbstractMojo {
     /**
      * A parameter.
      *
@@ -44,16 +41,12 @@ public class Default
 
     /**
      * A component.
-     * 
+     *
      * @component
      */
     private MojoScanner component;
 
-    public Default()
-    {
-    }
+    public Default() {}
 
-    public void execute()
-    {
-    }
+    public void execute() {}
 }

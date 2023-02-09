@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin;
 
 import java.util.Objects;
 
@@ -26,26 +25,22 @@ import org.apache.maven.plugin.descriptor.Parameter;
 
 /**
  * Extensions to {@link MojoDescriptor} not supported by Maven 3.2.5.
- * 
+ *
  * @author Kristian Rosenvold
  */
-public class ExtendedMojoDescriptor
-    extends MojoDescriptor
-{
+public class ExtendedMojoDescriptor extends MojoDescriptor {
     private final boolean containsXhtmlTextValues;
     private boolean v4Api;
 
-    public ExtendedMojoDescriptor()
-    {
-        this( false );
+    public ExtendedMojoDescriptor() {
+        this(false);
     }
 
     /**
      * @param containsXhtmlTextValues
      * @since 3.7.0
      */
-    public ExtendedMojoDescriptor( boolean containsXhtmlTextValues )
-    {
+    public ExtendedMojoDescriptor(boolean containsXhtmlTextValues) {
         this.containsXhtmlTextValues = containsXhtmlTextValues;
     }
 
@@ -56,43 +51,35 @@ public class ExtendedMojoDescriptor
      * javadoc (HTML + custom javadoc tags) (for legacy extractors)
      * @since 3.7.0
      */
-    public boolean containsXhtmlTextValues()
-    {
+    public boolean containsXhtmlTextValues() {
         return containsXhtmlTextValues;
     }
 
-    public boolean isV4Api()
-    {
+    public boolean isV4Api() {
         return v4Api;
     }
 
-    public void setV4Api( boolean v4Api )
-    {
+    public void setV4Api(boolean v4Api) {
         this.v4Api = v4Api;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash( containsXhtmlTextValues );
+        result = prime * result + Objects.hash(containsXhtmlTextValues);
         return result;
     }
 
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( this == obj )
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( !super.equals( obj ) )
-        {
+        if (!super.equals(obj)) {
             return false;
         }
-        if ( getClass() != obj.getClass() )
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ExtendedMojoDescriptor other = (ExtendedMojoDescriptor) obj;

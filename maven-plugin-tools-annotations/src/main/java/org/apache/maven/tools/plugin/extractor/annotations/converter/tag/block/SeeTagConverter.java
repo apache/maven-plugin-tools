@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -29,44 +28,33 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.LinkUti
  * Supports <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#see">block see
  * taglet</a>.
  */
-@Named( "see" )
+@Named("see")
 @Singleton
-public class SeeTagConverter
-    extends JavadocBlockTagToHtmlConverter
-{
-    private static final String ATTRIBUTE_NAME_IS_FIRST_REFERENCE = 
-                    "SeeTagletConverter.isFirstReference";
+public class SeeTagConverter extends JavadocBlockTagToHtmlConverter {
+    private static final String ATTRIBUTE_NAME_IS_FIRST_REFERENCE = "SeeTagletConverter.isFirstReference";
 
     @Override
-    public String convert( String value, ConverterContext context )
-    {
+    public String convert(String value, ConverterContext context) {
         StringBuilder htmlBuilder = new StringBuilder();
-        Boolean isFirstReference = context.getAttribute( ATTRIBUTE_NAME_IS_FIRST_REFERENCE,
-                                                         Boolean.class, Boolean.TRUE );
-        if ( Boolean.TRUE.equals( isFirstReference ) )
-        {
+        Boolean isFirstReference = context.getAttribute(ATTRIBUTE_NAME_IS_FIRST_REFERENCE, Boolean.class, Boolean.TRUE);
+        if (Boolean.TRUE.equals(isFirstReference)) {
             // headline only once per instance
-            htmlBuilder.append( "<br/><strong>See also:</strong>\n" );
-            context.setAttribute( ATTRIBUTE_NAME_IS_FIRST_REFERENCE, Boolean.FALSE );
-        }
-        else
-        {
-            // multiple links just comma separated, 
-            htmlBuilder.append( ", " );
+            htmlBuilder.append("<br/><strong>See also:</strong>\n");
+            context.setAttribute(ATTRIBUTE_NAME_IS_FIRST_REFERENCE, Boolean.FALSE);
+        } else {
+            // multiple links just comma separated,
+            htmlBuilder.append(", ");
         }
         // is it regular HTML link?
-        if ( value.startsWith( "<a href" ) )
-        {
-            return htmlBuilder.append( value ).toString();
+        if (value.startsWith("<a href")) {
+            return htmlBuilder.append(value).toString();
         }
         // is it just a soft string reference?
-        if ( value.startsWith( "\"" ) )
-        {
-            return htmlBuilder.append( value ).toString();
+        if (value.startsWith("\"")) {
+            return htmlBuilder.append(value).toString();
         }
-        String link = LinkUtils.createLink( value, context );
-        htmlBuilder.append( link );
+        String link = LinkUtils.createLink(value, context);
+        htmlBuilder.append(link);
         return htmlBuilder.toString();
     }
-
 }

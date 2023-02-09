@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,22 +16,20 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
+
+import java.lang.annotation.Annotation;
 
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import java.lang.annotation.Annotation;
-
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoAnnotationContent
-    extends AnnotatedContent
-    implements Mojo
-{
+public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
     private String name;
 
     private LifecyclePhase defaultPhase = LifecyclePhase.NONE;
@@ -63,185 +59,159 @@ public class MojoAnnotationContent
     private boolean threadSafe = false;
 
     @Override
-    public Class<? extends Annotation> annotationType()
-    {
+    public Class<? extends Annotation> annotationType() {
         return null;
     }
 
     @Override
-    public LifecyclePhase defaultPhase()
-    {
+    public LifecyclePhase defaultPhase() {
         return defaultPhase;
     }
 
-    public void defaultPhase( String phase )
-    {
-        this.defaultPhase = LifecyclePhase.valueOf( phase );
+    public void defaultPhase(String phase) {
+        this.defaultPhase = LifecyclePhase.valueOf(phase);
     }
 
     @Override
-    public ResolutionScope requiresDependencyResolution()
-    {
+    public ResolutionScope requiresDependencyResolution() {
         return requiresDependencyResolution;
     }
 
-    public void requiresDependencyResolution( String requiresDependencyResolution )
-    {
-        this.requiresDependencyResolution = ResolutionScope.valueOf( requiresDependencyResolution );
+    public void requiresDependencyResolution(String requiresDependencyResolution) {
+        this.requiresDependencyResolution = ResolutionScope.valueOf(requiresDependencyResolution);
     }
 
     @Override
-    public ResolutionScope requiresDependencyCollection()
-    {
+    public ResolutionScope requiresDependencyCollection() {
         return requiresDependencyCollection;
     }
 
-    public void requiresDependencyCollection( String requiresDependencyCollection )
-    {
-        this.requiresDependencyCollection = ResolutionScope.valueOf( requiresDependencyCollection );
+    public void requiresDependencyCollection(String requiresDependencyCollection) {
+        this.requiresDependencyCollection = ResolutionScope.valueOf(requiresDependencyCollection);
     }
 
     @Override
-    public InstantiationStrategy instantiationStrategy()
-    {
+    public InstantiationStrategy instantiationStrategy() {
         return instantiationStrategy;
     }
 
-    public void instantiationStrategy( String instantiationStrategy )
-    {
-        this.instantiationStrategy = InstantiationStrategy.valueOf( instantiationStrategy );
+    public void instantiationStrategy(String instantiationStrategy) {
+        this.instantiationStrategy = InstantiationStrategy.valueOf(instantiationStrategy);
     }
 
     @Override
-    public String executionStrategy()
-    {
+    public String executionStrategy() {
         return executionStrategy;
     }
 
-    public void executionStrategy( String executionStrategy )
-    {
+    public void executionStrategy(String executionStrategy) {
         this.executionStrategy = executionStrategy;
     }
 
     @Override
-    public boolean requiresProject()
-    {
+    public boolean requiresProject() {
         return requiresProject;
     }
 
-    public void requiresProject( boolean requiresProject )
-    {
+    public void requiresProject(boolean requiresProject) {
         this.requiresProject = requiresProject;
     }
 
     @Override
-    public boolean requiresReports()
-    {
+    public boolean requiresReports() {
         return requiresReports;
     }
 
-    public void requiresReports( boolean requiresReports )
-    {
+    public void requiresReports(boolean requiresReports) {
         this.requiresReports = requiresReports;
     }
 
     @Override
-    public boolean aggregator()
-    {
+    public boolean aggregator() {
         return aggregator;
     }
 
-    public void aggregator( boolean aggregator )
-    {
+    public void aggregator(boolean aggregator) {
         this.aggregator = aggregator;
     }
 
     @Override
-    public boolean requiresDirectInvocation()
-    {
+    public boolean requiresDirectInvocation() {
         return requiresDirectInvocation;
     }
 
-    public void requiresDirectInvocation( boolean requiresDirectInvocation )
-    {
+    public void requiresDirectInvocation(boolean requiresDirectInvocation) {
         this.requiresDirectInvocation = requiresDirectInvocation;
     }
 
     @Override
-    public boolean requiresOnline()
-    {
+    public boolean requiresOnline() {
         return requiresOnline;
     }
 
-    public void requiresOnline( boolean requiresOnline )
-    {
+    public void requiresOnline(boolean requiresOnline) {
         this.requiresOnline = requiresOnline;
     }
 
     @Override
-    public boolean inheritByDefault()
-    {
+    public boolean inheritByDefault() {
         return inheritByDefault;
     }
 
-    public void inheritByDefault( boolean inheritByDefault )
-    {
+    public void inheritByDefault(boolean inheritByDefault) {
         this.inheritByDefault = inheritByDefault;
     }
 
     @Override
-    public String configurator()
-    {
+    public String configurator() {
         return configurator;
     }
 
-    public void configurator( String configurator )
-    {
+    public void configurator(String configurator) {
         this.configurator = configurator;
     }
 
     @Override
-    public boolean threadSafe()
-    {
+    public boolean threadSafe() {
         return threadSafe;
     }
 
-    public void threadSafe( boolean threadSafe )
-    {
+    public void threadSafe(boolean threadSafe) {
         this.threadSafe = threadSafe;
     }
 
     @Override
-    public String name()
-    {
+    public String name() {
         return this.name;
     }
 
-    public void name( String name )
-    {
+    public void name(String name) {
         this.name = name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "MojoAnnotationContent" );
-        sb.append( "{name='" ).append( name ).append( '\'' );
-        sb.append( ", defaultPhase=" ).append( defaultPhase );
-        sb.append( ", requiresDependencyResolution='" ).append( requiresDependencyResolution ).append( '\'' );
-        sb.append( ", requiresDependencyCollection='" ).append( requiresDependencyCollection ).append( '\'' );
-        sb.append( ", instantiationStrategy='" ).append( instantiationStrategy ).append( '\'' );
-        sb.append( ", executionStrategy='" ).append( executionStrategy ).append( '\'' );
-        sb.append( ", requiresProject=" ).append( requiresProject );
-        sb.append( ", requiresReports=" ).append( requiresReports );
-        sb.append( ", aggregator=" ).append( aggregator );
-        sb.append( ", requiresDirectInvocation=" ).append( requiresDirectInvocation );
-        sb.append( ", requiresOnline=" ).append( requiresOnline );
-        sb.append( ", inheritByDefault=" ).append( inheritByDefault );
-        sb.append( ", configurator='" ).append( configurator ).append( '\'' );
-        sb.append( ", threadSafe=" ).append( threadSafe );
-        sb.append( '}' );
+        sb.append("MojoAnnotationContent");
+        sb.append("{name='").append(name).append('\'');
+        sb.append(", defaultPhase=").append(defaultPhase);
+        sb.append(", requiresDependencyResolution='")
+                .append(requiresDependencyResolution)
+                .append('\'');
+        sb.append(", requiresDependencyCollection='")
+                .append(requiresDependencyCollection)
+                .append('\'');
+        sb.append(", instantiationStrategy='").append(instantiationStrategy).append('\'');
+        sb.append(", executionStrategy='").append(executionStrategy).append('\'');
+        sb.append(", requiresProject=").append(requiresProject);
+        sb.append(", requiresReports=").append(requiresReports);
+        sb.append(", aggregator=").append(aggregator);
+        sb.append(", requiresDirectInvocation=").append(requiresDirectInvocation);
+        sb.append(", requiresOnline=").append(requiresOnline);
+        sb.append(", inheritByDefault=").append(inheritByDefault);
+        sb.append(", configurator='").append(configurator).append('\'');
+        sb.append(", threadSafe=").append(threadSafe);
+        sb.append('}');
         return sb.toString();
     }
 }

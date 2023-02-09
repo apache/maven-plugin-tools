@@ -1,5 +1,3 @@
-package source;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +16,10 @@ package source;
  * specific language governing permissions and limitations
  * under the License.
  */
+package source;
 
 import java.io.File;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 
@@ -44,9 +44,7 @@ import org.apache.maven.tools.plugin.scanner.MojoScanner;
  * @since now
  * @deprecated deprecation text test
  */
-public class Full
-    extends AbstractMojo
-{
+public class Full extends AbstractMojo {
     /**
      * A parameter.
      *
@@ -70,17 +68,13 @@ public class Full
 
     /**
      * A component.
-     * 
+     *
      * @component role="role" roleHint="hint"
      * @required
      */
     private MojoScanner component;
 
-    public Full()
-    {
-    }
+    public Full() {}
 
-    public void execute()
-    {
-    }
+    public void execute() {}
 }

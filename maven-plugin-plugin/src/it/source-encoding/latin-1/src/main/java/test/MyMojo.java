@@ -1,5 +1,3 @@
-package test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package test;
  * specific language governing permissions and limitations
  * under the License.
  */
+package test;
 
 // NOTE: This source file is by design encoded using ISO-8859-1!
 
@@ -25,15 +24,10 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * TEST-CHARS: ƒ÷‹‰ˆ¸ﬂ
- * 
+ *  
  * @goal test
  */
-public class MyMojo
-    extends AbstractMojo
-{
+public class MyMojo extends AbstractMojo {
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

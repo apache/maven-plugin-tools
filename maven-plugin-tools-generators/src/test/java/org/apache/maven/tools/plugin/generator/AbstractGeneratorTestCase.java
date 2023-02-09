@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,14 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
@@ -32,89 +38,79 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
-public abstract class AbstractGeneratorTestCase
-{
+public abstract class AbstractGeneratorTestCase {
     protected Generator generator;
 
-    protected String basedir = System.getProperty( "basedir" );
+    protected String basedir = System.getProperty("basedir");
 
     @Test
-    public void testGenerator()
-        throws Exception
-    {
+    public void testGenerator() throws Exception {
         setupGenerator();
 
         MojoDescriptor mojoDescriptor = new MojoDescriptor();
-        mojoDescriptor.setGoal( "testGoal" );
-        mojoDescriptor.setImplementation( "org.apache.maven.tools.plugin.generator.TestMojo" );
-        mojoDescriptor.setDependencyResolutionRequired( "compile" );
-        mojoDescriptor.setSince( "mojoSince" );
+        mojoDescriptor.setGoal("testGoal");
+        mojoDescriptor.setImplementation("org.apache.maven.tools.plugin.generator.TestMojo");
+        mojoDescriptor.setDependencyResolutionRequired("compile");
+        mojoDescriptor.setSince("mojoSince");
 
         List<Parameter> params = new ArrayList<>();
 
         Parameter param = new Parameter();
-        param.setExpression( "${project.build.directory}" );
-        param.setDefaultValue( "</markup-must-be-escaped>" );
-        param.setName( "dir" );
-        param.setRequired( true );
-        param.setType( "java.lang.String" );
-        param.setDescription( "Test parameter description" );
-        param.setAlias( "some.alias" );
-        param.setSince( "paramDirSince" );
-        params.add( param );
+        param.setExpression("${project.build.directory}");
+        param.setDefaultValue("</markup-must-be-escaped>");
+        param.setName("dir");
+        param.setRequired(true);
+        param.setType("java.lang.String");
+        param.setDescription("Test parameter description");
+        param.setAlias("some.alias");
+        param.setSince("paramDirSince");
+        params.add(param);
 
         param = new Parameter();
-        param.setName( "withoutSince" );
-        param.setType( "java.lang.String" );
-        params.add( param );
+        param.setName("withoutSince");
+        param.setType("java.lang.String");
+        params.add(param);
 
-        mojoDescriptor.setParameters( params );
+        mojoDescriptor.setParameters(params);
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
-        mojoDescriptor.setPluginDescriptor( pluginDescriptor );
+        mojoDescriptor.setPluginDescriptor(pluginDescriptor);
 
-        pluginDescriptor.addMojo( mojoDescriptor );
+        pluginDescriptor.addMojo(mojoDescriptor);
 
-        pluginDescriptor.setArtifactId( "maven-unitTesting-plugin" );
-        pluginDescriptor.setGoalPrefix( "test" );
+        pluginDescriptor.setArtifactId("maven-unitTesting-plugin");
+        pluginDescriptor.setGoalPrefix("test");
 
         ComponentDependency dependency = new ComponentDependency();
-        dependency.setGroupId( "testGroup" );
-        dependency.setArtifactId( "testArtifact" );
-        dependency.setVersion( "0.0.0" );
+        dependency.setGroupId("testGroup");
+        dependency.setArtifactId("testArtifact");
+        dependency.setVersion("0.0.0");
 
-        pluginDescriptor.setDependencies( Collections.singletonList( dependency ) );
+        pluginDescriptor.setDependencies(Collections.singletonList(dependency));
 
-        File destinationDirectory = Files.createTempDirectory( "testGenerator-outDir" ).toFile();
+        File destinationDirectory =
+                Files.createTempDirectory("testGenerator-outDir").toFile();
         destinationDirectory.mkdir();
 
         MavenProject mavenProject = new MavenProject();
-        mavenProject.setGroupId( "foo" );
-        mavenProject.setArtifactId( "bar" );
+        mavenProject.setGroupId("foo");
+        mavenProject.setArtifactId("bar");
         Build build = new Build();
-        build.setDirectory( basedir + "/target" );
-        build.setOutputDirectory( basedir + "/target" );
-        mavenProject.setBuild( build );
-        extendPluginDescriptor( pluginDescriptor );
-        generator.execute( destinationDirectory, new DefaultPluginToolsRequest( mavenProject, pluginDescriptor ) );
+        build.setDirectory(basedir + "/target");
+        build.setOutputDirectory(basedir + "/target");
+        mavenProject.setBuild(build);
+        extendPluginDescriptor(pluginDescriptor);
+        generator.execute(destinationDirectory, new DefaultPluginToolsRequest(mavenProject, pluginDescriptor));
 
-        validate( destinationDirectory );
+        validate(destinationDirectory);
 
-        FileUtils.deleteDirectory( destinationDirectory );
+        FileUtils.deleteDirectory(destinationDirectory);
     }
 
-    protected void extendPluginDescriptor( PluginDescriptor pluginDescriptor ) throws DuplicateParameterException
-    {
+    protected void extendPluginDescriptor(PluginDescriptor pluginDescriptor) throws DuplicateParameterException {
         // may be overwritten
     }
 
@@ -122,34 +118,26 @@ public abstract class AbstractGeneratorTestCase
     //
     // ----------------------------------------------------------------------
 
-    protected void setupGenerator()
-        throws Exception
-    {
+    protected void setupGenerator() throws Exception {
         String generatorClassName = getClass().getName();
 
-        generatorClassName = generatorClassName.substring( 0, generatorClassName.length() - 4 );
+        generatorClassName = generatorClassName.substring(0, generatorClassName.length() - 4);
 
-        try
-        {
-            Class<?> generatorClass = Thread.currentThread().getContextClassLoader().loadClass( generatorClassName );
+        try {
+            Class<?> generatorClass =
+                    Thread.currentThread().getContextClassLoader().loadClass(generatorClassName);
 
             Log log = new SystemStreamLog();
-            try
-            {
-                Constructor<?> constructor = generatorClass.getConstructor( Log.class );
-                generator = (Generator) constructor.newInstance( log );
-            }
-            catch ( NoSuchMethodException ignore )
-            {
+            try {
+                Constructor<?> constructor = generatorClass.getConstructor(Log.class);
+                generator = (Generator) constructor.newInstance(log);
+            } catch (NoSuchMethodException ignore) {
                 generator = (Generator) generatorClass.newInstance();
-
             }
-        }
-        catch ( Exception e )
-        {
-            throw new Exception( "Cannot find " + generatorClassName +
-                                     "! Make sure your test case is named in the form ${generatorClassName}Test " +
-                                     "or override the setupPlugin() method to instantiate the mojo yourself." );
+        } catch (Exception e) {
+            throw new Exception("Cannot find " + generatorClassName
+                    + "! Make sure your test case is named in the form ${generatorClassName}Test "
+                    + "or override the setupPlugin() method to instantiate the mojo yourself.");
         }
     }
 
@@ -157,9 +145,7 @@ public abstract class AbstractGeneratorTestCase
     //
     // ----------------------------------------------------------------------
 
-    protected void validate( File destinationDirectory )
-        throws Exception
-    {
+    protected void validate(File destinationDirectory) throws Exception {
         // empty
     }
 }

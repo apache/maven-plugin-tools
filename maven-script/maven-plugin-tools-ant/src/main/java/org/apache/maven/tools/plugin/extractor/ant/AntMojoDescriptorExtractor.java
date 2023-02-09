@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.ant;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.ant;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -49,14 +48,12 @@ import org.codehaus.plexus.util.StringUtils;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-@Named( AntMojoDescriptorExtractor.NAME )
+@Named(AntMojoDescriptorExtractor.NAME)
 @Singleton
-public class AntMojoDescriptorExtractor
-    extends AbstractScriptedMojoDescriptorExtractor
-{
+public class AntMojoDescriptorExtractor extends AbstractScriptedMojoDescriptorExtractor {
     public static final String NAME = "ant";
 
-    private static final GroupKey GROUP_KEY = new GroupKey( "ant", 100 );
+    private static final GroupKey GROUP_KEY = new GroupKey("ant", 100);
 
     /** Default metadata file extension */
     private static final String METADATA_FILE_EXTENSION = ".mojos.xml";
@@ -65,185 +62,160 @@ public class AntMojoDescriptorExtractor
     private static final String SCRIPT_FILE_EXTENSION = ".build.xml";
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return NAME;
     }
 
     @Override
-    public GroupKey getGroupKey()
-    {
+    public GroupKey getGroupKey() {
         return GROUP_KEY;
     }
 
     /** {@inheritDoc} */
     @Override
     protected List<MojoDescriptor> extractMojoDescriptorsFromMetadata(
-                                                                  Map<String, Set<File>> metadataFilesKeyedByBasedir,
-                                                                  PluginToolsRequest request )
-        throws ExtractionException, InvalidPluginDescriptorException
-    {
+            Map<String, Set<File>> metadataFilesKeyedByBasedir, PluginToolsRequest request)
+            throws ExtractionException, InvalidPluginDescriptorException {
         List<MojoDescriptor> descriptors = new ArrayList<>();
 
         PluginMetadataParser parser = new PluginMetadataParser();
 
-        for ( Map.Entry<String, Set<File>> entry : metadataFilesKeyedByBasedir.entrySet() )
-        {
+        for (Map.Entry<String, Set<File>> entry : metadataFilesKeyedByBasedir.entrySet()) {
             String basedir = entry.getKey();
             Set<File> metadataFiles = entry.getValue();
 
-            for ( File metadataFile : metadataFiles )
-            {
+            for (File metadataFile : metadataFiles) {
                 String basename = metadataFile.getName();
-                basename = basename.substring( 0, basename.length() - METADATA_FILE_EXTENSION.length() );
+                basename = basename.substring(0, basename.length() - METADATA_FILE_EXTENSION.length());
 
-                File scriptFile = new File( metadataFile.getParentFile(), basename + SCRIPT_FILE_EXTENSION );
+                File scriptFile = new File(metadataFile.getParentFile(), basename + SCRIPT_FILE_EXTENSION);
 
-                if ( !scriptFile.exists() )
-                {
-                    throw new InvalidPluginDescriptorException(
-                        "Found orphaned plugin metadata file: " + metadataFile );
+                if (!scriptFile.exists()) {
+                    throw new InvalidPluginDescriptorException("Found orphaned plugin metadata file: " + metadataFile);
                 }
 
-                String relativePath = scriptFile.getPath().substring( basedir.length() ).replace( '\\', '/' );
-                
-                if ( relativePath.startsWith( "/" ) )
-                {
-                    relativePath = relativePath.substring( 1 );
+                String relativePath =
+                        scriptFile.getPath().substring(basedir.length()).replace('\\', '/');
+
+                if (relativePath.startsWith("/")) {
+                    relativePath = relativePath.substring(1);
                 }
 
-                try
-                {
-                    Set<MojoDescriptor> mojoDescriptors = parser.parseMojoDescriptors( metadataFile );
+                try {
+                    Set<MojoDescriptor> mojoDescriptors = parser.parseMojoDescriptors(metadataFile);
 
-                    for ( MojoDescriptor descriptor : mojoDescriptors )
-                    {
-                        @SuppressWarnings( "unchecked" )
+                    for (MojoDescriptor descriptor : mojoDescriptors) {
+                        @SuppressWarnings("unchecked")
                         Map<String, ?> paramMap = descriptor.getParameterMap();
 
-                        if ( !paramMap.containsKey( "basedir" ) )
-                        {
+                        if (!paramMap.containsKey("basedir")) {
                             Parameter param = new Parameter();
-                            param.setName( "basedir" );
-                            param.setAlias( "ant.basedir" );
-                            param.setExpression( "${antBasedir}" );
-                            param.setDefaultValue( "${basedir}" );
-                            param.setType( "java.io.File" );
-                            param.setDescription( "The base directory from which to execute the Ant script." );
-                            param.setEditable( true );
-                            param.setRequired( true );
+                            param.setName("basedir");
+                            param.setAlias("ant.basedir");
+                            param.setExpression("${antBasedir}");
+                            param.setDefaultValue("${basedir}");
+                            param.setType("java.io.File");
+                            param.setDescription("The base directory from which to execute the Ant script.");
+                            param.setEditable(true);
+                            param.setRequired(true);
 
-                            descriptor.addParameter( param );
+                            descriptor.addParameter(param);
                         }
 
-                        if ( !paramMap.containsKey( "antMessageLevel" ) )
-                        {
+                        if (!paramMap.containsKey("antMessageLevel")) {
                             Parameter param = new Parameter();
-                            param.setName( "messageLevel" );
-                            param.setAlias( "ant.messageLevel" );
-                            param.setExpression( "${antMessageLevel}" );
-                            param.setDefaultValue( "info" );
-                            param.setType( "java.lang.String" );
-                            param.setDescription( "The message-level used to tune the verbosity of Ant logging." );
-                            param.setEditable( true );
-                            param.setRequired( false );
+                            param.setName("messageLevel");
+                            param.setAlias("ant.messageLevel");
+                            param.setExpression("${antMessageLevel}");
+                            param.setDefaultValue("info");
+                            param.setType("java.lang.String");
+                            param.setDescription("The message-level used to tune the verbosity of Ant logging.");
+                            param.setEditable(true);
+                            param.setRequired(false);
 
-                            descriptor.addParameter( param );
-                        }
-                        
-                        if ( !paramMap.containsKey( "project" ) )
-                        {
-                            Parameter param = new Parameter();
-                            param.setName( "project" );
-                            param.setDefaultValue( "${project}" );
-                            param.setType( MavenProject.class.getName() );
-                            param.setDescription( "The current MavenProject instance, which contains classpath "
-                                + "elements." );
-                            param.setEditable( false );
-                            param.setRequired( true );
-
-                            descriptor.addParameter( param );
+                            descriptor.addParameter(param);
                         }
 
-                        if ( !paramMap.containsKey( "session" ) )
-                        {
+                        if (!paramMap.containsKey("project")) {
                             Parameter param = new Parameter();
-                            param.setName( "session" );
-                            param.setDefaultValue( "${session}" );
-                            param.setType( "org.apache.maven.execution.MavenSession" );
-                            param.setDescription( "The current MavenSession instance, which is used for "
-                                + "plugin-style expression resolution." );
-                            param.setEditable( false );
-                            param.setRequired( true );
+                            param.setName("project");
+                            param.setDefaultValue("${project}");
+                            param.setType(MavenProject.class.getName());
+                            param.setDescription(
+                                    "The current MavenProject instance, which contains classpath " + "elements.");
+                            param.setEditable(false);
+                            param.setRequired(true);
 
-                            descriptor.addParameter( param );
+                            descriptor.addParameter(param);
                         }
 
-                        if ( !paramMap.containsKey( "mojoExecution" ) )
-                        {
+                        if (!paramMap.containsKey("session")) {
                             Parameter param = new Parameter();
-                            param.setName( "mojoExecution" );
-                            param.setDefaultValue( "${mojoExecution}" );
-                            param.setType( "org.apache.maven.plugin.MojoExecution" );
-                            param.setDescription( "The current Maven MojoExecution instance, which contains "
-                                + "information about the mojo currently executing." );
-                            param.setEditable( false );
-                            param.setRequired( true );
+                            param.setName("session");
+                            param.setDefaultValue("${session}");
+                            param.setType("org.apache.maven.execution.MavenSession");
+                            param.setDescription("The current MavenSession instance, which is used for "
+                                    + "plugin-style expression resolution.");
+                            param.setEditable(false);
+                            param.setRequired(true);
 
-                            descriptor.addParameter( param );
+                            descriptor.addParameter(param);
                         }
-                        
-                        @SuppressWarnings( "unchecked" )
+
+                        if (!paramMap.containsKey("mojoExecution")) {
+                            Parameter param = new Parameter();
+                            param.setName("mojoExecution");
+                            param.setDefaultValue("${mojoExecution}");
+                            param.setType("org.apache.maven.plugin.MojoExecution");
+                            param.setDescription("The current Maven MojoExecution instance, which contains "
+                                    + "information about the mojo currently executing.");
+                            param.setEditable(false);
+                            param.setRequired(true);
+
+                            descriptor.addParameter(param);
+                        }
+
+                        @SuppressWarnings("unchecked")
                         List<ComponentRequirement> requirements = descriptor.getRequirements();
                         Map<String, ComponentRequirement> reqMap = new HashMap<>();
 
-                        if ( requirements != null )
-                        {
-                            for ( ComponentRequirement req : requirements )
-                            {
-                                reqMap.put( req.getRole(), req );
+                        if (requirements != null) {
+                            for (ComponentRequirement req : requirements) {
+                                reqMap.put(req.getRole(), req);
                             }
                         }
-                        
-                        if ( !reqMap.containsKey( PathTranslator.class.getName() ) )
-                        {
+
+                        if (!reqMap.containsKey(PathTranslator.class.getName())) {
                             ComponentRequirement req = new ComponentRequirement();
-                            req.setRole( PathTranslator.class.getName() );
-                            
-                            descriptor.addRequirement( req );
+                            req.setRole(PathTranslator.class.getName());
+
+                            descriptor.addRequirement(req);
                         }
 
                         String implementation = relativePath;
 
                         String dImpl = descriptor.getImplementation();
-                        if ( StringUtils.isNotEmpty( dImpl ) )
-                        {
-                            if ( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.equals( dImpl ) )
-                            {
+                        if (StringUtils.isNotEmpty(dImpl)) {
+                            if (PluginMetadataParser.IMPL_BASE_PLACEHOLDER.equals(dImpl)) {
                                 implementation = relativePath;
-                            }
-                            else
-                            {
-                                implementation =
-                                    relativePath
-                                        + dImpl.substring( PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length() );
+                            } else {
+                                implementation = relativePath
+                                        + dImpl.substring(PluginMetadataParser.IMPL_BASE_PLACEHOLDER.length());
                             }
                         }
 
-                        descriptor.setImplementation( implementation );
+                        descriptor.setImplementation(implementation);
 
-                        descriptor.setLanguage( "ant-mojo" );
-                        descriptor.setComponentComposer( "map-oriented" );
-                        descriptor.setComponentConfigurator( "map-oriented" );
+                        descriptor.setLanguage("ant-mojo");
+                        descriptor.setComponentComposer("map-oriented");
+                        descriptor.setComponentConfigurator("map-oriented");
 
-                        descriptor.setPluginDescriptor( request.getPluginDescriptor() );
+                        descriptor.setPluginDescriptor(request.getPluginDescriptor());
 
-                        descriptors.add( descriptor );
+                        descriptors.add(descriptor);
                     }
-                }
-                catch ( PluginMetadataParseException e )
-                {
-                    throw new ExtractionException( "Error extracting mojo descriptor from script: " + metadataFile, e );
+                } catch (PluginMetadataParseException e) {
+                    throw new ExtractionException("Error extracting mojo descriptor from script: " + metadataFile, e);
                 }
             }
         }
@@ -253,15 +225,13 @@ public class AntMojoDescriptorExtractor
 
     /** {@inheritDoc} */
     @Override
-    protected String getScriptFileExtension( PluginToolsRequest request )
-    {
+    protected String getScriptFileExtension(PluginToolsRequest request) {
         return SCRIPT_FILE_EXTENSION;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected String getMetadataFileExtension( PluginToolsRequest request )
-    {
+    protected String getMetadataFileExtension(PluginToolsRequest request) {
         return METADATA_FILE_EXTENSION;
     }
 }

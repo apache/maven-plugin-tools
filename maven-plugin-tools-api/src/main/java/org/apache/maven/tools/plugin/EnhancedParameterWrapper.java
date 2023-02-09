@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin;
 
 import java.net.URI;
 
@@ -28,165 +27,132 @@ import org.apache.maven.plugin.descriptor.Requirement;
  * Wrapper around regular {@link Parameter} which adds capability to
  * read/write a type javadoc URL
  */
-public class EnhancedParameterWrapper
-    extends Parameter
-{
+public class EnhancedParameterWrapper extends Parameter {
     private final Parameter delegate;
     private URI typeJavadocUrl;
-    
-    public EnhancedParameterWrapper( Parameter delegate )
-    {
+
+    public EnhancedParameterWrapper(Parameter delegate) {
         super();
         this.delegate = delegate;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return delegate.getName();
     }
 
-    public void setName( String name )
-    {
-        delegate.setName( name );
+    public void setName(String name) {
+        delegate.setName(name);
     }
 
-    public String getType()
-    {
+    public String getType() {
         return delegate.getType();
     }
 
-    public void setType( String type )
-    {
-        delegate.setType( type );
+    public void setType(String type) {
+        delegate.setType(type);
     }
 
-    public boolean isRequired()
-    {
+    public boolean isRequired() {
         return delegate.isRequired();
     }
 
-    public void setRequired( boolean required )
-    {
-        delegate.setRequired( required );
+    public void setRequired(boolean required) {
+        delegate.setRequired(required);
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return delegate.getDescription();
     }
 
-    public void setDescription( String description )
-    {
-        delegate.setDescription( description );
+    public void setDescription(String description) {
+        delegate.setDescription(description);
     }
 
-    public String getExpression()
-    {
+    public String getExpression() {
         return delegate.getExpression();
     }
 
-    public void setExpression( String expression )
-    {
-        delegate.setExpression( expression );
+    public void setExpression(String expression) {
+        delegate.setExpression(expression);
     }
 
-    public String getDeprecated()
-    {
+    public String getDeprecated() {
         return delegate.getDeprecated();
     }
 
-    public void setDeprecated( String deprecated )
-    {
-        delegate.setDeprecated( deprecated );
+    public void setDeprecated(String deprecated) {
+        delegate.setDeprecated(deprecated);
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         return delegate.hashCode();
     }
 
-    public boolean equals( Object other )
-    {
-        return delegate.equals( other );
+    public boolean equals(Object other) {
+        return delegate.equals(other);
     }
 
-    public String getAlias()
-    {
+    public String getAlias() {
         return delegate.getAlias();
     }
 
-    public void setAlias( String alias )
-    {
-        delegate.setAlias( alias );
+    public void setAlias(String alias) {
+        delegate.setAlias(alias);
     }
 
-    public boolean isEditable()
-    {
+    public boolean isEditable() {
         return delegate.isEditable();
     }
 
-    public void setEditable( boolean editable )
-    {
-        delegate.setEditable( editable );
+    public void setEditable(boolean editable) {
+        delegate.setEditable(editable);
     }
 
-    public void setDefaultValue( String defaultValue )
-    {
-        delegate.setDefaultValue( defaultValue );
+    public void setDefaultValue(String defaultValue) {
+        delegate.setDefaultValue(defaultValue);
     }
 
-    public String getDefaultValue()
-    {
+    public String getDefaultValue() {
         return delegate.getDefaultValue();
     }
 
-    public String toString()
-    {
+    public String toString() {
         return delegate.toString();
     }
 
-    public Requirement getRequirement()
-    {
+    public Requirement getRequirement() {
         return delegate.getRequirement();
     }
 
-    public void setRequirement( Requirement requirement )
-    {
-        delegate.setRequirement( requirement );
+    public void setRequirement(Requirement requirement) {
+        delegate.setRequirement(requirement);
     }
 
-    public String getImplementation()
-    {
+    public String getImplementation() {
         return delegate.getImplementation();
     }
 
-    public void setImplementation( String implementation )
-    {
-        delegate.setImplementation( implementation );
+    public void setImplementation(String implementation) {
+        delegate.setImplementation(implementation);
     }
 
-    public String getSince()
-    {
+    public String getSince() {
         return delegate.getSince();
     }
 
-    public void setSince( String since )
-    {
-        delegate.setSince( since );
+    public void setSince(String since) {
+        delegate.setSince(since);
     }
 
-    public Parameter clone()
-    {
+    public Parameter clone() {
         return delegate.clone();
     }
 
-    public URI getTypeJavadocUrl()
-    {
+    public URI getTypeJavadocUrl() {
         return typeJavadocUrl;
     }
 
-    public void setTypeJavadocUrl( URI typeJavadocUrl )
-    {
+    public void setTypeJavadocUrl(URI typeJavadocUrl) {
         this.typeJavadocUrl = typeJavadocUrl;
     }
 }

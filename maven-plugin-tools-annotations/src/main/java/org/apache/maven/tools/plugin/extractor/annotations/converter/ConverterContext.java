@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter;
 
 import java.net.URI;
 import java.util.Optional;
@@ -29,49 +28,48 @@ import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 /**
  * Context which is passed to {@link JavadocBlockTagsToXhtmlConverter}, {@link JavadocInlineTagsToXhtmlConverter},
  * {@link JavadocBlockTagToHtmlConverter} and {@link JavadocBlockTagToHtmlConverter}.
- * It contains metadata about the container class and allows to resolve class or member names 
+ * It contains metadata about the container class and allows to resolve class or member names
  * which are not fully qualified as well as creating (deep-) links to javadoc pages.
  */
-public interface ConverterContext
-{
+public interface ConverterContext {
     /**
-     * 
+     *
      * @return the module name of the container class
      */
     Optional<String> getModuleName();
-    
+
     /**
-     * 
+     *
      * @return the package name of the container class
      */
     String getPackageName();
 
     /**
-     * 
+     *
      * @param reference
      * @return true in case either the current container class or any of its super classes are referenced
      */
-    boolean isReferencedBy( FullyQualifiedJavadocReference reference );
+    boolean isReferencedBy(FullyQualifiedJavadocReference reference);
 
     /**
-     * 
+     *
      * @return a location text (human readable) indicating where in the container class the conversion is triggered
      * (should be as specific as possible to ease debugging)
      */
     String getLocation();
 
     /**
-     * Resolves a given javadoc reference, according to the rules of 
+     * Resolves a given javadoc reference, according to the rules of
      * <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html#JSWOR655">
      * Javadoc's search order</a>.
      * @param reference the reference to resolve
      * @return the resolved fully qualified reference
      * @throws IllegalArgumentException in case the reference cannot be resolved
      */
-    FullyQualifiedJavadocReference resolveReference( JavadocReference reference );
+    FullyQualifiedJavadocReference resolveReference(JavadocReference reference);
 
     /**
-     * 
+     *
      * @return {@code true} if links to javadoc pages could potentially be generated with
      * {@link #getUrl(FullyQualifiedJavadocReference)}.
      */
@@ -85,7 +83,7 @@ public interface ConverterContext
      * @throws IllegalStateException in case no javadoc source sites have been configured
      * (i.e. {@link #canGetUrl()} returns {@code false})
      */
-    URI getUrl( FullyQualifiedJavadocReference reference );
+    URI getUrl(FullyQualifiedJavadocReference reference);
 
     /**
      * Returns the value of a referenced static field.
@@ -93,10 +91,10 @@ public interface ConverterContext
      * @return the value of the static field given by the {@code reference}
      * @throws IllegalArgumentException in case the reference does not point to a valid static field
      */
-    String getStaticFieldValue( FullyQualifiedJavadocReference reference );
+    String getStaticFieldValue(FullyQualifiedJavadocReference reference);
 
     /**
-     * Returns the base url to use for internal javadoc links 
+     * Returns the base url to use for internal javadoc links
      * @return the base url for internal javadoc links (may be {@code null}).
      */
     URI getInternalJavadocSiteBaseUrl();
@@ -108,8 +106,8 @@ public interface ConverterContext
      * @param value
      * @return the old attribute value or null.
      */
-    <T> T setAttribute( String name, T value );
-    
+    <T> T setAttribute(String name, T value);
+
     /**
      * Retrieves some attribute value from the current context.
      * @param <T>
@@ -118,5 +116,5 @@ public interface ConverterContext
      * @param defaultValue
      * @return the value of the attribute with the given name or {@code null} if it does not exist
      */
-    <T> T getAttribute( String name, Class<T> clazz, T defaultValue );
+    <T> T getAttribute(String name, Class<T> clazz, T defaultValue);
 }

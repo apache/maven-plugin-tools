@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,14 +16,13 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 /**
  * Interface for processing plugin descriptor values (prior to serialization)
  *
  */
-public interface Converter
-{
+public interface Converter {
 
-    String convert( String text );
-
+    String convert(String text);
 }

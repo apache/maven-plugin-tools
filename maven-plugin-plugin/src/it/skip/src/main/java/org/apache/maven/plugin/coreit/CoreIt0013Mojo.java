@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,50 +16,42 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
+package org.apache.maven.plugin.coreit;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+
 /**
  * Touches a test file.
- * 
+ *
  * @goal it0013
  */
-public class CoreIt0013Mojo
-    extends AbstractMojo
-{
-    
+public class CoreIt0013Mojo extends AbstractMojo {
+
     /**
      * @parameter expression="${project.build.directory}"
      * @required
      */
     private String outputDirectory;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        getLog().info( "outputDirectory = " + outputDirectory );
+    public void execute() throws MojoExecutionException {
+        getLog().info("outputDirectory = " + outputDirectory);
 
-        File f = new File( outputDirectory );
-        
-        if ( !f.exists() )
-        {
+        File f = new File(outputDirectory);
+
+        if (!f.exists()) {
             f.mkdirs();
         }
-        
-        File touch = new File( f, "touch.txt" );
-        
-        try
-        {
-            touch.createNewFile();
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Error writing verification file.", e );
-        }                
-    }
 
+        File touch = new File(f, "touch.txt");
+
+        try {
+            touch.createNewFile();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error writing verification file.", e);
+        }
+    }
 }
