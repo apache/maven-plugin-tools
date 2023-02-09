@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,45 +16,38 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class AnnotatedField
-    extends AnnotatedContent
-    implements Comparable<AnnotatedField>
-{
+public class AnnotatedField extends AnnotatedContent implements Comparable<AnnotatedField> {
     private String fieldName;
 
-    public AnnotatedField( String fieldName )
-    {
+    public AnnotatedField(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    public String getFieldName()
-    {
+    public String getFieldName() {
         return fieldName;
     }
 
-    public void setFieldName( String name )
-    {
+    public void setFieldName(String name) {
         this.fieldName = name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "AnnotatedField" );
-        sb.append( "{fieldName='" ).append( fieldName ).append( '\'' );
-        sb.append( '}' );
+        sb.append("AnnotatedField");
+        sb.append("{fieldName='").append(fieldName).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 
     @Override
-    public int compareTo( AnnotatedField annotatedField )
-    {
-        return getFieldName().compareTo( annotatedField.getFieldName() );
+    public int compareTo(AnnotatedField annotatedField) {
+        return getFieldName().compareTo(annotatedField.getFieldName());
     }
 }

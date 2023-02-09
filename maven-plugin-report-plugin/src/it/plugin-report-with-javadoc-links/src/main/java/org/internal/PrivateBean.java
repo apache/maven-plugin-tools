@@ -1,5 +1,3 @@
-package org.internal;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,11 +16,11 @@ package org.internal;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.internal;
 
 /**
  * Bean which does not have javadoc
  */
-public class PrivateBean
-{
+public class PrivateBean {
     public Integer field1;
 }

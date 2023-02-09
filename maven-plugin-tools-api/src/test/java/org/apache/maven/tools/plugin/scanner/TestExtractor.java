@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,10 @@ package org.apache.maven.tools.plugin.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.scanner;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -27,48 +29,37 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author jdcasey
  */
-public class TestExtractor
-    implements MojoDescriptorExtractor
-{
-    private static final GroupKey GROUP_KEY = new GroupKey( "test", 100 );
+public class TestExtractor implements MojoDescriptorExtractor {
+    private static final GroupKey GROUP_KEY = new GroupKey("test", 100);
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "test";
     }
 
     @Override
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return false;
     }
 
     @Override
-    public GroupKey getGroupKey()
-    {
+    public GroupKey getGroupKey() {
         return GROUP_KEY;
     }
 
-    public List<MojoDescriptor> execute(MavenProject project, PluginDescriptor pluginDescriptor )
-    {
-        return execute( new DefaultPluginToolsRequest( project, pluginDescriptor ) );
+    public List<MojoDescriptor> execute(MavenProject project, PluginDescriptor pluginDescriptor) {
+        return execute(new DefaultPluginToolsRequest(project, pluginDescriptor));
     }
-    
+
     @Override
-    public List<MojoDescriptor> execute( PluginToolsRequest request )
-    {
+    public List<MojoDescriptor> execute(PluginToolsRequest request) {
         MojoDescriptor desc = new MojoDescriptor();
-        desc.setPluginDescriptor( request.getPluginDescriptor() );
-        desc.setGoal( "testGoal" );
+        desc.setPluginDescriptor(request.getPluginDescriptor());
+        desc.setGoal("testGoal");
 
-        return Collections.singletonList( desc );
+        return Collections.singletonList(desc);
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
 
 import java.util.Comparator;
 
@@ -26,14 +25,11 @@ import java.util.Comparator;
  *
  * @since TBD
  */
-public class MojoDescriptorExtractorComparator
-        implements Comparator<MojoDescriptorExtractor>
-{
+public class MojoDescriptorExtractorComparator implements Comparator<MojoDescriptorExtractor> {
     public static final MojoDescriptorExtractorComparator INSTANCE = new MojoDescriptorExtractorComparator();
 
     @Override
-    public int compare( MojoDescriptorExtractor o1, MojoDescriptorExtractor o2 )
-    {
-        return o1.getGroupKey().compareTo( o2.getGroupKey() );
+    public int compare(MojoDescriptorExtractor o1, MojoDescriptorExtractor o2) {
+        return o1.getGroupKey().compareTo(o2.getGroupKey());
     }
 }

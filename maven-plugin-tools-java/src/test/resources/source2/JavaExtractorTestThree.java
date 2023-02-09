@@ -1,5 +1,3 @@
-package source2;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package source2;
  * specific language governing permissions and limitations
  * under the License.
  */
+package source2;
 
 import org.apache.maven.plugin.AbstractMojo;
 
@@ -28,26 +27,20 @@ import org.apache.maven.plugin.AbstractMojo;
  * @requiresDependencyResolution compile
  * @requiresDependencyCollection test
  * @threadSafe
- * 
+ *
  */
-public class JavaExtractorTestThree
-    extends AbstractMojo
-{
+public class JavaExtractorTestThree extends AbstractMojo {
     /**
      * @parameter implementation=source2.sub.MyBla
      * @required
      */
     private Bla bla;
 
-    public JavaExtractorTestThree()
-    {
-    }
+    public JavaExtractorTestThree() {}
 
-    public void execute()
-    {
-        if ( getLog() != null )
-        {
-            getLog().info( "bla: " + bla );
+    public void execute() {
+        if (getLog() != null) {
+            getLog().info("bla: " + bla);
         }
     }
 }

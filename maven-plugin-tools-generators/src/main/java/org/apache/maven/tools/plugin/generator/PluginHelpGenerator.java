@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +45,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
  */
-public class PluginHelpGenerator
-    extends AbstractLogEnabled
-{
+public class PluginHelpGenerator extends AbstractLogEnabled {
     /**
      * Default generated class name
      */
@@ -63,65 +60,53 @@ public class PluginHelpGenerator
     /**
      * Default constructor
      */
-    public PluginHelpGenerator()
-    {
-        this.enableLogging( new ConsoleLogger( Logger.LEVEL_INFO, "PluginHelpGenerator" ) );
+    public PluginHelpGenerator() {
+        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "PluginHelpGenerator"));
     }
 
     // ----------------------------------------------------------------------
     // Public methods
     // ----------------------------------------------------------------------
 
-    public void execute( File destinationDirectory )
-        throws GeneratorException
-    {
+    public void execute(File destinationDirectory) throws GeneratorException {
         String helpImplementation = getImplementation();
 
         useMaven4Api = mavenProject.getDependencies().stream()
-                        .anyMatch( dep -> "org.apache.maven".equals( dep.getGroupId() )
-                                && "maven-api-core".equals( dep.getArtifactId() ) );
+                .anyMatch(dep ->
+                        "org.apache.maven".equals(dep.getGroupId()) && "maven-api-core".equals(dep.getArtifactId()));
 
-        try
-        {
-            String sourcePath = helpImplementation.replace( '.', File.separatorChar ) + ".java";
+        try {
+            String sourcePath = helpImplementation.replace('.', File.separatorChar) + ".java";
 
-            File helpClass = new File( destinationDirectory, sourcePath );
+            File helpClass = new File(destinationDirectory, sourcePath);
             helpClass.getParentFile().mkdirs();
 
-            String helpClassSources =
-                getHelpClassSources( getPluginHelpPath( mavenProject ) );
+            String helpClassSources = getHelpClassSources(getPluginHelpPath(mavenProject));
 
-            try ( Writer w = new OutputStreamWriter( new CachingOutputStream( helpClass ), UTF_8 ) )
-            {
-                w.write( helpClassSources );
+            try (Writer w = new OutputStreamWriter(new CachingOutputStream(helpClass), UTF_8)) {
+                w.write(helpClassSources);
             }
-        }
-        catch ( IOException e )
-        {
-            throw new GeneratorException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new GeneratorException(e.getMessage(), e);
         }
     }
 
-    public PluginHelpGenerator setHelpPackageName( String helpPackageName )
-    {
+    public PluginHelpGenerator setHelpPackageName(String helpPackageName) {
         this.helpPackageName = helpPackageName;
         return this;
     }
 
-    public PluginHelpGenerator setVelocityComponent( VelocityComponent velocityComponent )
-    {
+    public PluginHelpGenerator setVelocityComponent(VelocityComponent velocityComponent) {
         this.velocityComponent = velocityComponent;
         return this;
     }
 
-    public PluginHelpGenerator setGoalPrefix( String goalPrefix )
-    {
+    public PluginHelpGenerator setGoalPrefix(String goalPrefix) {
         this.goalPrefix = goalPrefix;
         return this;
     }
 
-    public PluginHelpGenerator setMavenProject( MavenProject mavenProject )
-    {
+    public PluginHelpGenerator setMavenProject(MavenProject mavenProject) {
         this.mavenProject = mavenProject;
         return this;
     }
@@ -130,47 +115,43 @@ public class PluginHelpGenerator
     // Private methods
     // ----------------------------------------------------------------------
 
-    private String getHelpClassSources( String pluginHelpPath )
-        throws IOException
-    {
+    private String getHelpClassSources(String pluginHelpPath) throws IOException {
         VelocityContext context = new VelocityContext();
-        boolean useAnnotations = mavenProject.getArtifactMap().containsKey(
-            "org.apache.maven.plugin-tools:maven-plugin-annotations" );
+        boolean useAnnotations =
+                mavenProject.getArtifactMap().containsKey("org.apache.maven.plugin-tools:maven-plugin-annotations");
 
-        context.put( "helpPackageName", helpPackageName );
-        context.put( "pluginHelpPath", pluginHelpPath );
-        context.put( "artifactId", mavenProject.getArtifactId() );
+        context.put("helpPackageName", helpPackageName);
+        context.put("pluginHelpPath", pluginHelpPath);
+        context.put("artifactId", mavenProject.getArtifactId());
         // TODO: evaluate prefix from deserialized plugin
-        context.put( "goalPrefix", goalPrefix );
-        context.put( "useAnnotations", useAnnotations );
+        context.put("goalPrefix", goalPrefix);
+        context.put("useAnnotations", useAnnotations);
 
         StringWriter stringWriter = new StringWriter();
 
         // plugin-tools sources are UTF-8 (and even ASCII in this case))
-        try ( InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                    useMaven4Api ? "help-class-source-v4.vm" : "help-class-source.vm" ); //
-             InputStreamReader isReader = new InputStreamReader( is, UTF_8 ) )
-        {
-            //isReader =
-            velocityComponent.getEngine().evaluate( context, stringWriter, "", isReader );
+        try (InputStream is = Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream(useMaven4Api ? "help-class-source-v4.vm" : "help-class-source.vm"); //
+                InputStreamReader isReader = new InputStreamReader(is, UTF_8)) {
+            // isReader =
+            velocityComponent.getEngine().evaluate(context, stringWriter, "", isReader);
         }
         // Apply OS lineSeparator instead of template's lineSeparator to have consistent separators for
         // all source files.
-        return stringWriter.toString().replaceAll( "(\r\n|\n|\r)", System.lineSeparator() );
+        return stringWriter.toString().replaceAll("(\r\n|\n|\r)", System.lineSeparator());
     }
 
     /**
      * @return The implementation.
      */
-    private String getImplementation( )
-    {
-        return StringUtils.isEmpty( helpPackageName )
-            ? HELP_MOJO_CLASS_NAME
-            : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
+    private String getImplementation() {
+        return StringUtils.isEmpty(helpPackageName)
+                ? HELP_MOJO_CLASS_NAME
+                : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
     }
 
-    static String getPluginHelpPath( MavenProject mavenProject )
-    {
+    static String getPluginHelpPath(MavenProject mavenProject) {
         return mavenProject.getGroupId() + "/" + mavenProject.getArtifactId() + "/plugin-help.xml";
     }
 }

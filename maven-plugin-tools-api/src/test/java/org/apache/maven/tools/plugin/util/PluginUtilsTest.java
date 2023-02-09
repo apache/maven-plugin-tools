@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.util;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.util;
 
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.junit.jupiter.api.Test;
@@ -27,44 +26,39 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author jdcasey
  */
-class PluginUtilsTest
-{
+class PluginUtilsTest {
     @Test
-    void testShouldTrimArtifactIdToFindPluginId()
-    {
-        assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "maven-artifactId-plugin" ) );
-        assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "maven-plugin-artifactId" ) );
-        assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "artifactId-maven-plugin" ) );
-        assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "artifactId" ) );
-        assertEquals( "artifactId", PluginDescriptor.getGoalPrefixFromArtifactId( "artifactId-plugin" ) );
-        assertEquals( "plugin", PluginDescriptor.getGoalPrefixFromArtifactId( "maven-plugin-plugin" ) );
+    void testShouldTrimArtifactIdToFindPluginId() {
+        assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("maven-artifactId-plugin"));
+        assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("maven-plugin-artifactId"));
+        assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("artifactId-maven-plugin"));
+        assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("artifactId"));
+        assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("artifactId-plugin"));
+        assertEquals("plugin", PluginDescriptor.getGoalPrefixFromArtifactId("maven-plugin-plugin"));
     }
 
     @Test
-    void testShouldFindTwoScriptsWhenNoExcludesAreGiven()
-    {
+    void testShouldFindTwoScriptsWhenNoExcludesAreGiven() {
         String testScript = "test.txt";
 
-        String basedir = TestUtils.dirname( testScript );
+        String basedir = TestUtils.dirname(testScript);
 
         String includes = "**/*.txt";
 
-        String[] files = PluginUtils.findSources( basedir, includes );
-        assertEquals( 2, files.length );
+        String[] files = PluginUtils.findSources(basedir, includes);
+        assertEquals(2, files.length);
     }
 
     @Test
-    void testShouldFindOneScriptsWhenAnExcludeIsGiven()
-    {
+    void testShouldFindOneScriptsWhenAnExcludeIsGiven() {
         String testScript = "test.txt";
 
-        String basedir = TestUtils.dirname( testScript );
+        String basedir = TestUtils.dirname(testScript);
 
         String includes = "**/*.txt";
         String excludes = "**/*Excludes.txt";
 
-        String[] files = PluginUtils.findSources( basedir, includes, excludes );
-        assertEquals( 1, files.length );
+        String[] files = PluginUtils.findSources(basedir, includes, excludes);
+        assertEquals(1, files.length);
     }
-
 }

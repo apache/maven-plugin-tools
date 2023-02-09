@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -26,18 +25,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 @Deprecated
-@Mojo( name = "deprecated-mojo" )
-public class DeprecatedMojo extends AbstractMojo
-{
+@Mojo(name = "deprecated-mojo")
+public class DeprecatedMojo extends AbstractMojo {
     @Deprecated
-    @Parameter( alias = "deprecatedParametersAlias" )
+    @Parameter(alias = "deprecatedParametersAlias")
     private String deprecatedParameters;
 
-    @Parameter( property = "property.anotherNotDeprecated" )
+    @Parameter(property = "property.anotherNotDeprecated")
     private String anotherNotDeprecated;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException
-    {
-    }
+    public void execute() throws MojoExecutionException, MojoFailureException {}
 }

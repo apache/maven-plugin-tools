@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
 
 import java.util.regex.Pattern;
 
@@ -28,33 +27,28 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.
 /**
  * Common base class of both {@link JavadocBlockTagToHtmlConverter} and {@link JavadocInlineTagToHtmlConverter}.
  */
-public abstract class JavadocTagToHtmlConverter
-{
+public abstract class JavadocTagToHtmlConverter {
 
-    private static final Pattern LT = Pattern.compile( "<" );
-    private static final Pattern GT = Pattern.compile( ">" );
+    private static final Pattern LT = Pattern.compile("<");
+    private static final Pattern GT = Pattern.compile(">");
 
     /**
-     * 
+     *
      * @param text the value of the tag
      * @param context the content of the tag (may be empty in case there was no content given)
      * @return the converted text which represents the tag with the given value in html
      */
-    public abstract String convert( String text, ConverterContext context );
+    public abstract String convert(String text, ConverterContext context);
 
     /** Mostly a copy of {@code org.codehaus.plexus.util.xml.PrettyPrintXMLWriter#escapeXml(String)}. */
-    protected static String escapeXmlElement( String text )
-    {
-        if ( text.indexOf( '<' ) >= 0 )
-        {
-            text = LT.matcher( text ).replaceAll( "&lt;" );
+    protected static String escapeXmlElement(String text) {
+        if (text.indexOf('<') >= 0) {
+            text = LT.matcher(text).replaceAll("&lt;");
         }
-    
-        if ( text.indexOf( '>' ) >= 0 )
-        {
-            text = GT.matcher( text ).replaceAll( "&gt;" );
+
+        if (text.indexOf('>') >= 0) {
+            text = GT.matcher(text).replaceAll("&gt;");
         }
         return text;
     }
-
 }

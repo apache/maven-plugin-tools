@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.antWithRefs;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,18 +16,14 @@ package org.apache.maven.plugins.antWithRefs;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.antWithRefs;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-public class ArtifactsTask
-    extends Task
-{
+public class ArtifactsTask extends Task {
 
-    public void execute()
-        throws BuildException
-    {
-        log( String.valueOf( ( Object ) getProject().getReference( "artifacts" ) ) );
+    public void execute() throws BuildException {
+        log(String.valueOf((Object) getProject().getReference("artifacts")));
     }
-
 }

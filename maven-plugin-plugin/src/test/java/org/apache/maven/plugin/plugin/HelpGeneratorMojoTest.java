@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.plugin.plugin;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin;
 
 import java.util.stream.Stream;
 
@@ -28,36 +27,31 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HelpGeneratorMojoTest
-{
+class HelpGeneratorMojoTest {
 
-    public static Stream<Arguments> packageNameShouldBeCorrect()
-    {
+    public static Stream<Arguments> packageNameShouldBeCorrect() {
         return Stream.of(
-            Arguments.of( aProject( "groupId", "artifactId" ), "groupId.artifactId" ),
-            Arguments.of( aProject( "groupId", "123-artifactId" ), "groupId._123_artifactId" ),
-            Arguments.of( aProject( "group-Id", "artifact-Id" ), "group_Id.artifact_Id" ),
-            Arguments.of( aProject( "group-Id", "int" ), "group_Id._int" )
-        );
+                Arguments.of(aProject("groupId", "artifactId"), "groupId.artifactId"),
+                Arguments.of(aProject("groupId", "123-artifactId"), "groupId._123_artifactId"),
+                Arguments.of(aProject("group-Id", "artifact-Id"), "group_Id.artifact_Id"),
+                Arguments.of(aProject("group-Id", "int"), "group_Id._int"));
     }
 
     @ParameterizedTest
     @MethodSource
-    void packageNameShouldBeCorrect( MavenProject project, String expectedPackageName )
-    {
+    void packageNameShouldBeCorrect(MavenProject project, String expectedPackageName) {
         HelpGeneratorMojo mojo = new HelpGeneratorMojo();
         mojo.project = project;
 
         String packageName = mojo.getHelpPackageName();
-        assertEquals( expectedPackageName, packageName );
+        assertEquals(expectedPackageName, packageName);
     }
 
-    private static MavenProject aProject( String groupId, String artifactId )
-    {
+    private static MavenProject aProject(String groupId, String artifactId) {
 
         MavenProject mavenProject = new MavenProject();
-        mavenProject.setGroupId( groupId );
-        mavenProject.setArtifactId( artifactId );
+        mavenProject.setGroupId(groupId);
+        mavenProject.setArtifactId(artifactId);
         return mavenProject;
     }
 }

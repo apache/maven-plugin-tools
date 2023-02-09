@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -30,17 +29,12 @@ import org.apache.maven.tools.plugin.javadoc.JavadocReference;
  * Supports <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#value">
  * inline value tag</a>.
  */
-@Named( "value" )
+@Named("value")
 @Singleton
-public class ValueTagConverter
-    extends JavadocInlineTagToHtmlConverter
-{
+public class ValueTagConverter extends JavadocInlineTagToHtmlConverter {
     @Override
-    public String convert( String text, ConverterContext context )
-    {
-        FullyQualifiedJavadocReference reference = 
-                        context.resolveReference( JavadocReference.parse( text ) );
-        return context.getStaticFieldValue( reference );
+    public String convert(String text, ConverterContext context) {
+        FullyQualifiedJavadocReference reference = context.resolveReference(JavadocReference.parse(text));
+        return context.getStaticFieldValue(reference);
     }
-
 }

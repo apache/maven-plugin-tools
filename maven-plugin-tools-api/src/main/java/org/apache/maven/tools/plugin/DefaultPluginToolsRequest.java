@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,12 @@ package org.apache.maven.tools.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin;
+
+import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -27,11 +31,6 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Default implementation of {@link PluginToolsRequest}, which is used to pass parameters to components used to extract
  * {@link org.apache.maven.plugin.descriptor.MojoDescriptor MojoDescriptor} instances from different types of metadata
@@ -40,9 +39,7 @@ import java.util.Set;
  * @author jdcasey
  * @since 2.5
  */
-public class DefaultPluginToolsRequest
-    implements PluginToolsRequest
-{
+public class DefaultPluginToolsRequest implements PluginToolsRequest {
 
     private static final String DEFAULT_ENCODING = ReaderFactory.FILE_ENCODING;
 
@@ -72,8 +69,7 @@ public class DefaultPluginToolsRequest
 
     private String mavenApiVersion;
 
-    public DefaultPluginToolsRequest( MavenProject project, PluginDescriptor pluginDescriptor )
-    {
+    public DefaultPluginToolsRequest(MavenProject project, PluginDescriptor pluginDescriptor) {
         this.project = project;
         this.pluginDescriptor = pluginDescriptor;
     }
@@ -82,8 +78,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public PluginDescriptor getPluginDescriptor()
-    {
+    public PluginDescriptor getPluginDescriptor() {
         return pluginDescriptor;
     }
 
@@ -91,8 +86,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor )
-    {
+    public PluginToolsRequest setPluginDescriptor(PluginDescriptor pluginDescriptor) {
         this.pluginDescriptor = pluginDescriptor;
         return this;
     }
@@ -101,8 +95,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
@@ -110,8 +103,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public PluginToolsRequest setProject( MavenProject project )
-    {
+    public PluginToolsRequest setProject(MavenProject project) {
         this.project = project;
         return this;
     }
@@ -120,8 +112,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return this.encoding;
     }
 
@@ -129,14 +120,10 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public PluginToolsRequest setEncoding( String encoding )
-    {
-        if ( StringUtils.isNotEmpty( encoding ) )
-        {
+    public PluginToolsRequest setEncoding(String encoding) {
+        if (StringUtils.isNotEmpty(encoding)) {
             this.encoding = encoding;
-        }
-        else
-        {
+        } else {
             this.encoding = DEFAULT_ENCODING;
         }
 
@@ -147,8 +134,7 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public boolean isSkipErrorNoDescriptorsFound()
-    {
+    public boolean isSkipErrorNoDescriptorsFound() {
         return skipErrorNoDescriptorsFound;
     }
 
@@ -156,132 +142,110 @@ public class DefaultPluginToolsRequest
      * {@inheritDoc}
      */
     @Override
-    public PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound )
-    {
+    public PluginToolsRequest setSkipErrorNoDescriptorsFound(boolean skipErrorNoDescriptorsFound) {
         this.skipErrorNoDescriptorsFound = skipErrorNoDescriptorsFound;
         return this;
     }
 
     @Override
-    public Set<Artifact> getDependencies()
-    {
-        if ( this.dependencies == null )
-        {
+    public Set<Artifact> getDependencies() {
+        if (this.dependencies == null) {
             this.dependencies = new HashSet<>();
         }
         return dependencies;
     }
 
     @Override
-    public PluginToolsRequest setDependencies( Set<Artifact> dependencies )
-    {
+    public PluginToolsRequest setDependencies(Set<Artifact> dependencies) {
         this.dependencies = dependencies;
         return this;
     }
 
     @Override
-    public List<ArtifactRepository> getRemoteRepos()
-    {
+    public List<ArtifactRepository> getRemoteRepos() {
         return remoteRepos;
     }
 
     @Override
-    public PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos )
-    {
+    public PluginToolsRequest setRemoteRepos(List<ArtifactRepository> remoteRepos) {
         this.remoteRepos = remoteRepos;
         return this;
     }
 
     @Override
-    public ArtifactRepository getLocal()
-    {
+    public ArtifactRepository getLocal() {
         return local;
     }
 
     @Override
-    public PluginToolsRequest setLocal( ArtifactRepository local )
-    {
+    public PluginToolsRequest setLocal(ArtifactRepository local) {
         this.local = local;
         return this;
     }
 
     @Override
-    public PluginToolsRequest setInternalJavadocBaseUrl( URI baseUrl )
-    {
+    public PluginToolsRequest setInternalJavadocBaseUrl(URI baseUrl) {
         internalJavadocBaseUrl = baseUrl;
         return this;
     }
 
     @Override
-    public URI getInternalJavadocBaseUrl()
-    {
+    public URI getInternalJavadocBaseUrl() {
         return internalJavadocBaseUrl;
     }
 
     @Override
-    public PluginToolsRequest setInternalJavadocVersion( String javadocVersion )
-    {
+    public PluginToolsRequest setInternalJavadocVersion(String javadocVersion) {
         this.internalJavadocVersion = javadocVersion;
         return this;
     }
 
     @Override
-    public String getInternalJavadocVersion()
-    {
+    public String getInternalJavadocVersion() {
         return internalJavadocVersion;
     }
 
     @Override
-    public PluginToolsRequest setExternalJavadocBaseUrls( List<URI> javadocLinks )
-    {
+    public PluginToolsRequest setExternalJavadocBaseUrls(List<URI> javadocLinks) {
         this.externalJavadocBaseUrls = javadocLinks;
         return this;
     }
 
     @Override
-    public List<URI> getExternalJavadocBaseUrls()
-    {
+    public List<URI> getExternalJavadocBaseUrls() {
         return externalJavadocBaseUrls;
     }
 
     @Override
-    public PluginToolsRequest setSettings( Settings settings )
-    {
+    public PluginToolsRequest setSettings(Settings settings) {
         this.settings = settings;
         return this;
     }
 
     @Override
-    public Settings getSettings()
-    {
+    public Settings getSettings() {
         return settings;
     }
 
     @Override
-    public PluginToolsRequest setRequiredJavaVersion( String requiredJavaVersion )
-    {
+    public PluginToolsRequest setRequiredJavaVersion(String requiredJavaVersion) {
         this.requiredJavaVersion = requiredJavaVersion;
         return this;
     }
-    
+
     @Override
-    public String getRequiredJavaVersion()
-    {
+    public String getRequiredJavaVersion() {
         return requiredJavaVersion;
     }
 
     @Override
-    public PluginToolsRequest setUsedMavenApiVersion( String mavenApiVersion )
-    {
+    public PluginToolsRequest setUsedMavenApiVersion(String mavenApiVersion) {
         this.mavenApiVersion = mavenApiVersion;
         return this;
     }
 
     @Override
-    public String getUsedMavenApiVersion()
-    {
+    public String getUsedMavenApiVersion() {
         return mavenApiVersion;
     }
-
-    
 }

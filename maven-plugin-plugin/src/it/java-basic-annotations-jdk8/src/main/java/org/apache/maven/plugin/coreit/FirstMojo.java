@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,9 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
+
+import java.io.File;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -25,16 +26,14 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.settings.Settings;
-
-import java.io.File;
 
 /**
  * Touches a test file.
@@ -42,30 +41,30 @@ import java.io.File;
  * @since 1.2
  * @deprecated Don't use!
  */
-@Mojo( name = "first", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
-@Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
-public class FirstMojo
-    extends AbstractMojo
-{
+@Mojo(
+        name = "first",
+        requiresDependencyResolution = ResolutionScope.TEST,
+        defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Execute(phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura")
+public class FirstMojo extends AbstractMojo {
 
     /**
      * Project directory.
      */
-    @Parameter( defaultValue = "${basedir}", readonly = true )
+    @Parameter(defaultValue = "${basedir}", readonly = true)
     private File basedir;
 
-    @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
-                required = true )
+    @Parameter(property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt", required = true)
     private File touchFile;
 
     /**
      * @since 0.1
      * @deprecated As of 0.2
      */
-    @Parameter( name = "namedParam", alias = "alias" )
+    @Parameter(name = "namedParam", alias = "alias")
     private String aliasedParam;
 
-    @Component( role = MavenProjectHelper.class, hint = "test" )
+    @Component(role = MavenProjectHelper.class, hint = "test")
     private Object projectHelper;
 
     @Component
@@ -83,9 +82,5 @@ public class FirstMojo
     @Component
     private Settings settings;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-    }
-
+    public void execute() throws MojoExecutionException {}
 }

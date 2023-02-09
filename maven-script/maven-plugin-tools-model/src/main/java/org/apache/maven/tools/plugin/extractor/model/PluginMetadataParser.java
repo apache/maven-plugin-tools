@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.model;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,14 @@ package org.apache.maven.tools.plugin.extractor.model;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.model;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -28,21 +34,13 @@ import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Parser for plugin metadata.
  *
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class PluginMetadataParser
-{
+public class PluginMetadataParser {
     /**
      * Default implementation path which will be replaced in
      * AbstractScriptedMojoDescriptorExtractor#extractMojoDescriptorsFromMetadata(Map, PluginDescriptor)
@@ -54,33 +52,26 @@ public class PluginMetadataParser
      * @return a set of <code>MojoDescriptor</code>
      * @throws PluginMetadataParseException if any
      */
-    public Set<MojoDescriptor> parseMojoDescriptors( File metadataFile )
-        throws PluginMetadataParseException
-    {
+    public Set<MojoDescriptor> parseMojoDescriptors(File metadataFile) throws PluginMetadataParseException {
         Set<MojoDescriptor> descriptors = new HashSet<>();
 
-        try ( Reader reader = ReaderFactory.newXmlReader( metadataFile ) )
-        {
+        try (Reader reader = ReaderFactory.newXmlReader(metadataFile)) {
 
             PluginMetadataXpp3Reader metadataReader = new PluginMetadataXpp3Reader();
 
-            PluginMetadata pluginMetadata = metadataReader.read( reader );
+            PluginMetadata pluginMetadata = metadataReader.read(reader);
 
             List<Mojo> mojos = pluginMetadata.getMojos();
 
-            if ( mojos != null )
-            {
-                for ( Mojo mojo : mojos )
-                {
-                    MojoDescriptor descriptor = asDescriptor( metadataFile, mojo );
+            if (mojos != null) {
+                for (Mojo mojo : mojos) {
+                    MojoDescriptor descriptor = asDescriptor(metadataFile, mojo);
 
-                    descriptors.add( descriptor );
+                    descriptors.add(descriptor);
                 }
             }
-        }
-        catch ( IOException | XmlPullParserException e )
-        {
-            throw new PluginMetadataParseException( metadataFile, "Cannot parse plugin metadata from file.", e );
+        } catch (IOException | XmlPullParserException e) {
+            throw new PluginMetadataParseException(metadataFile, "Cannot parse plugin metadata from file.", e);
         }
 
         return descriptors;
@@ -92,99 +83,83 @@ public class PluginMetadataParser
      * @return a mojo descriptor instance
      * @throws PluginMetadataParseException if any
      */
-    private MojoDescriptor asDescriptor( File metadataFile, Mojo mojo )
-        throws PluginMetadataParseException
-    {
+    private MojoDescriptor asDescriptor(File metadataFile, Mojo mojo) throws PluginMetadataParseException {
         MojoDescriptor descriptor = new MojoDescriptor();
 
-        if ( mojo.getCall() != null )
-        {
-            descriptor.setImplementation( IMPL_BASE_PLACEHOLDER + ":" + mojo.getCall() );
-        }
-        else
-        {
-            descriptor.setImplementation( IMPL_BASE_PLACEHOLDER );
+        if (mojo.getCall() != null) {
+            descriptor.setImplementation(IMPL_BASE_PLACEHOLDER + ":" + mojo.getCall());
+        } else {
+            descriptor.setImplementation(IMPL_BASE_PLACEHOLDER);
         }
 
-        descriptor.setGoal( mojo.getGoal() );
-        descriptor.setPhase( mojo.getPhase() );
-        descriptor.setDependencyResolutionRequired( mojo.getRequiresDependencyResolution() );
-        descriptor.setAggregator( mojo.isAggregator() );
-        descriptor.setInheritedByDefault( mojo.isInheritByDefault() );
-        descriptor.setDirectInvocationOnly( mojo.isRequiresDirectInvocation() );
-        descriptor.setOnlineRequired( mojo.isRequiresOnline() );
-        descriptor.setProjectRequired( mojo.isRequiresProject() );
-        descriptor.setRequiresReports( mojo.isRequiresReports() );
-        descriptor.setDescription( mojo.getDescription() );
-        descriptor.setDeprecated( mojo.getDeprecation() );
-        descriptor.setSince( mojo.getSince() );
+        descriptor.setGoal(mojo.getGoal());
+        descriptor.setPhase(mojo.getPhase());
+        descriptor.setDependencyResolutionRequired(mojo.getRequiresDependencyResolution());
+        descriptor.setAggregator(mojo.isAggregator());
+        descriptor.setInheritedByDefault(mojo.isInheritByDefault());
+        descriptor.setDirectInvocationOnly(mojo.isRequiresDirectInvocation());
+        descriptor.setOnlineRequired(mojo.isRequiresOnline());
+        descriptor.setProjectRequired(mojo.isRequiresProject());
+        descriptor.setRequiresReports(mojo.isRequiresReports());
+        descriptor.setDescription(mojo.getDescription());
+        descriptor.setDeprecated(mojo.getDeprecation());
+        descriptor.setSince(mojo.getSince());
 
         LifecycleExecution le = mojo.getExecution();
-        if ( le != null )
-        {
-            descriptor.setExecuteLifecycle( le.getLifecycle() );
-            descriptor.setExecutePhase( le.getPhase() );
-            descriptor.setExecuteGoal( le.getGoal() );
+        if (le != null) {
+            descriptor.setExecuteLifecycle(le.getLifecycle());
+            descriptor.setExecutePhase(le.getPhase());
+            descriptor.setExecuteGoal(le.getGoal());
         }
 
         List<org.apache.maven.tools.plugin.extractor.model.Parameter> parameters = mojo.getParameters();
 
-        if ( parameters != null && !parameters.isEmpty() )
-        {
-            for ( org.apache.maven.tools.plugin.extractor.model.Parameter param : parameters )
-            {
+        if (parameters != null && !parameters.isEmpty()) {
+            for (org.apache.maven.tools.plugin.extractor.model.Parameter param : parameters) {
                 Parameter dParam = new Parameter();
-                dParam.setAlias( param.getAlias() );
-                dParam.setDeprecated( param.getDeprecation() );
-                dParam.setDescription( param.getDescription() );
-                dParam.setEditable( !param.isReadonly() );
-                dParam.setExpression( param.getExpression() );
-                dParam.setDefaultValue( param.getDefaultValue() );
-                dParam.setSince( param.getSince() );
+                dParam.setAlias(param.getAlias());
+                dParam.setDeprecated(param.getDeprecation());
+                dParam.setDescription(param.getDescription());
+                dParam.setEditable(!param.isReadonly());
+                dParam.setExpression(param.getExpression());
+                dParam.setDefaultValue(param.getDefaultValue());
+                dParam.setSince(param.getSince());
 
                 String property = param.getProperty();
-                if ( StringUtils.isNotEmpty( property ) )
-                {
-                    dParam.setName( property );
-                }
-                else
-                {
-                    dParam.setName( param.getName() );
+                if (StringUtils.isNotEmpty(property)) {
+                    dParam.setName(property);
+                } else {
+                    dParam.setName(param.getName());
                 }
 
-                if ( StringUtils.isEmpty( dParam.getName() ) )
-                {
-                    throw new PluginMetadataParseException( metadataFile, "Mojo: \'" + mojo.getGoal()
-                        + "\' has a parameter without either property or name attributes. Please specify one." );
+                if (StringUtils.isEmpty(dParam.getName())) {
+                    throw new PluginMetadataParseException(
+                            metadataFile,
+                            "Mojo: \'" + mojo.getGoal()
+                                    + "\' has a parameter without either property or name attributes. Please specify one.");
                 }
 
-                dParam.setRequired( param.isRequired() );
-                dParam.setType( param.getType() );
+                dParam.setRequired(param.isRequired());
+                dParam.setType(param.getType());
 
-                try
-                {
-                    descriptor.addParameter( dParam );
-                }
-                catch ( DuplicateParameterException e )
-                {
-                    throw new PluginMetadataParseException( metadataFile,
-                                                            "Duplicate parameters detected for mojo: " + mojo.getGoal(),
-                                                            e );
+                try {
+                    descriptor.addParameter(dParam);
+                } catch (DuplicateParameterException e) {
+                    throw new PluginMetadataParseException(
+                            metadataFile, "Duplicate parameters detected for mojo: " + mojo.getGoal(), e);
                 }
             }
         }
 
         List<Component> components = mojo.getComponents();
 
-        if ( components != null && !components.isEmpty() )
-        {
-            for ( Component component : components )
-            {
+        if (components != null && !components.isEmpty()) {
+            for (Component component : components) {
                 ComponentRequirement cr = new ComponentRequirement();
-                cr.setRole( component.getRole() );
-                cr.setRoleHint( component.getHint() );
+                cr.setRole(component.getRole());
+                cr.setRoleHint(component.getHint());
 
-                descriptor.addRequirement( cr );
+                descriptor.addRequirement(cr);
             }
         }
 

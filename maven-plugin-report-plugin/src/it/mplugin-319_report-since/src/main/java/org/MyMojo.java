@@ -1,5 +1,3 @@
-package org;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,12 +16,13 @@ package org;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org;
 
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Does nothing.
- * 
+ *
  * @goal noop
  * @phase process-sources
  * @requiresDependencyResolution test
@@ -33,35 +32,31 @@ import org.apache.maven.plugin.AbstractMojo;
  * @execute phase="compile"
  * @aggregator
  * @since 1.0
- * 
+ *
  * @deprecated You don't use test goals, do you?
  */
-public class MyMojo
-    extends AbstractMojo
-{
+public class MyMojo extends AbstractMojo {
 
     /**
      * This is a test.
-     * 
+     *
      * @parameter
      * @required
      */
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private String required;
 
     /**
      * This is a test.
-     * 
+     *
      * @parameter expression="${string}" default-value="${project.version}/</markup-must-be-escaped>"
      * @deprecated Just testing.
      * @since 1.1
      */
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private String string;
 
-    public void execute()
-    {
+    public void execute() {
         // intentional do nothing
     }
-
 }

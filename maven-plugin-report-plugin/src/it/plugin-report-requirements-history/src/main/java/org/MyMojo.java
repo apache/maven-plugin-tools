@@ -1,5 +1,3 @@
-package org;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,13 +16,14 @@ package org;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Does nothing.
@@ -32,19 +31,22 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @since 1.0
  * @deprecated You don't use test goals, do you?
  */
-@Mojo( name = "noop", defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-       requiresDependencyResolution = ResolutionScope.TEST,
-       requiresDirectInvocation = true, requiresOnline = true, inheritByDefault = false, aggregator = true )
-@Execute( phase = LifecyclePhase.COMPILE )
-public class MyMojo
-    extends AbstractMojo
-{
+@Mojo(
+        name = "noop",
+        defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+        requiresDependencyResolution = ResolutionScope.TEST,
+        requiresDirectInvocation = true,
+        requiresOnline = true,
+        inheritByDefault = false,
+        aggregator = true)
+@Execute(phase = LifecyclePhase.COMPILE)
+public class MyMojo extends AbstractMojo {
 
     /**
      * This is a test.
      */
-    @SuppressWarnings( "unused" )
-    @Parameter( required = true )
+    @SuppressWarnings("unused")
+    @Parameter(required = true)
     private String required;
 
     /**
@@ -53,13 +55,11 @@ public class MyMojo
      * @since 1.1
      * @deprecated Just testing.
      */
-    @SuppressWarnings( "unused" )
-    @Parameter( property = "string", defaultValue = "${project.version}/</markup-must-be-escaped>" )
+    @SuppressWarnings("unused")
+    @Parameter(property = "string", defaultValue = "${project.version}/</markup-must-be-escaped>")
     private String string;
 
-    public void execute()
-    {
+    public void execute() {
         // intentional do nothing
     }
-
 }

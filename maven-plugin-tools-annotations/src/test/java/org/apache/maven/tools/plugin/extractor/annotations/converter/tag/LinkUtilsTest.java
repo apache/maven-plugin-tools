@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
 
 import java.net.URI;
 
@@ -28,23 +27,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LinkUtilsTest
-{
+class LinkUtilsTest {
     @Test
-    void testCreateUnresolvableLink()
-    {
-        JavadocReference reference = JavadocReference.parse( "Unresolvable" );
-        ConverterContext context = new SimpleConverterContext( "myPackage", ( ref ) -> URI.create( "" ), reference );
-        assertEquals( "Unresolvable<!-- this link could not be resolved -->",
-                      LinkUtils.createLink( "Unresolvable", context ) );
+    void testCreateUnresolvableLink() {
+        JavadocReference reference = JavadocReference.parse("Unresolvable");
+        ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> URI.create(""), reference);
+        assertEquals(
+                "Unresolvable<!-- this link could not be resolved -->", LinkUtils.createLink("Unresolvable", context));
     }
 
     @Test
-    void testCreateLinkWithNoJavadoc()
-    {
-        ConverterContext context = new SimpleConverterContext( "myPackage", ( ref ) -> { throw new IllegalArgumentException("Could not get javadoc"); } );
-        assertEquals( "NoJavadoc<!-- reference not found in associated javadoc sites -->",
-                      LinkUtils.createLink( "NoJavadoc", context ) );
+    void testCreateLinkWithNoJavadoc() {
+        ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> {
+            throw new IllegalArgumentException("Could not get javadoc");
+        });
+        assertEquals(
+                "NoJavadoc<!-- reference not found in associated javadoc sites -->",
+                LinkUtils.createLink("NoJavadoc", context));
     }
-
 }

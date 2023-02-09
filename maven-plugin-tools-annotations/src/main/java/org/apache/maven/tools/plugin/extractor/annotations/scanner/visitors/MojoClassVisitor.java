@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,9 +50,7 @@ import static org.apache.maven.tools.plugin.extractor.annotations.scanner.Defaul
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoClassVisitor
-    extends ClassVisitor
-{
+public class MojoClassVisitor extends ClassVisitor {
     private MojoAnnotatedClass mojoAnnotatedClass;
 
     private Map<String, MojoAnnotationVisitor> annotationVisitorMap = new HashMap<>();
@@ -64,108 +61,90 @@ public class MojoClassVisitor
 
     private int version;
 
-    public MojoClassVisitor()
-    {
-        super( Opcodes.ASM9 );
+    public MojoClassVisitor() {
+        super(Opcodes.ASM9);
     }
 
-    public MojoAnnotatedClass getMojoAnnotatedClass()
-    {
+    public MojoAnnotatedClass getMojoAnnotatedClass() {
         return mojoAnnotatedClass;
     }
 
-    public int getVersion()
-    {
+    public int getVersion() {
         return version;
     }
 
-    public MojoAnnotationVisitor getAnnotationVisitor( Class<?> annotation )
-    {
-        return getAnnotationVisitor( annotation.getName() );
+    public MojoAnnotationVisitor getAnnotationVisitor(Class<?> annotation) {
+        return getAnnotationVisitor(annotation.getName());
     }
 
-    public MojoAnnotationVisitor getAnnotationVisitor( String name )
-    {
-        return annotationVisitorMap.get( name );
+    public MojoAnnotationVisitor getAnnotationVisitor(String name) {
+        return annotationVisitorMap.get(name);
     }
 
-    public List<MojoFieldVisitor> findFieldWithAnnotation( Class<?> annotation )
-    {
-        return findFieldWithAnnotation( Collections.singleton( annotation.getName() ) );
+    public List<MojoFieldVisitor> findFieldWithAnnotation(Class<?> annotation) {
+        return findFieldWithAnnotation(Collections.singleton(annotation.getName()));
     }
 
-    public List<MojoFieldVisitor> findFieldWithAnnotation( Set<String> annotationClassNames )
-    {
+    public List<MojoFieldVisitor> findFieldWithAnnotation(Set<String> annotationClassNames) {
         List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
 
-        for ( MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors )
-        {
+        for (MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors) {
             Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
-            if ( filedVisitorMap.keySet().stream().anyMatch( annotationClassNames::contains ) )
-            {
-                mojoFieldVisitors.add( mojoFieldVisitor );
+            if (filedVisitorMap.keySet().stream().anyMatch(annotationClassNames::contains)) {
+                mojoFieldVisitors.add(mojoFieldVisitor);
             }
         }
 
         return mojoFieldVisitors;
     }
 
-    public List<MojoParameterVisitor> findParameterVisitors()
-    {
-        return findParameterVisitors( new HashSet<>( Arrays.asList( PARAMETER_V3, PARAMETER_V4 ) ) );
+    public List<MojoParameterVisitor> findParameterVisitors() {
+        return findParameterVisitors(new HashSet<>(Arrays.asList(PARAMETER_V3, PARAMETER_V4)));
     }
 
-    public List<MojoParameterVisitor> findParameterVisitors( Set<String> annotationClassNames )
-    {
+    public List<MojoParameterVisitor> findParameterVisitors(Set<String> annotationClassNames) {
         return Stream.concat(
-                    findFieldWithAnnotation( annotationClassNames ).stream(),
-                    methodVisitors.stream()
-                            .filter( method -> method.getAnnotationVisitorMap().keySet().stream()
-                                    .anyMatch( annotationClassNames::contains ) ) )
-                .collect( Collectors.toList() );
+                        findFieldWithAnnotation(annotationClassNames).stream(),
+                        methodVisitors.stream().filter(method -> method.getAnnotationVisitorMap().keySet().stream()
+                                .anyMatch(annotationClassNames::contains)))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void visit( int version, int access, String name, String signature, String superName, String[] interfaces )
-    {
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.version = version;
         mojoAnnotatedClass = new MojoAnnotatedClass();
-        mojoAnnotatedClass.setClassName( Type.getObjectType( name ).getClassName() );
-        if ( superName != null )
-        {
-            mojoAnnotatedClass.setParentClassName( Type.getObjectType( superName ).getClassName() );
+        mojoAnnotatedClass.setClassName(Type.getObjectType(name).getClassName());
+        if (superName != null) {
+            mojoAnnotatedClass.setParentClassName(Type.getObjectType(superName).getClassName());
         }
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation( String desc, boolean visible )
-    {
-        String annotationClassName = Type.getType( desc ).getClassName();
-        if ( !MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains( annotationClassName ) )
-        {
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        String annotationClassName = Type.getType(desc).getClassName();
+        if (!MojoAnnotationsScanner.CLASS_LEVEL_ANNOTATIONS.contains(annotationClassName)) {
             return null;
         }
-        if ( annotationClassName.startsWith( MojoAnnotationsScanner.V4_API_ANNOTATIONS_PACKAGE ) )
-        {
-            mojoAnnotatedClass.setV4Api( true );
+        if (annotationClassName.startsWith(MojoAnnotationsScanner.V4_API_ANNOTATIONS_PACKAGE)) {
+            mojoAnnotatedClass.setV4Api(true);
         }
-        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor( annotationClassName );
-        annotationVisitorMap.put( annotationClassName, mojoAnnotationVisitor );
+        MojoAnnotationVisitor mojoAnnotationVisitor = new MojoAnnotationVisitor(annotationClassName);
+        annotationVisitorMap.put(annotationClassName, mojoAnnotationVisitor);
         return mojoAnnotationVisitor;
     }
 
     @Override
-    public FieldVisitor visitField( int access, String name, String desc, String signature, Object value )
-    {
-        List<String> typeParameters = extractTypeParameters( access, signature, true );
-        MojoFieldVisitor mojoFieldVisitor = new MojoFieldVisitor( name, Type.getType( desc ).getClassName(),
-                typeParameters );
-        fieldVisitors.add( mojoFieldVisitor );
+    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        List<String> typeParameters = extractTypeParameters(access, signature, true);
+        MojoFieldVisitor mojoFieldVisitor =
+                new MojoFieldVisitor(name, Type.getType(desc).getClassName(), typeParameters);
+        fieldVisitors.add(mojoFieldVisitor);
         return mojoFieldVisitor;
     }
 
     /**
-     * Parses the signature according to 
+     * Parses the signature according to
      * <a href="https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.3.4">JVMS 4.3.4</a>
      * and returns the type parameters.
      * @param access
@@ -173,57 +152,46 @@ public class MojoClassVisitor
      * @param isField
      * @return the list of type parameters (may be empty)
      */
-    private List<String> extractTypeParameters( int access, String signature, boolean isField )
-    {
-        if ( StringUtils.isEmpty( signature ) )
-        {
+    private List<String> extractTypeParameters(int access, String signature, boolean isField) {
+        if (StringUtils.isEmpty(signature)) {
             return Collections.emptyList();
         }
-        TraceSignatureVisitor traceSignatureVisitor = new TraceSignatureVisitor( access );
-        SignatureReader signatureReader = new SignatureReader( signature );
-        if ( isField )
-        {
-            signatureReader.acceptType( traceSignatureVisitor );
-        }
-        else
-        {
-            signatureReader.accept( traceSignatureVisitor );
+        TraceSignatureVisitor traceSignatureVisitor = new TraceSignatureVisitor(access);
+        SignatureReader signatureReader = new SignatureReader(signature);
+        if (isField) {
+            signatureReader.acceptType(traceSignatureVisitor);
+        } else {
+            signatureReader.accept(traceSignatureVisitor);
         }
         String declaration = traceSignatureVisitor.getDeclaration();
-        int startTypeParameters = declaration.indexOf( '<' );
-        if ( startTypeParameters == -1 )
-        {
+        int startTypeParameters = declaration.indexOf('<');
+        if (startTypeParameters == -1) {
             return Collections.emptyList();
         }
-        String typeParameters = declaration.substring( startTypeParameters + 1,
-                                                       declaration.lastIndexOf( '>' ) );
-        return Arrays.asList( typeParameters.split( ", " ) );
+        String typeParameters = declaration.substring(startTypeParameters + 1, declaration.lastIndexOf('>'));
+        return Arrays.asList(typeParameters.split(", "));
     }
 
     @Override
-    public MethodVisitor visitMethod( int access, String name, String desc, String signature, String[] exceptions )
-    {
-        if ( ( access & Opcodes.ACC_PUBLIC ) != Opcodes.ACC_PUBLIC
-            || ( access & Opcodes.ACC_STATIC ) == Opcodes.ACC_STATIC )
-        {
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        if ((access & Opcodes.ACC_PUBLIC) != Opcodes.ACC_PUBLIC
+                || (access & Opcodes.ACC_STATIC) == Opcodes.ACC_STATIC) {
             return null;
         }
 
-        if ( name.length() < 4 || !( name.startsWith( "add" ) || name.startsWith( "set" ) ) )
-        {
+        if (name.length() < 4 || !(name.startsWith("add") || name.startsWith("set"))) {
             return null;
         }
 
-        Type type = Type.getType( desc );
+        Type type = Type.getType(desc);
 
-        if ( "void".equals( type.getReturnType().getClassName() ) && type.getArgumentTypes().length == 1 )
-        {
-            String fieldName = StringUtils.lowercaseFirstLetter( name.substring( 3 ) );
+        if ("void".equals(type.getReturnType().getClassName()) && type.getArgumentTypes().length == 1) {
+            String fieldName = StringUtils.lowercaseFirstLetter(name.substring(3));
             String className = type.getArgumentTypes()[0].getClassName();
-            List<String> typeParameters = extractTypeParameters( access, signature, false );
+            List<String> typeParameters = extractTypeParameters(access, signature, false);
 
-            MojoMethodVisitor mojoMethodVisitor = new MojoMethodVisitor( fieldName, className, typeParameters );
-            methodVisitors.add( mojoMethodVisitor );
+            MojoMethodVisitor mojoMethodVisitor = new MojoMethodVisitor(fieldName, className, typeParameters);
+            methodVisitors.add(mojoMethodVisitor);
             return mojoMethodVisitor;
         }
 

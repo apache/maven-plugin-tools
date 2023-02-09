@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.MavenProject;
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,17 +25,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProject;
+
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoAnnotationsScannerRequest
-{
+public class MojoAnnotationsScannerRequest {
     private List<File> classesDirectories = new ArrayList<>();
 
     private Set<Artifact> dependencies = new HashSet<>();
 
-    private List<String> includePatterns = Arrays.asList( "**/*.class" );
+    private List<String> includePatterns = Arrays.asList("**/*.class");
 
     private List<File> sourceDirectories = new ArrayList<>();
 
@@ -47,68 +45,55 @@ public class MojoAnnotationsScannerRequest
 
     private String mavenApiVersion;
 
-    public MojoAnnotationsScannerRequest()
-    {
+    public MojoAnnotationsScannerRequest() {
         // no o
     }
 
-    public List<File> getClassesDirectories()
-    {
+    public List<File> getClassesDirectories() {
         return classesDirectories;
     }
 
-    public void setClassesDirectories( List<File> classesDirectories )
-    {
+    public void setClassesDirectories(List<File> classesDirectories) {
         this.classesDirectories = classesDirectories;
     }
 
-    public Set<Artifact> getDependencies()
-    {
+    public Set<Artifact> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies( Set<Artifact> dependencies )
-    {
+    public void setDependencies(Set<Artifact> dependencies) {
         this.dependencies = dependencies;
     }
 
-    public List<String> getIncludePatterns()
-    {
+    public List<String> getIncludePatterns() {
         return includePatterns;
     }
 
-    public void setIncludePatterns( List<String> includePatterns )
-    {
+    public void setIncludePatterns(List<String> includePatterns) {
         this.includePatterns = includePatterns;
     }
 
-    public List<File> getSourceDirectories()
-    {
+    public List<File> getSourceDirectories() {
         return sourceDirectories;
     }
 
-    public void setSourceDirectories( List<File> sourceDirectories )
-    {
+    public void setSourceDirectories(List<File> sourceDirectories) {
         this.sourceDirectories = sourceDirectories;
     }
 
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
-    public void setProject( MavenProject project )
-    {
+    public void setProject(MavenProject project) {
         this.project = project;
     }
 
-    public String getMavenApiVersion()
-    {
+    public String getMavenApiVersion() {
         return mavenApiVersion;
     }
 
-    public void setMavenApiVersion( String mavenApiVersion )
-    {
+    public void setMavenApiVersion(String mavenApiVersion) {
         this.mavenApiVersion = mavenApiVersion;
     }
 }

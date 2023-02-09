@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.javadoc;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.javadoc;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.javadoc;
 
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -26,27 +25,40 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class JavadocReferenceTest
-{
+class JavadocReferenceTest {
 
     @Test
-    void testParse()
-        throws URISyntaxException
-    {
-        assertEquals( new JavadocReference( Optional.empty(), Optional.empty(), Optional.of( "member" ), Optional.empty() ),
-                      JavadocReference.parse( "#member" ) );
-        assertEquals( new JavadocReference( Optional.empty(),Optional.of( "Class" ), Optional.of( "member" ), Optional.empty() ),
-                      JavadocReference.parse( "Class#member" ) );
-        assertEquals( new JavadocReference( Optional.empty(), Optional.of( "package.Class" ), Optional.of( "member" ), Optional.empty() ),
-                      JavadocReference.parse( "package.Class#member" ) );
-        assertEquals( new JavadocReference( Optional.empty(), Optional.of( "package" ), Optional.empty(), Optional.empty() ),
-                      JavadocReference.parse( "package" ) );
-        assertEquals( new JavadocReference( Optional.empty(), Optional.of( "package.Class" ), Optional.of( "member(ArgType1,ArgType2)" ), Optional.of("label") ),
-                      JavadocReference.parse( "package.Class#member(ArgType1,ArgType2) label" ) );
-        assertEquals( new JavadocReference( Optional.of("my.module"), Optional.of( "package.Class" ), Optional.of( "member(ArgType1,ArgType2)" ), Optional.of("label") ),
-                      JavadocReference.parse( "my.module/package.Class#member(ArgType1,ArgType2) label" ) );
-        assertEquals( new JavadocReference( Optional.empty(), Optional.empty(), Optional.of( "member" ), Optional.of("label with spaces") ),
-                JavadocReference.parse( "#member label with spaces" ) );
+    void testParse() throws URISyntaxException {
+        assertEquals(
+                new JavadocReference(Optional.empty(), Optional.empty(), Optional.of("member"), Optional.empty()),
+                JavadocReference.parse("#member"));
+        assertEquals(
+                new JavadocReference(Optional.empty(), Optional.of("Class"), Optional.of("member"), Optional.empty()),
+                JavadocReference.parse("Class#member"));
+        assertEquals(
+                new JavadocReference(
+                        Optional.empty(), Optional.of("package.Class"), Optional.of("member"), Optional.empty()),
+                JavadocReference.parse("package.Class#member"));
+        assertEquals(
+                new JavadocReference(Optional.empty(), Optional.of("package"), Optional.empty(), Optional.empty()),
+                JavadocReference.parse("package"));
+        assertEquals(
+                new JavadocReference(
+                        Optional.empty(),
+                        Optional.of("package.Class"),
+                        Optional.of("member(ArgType1,ArgType2)"),
+                        Optional.of("label")),
+                JavadocReference.parse("package.Class#member(ArgType1,ArgType2) label"));
+        assertEquals(
+                new JavadocReference(
+                        Optional.of("my.module"),
+                        Optional.of("package.Class"),
+                        Optional.of("member(ArgType1,ArgType2)"),
+                        Optional.of("label")),
+                JavadocReference.parse("my.module/package.Class#member(ArgType1,ArgType2) label"));
+        assertEquals(
+                new JavadocReference(
+                        Optional.empty(), Optional.empty(), Optional.of("member"), Optional.of("label with spaces")),
+                JavadocReference.parse("#member label with spaces"));
     }
-
 }

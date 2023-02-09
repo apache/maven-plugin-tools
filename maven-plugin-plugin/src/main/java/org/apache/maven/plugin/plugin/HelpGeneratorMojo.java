@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin;
 
 import javax.lang.model.SourceVersion;
 
@@ -43,15 +42,16 @@ import org.codehaus.plexus.velocity.VelocityComponent;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
  */
-@Mojo( name = "helpmojo", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true,
-       requiresDependencyResolution = ResolutionScope.COMPILE )
-public class HelpGeneratorMojo
-    extends AbstractGeneratorMojo
-{
+@Mojo(
+        name = "helpmojo",
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+        threadSafe = true,
+        requiresDependencyResolution = ResolutionScope.COMPILE)
+public class HelpGeneratorMojo extends AbstractGeneratorMojo {
     /**
      * The directory where the generated <code>HelpMojo</code> file will be put.
      */
-    @Parameter( defaultValue = "${project.build.directory}/generated-sources/plugin" )
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/plugin")
     protected File outputDirectory;
 
     /**
@@ -74,59 +74,47 @@ public class HelpGeneratorMojo
     @Component
     private VelocityComponent velocity;
 
-    String getHelpPackageName()
-    {
+    String getHelpPackageName() {
         String packageName = null;
-        if ( StringUtils.isNotBlank( helpPackageName ) )
-        {
+        if (StringUtils.isNotBlank(helpPackageName)) {
             packageName = helpPackageName;
         }
 
-        if ( packageName == null )
-        {
+        if (packageName == null) {
             packageName = project.getGroupId() + "." + project.getArtifactId();
-            packageName = packageName.replace( "-", "_" );
+            packageName = packageName.replace("-", "_");
 
-            String[] packageItems = packageName.split( "\\." );
-            packageName = Arrays.stream( packageItems )
-                .map( this::prefixSpecialCase )
-                .collect( Collectors.joining( "." ) );
+            String[] packageItems = packageName.split("\\.");
+            packageName =
+                    Arrays.stream(packageItems).map(this::prefixSpecialCase).collect(Collectors.joining("."));
         }
 
         return packageName;
     }
 
-    private String prefixSpecialCase( String name )
-    {
-        if ( SourceVersion.isKeyword( name ) || !Character.isJavaIdentifierStart( name.charAt( 0 ) ) )
-        {
+    private String prefixSpecialCase(String name) {
+        if (SourceVersion.isKeyword(name) || !Character.isJavaIdentifierStart(name.charAt(0))) {
             name = "_" + name;
         }
         return name;
     }
 
     @Override
-    protected void generate() throws MojoExecutionException
-    {
+    protected void generate() throws MojoExecutionException {
         PluginHelpGenerator pluginHelpGenerator = new PluginHelpGenerator()
-            .setMavenProject( project )
-            .setHelpPackageName( getHelpPackageName() )
-            .setGoalPrefix( goalPrefix )
-            .setVelocityComponent( velocity );
+                .setMavenProject(project)
+                .setHelpPackageName(getHelpPackageName())
+                .setGoalPrefix(goalPrefix)
+                .setVelocityComponent(velocity);
 
-        try
-        {
-            pluginHelpGenerator.execute( outputDirectory );
-        }
-        catch ( GeneratorException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        try {
+            pluginHelpGenerator.execute(outputDirectory);
+        } catch (GeneratorException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
 
-        if ( !project.getCompileSourceRoots().contains( outputDirectory.getAbsolutePath() ) )
-        {
-            project.addCompileSourceRoot( outputDirectory.getAbsolutePath() );
+        if (!project.getCompileSourceRoots().contains(outputDirectory.getAbsolutePath())) {
+            project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
         }
     }
-
 }

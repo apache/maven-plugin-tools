@@ -1,5 +1,3 @@
-package fr.ca;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package fr.ca;
  * specific language governing permissions and limitations
  * under the License.
  */
+package fr.ca;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,10 +26,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Created by clement.agarini on 04/08/14.
  */
-@Mojo(name="test-plugin",defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@Mojo(name = "test-plugin", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class MyMojo extends AbstractMojo {
     @Override
-    public void execute() throws MojoExecutionException {
-
-    }
+    public void execute() throws MojoExecutionException {}
 }

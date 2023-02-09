@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,11 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -25,45 +28,40 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public interface MojoAnnotationsScanner
-{
+public interface MojoAnnotationsScanner {
     String ROLE = MojoAnnotationsScanner.class.getName();
 
     String V4_API_PLUGIN_PACKAGE = "org.apache.maven.api.plugin";
 
     String V4_API_ANNOTATIONS_PACKAGE = V4_API_PLUGIN_PACKAGE + ".annotations";
 
-    List<String> CLASS_LEVEL_ANNOTATIONS = Arrays.asList( Mojo.class.getName(),
-                                                          Execute.class.getName(),
-                                                          Deprecated.class.getName(),
-                                                          V4_API_ANNOTATIONS_PACKAGE + ".Mojo",
-                                                          V4_API_ANNOTATIONS_PACKAGE + ".Execute" );
+    List<String> CLASS_LEVEL_ANNOTATIONS = Arrays.asList(
+            Mojo.class.getName(),
+            Execute.class.getName(),
+            Deprecated.class.getName(),
+            V4_API_ANNOTATIONS_PACKAGE + ".Mojo",
+            V4_API_ANNOTATIONS_PACKAGE + ".Execute");
 
-    List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
-                                                          Component.class.getName(),
-                                                          Deprecated.class.getName(),
-                                                          V4_API_ANNOTATIONS_PACKAGE + ".Parameter",
-                                                          V4_API_ANNOTATIONS_PACKAGE + ".Component" );
+    List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList(
+            Parameter.class.getName(),
+            Component.class.getName(),
+            Deprecated.class.getName(),
+            V4_API_ANNOTATIONS_PACKAGE + ".Parameter",
+            V4_API_ANNOTATIONS_PACKAGE + ".Component");
 
-    List<String> METHOD_LEVEL_ANNOTATIONS = Arrays.asList( Parameter.class.getName(),
-                                                           Deprecated.class.getName(),
-                                                           V4_API_ANNOTATIONS_PACKAGE + ".Parameter" );
+    List<String> METHOD_LEVEL_ANNOTATIONS = Arrays.asList(
+            Parameter.class.getName(), Deprecated.class.getName(), V4_API_ANNOTATIONS_PACKAGE + ".Parameter");
 
     /**
      * Scan classes for mojo annotations.
-     * 
+     *
      * @param request
      * @return map of mojo-annotated classes keyed by full class name
      * @throws ExtractionException
      */
-    Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
-        throws ExtractionException;
+    Map<String, MojoAnnotatedClass> scan(MojoAnnotationsScannerRequest request) throws ExtractionException;
 }

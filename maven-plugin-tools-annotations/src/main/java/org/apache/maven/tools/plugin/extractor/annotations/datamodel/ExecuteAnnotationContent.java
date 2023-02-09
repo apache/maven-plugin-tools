@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,19 +16,18 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
+
+import java.lang.annotation.Annotation;
 
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @author Olivier Lamy
  * @since 3.0
  */
-public class ExecuteAnnotationContent
-    implements Execute
-{
+public class ExecuteAnnotationContent implements Execute {
     private String goal;
 
     private String lifecycle;
@@ -40,68 +37,55 @@ public class ExecuteAnnotationContent
     private String customPhase;
 
     @Override
-    public LifecyclePhase phase()
-    {
+    public LifecyclePhase phase() {
         return this.phase;
     }
 
     @Override
-    public String customPhase()
-    {
+    public String customPhase() {
         return customPhase;
     }
 
     @Override
-    public String goal()
-    {
+    public String goal() {
         return this.goal;
     }
 
     @Override
-    public String lifecycle()
-    {
+    public String lifecycle() {
         return this.lifecycle;
     }
 
-    public void phase( String phase )
-    {
-        this.phase = LifecyclePhase.valueOf( phase );
+    public void phase(String phase) {
+        this.phase = LifecyclePhase.valueOf(phase);
     }
 
-    public void customPhase( String customPhase )
-    {
+    public void customPhase(String customPhase) {
         this.customPhase = customPhase;
     }
 
-    public void goal( String goal )
-    {
+    public void goal(String goal) {
         this.goal = goal;
     }
 
-    public void lifecycle( String lifecycle )
-    {
+    public void lifecycle(String lifecycle) {
         this.lifecycle = lifecycle;
     }
 
-
     @Override
-    public Class<? extends Annotation> annotationType()
-    {
+    public Class<? extends Annotation> annotationType() {
         return null;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "ExecuteAnnotationContent" );
-        sb.append( "{goal='" ).append( goal ).append( '\'' );
-        sb.append( ", lifecycle='" ).append( lifecycle ).append( '\'' );
-        sb.append( ", phase=" ).append( phase );
-        sb.append( ", customPhase=" ).append( customPhase );
-        sb.append( '}' );
+        sb.append("ExecuteAnnotationContent");
+        sb.append("{goal='").append(goal).append('\'');
+        sb.append(", lifecycle='").append(lifecycle).append('\'');
+        sb.append(", phase=").append(phase);
+        sb.append(", customPhase=").append(customPhase);
+        sb.append('}');
         return sb.toString();
     }
-
-    
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +31,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAn
  * @author Olivier Lamy
  * @since 3.0
  */
-public class MojoAnnotatedClass
-{
+public class MojoAnnotatedClass {
     private String className;
 
     private int classVersion;
@@ -61,136 +59,112 @@ public class MojoAnnotatedClass
 
     private boolean v4Api;
 
-    public MojoAnnotatedClass()
-    {
+    public MojoAnnotatedClass() {
         // no op
     }
 
-    public String getClassName()
-    {
+    public String getClassName() {
         return className;
     }
 
-    public MojoAnnotatedClass setClassName( String className )
-    {
+    public MojoAnnotatedClass setClassName(String className) {
         this.className = className;
         return this;
     }
 
-    public int getClassVersion()
-    {
+    public int getClassVersion() {
         return classVersion;
     }
 
-    public MojoAnnotatedClass setClassVersion( int classVersion )
-    {
+    public MojoAnnotatedClass setClassVersion(int classVersion) {
         this.classVersion = classVersion;
         return this;
     }
 
-    public MojoAnnotationContent getMojo()
-    {
+    public MojoAnnotationContent getMojo() {
         return mojo;
     }
 
-    public MojoAnnotatedClass setMojo( MojoAnnotationContent mojo )
-    {
+    public MojoAnnotatedClass setMojo(MojoAnnotationContent mojo) {
         this.mojo = mojo;
         return this;
     }
 
-    public ExecuteAnnotationContent getExecute()
-    {
+    public ExecuteAnnotationContent getExecute() {
         return execute;
     }
 
-    public MojoAnnotatedClass setExecute( ExecuteAnnotationContent execute )
-    {
+    public MojoAnnotatedClass setExecute(ExecuteAnnotationContent execute) {
         this.execute = execute;
         return this;
     }
 
-    public Map<String, ParameterAnnotationContent> getParameters()
-    {
-        if ( this.parameters == null )
-        {
+    public Map<String, ParameterAnnotationContent> getParameters() {
+        if (this.parameters == null) {
             this.parameters = new HashMap<>();
         }
         return parameters;
     }
 
-    public MojoAnnotatedClass setParameters( Map<String, ParameterAnnotationContent> parameters )
-    {
+    public MojoAnnotatedClass setParameters(Map<String, ParameterAnnotationContent> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public Map<String, ComponentAnnotationContent> getComponents()
-    {
-        if ( this.components == null )
-        {
+    public Map<String, ComponentAnnotationContent> getComponents() {
+        if (this.components == null) {
             this.components = new HashMap<>();
         }
         return components;
     }
 
-    public MojoAnnotatedClass setComponents( Map<String, ComponentAnnotationContent> components )
-    {
+    public MojoAnnotatedClass setComponents(Map<String, ComponentAnnotationContent> components) {
         this.components = components;
         return this;
     }
 
-    public String getParentClassName()
-    {
+    public String getParentClassName() {
         return parentClassName;
     }
 
-    public MojoAnnotatedClass setParentClassName( String parentClassName )
-    {
+    public MojoAnnotatedClass setParentClassName(String parentClassName) {
         this.parentClassName = parentClassName;
         return this;
     }
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
-    public void setArtifact( Artifact artifact )
-    {
+    public void setArtifact(Artifact artifact) {
         this.artifact = artifact;
     }
 
-    public boolean hasAnnotations()
-    {
-        return !( getComponents().isEmpty() && getParameters().isEmpty() && execute == null && mojo == null );
+    public boolean hasAnnotations() {
+        return !(getComponents().isEmpty() && getParameters().isEmpty() && execute == null && mojo == null);
     }
 
-    public boolean isV4Api()
-    {
+    public boolean isV4Api() {
         return v4Api;
     }
 
-    public void setV4Api( boolean v4Api )
-    {
+    public void setV4Api(boolean v4Api) {
         this.v4Api = v4Api;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "MojoAnnotatedClass" );
-        sb.append( "{className='" ).append( className ).append( '\'' );
-        sb.append( ", classVersion=" ).append( classVersion );
-        sb.append( ", parentClassName='" ).append( parentClassName ).append( '\'' );
-        sb.append( ", mojo=" ).append( mojo );
-        sb.append( ", execute=" ).append( execute );
-        sb.append( ", parameters=" ).append( parameters );
-        sb.append( ", components=" ).append( components );
-        sb.append( ", v4api=" ).append( v4Api );
-        sb.append( '}' );
+        sb.append("MojoAnnotatedClass");
+        sb.append("{className='").append(className).append('\'');
+        sb.append(", classVersion=").append(classVersion);
+        sb.append(", parentClassName='").append(parentClassName).append('\'');
+        sb.append(", mojo=").append(mojo);
+        sb.append(", execute=").append(execute);
+        sb.append(", parameters=").append(parameters);
+        sb.append(", components=").append(components);
+        sb.append(", v4api=").append(v4Api);
+        sb.append('}');
         return sb.toString();
     }
-
 }

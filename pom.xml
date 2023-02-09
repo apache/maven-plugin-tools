@@ -21,8 +21,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>maven-parent</artifactId>
     <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
     <version>39</version>
     <relativePath />
   </parent>
@@ -33,10 +33,8 @@
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
-  <description>
-    The Maven Plugin Tools contains the necessary tools to produce Maven Plugins in scripting languages
-    and to generate content such as descriptor, help, and documentation.
-  </description>
+  <description>The Maven Plugin Tools contains the necessary tools to produce Maven Plugins in scripting languages
+    and to generate content such as descriptor, help, and documentation.</description>
   <url>https://maven.apache.org/plugin-tools</url>
   <inceptionYear>2004</inceptionYear>
 
@@ -73,8 +71,8 @@
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</developerConnection>
-    <url>https://github.com/apache/maven-plugin-tools/tree/${project.scm.tag}</url>
     <tag>maven-plugin-tools-3.7.0</tag>
+    <url>https://github.com/apache/maven-plugin-tools/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
     <system>jira</system>
@@ -219,12 +217,11 @@
         <version>${reportingImplVersion}</version>
         <exclusions>
           <exclusion>
-            <artifactId>plexus-container-default</artifactId>
             <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
-
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -362,8 +359,10 @@
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
             <excludes combine.children="append">
-              <exclude>src/site/resources/images/plugin-descriptors.svg</exclude><!-- Jenkins job with local Maven repository -->
-              <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude><!-- Hudson Maven3 integration log -->
+              <exclude>src/site/resources/images/plugin-descriptors.svg</exclude>
+              <!-- Jenkins job with local Maven repository -->
+              <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude>
+              <!-- Hudson Maven3 integration log -->
             </excludes>
           </configuration>
         </plugin>
@@ -439,10 +438,10 @@
             <reportSets>
               <reportSet>
                 <id>aggregate</id>
-                <inherited>false</inherited>
                 <reports>
                   <report>aggregate</report>
                 </reports>
+                <inherited>false</inherited>
               </reportSet>
             </reportSets>
           </plugin>
@@ -452,10 +451,10 @@
             <reportSets>
               <reportSet>
                 <id>aggregate</id>
-                <inherited>false</inherited>
                 <reports>
                   <report>aggregate</report>
                 </reports>
+                <inherited>false</inherited>
               </reportSet>
             </reportSets>
           </plugin>
@@ -465,10 +464,10 @@
             <reportSets>
               <reportSet>
                 <id>aggregate</id>
-                <inherited>false</inherited>
                 <reports>
                   <report>checkstyle-aggregate</report>
                 </reports>
+                <inherited>false</inherited>
               </reportSet>
             </reportSets>
           </plugin>

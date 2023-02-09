@@ -1,5 +1,3 @@
-package org.apache.maven.its.v4api;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +16,12 @@ package org.apache.maven.its.v4api;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.its.v4api;
+
+import java.nio.file.Path;
 
 import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.ResolutionScope;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.plugin.Log;
@@ -29,11 +31,8 @@ import org.apache.maven.api.plugin.annotations.Execute;
 import org.apache.maven.api.plugin.annotations.LifecyclePhase;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
-import org.apache.maven.api.Project;
 import org.apache.maven.api.services.ArtifactInstaller;
 import org.apache.maven.api.settings.Settings;
-
-import java.nio.file.Path;
 
 /**
  * Test mojo for the v4 api plugin descriptor generation.
@@ -43,21 +42,20 @@ import java.nio.file.Path;
  *
  * @since 1.2
  */
-@Mojo( name = "first", requiresDependencyResolution = ResolutionScope.TEST,
-        defaultPhase = LifecyclePhase.INTEGRATION_TEST )
-@Execute( phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura" )
-public class FirstMojo
-    implements org.apache.maven.api.plugin.Mojo
-{
+@Mojo(
+        name = "first",
+        requiresDependencyResolution = ResolutionScope.TEST,
+        defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Execute(phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura")
+public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
 
     /**
      * Project directory.
      */
-    @Parameter( defaultValue = "${basedir}", readonly = true )
+    @Parameter(defaultValue = "${basedir}", readonly = true)
     private Path basedir;
 
-    @Parameter( property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt",
-                required = true )
+    @Parameter(property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt", required = true)
     private Path touchFile;
 
     /**
@@ -65,7 +63,7 @@ public class FirstMojo
      * @deprecated As of 0.2
      */
     @Deprecated
-    @Parameter( name = "namedParam", alias = "alias" )
+    @Parameter(name = "namedParam", alias = "alias")
     private String aliasedParam;
 
     @Component
@@ -83,12 +81,8 @@ public class FirstMojo
     @Component
     private Log log;
 
-    @Component( role = ArtifactInstaller.class, hint = "test" )
+    @Component(role = ArtifactInstaller.class, hint = "test")
     private Object custom;
 
-    public void execute()
-        throws MojoException
-    {
-    }
-
+    public void execute() throws MojoException {}
 }

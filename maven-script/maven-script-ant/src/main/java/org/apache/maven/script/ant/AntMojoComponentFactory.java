@@ -1,5 +1,3 @@
-package org.apache.maven.script.ant;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.script.ant;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.script.ant;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
@@ -31,14 +30,10 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class AntMojoComponentFactory
-    extends AntComponentFactory
-{
+public class AntMojoComponentFactory extends AntComponentFactory {
 
-    public Object newInstance( ComponentDescriptor descriptor, ClassRealm realm, PlexusContainer container )
-        throws ComponentInstantiationException
-    {
-        return new AntMojoWrapper( (AntScriptInvoker) super.newInstance( descriptor, realm, container ) );
+    public Object newInstance(ComponentDescriptor descriptor, ClassRealm realm, PlexusContainer container)
+            throws ComponentInstantiationException {
+        return new AntMojoWrapper((AntScriptInvoker) super.newInstance(descriptor, realm, container));
     }
-
 }

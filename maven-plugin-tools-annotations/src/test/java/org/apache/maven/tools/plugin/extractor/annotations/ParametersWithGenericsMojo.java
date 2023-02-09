@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,17 +28,15 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Mojo( name = "parameter-with-generics" )
-public class ParametersWithGenericsMojo
-    extends AbstractMojo
-{
+@Mojo(name = "parameter-with-generics")
+public class ParametersWithGenericsMojo extends AbstractMojo {
 
     @Parameter
     private String string;
 
     @Parameter
     private Map<String, Boolean> stringBooleanMap;
-    
+
     @Parameter
     private Collection<Integer> integerCollection;
 
@@ -50,12 +47,10 @@ public class ParametersWithGenericsMojo
     private Collection<Integer[]> integerArrayCollection;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-    }
+    public void execute() throws MojoExecutionException, MojoFailureException {}
 
-    @Parameter( name="numberList" )
-    public void setNumberList(List<Number> numberList) {
-    }
+    @Parameter(name = "numberList")
+    public void setNumberList(List<Number> numberList) {}
 
     public static class NestedClass<E extends Number> {
         /**

@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin.report_old;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin.report_old;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin.report_old;
 
 import java.util.Properties;
 
@@ -27,8 +26,7 @@ import java.util.Properties;
  * @deprecated will be removed in the next major version
  */
 @Deprecated
-public class Requirements
-{
+public class Requirements {
     /**
      * The minimum version of Maven to run this plugin.
      */
@@ -54,41 +52,35 @@ public class Requirements
      */
     private java.util.Properties others;
 
-    public String getMaven()
-    {
+    public String getMaven() {
         return maven;
     }
 
-    public String getJdk()
-    {
+    public String getJdk() {
         return jdk;
     }
 
-    public String getMemory()
-    {
+    public String getMemory() {
         return memory;
     }
 
-    public String getDiskSpace()
-    {
+    public String getDiskSpace() {
         return diskSpace;
     }
 
-    public Properties getOthers()
-    {
+    public Properties getOthers() {
         return others;
     }
 
     @Override
-    public String toString()
-    {
-        final StringBuilder sb = new StringBuilder( "Requirements{" );
-        sb.append( "maven='" ).append( maven ).append( '\'' );
-        sb.append( ", jdk='" ).append( jdk ).append( '\'' );
-        sb.append( ", memory='" ).append( memory ).append( '\'' );
-        sb.append( ", diskSpace='" ).append( diskSpace ).append( '\'' );
-        sb.append( ", others=" ).append( others );
-        sb.append( '}' );
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Requirements{");
+        sb.append("maven='").append(maven).append('\'');
+        sb.append(", jdk='").append(jdk).append('\'');
+        sb.append(", memory='").append(memory).append('\'');
+        sb.append(", diskSpace='").append(diskSpace).append('\'');
+        sb.append(", others=").append(others);
+        sb.append('}');
         return sb.toString();
     }
 }

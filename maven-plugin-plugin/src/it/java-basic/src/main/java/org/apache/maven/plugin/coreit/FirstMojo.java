@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,9 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
+
+import java.io.File;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -27,12 +28,9 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Touches a test file.
- * 
+ *
  * @goal first
  * @requiresDependencyResolution test
  * @phase integration-test
@@ -40,17 +38,15 @@ import java.io.IOException;
  * @deprecated Don't use!
  * @since 1.2
  */
-public class FirstMojo
-    extends AbstractMojo
-{
-    
+public class FirstMojo extends AbstractMojo {
+
     /**
      * Project directory.
      * @parameter default-value="${basedir}"
      * @readonly
      */
     private File basedir;
-    
+
     /**
      * @parameter expression="first.touchFile" default-value="${project.build.directory}/touch.txt"
      * @required
@@ -94,9 +90,5 @@ public class FirstMojo
      */
     private Settings settings;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-    }
-
+    public void execute() throws MojoExecutionException {}
 }

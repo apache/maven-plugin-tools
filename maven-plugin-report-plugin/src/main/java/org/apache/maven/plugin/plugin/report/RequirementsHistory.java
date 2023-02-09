@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin.report;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,14 +16,14 @@ package org.apache.maven.plugin.plugin.report;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin.report;
 
 /**
  * Plugin requirements history.
  *
  * @author Slawomir Jaranowski
  */
-public class RequirementsHistory
-{
+public class RequirementsHistory {
     /**
      * The plugin version.
      */
@@ -41,29 +39,25 @@ public class RequirementsHistory
      */
     private String jdk;
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
-    public String getMaven()
-    {
+    public String getMaven() {
         return maven;
     }
 
-    public String getJdk()
-    {
+    public String getJdk() {
         return jdk;
     }
 
     @Override
-    public String toString()
-    {
-        final StringBuilder sb = new StringBuilder( "RequirementsHistory{" );
-        sb.append( "version='" ).append( version ).append( '\'' );
-        sb.append( ", maven='" ).append( maven ).append( '\'' );
-        sb.append( ", jdk='" ).append( jdk ).append( '\'' );
-        sb.append( '}' );
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("RequirementsHistory{");
+        sb.append("version='").append(version).append('\'');
+        sb.append(", maven='").append(maven).append('\'');
+        sb.append(", jdk='").append(jdk).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 }
