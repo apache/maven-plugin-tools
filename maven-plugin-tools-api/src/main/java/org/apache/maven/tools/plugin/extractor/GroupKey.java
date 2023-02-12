@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
 
 import java.util.Objects;
 
@@ -27,9 +26,7 @@ import java.util.Objects;
  *
  * @since TBD
  */
-public final class GroupKey
-    implements Comparable<GroupKey>
-{
+public final class GroupKey implements Comparable<GroupKey> {
     /**
      * Java group is handled a bit special: is always first to be scanned.
      */
@@ -39,11 +36,9 @@ public final class GroupKey
 
     private final int order;
 
-    public GroupKey( String group, int order )
-    {
-        if ( group == null )
-        {
-            throw new NullPointerException( "GroupKey.group null" );
+    public GroupKey(String group, int order) {
+        if (group == null) {
+            throw new NullPointerException("GroupKey.group null");
         }
         this.group = group;
         this.order = order;
@@ -52,38 +47,32 @@ public final class GroupKey
     /**
      * Returns the group this key belongs to, never {@code null}.
      */
-    public String getGroup()
-    {
+    public String getGroup() {
         return group;
     }
 
     /**
      * Returns the order within same group of this key. Returns int should be used for ordering only.
      */
-    public int getOrder()
-    {
+    public int getOrder() {
         return order;
     }
 
     @Override
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() )
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         GroupKey groupKey = (GroupKey) o;
-        return order == groupKey.order && group.equals( groupKey.group );
+        return order == groupKey.order && group.equals(groupKey.group);
     }
 
     @Override
-    public int hashCode()
-    {
-        return Objects.hash( group, order );
+    public int hashCode() {
+        return Objects.hash(group, order);
     }
 
     /**
@@ -95,27 +84,21 @@ public final class GroupKey
      * </ul>
      */
     @Override
-    public int compareTo( final GroupKey o )
-    {
-        if ( JAVA_GROUP.equals( this.group ) && !JAVA_GROUP.equals( o.group ) )
-        {
+    public int compareTo(final GroupKey o) {
+        if (JAVA_GROUP.equals(this.group) && !JAVA_GROUP.equals(o.group)) {
             return -1;
-        }
-        else if ( !JAVA_GROUP.equals( this.group ) && JAVA_GROUP.equals( o.group ) )
-        {
+        } else if (!JAVA_GROUP.equals(this.group) && JAVA_GROUP.equals(o.group)) {
             return 1;
         }
-        int result = this.group.compareTo( o.group );
-        if ( result != 0 )
-        {
+        int result = this.group.compareTo(o.group);
+        if (result != 0) {
             return result;
         }
-        return Integer.compare( this.order, o.order );
+        return Integer.compare(this.order, o.order);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return group + ":" + order;
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor;
 
 import java.util.TreeSet;
 
@@ -29,36 +28,34 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * UT for {@link GroupKey}.
  */
-public class GroupKeyTest
-{
+public class GroupKeyTest {
     @Test
-    public void sortOrder()
-    {
+    public void sortOrder() {
         TreeSet<GroupKey> groupKeys = new TreeSet<>();
-        groupKeys.add( new GroupKey( "ant", 1 ) );
-        groupKeys.add( new GroupKey( "bsh", 1 ) );
-        groupKeys.add( new GroupKey( "foo", 1 ) );
-        groupKeys.add( new GroupKey( "zzz", 1 ) );
-        groupKeys.add( new GroupKey( GroupKey.JAVA_GROUP, 1 ) );
-        groupKeys.add( new GroupKey( "aaa", 2 ) );
-        groupKeys.add( new GroupKey( "bbb", 3 ) );
-        groupKeys.add( new GroupKey( "bsh", 100 ) );
-        groupKeys.add( new GroupKey( "ant", 5 ) );
-        groupKeys.add( new GroupKey( GroupKey.JAVA_GROUP, 2 ) );
-        assertFalse( groupKeys.add( new GroupKey( GroupKey.JAVA_GROUP, 1 ) ) ); // already present
+        groupKeys.add(new GroupKey("ant", 1));
+        groupKeys.add(new GroupKey("bsh", 1));
+        groupKeys.add(new GroupKey("foo", 1));
+        groupKeys.add(new GroupKey("zzz", 1));
+        groupKeys.add(new GroupKey(GroupKey.JAVA_GROUP, 1));
+        groupKeys.add(new GroupKey("aaa", 2));
+        groupKeys.add(new GroupKey("bbb", 3));
+        groupKeys.add(new GroupKey("bsh", 100));
+        groupKeys.add(new GroupKey("ant", 5));
+        groupKeys.add(new GroupKey(GroupKey.JAVA_GROUP, 2));
+        assertFalse(groupKeys.add(new GroupKey(GroupKey.JAVA_GROUP, 1))); // already present
 
         StringBuilder stringBuilder = new StringBuilder();
-        for ( GroupKey groupKey : groupKeys )
-        {
-            stringBuilder.append( groupKey.getGroup() ).append( ":" ).append( groupKey.getOrder() ).append( " " );
+        for (GroupKey groupKey : groupKeys) {
+            stringBuilder
+                    .append(groupKey.getGroup())
+                    .append(":")
+                    .append(groupKey.getOrder())
+                    .append(" ");
         }
         // Sort order:
         // 'java' group is always first
         // non-java groups are sorted lexicographically after java
         // within same named groups, int order defines ordering
-        assertEquals(
-                "java:1 java:2 aaa:2 ant:1 ant:5 bbb:3 bsh:1 bsh:100 foo:1 zzz:1 ",
-                stringBuilder.toString()
-        );
+        assertEquals("java:1 java:2 aaa:2 ant:1 ant:5 bbb:3 bsh:1 bsh:100 foo:1 zzz:1 ", stringBuilder.toString());
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.tools.plugin;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin;
 
 import java.net.URI;
 import java.util.List;
@@ -37,8 +36,7 @@ import org.apache.maven.settings.Settings;
  * @author jdcasey
  * @since 2.5
  */
-public interface PluginToolsRequest
-{
+public interface PluginToolsRequest {
 
     /**
      * @return Return the current {@link MavenProject} instance in use.
@@ -50,7 +48,7 @@ public interface PluginToolsRequest
      * @see PluginToolsRequest#getProject()
      * @return This request.
      */
-    PluginToolsRequest setProject( MavenProject project );
+    PluginToolsRequest setProject(MavenProject project);
 
     /**
      * @return Return the {@link PluginDescriptor} currently being populated as part of the build of the
@@ -63,7 +61,7 @@ public interface PluginToolsRequest
      * @param pluginDescriptor the {@link PluginDescriptor}
      * @return This request.
      */
-    PluginToolsRequest setPluginDescriptor( PluginDescriptor pluginDescriptor );
+    PluginToolsRequest setPluginDescriptor(PluginDescriptor pluginDescriptor);
 
     /**
      * Gets the file encoding of the source files.
@@ -79,7 +77,7 @@ public interface PluginToolsRequest
      *                 default encoding.
      * @return This request.
      */
-    PluginToolsRequest setEncoding( String encoding );
+    PluginToolsRequest setEncoding(String encoding);
 
     /**
      * By default an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
@@ -89,7 +87,7 @@ public interface PluginToolsRequest
      * @return This request.
      * @since 3.0
      */
-    PluginToolsRequest setSkipErrorNoDescriptorsFound( boolean skipErrorNoDescriptorsFound );
+    PluginToolsRequest setSkipErrorNoDescriptorsFound(boolean skipErrorNoDescriptorsFound);
 
     /**
      * @return <code>true</code> if no descriptor found should not cause a failure
@@ -110,7 +108,7 @@ public interface PluginToolsRequest
      * @return This request.
      * @since 3.0
      */
-    PluginToolsRequest setDependencies( Set<Artifact> dependencies );
+    PluginToolsRequest setDependencies(Set<Artifact> dependencies);
 
     /**
      *
@@ -125,7 +123,7 @@ public interface PluginToolsRequest
      * @return This request.
      * @since 3.0
      */
-    PluginToolsRequest setRemoteRepos( List<ArtifactRepository> remoteRepos );
+    PluginToolsRequest setRemoteRepos(List<ArtifactRepository> remoteRepos);
 
     /**
      *
@@ -140,15 +138,15 @@ public interface PluginToolsRequest
      * @return This request.
      * @since 3.0
      */
-    PluginToolsRequest setLocal( ArtifactRepository local );
+    PluginToolsRequest setLocal(ArtifactRepository local);
 
     /**
-     * 
+     *
      * @param baseUrl may be relative to the current site's root
      * @return This request.
      * @since 3.7.0
      */
-    PluginToolsRequest setInternalJavadocBaseUrl( URI baseUrl );
+    PluginToolsRequest setInternalJavadocBaseUrl(URI baseUrl);
 
     /**
      * @return the javadoc base url for the internal classes
@@ -157,26 +155,26 @@ public interface PluginToolsRequest
     URI getInternalJavadocBaseUrl();
 
     /**
-     * 
+     *
      * @param javadocVersion
      * @return This request.
      * @since 3.7.0
      */
-    PluginToolsRequest setInternalJavadocVersion( String javadocVersion );
+    PluginToolsRequest setInternalJavadocVersion(String javadocVersion);
 
     /**
      * @return the javadoc version used to create the internal javadoc site
      * @since 3.7.0
      */
     String getInternalJavadocVersion();
-    
+
     /**
-     * 
+     *
      * @param javadocLinks
      * @return This request.
      * @since 3.7.0
      */
-    PluginToolsRequest setExternalJavadocBaseUrls( List<URI> javadocLinks );
+    PluginToolsRequest setExternalJavadocBaseUrls(List<URI> javadocLinks);
 
     /**
      * @return the list of external javadoc base urls to consider
@@ -185,44 +183,46 @@ public interface PluginToolsRequest
     List<URI> getExternalJavadocBaseUrls();
 
     /**
-     * 
+     *
      * @param settings the Maven settings
      * @return This request.
      * @since 3.7.0
      */
-    PluginToolsRequest setSettings( Settings settings );
+    PluginToolsRequest setSettings(Settings settings);
 
     /**
      * @return the Maven settings
      * @since 3.7.0
      */
     Settings getSettings();
-    
+
     /**
-     * 
-     * @param requiredJavaVersion the required java version for this plugin or {@code null} if unknown.
+     *
+     * @param requiredJavaVersion the required Java version for this plugin or {@code null} if unknown.
+     *  Must be a value according to semantics of {@link org.eclipse.aether.version.VersionConstraint}.
      * @return This request.
      * @since 3.8.0
      */
-    PluginToolsRequest setRequiredJavaVersion( String requiredJavaVersion );
+    PluginToolsRequest setRequiredJavaVersion(String requiredJavaVersion);
 
     /**
-     * 
-     * @return the required java version for this plugin or {@code null} if unknown.
+     *
+     * @return the required Java version for this plugin or {@code null} if unknown.
+     *  Is a value according to semantics of {@link org.eclipse.aether.version.VersionConstraint}.
      * @since 3.8.0
      */
     String getRequiredJavaVersion();
 
     /**
-     * 
+     *
      * @param mavenApiVersion
      * @return his request.
      * @since 3.8.0
      */
-    PluginToolsRequest setUsedMavenApiVersion( String mavenApiVersion );
+    PluginToolsRequest setUsedMavenApiVersion(String mavenApiVersion);
 
     /**
-     * 
+     *
      * @return the Maven API version being referenced or {@code null} if unknown
      * @since 3.8.0
      */

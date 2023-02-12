@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -28,15 +27,11 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterCo
  * Supports <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#docroot">
  * docRoot value tag</a>.
  */
-@Named( "docRoot" )
+@Named("docRoot")
 @Singleton
-public class DocRootTagConverter
-    extends JavadocInlineTagToHtmlConverter
-{
+public class DocRootTagConverter extends JavadocInlineTagToHtmlConverter {
     @Override
-    public String convert( String text, ConverterContext context )
-    {
+    public String convert(String text, ConverterContext context) {
         return context.getInternalJavadocSiteBaseUrl().toString();
     }
-
 }

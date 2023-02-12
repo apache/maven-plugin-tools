@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,30 +16,23 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
- * Could not use regex in @Parameter(defaultValue) 
+ * Could not use regex in @Parameter(defaultValue)
  */
-@Mojo( name = "mplugin-220" )
-public class MPlugin220Mojo
-    extends AbstractMojo
-{
-    
-    @Parameter( defaultValue = "[a-zA-Z]{2,}-\\\\d+" )
+@Mojo(name = "mplugin-220")
+public class MPlugin220Mojo extends AbstractMojo {
+
+    @Parameter(defaultValue = "[a-zA-Z]{2,}-\\\\d+")
     private String regex;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        getLog().info( "regex = " + regex );
+    public void execute() throws MojoExecutionException {
+        getLog().info("regex = " + regex);
     }
-
 }

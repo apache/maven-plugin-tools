@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.generator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.generator;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.generator;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
@@ -59,10 +58,8 @@ import org.w3c.tidy.Tidy;
  *
  * @author jdcasey
  */
-public final class GeneratorUtils
-{
-    private GeneratorUtils()
-    {
+public final class GeneratorUtils {
+    private GeneratorUtils() {
         // nop
     }
 
@@ -70,22 +67,20 @@ public final class GeneratorUtils
      * @param w not null writer
      * @param pluginDescriptor not null
      */
-    public static void writeDependencies( XMLWriter w, PluginDescriptor pluginDescriptor )
-    {
-        w.startElement( "dependencies" );
+    public static void writeDependencies(XMLWriter w, PluginDescriptor pluginDescriptor) {
+        w.startElement("dependencies");
 
         List<ComponentDependency> deps = pluginDescriptor.getDependencies();
-        for ( ComponentDependency dep : deps )
-        {
-            w.startElement( "dependency" );
+        for (ComponentDependency dep : deps) {
+            w.startElement("dependency");
 
-            element( w, "groupId", dep.getGroupId() );
+            element(w, "groupId", dep.getGroupId());
 
-            element( w, "artifactId", dep.getArtifactId() );
+            element(w, "artifactId", dep.getArtifactId());
 
-            element( w, "type", dep.getType() );
+            element(w, "type", dep.getType());
 
-            element( w, "version", dep.getVersion() );
+            element(w, "version", dep.getVersion());
 
             w.endElement();
         }
@@ -98,16 +93,14 @@ public final class GeneratorUtils
      * @param name  not null
      * @param value could be null
      */
-    public static void element( XMLWriter w, String name, String value )
-    {
-        w.startElement( name );
+    public static void element(XMLWriter w, String name, String value) {
+        w.startElement(name);
 
-        if ( value == null )
-        {
+        if (value == null) {
             value = "";
         }
 
-        w.writeText( value );
+        w.writeText(value);
 
         w.endElement();
     }
@@ -116,25 +109,22 @@ public final class GeneratorUtils
      * @param artifacts not null collection of <code>Artifact</code>
      * @return list of component dependencies, without in provided scope
      */
-    public static List<ComponentDependency> toComponentDependencies( Collection<Artifact> artifacts )
-    {
+    public static List<ComponentDependency> toComponentDependencies(Collection<Artifact> artifacts) {
         List<ComponentDependency> componentDeps = new LinkedList<>();
 
-        for ( Artifact artifact : artifacts )
-        {
-            if ( Artifact.SCOPE_PROVIDED.equals( artifact.getScope() ) )
-            {
+        for (Artifact artifact : artifacts) {
+            if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope())) {
                 continue;
             }
 
             ComponentDependency cd = new ComponentDependency();
 
-            cd.setArtifactId( artifact.getArtifactId() );
-            cd.setGroupId( artifact.getGroupId() );
-            cd.setVersion( artifact.getVersion() );
-            cd.setType( artifact.getType() );
+            cd.setArtifactId(artifact.getArtifactId());
+            cd.setGroupId(artifact.getGroupId());
+            cd.setVersion(artifact.getVersion());
+            cd.setType(artifact.getType());
 
-            componentDeps.add( cd );
+            componentDeps.add(cd);
         }
 
         return componentDeps;
@@ -152,30 +142,22 @@ public final class GeneratorUtils
      * @param s The string to be literalized
      * @return A literal string replacement
      */
-    private static String quoteReplacement( String s )
-    {
-        if ( ( s.indexOf( '\\' ) == -1 ) && ( s.indexOf( '$' ) == -1 ) )
-        {
+    private static String quoteReplacement(String s) {
+        if ((s.indexOf('\\') == -1) && (s.indexOf('$') == -1)) {
             return s;
         }
 
         StringBuilder sb = new StringBuilder();
-        for ( int i = 0; i < s.length(); i++ )
-        {
-            char c = s.charAt( i );
-            if ( c == '\\' )
-            {
-                sb.append( '\\' );
-                sb.append( '\\' );
-            }
-            else if ( c == '$' )
-            {
-                sb.append( '\\' );
-                sb.append( '$' );
-            }
-            else
-            {
-                sb.append( c );
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\\') {
+                sb.append('\\');
+                sb.append('\\');
+            } else if (c == '$') {
+                sb.append('\\');
+                sb.append('$');
+            } else {
+                sb.append(c);
             }
         }
 
@@ -191,67 +173,54 @@ public final class GeneratorUtils
      * @deprecated Only used for non java extractor
      */
     @Deprecated
-    static String decodeJavadocTags( String description )
-    {
-        if ( StringUtils.isEmpty( description ) )
-        {
+    static String decodeJavadocTags(String description) {
+        if (StringUtils.isEmpty(description)) {
             return "";
         }
 
-        StringBuffer decoded = new StringBuffer( description.length() + 1024 );
+        StringBuffer decoded = new StringBuffer(description.length() + 1024);
 
-        Matcher matcher = Pattern.compile( "\\{@(\\w+)\\s*([^\\}]*)\\}" ).matcher( description );
-        while ( matcher.find() )
-        {
-            String tag = matcher.group( 1 );
-            String text = matcher.group( 2 );
-            text = StringUtils.replace( text, "&", "&amp;" );
-            text = StringUtils.replace( text, "<", "&lt;" );
-            text = StringUtils.replace( text, ">", "&gt;" );
-            if ( "code".equals( tag ) )
-            {
+        Matcher matcher = Pattern.compile("\\{@(\\w+)\\s*([^\\}]*)\\}").matcher(description);
+        while (matcher.find()) {
+            String tag = matcher.group(1);
+            String text = matcher.group(2);
+            text = StringUtils.replace(text, "&", "&amp;");
+            text = StringUtils.replace(text, "<", "&lt;");
+            text = StringUtils.replace(text, ">", "&gt;");
+            if ("code".equals(tag)) {
                 text = "<code>" + text + "</code>";
-            }
-            else if ( "link".equals( tag ) || "linkplain".equals( tag ) || "value".equals( tag ) )
-            {
+            } else if ("link".equals(tag) || "linkplain".equals(tag) || "value".equals(tag)) {
                 String pattern = "(([^#\\.\\s]+\\.)*([^#\\.\\s]+))?" + "(#([^\\(\\s]*)(\\([^\\)]*\\))?\\s*(\\S.*)?)?";
                 final int label = 7;
                 final int clazz = 3;
                 final int member = 5;
                 final int args = 6;
-                Matcher link = Pattern.compile( pattern ).matcher( text );
-                if ( link.matches() )
-                {
-                    text = link.group( label );
-                    if ( StringUtils.isEmpty( text ) )
-                    {
-                        text = link.group( clazz );
-                        if ( StringUtils.isEmpty( text ) )
-                        {
+                Matcher link = Pattern.compile(pattern).matcher(text);
+                if (link.matches()) {
+                    text = link.group(label);
+                    if (StringUtils.isEmpty(text)) {
+                        text = link.group(clazz);
+                        if (StringUtils.isEmpty(text)) {
                             text = "";
                         }
-                        if ( StringUtils.isNotEmpty( link.group( member ) ) )
-                        {
-                            if ( StringUtils.isNotEmpty( text ) )
-                            {
+                        if (StringUtils.isNotEmpty(link.group(member))) {
+                            if (StringUtils.isNotEmpty(text)) {
                                 text += '.';
                             }
-                            text += link.group( member );
-                            if ( StringUtils.isNotEmpty( link.group( args ) ) )
-                            {
+                            text += link.group(member);
+                            if (StringUtils.isNotEmpty(link.group(args))) {
                                 text += "()";
                             }
                         }
                     }
                 }
-                if ( !"linkplain".equals( tag ) )
-                {
+                if (!"linkplain".equals(tag)) {
                     text = "<code>" + text + "</code>";
                 }
             }
-            matcher.appendReplacement( decoded, ( text != null ) ? quoteReplacement( text ) : "" );
+            matcher.appendReplacement(decoded, (text != null) ? quoteReplacement(text) : "");
         }
-        matcher.appendTail( decoded );
+        matcher.appendTail(decoded);
 
         return decoded.toString();
     }
@@ -264,43 +233,40 @@ public final class GeneratorUtils
      * @deprecated Redundant for java extractor
      */
     @Deprecated
-    public static String makeHtmlValid( String description )
-    {
-        
-        if ( StringUtils.isEmpty( description ) )
-        {
+    public static String makeHtmlValid(String description) {
+
+        if (StringUtils.isEmpty(description)) {
             return "";
         }
 
-        String commentCleaned = decodeJavadocTags( description );
+        String commentCleaned = decodeJavadocTags(description);
 
         // Using jTidy to clean comment
         Tidy tidy = new Tidy();
-        tidy.setDocType( "loose" );
-        tidy.setXHTML( true );
-        tidy.setXmlOut( true );
-        tidy.setInputEncoding( "UTF-8" );
-        tidy.setOutputEncoding( "UTF-8" );
-        tidy.setMakeClean( true );
-        tidy.setNumEntities( true );
-        tidy.setQuoteNbsp( false );
-        tidy.setQuiet( true );
-        tidy.setShowWarnings( true );
-        
-        ByteArrayOutputStream out = new ByteArrayOutputStream( commentCleaned.length() + 256 );
-        tidy.parse( new ByteArrayInputStream( commentCleaned.getBytes( StandardCharsets.UTF_8 ) ), out );
-        commentCleaned = new String( out.toByteArray(), StandardCharsets.UTF_8 );
+        tidy.setDocType("loose");
+        tidy.setXHTML(true);
+        tidy.setXmlOut(true);
+        tidy.setInputEncoding("UTF-8");
+        tidy.setOutputEncoding("UTF-8");
+        tidy.setMakeClean(true);
+        tidy.setNumEntities(true);
+        tidy.setQuoteNbsp(false);
+        tidy.setQuiet(true);
+        tidy.setShowWarnings(true);
 
-        if ( StringUtils.isEmpty( commentCleaned ) )
-        {
+        ByteArrayOutputStream out = new ByteArrayOutputStream(commentCleaned.length() + 256);
+        tidy.parse(new ByteArrayInputStream(commentCleaned.getBytes(StandardCharsets.UTF_8)), out);
+        commentCleaned = new String(out.toByteArray(), StandardCharsets.UTF_8);
+
+        if (StringUtils.isEmpty(commentCleaned)) {
             return "";
         }
 
         // strip the header/body stuff
-        String ls = System.getProperty( "line.separator" );
-        int startPos = commentCleaned.indexOf( "<body>" + ls ) + 6 + ls.length();
-        int endPos = commentCleaned.indexOf( ls + "</body>" );
-        commentCleaned = commentCleaned.substring( startPos, endPos );
+        String ls = System.getProperty("line.separator");
+        int startPos = commentCleaned.indexOf("<body>" + ls) + 6 + ls.length();
+        int endPos = commentCleaned.indexOf(ls + "</body>");
+        commentCleaned = commentCleaned.substring(startPos, endPos);
 
         return commentCleaned;
     }
@@ -324,41 +290,33 @@ public final class GeneratorUtils
      * @deprecated Replaced by {@link HtmlToPlainTextConverter}
      */
     @Deprecated
-    public static String toText( String html )
-    {
-        if ( StringUtils.isEmpty( html ) )
-        {
+    public static String toText(String html) {
+        if (StringUtils.isEmpty(html)) {
             return "";
         }
 
         final StringBuilder sb = new StringBuilder();
 
         HTMLEditorKit.Parser parser = new ParserDelegator();
-        HTMLEditorKit.ParserCallback htmlCallback = new MojoParserCallback( sb );
+        HTMLEditorKit.ParserCallback htmlCallback = new MojoParserCallback(sb);
 
-        try
-        {
-            parser.parse( new StringReader( makeHtmlValid( html ) ), htmlCallback, true );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
+        try {
+            parser.parse(new StringReader(makeHtmlValid(html)), htmlCallback, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        return sb.toString().replace( '\"', '\'' ); // for CDATA
+        return sb.toString().replace('\"', '\''); // for CDATA
     }
 
     /**
      * ParserCallback implementation.
      */
-    private static class MojoParserCallback
-        extends HTMLEditorKit.ParserCallback
-    {
+    private static class MojoParserCallback extends HTMLEditorKit.ParserCallback {
         /**
          * Holds the index of the current item in a numbered list.
          */
-        class Counter
-        {
+        class Counter {
             int value;
         }
 
@@ -403,130 +361,97 @@ public final class GeneratorUtils
         /**
          * @param sb not null
          */
-        MojoParserCallback( StringBuilder sb )
-        {
+        MojoParserCallback(StringBuilder sb) {
             this.sb = sb;
         }
 
         /** {@inheritDoc} */
         @Override
-        public void handleSimpleTag( HTML.Tag t, MutableAttributeSet a, int pos )
-        {
+        public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos) {
             simpleTag = true;
-            if ( body && HTML.Tag.BR.equals( t ) )
-            {
-                newline( false );
+            if (body && HTML.Tag.BR.equals(t)) {
+                newline(false);
             }
         }
 
         /** {@inheritDoc} */
         @Override
-        public void handleStartTag( HTML.Tag t, MutableAttributeSet a, int pos )
-        {
+        public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
             simpleTag = false;
-            if ( body && ( t.breaksFlow() || t.isBlock() ) )
-            {
-                newline( true );
+            if (body && (t.breaksFlow() || t.isBlock())) {
+                newline(true);
             }
-            if ( HTML.Tag.OL.equals( t ) )
-            {
-                numbering.push( new Counter() );
-            }
-            else if ( HTML.Tag.UL.equals( t ) )
-            {
-                numbering.push( null );
-            }
-            else if ( HTML.Tag.LI.equals( t ) )
-            {
+            if (HTML.Tag.OL.equals(t)) {
+                numbering.push(new Counter());
+            } else if (HTML.Tag.UL.equals(t)) {
+                numbering.push(null);
+            } else if (HTML.Tag.LI.equals(t)) {
                 Counter counter = numbering.peek();
-                if ( counter == null )
-                {
-                    text( "-\t" );
-                }
-                else
-                {
-                    text( ++counter.value + ".\t" );
+                if (counter == null) {
+                    text("-\t");
+                } else {
+                    text(++counter.value + ".\t");
                 }
                 depth++;
-            }
-            else if ( HTML.Tag.DD.equals( t ) )
-            {
+            } else if (HTML.Tag.DD.equals(t)) {
                 depth++;
-            }
-            else if ( t.isPreformatted() )
-            {
+            } else if (t.isPreformatted()) {
                 preformatted++;
-            }
-            else if ( HTML.Tag.BODY.equals( t ) )
-            {
+            } else if (HTML.Tag.BODY.equals(t)) {
                 body = true;
             }
         }
 
         /** {@inheritDoc} */
         @Override
-        public void handleEndTag( HTML.Tag t, int pos )
-        {
-            if ( HTML.Tag.OL.equals( t ) || HTML.Tag.UL.equals( t ) )
-            {
+        public void handleEndTag(HTML.Tag t, int pos) {
+            if (HTML.Tag.OL.equals(t) || HTML.Tag.UL.equals(t)) {
                 numbering.pop();
-            }
-            else if ( HTML.Tag.LI.equals( t ) || HTML.Tag.DD.equals( t ) )
-            {
+            } else if (HTML.Tag.LI.equals(t) || HTML.Tag.DD.equals(t)) {
                 depth--;
-            }
-            else if ( t.isPreformatted() )
-            {
+            } else if (t.isPreformatted()) {
                 preformatted--;
-            }
-            else if ( HTML.Tag.BODY.equals( t ) )
-            {
+            } else if (HTML.Tag.BODY.equals(t)) {
                 body = false;
             }
-            if ( body && ( t.breaksFlow() || t.isBlock() ) && !HTML.Tag.LI.equals( t ) )
-            {
-                if ( ( HTML.Tag.P.equals( t ) || HTML.Tag.PRE.equals( t ) || HTML.Tag.OL.equals( t )
-                    || HTML.Tag.UL.equals( t ) || HTML.Tag.DL.equals( t ) )
-                    && numbering.isEmpty() )
-                {
+            if (body && (t.breaksFlow() || t.isBlock()) && !HTML.Tag.LI.equals(t)) {
+                if ((HTML.Tag.P.equals(t)
+                                || HTML.Tag.PRE.equals(t)
+                                || HTML.Tag.OL.equals(t)
+                                || HTML.Tag.UL.equals(t)
+                                || HTML.Tag.DL.equals(t))
+                        && numbering.isEmpty()) {
                     pendingNewline = false;
-                    newline( pendingNewline );
-                }
-                else
-                {
-                    newline( true );
+                    newline(pendingNewline);
+                } else {
+                    newline(true);
                 }
             }
         }
 
         /** {@inheritDoc} */
         @Override
-        public void handleText( char[] data, int pos )
-        {
+        public void handleText(char[] data, int pos) {
             /*
              * NOTE: Parsers before JRE 1.6 will parse XML-conform simple tags like <br/> as "<br>" followed by
              * the text event ">..." so we need to watch out for the closing angle bracket.
              */
             int offset = 0;
-            if ( simpleTag && data[0] == '>' )
-            {
+            if (simpleTag && data[0] == '>') {
                 simpleTag = false;
-                for ( ++offset; offset < data.length && data[offset] <= ' '; )
-                {
+                for (++offset; offset < data.length && data[offset] <= ' '; ) {
                     offset++;
                 }
             }
-            if ( offset < data.length )
-            {
-                String text = new String( data, offset, data.length - offset );
-                text( text );
+            if (offset < data.length) {
+                String text = new String(data, offset, data.length - offset);
+                text(text);
             }
         }
 
         /** {@inheritDoc} */
         @Override
-        public void flush()
-        {
+        public void flush() {
             flushPendingNewline();
         }
 
@@ -537,30 +462,23 @@ public final class GeneratorUtils
          *            always written to the output whereas consecutive implicit line breaks are merged into a single
          *            line break.
          */
-        private void newline( boolean implicit )
-        {
-            if ( implicit )
-            {
+        private void newline(boolean implicit) {
+            if (implicit) {
                 pendingNewline = true;
-            }
-            else
-            {
+            } else {
                 flushPendingNewline();
-                sb.append( '\n' );
+                sb.append('\n');
             }
         }
 
         /**
          * Flushes a pending newline (if any).
          */
-        private void flushPendingNewline()
-        {
-            if ( pendingNewline )
-            {
+        private void flushPendingNewline() {
+            if (pendingNewline) {
                 pendingNewline = false;
-                if ( sb.length() > 0 )
-                {
-                    sb.append( '\n' );
+                if (sb.length() > 0) {
+                    sb.append('\n');
                 }
             }
         }
@@ -571,26 +489,20 @@ public final class GeneratorUtils
          *
          * @param data The character data, must not be <code>null</code>.
          */
-        private void text( String data )
-        {
+        private void text(String data) {
             flushPendingNewline();
-            if ( sb.length() <= 0 || sb.charAt( sb.length() - 1 ) == '\n' )
-            {
-                for ( int i = 0; i < depth; i++ )
-                {
-                    sb.append( '\t' );
+            if (sb.length() <= 0 || sb.charAt(sb.length() - 1) == '\n') {
+                for (int i = 0; i < depth; i++) {
+                    sb.append('\t');
                 }
             }
             String text;
-            if ( preformatted > 0 )
-            {
+            if (preformatted > 0) {
                 text = data;
+            } else {
+                text = data.replace('\n', ' ');
             }
-            else
-            {
-                text = data.replace( '\n', ' ' );
-            }
-            sb.append( text );
+            sb.append(text);
         }
     }
 
@@ -600,49 +512,37 @@ public final class GeneratorUtils
      * @param pluginDescriptor not null
      * @return the best name of the package for the generated mojo
      */
-    public static String discoverPackageName( PluginDescriptor pluginDescriptor )
-    {
+    public static String discoverPackageName(PluginDescriptor pluginDescriptor) {
         Map<String, Integer> packageNames = new HashMap<>();
 
         List<MojoDescriptor> mojoDescriptors = pluginDescriptor.getMojos();
-        if ( mojoDescriptors == null )
-        {
+        if (mojoDescriptors == null) {
             return "";
         }
-        for ( MojoDescriptor descriptor : mojoDescriptors )
-        {
+        for (MojoDescriptor descriptor : mojoDescriptors) {
 
             String impl = descriptor.getImplementation();
-            if ( StringUtils.equals( descriptor.getGoal(), "help" ) && StringUtils.equals( "HelpMojo", impl ) )
-            {
+            if (StringUtils.equals(descriptor.getGoal(), "help") && StringUtils.equals("HelpMojo", impl)) {
                 continue;
             }
-            if ( impl.lastIndexOf( '.' ) != -1 )
-            {
-                String name = impl.substring( 0, impl.lastIndexOf( '.' ) );
-                if ( packageNames.get( name ) != null )
-                {
-                    int next = ( packageNames.get( name ) ).intValue() + 1;
-                    packageNames.put( name,  Integer.valueOf( next ) );
+            if (impl.lastIndexOf('.') != -1) {
+                String name = impl.substring(0, impl.lastIndexOf('.'));
+                if (packageNames.get(name) != null) {
+                    int next = (packageNames.get(name)).intValue() + 1;
+                    packageNames.put(name, Integer.valueOf(next));
+                } else {
+                    packageNames.put(name, Integer.valueOf(1));
                 }
-                else
-                {
-                    packageNames.put( name, Integer.valueOf( 1 ) );
-                }
-            }
-            else
-            {
-                packageNames.put( "", Integer.valueOf( 1 ) );
+            } else {
+                packageNames.put("", Integer.valueOf(1));
             }
         }
 
         String packageName = "";
         int max = 0;
-        for ( Map.Entry<String, Integer> entry : packageNames.entrySet() )
-        {
+        for (Map.Entry<String, Integer> entry : packageNames.entrySet()) {
             int value = entry.getValue().intValue();
-            if ( value > max )
-            {
+            if (value > max) {
                 max = value;
                 packageName = entry.getKey();
             }
@@ -658,58 +558,42 @@ public final class GeneratorUtils
      * <code>false</code> otherwise.
      * @throws IllegalArgumentException if any
      */
-    @SuppressWarnings( "unchecked" )
-    public static boolean isMavenReport( String impl, MavenProject project )
-        throws IllegalArgumentException
-    {
-        if ( impl == null )
-        {
-            throw new IllegalArgumentException( "mojo implementation should be declared" );
+    @SuppressWarnings("unchecked")
+    public static boolean isMavenReport(String impl, MavenProject project) throws IllegalArgumentException {
+        if (impl == null) {
+            throw new IllegalArgumentException("mojo implementation should be declared");
         }
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if ( project != null )
-        {
+        if (project != null) {
             List<String> classPathStrings;
-            try
-            {
+            try {
                 classPathStrings = project.getCompileClasspathElements();
-                if ( project.getExecutionProject() != null )
-                {
-                    classPathStrings.addAll( project.getExecutionProject().getCompileClasspathElements() );
+                if (project.getExecutionProject() != null) {
+                    classPathStrings.addAll(project.getExecutionProject().getCompileClasspathElements());
                 }
-            }
-            catch ( DependencyResolutionRequiredException e )
-            {
-                throw new IllegalArgumentException( e );
+            } catch (DependencyResolutionRequiredException e) {
+                throw new IllegalArgumentException(e);
             }
 
-            List<URL> urls = new ArrayList<>( classPathStrings.size() );
-            for ( String classPathString : classPathStrings )
-            {
-                try
-                {
-                    urls.add( new File( classPathString ).toURL() );
-                }
-                catch ( MalformedURLException e )
-                {
-                    throw new IllegalArgumentException( e );
+            List<URL> urls = new ArrayList<>(classPathStrings.size());
+            for (String classPathString : classPathStrings) {
+                try {
+                    urls.add(new File(classPathString).toURL());
+                } catch (MalformedURLException e) {
+                    throw new IllegalArgumentException(e);
                 }
             }
 
-            classLoader = new URLClassLoader( urls.toArray( new URL[urls.size()] ), classLoader );
+            classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), classLoader);
         }
 
-        try
-        {
-            Class<?> clazz = Class.forName( impl, false, classLoader );
+        try {
+            Class<?> clazz = Class.forName(impl, false, classLoader);
 
-            return MavenReport.class.isAssignableFrom( clazz );
-        }
-        catch ( ClassNotFoundException e )
-        {
+            return MavenReport.class.isAssignableFrom(clazz);
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }
-
 }

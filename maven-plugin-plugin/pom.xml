@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -21,9 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>maven-plugin-tools</artifactId>
     <groupId>org.apache.maven.plugin-tools</groupId>
-    <version>3.7.1-SNAPSHOT</version>
+    <artifactId>maven-plugin-tools</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.maven.plugins</groupId>
@@ -31,11 +31,9 @@
   <packaging>maven-plugin</packaging>
 
   <name>Maven Plugin Plugin</name>
-  <description>
-    The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree,
+  <description>The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree,
     to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as the artifact metadata
-    and a generic help goal.
-  </description>
+    and a generic help goal.</description>
 
   <prerequisites>
     <maven>${mavenVersion}</maven>
@@ -136,7 +134,7 @@
 
     <!-- plexus -->
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
@@ -190,8 +188,8 @@
         <directory>src/main/resources</directory>
       </resource>
       <resource>
-        <directory>src/main/filtered-resources</directory>
         <filtering>true</filtering>
+        <directory>src/main/filtered-resources</directory>
       </resource>
     </resources>
     <pluginManagement>
@@ -214,10 +212,10 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
+            <id>ensure-no-container-api</id>
             <goals>
               <goal>enforce</goal>
             </goals>
-            <id>ensure-no-container-api</id>
             <configuration>
               <rules>
                 <bannedDependencies>
@@ -251,7 +249,7 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
         <reportSets>
           <reportSet>
             <reports>
@@ -302,7 +300,8 @@
                 <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
               </properties>
               <pomExcludes>
-                <pomExclude>plugin-info-jdk/pom.xml</pomExclude><!-- relies on just a given plugin.xml for generating a report, this is no longer supported -->
+                <pomExclude>plugin-info-jdk/pom.xml</pomExclude>
+                <!-- relies on just a given plugin.xml for generating a report, this is no longer supported -->
               </pomExcludes>
             </configuration>
             <executions>

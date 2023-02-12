@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin;
 
 import java.io.File;
 import java.net.URI;
@@ -66,17 +65,18 @@ import org.sonatype.plexus.build.incremental.BuildContext;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @since 2.0
  */
-@Mojo( name = "descriptor", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-       requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true )
-public class DescriptorGeneratorMojo
-    extends AbstractGeneratorMojo
-{
+@Mojo(
+        name = "descriptor",
+        defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        threadSafe = true)
+public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     private static final String VALUE_AUTO = "auto";
 
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
      */
-    @Parameter( defaultValue = "${project.build.outputDirectory}/META-INF/maven", readonly = true )
+    @Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/maven", readonly = true)
     private File outputDirectory;
 
     /**
@@ -84,7 +84,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 2.5
      */
-    @Parameter( property = "encoding", defaultValue = "${project.build.sourceEncoding}" )
+    @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
     private String encoding;
 
     /**
@@ -92,7 +92,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 2.6
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean skipDescriptor;
 
     /**
@@ -136,7 +136,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 3.0
      */
-    @Parameter( property = "maven.plugin.skipErrorNoDescriptorsFound", defaultValue = "false" )
+    @Parameter(property = "maven.plugin.skipErrorNoDescriptorsFound", defaultValue = "false")
     private boolean skipErrorNoDescriptorsFound;
 
     /**
@@ -145,7 +145,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 3.6.3
      */
-    @Parameter( defaultValue = "true", property = "maven.plugin.checkExpectedProvidedScope" )
+    @Parameter(defaultValue = "true", property = "maven.plugin.checkExpectedProvidedScope")
     private boolean checkExpectedProvidedScope = true;
 
     /**
@@ -155,7 +155,7 @@ public class DescriptorGeneratorMojo
      * @since 3.6.3
      */
     @Parameter
-    private List<String> expectedProvidedScopeGroupIds = Collections.singletonList( "org.apache.maven" );
+    private List<String> expectedProvidedScopeGroupIds = Collections.singletonList("org.apache.maven");
 
     /**
      * List of {@code groupId:artifactId} strings of artifact coordinates that are to be excluded from "expected
@@ -166,9 +166,7 @@ public class DescriptorGeneratorMojo
      */
     @Parameter
     private List<String> expectedProvidedScopeExclusions = Arrays.asList(
-        "org.apache.maven:maven-archiver",
-        "org.apache.maven:maven-jxr",
-        "org.apache.maven:plexus-utils" );
+            "org.apache.maven:maven-archiver", "org.apache.maven:maven-jxr", "org.apache.maven:plexus-utils");
 
     /**
      * Specify the dependencies as {@code groupId:artifactId} containing (abstract) Mojos, to filter
@@ -198,7 +196,7 @@ public class DescriptorGeneratorMojo
      * Using this parameter requires connectivity to the given URLs during the goal execution.
      * @since 3.7.0
      */
-    @Parameter( property = "externalJavadocBaseUrls", alias = "links" )
+    @Parameter(property = "externalJavadocBaseUrls", alias = "links")
     protected List<URI> externalJavadocBaseUrls;
 
     /**
@@ -210,17 +208,17 @@ public class DescriptorGeneratorMojo
      * <a href="../maven-plugin-report-plugin/index.html">Plugin Report</a>.</b>
      * @since 3.7.0
      */
-    @Parameter( property = "internalJavadocBaseUrl" )
+    @Parameter(property = "internalJavadocBaseUrl")
     protected URI internalJavadocBaseUrl;
 
     /**
      * The version of the javadoc tool (equal to the container JDK version) used to generate the internal javadoc
      * Only relevant if {@link #internalJavadocBaseUrl} is set.
      * The default value needs to be overwritten in case toolchains are being used for generating Javadoc.
-     * 
+     *
      * @since 3.7.0
      */
-    @Parameter( property = "internalJavadocVersion", defaultValue = "${java.version}" )
+    @Parameter(property = "internalJavadocVersion", defaultValue = "${java.version}")
     protected String internalJavadocVersion;
 
     /**
@@ -228,7 +226,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 3.7.0
      */
-    @Parameter( defaultValue = "${settings}", readonly = true, required = true )
+    @Parameter(defaultValue = "${settings}", readonly = true, required = true)
     private Settings settings;
 
     /**
@@ -236,7 +234,7 @@ public class DescriptorGeneratorMojo
      *
      * @since 3.0
      */
-    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
     private List<ArtifactRepository> remoteRepos;
 
     /**
@@ -244,30 +242,30 @@ public class DescriptorGeneratorMojo
      *
      * @since 3.0
      */
-    @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository local;
 
     /**
      * The required Java version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
      * Maven versions. Can be either one of the following formats:
-     * 
+     *
      * <ul>
-     * <li>One of the values as for <a href="https://maven.apache.org/pom.html#Activation">POM profile activation
-     * element {@code jdk}</a>, i.e. version ranges, version prefixes
-     * and negated version prefixes (starting with '!').</li>
+     * <li>A version range which specifies the supported Java versions. It can either use the usual mathematical
+     * syntax like {@code "[2.0.10,2.1.0),[3.0,)"} or use a single version like {@code "2.2.1"}. The latter is a short
+     * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Java version from the binary class version being generated during
      * compilation (determined by the extractor).</li>
      * </ul>
-     * 
+     *
      * @since 3.8.0
      */
-    @Parameter( defaultValue = VALUE_AUTO )
+    @Parameter(defaultValue = VALUE_AUTO)
     String requiredJavaVersion;
 
     /**
      * The required Maven version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
      * Maven versions. Can be either one of the following formats:
-     * 
+     *
      * <ul>
      * <li>A version range which specifies the supported Maven versions. It can either use the usual mathematical
      * syntax like {@code "[2.0.10,2.1.0),[3.0,)"} or use a single version like {@code "2.2.1"}. The latter is a short
@@ -275,12 +273,12 @@ public class DescriptorGeneratorMojo
      * <li>{@code "auto"} to determine the minimum Maven version from the POM's Maven prerequisite, or if not set the
      * referenced Maven Plugin API version.</li>
      * </ul>
-     * This value takes precedence over the 
+     * This value takes precedence over the
      * <a href="https://maven.apache.org/pom.html#Prerequisites">POM's Maven prerequisite</a> in Maven 4.
-     * 
+     *
      * @since 3.8.0
      */
-    @Parameter( defaultValue = VALUE_AUTO )
+    @Parameter(defaultValue = VALUE_AUTO)
     String requiredMavenVersion;
 
     /**
@@ -292,187 +290,158 @@ public class DescriptorGeneratorMojo
     @Component
     protected BuildContext buildContext;
 
-    public void generate()
-        throws MojoExecutionException
-    {
+    public void generate() throws MojoExecutionException {
 
-        if ( !"maven-plugin".equalsIgnoreCase( project.getArtifactId() )
-                        && project.getArtifactId().toLowerCase().startsWith( "maven-" )
-                        && project.getArtifactId().toLowerCase().endsWith( "-plugin" )
-                        && !"org.apache.maven.plugins".equals( project.getGroupId() ) )
-        {
-            getLog().error( LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
-                                + "plugins in the Group Id org.apache.maven.plugins" + LS
-                                + "Please change your artifactId to the format ___-maven-plugin" + LS
-                                + "In the future this error will break the build." + LS + LS );
+        if (!"maven-plugin".equalsIgnoreCase(project.getArtifactId())
+                && project.getArtifactId().toLowerCase().startsWith("maven-")
+                && project.getArtifactId().toLowerCase().endsWith("-plugin")
+                && !"org.apache.maven.plugins".equals(project.getGroupId())) {
+            getLog().warn(LS + LS + "Artifact Ids of the format maven-___-plugin are reserved for" + LS
+                    + "plugins in the Group Id org.apache.maven.plugins" + LS
+                    + "Please change your artifactId to the format ___-maven-plugin" + LS
+                    + "In the future this error will break the build." + LS + LS);
         }
 
-        if ( skipDescriptor )
-        {
-            getLog().warn( "Execution skipped" );
+        if (skipDescriptor) {
+            getLog().warn("Execution skipped");
             return;
         }
 
-        if ( checkExpectedProvidedScope )
-        {
+        if (checkExpectedProvidedScope) {
             Set<Artifact> wrongScopedArtifacts = dependenciesNotInProvidedScope();
-            if ( !wrongScopedArtifacts.isEmpty() )
-            {
-                StringBuilder errorMessage = new StringBuilder(
-                    LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
-                        + "Please make sure that dependencies listed below declared in POM" + LS
-                        + "have set '<scope>provided</scope>' as well." + LS + LS
-                        + "The following dependencies are in wrong scope:" + LS
-                );
-                for ( Artifact artifact : wrongScopedArtifacts )
-                {
-                    errorMessage.append( " * " ).append( artifact ).append( LS );
+            if (!wrongScopedArtifacts.isEmpty()) {
+                StringBuilder message = new StringBuilder(
+                        LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
+                                + "Please make sure that dependencies listed below declared in POM" + LS
+                                + "have set '<scope>provided</scope>' as well." + LS + LS
+                                + "The following dependencies are in wrong scope:" + LS);
+                for (Artifact artifact : wrongScopedArtifacts) {
+                    message.append(" * ").append(artifact).append(LS);
                 }
-                errorMessage.append( LS ).append( LS );
+                message.append(LS).append(LS);
 
-                getLog().error( errorMessage.toString() );
+                getLog().warn(message.toString());
             }
         }
 
-        mojoScanner.setActiveExtractors( extractors );
+        mojoScanner.setActiveExtractors(extractors);
 
         // TODO: could use this more, eg in the writing of the plugin descriptor!
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
 
-        pluginDescriptor.setGroupId( project.getGroupId() );
+        pluginDescriptor.setGroupId(project.getGroupId());
 
-        pluginDescriptor.setArtifactId( project.getArtifactId() );
+        pluginDescriptor.setArtifactId(project.getArtifactId());
 
-        pluginDescriptor.setVersion( project.getVersion() );
+        pluginDescriptor.setVersion(project.getVersion());
 
-        pluginDescriptor.setGoalPrefix( goalPrefix );
+        pluginDescriptor.setGoalPrefix(goalPrefix);
 
-        pluginDescriptor.setName( project.getName() );
+        pluginDescriptor.setName(project.getName());
 
-        pluginDescriptor.setDescription( project.getDescription() );
+        pluginDescriptor.setDescription(project.getDescription());
 
-        if ( encoding == null || encoding.length() < 1 )
-        {
-            getLog().warn( "Using platform encoding (" + ReaderFactory.FILE_ENCODING
-                               + " actually) to read mojo source files, i.e. build is platform dependent!" );
-        }
-        else
-        {
-            getLog().info( "Using '" + encoding + "' encoding to read mojo source files." );
+        if (encoding == null || encoding.length() < 1) {
+            getLog().warn("Using platform encoding (" + ReaderFactory.FILE_ENCODING
+                    + " actually) to read mojo source files, i.e. build is platform dependent!");
+        } else {
+            getLog().info("Using '" + encoding + "' encoding to read mojo source files.");
         }
 
-        if ( internalJavadocBaseUrl != null && !internalJavadocBaseUrl.getPath().endsWith( "/" ) )
-        {
-            throw new MojoExecutionException( "Given parameter 'internalJavadocBaseUrl' must end with a slash but is '"
-                                              + internalJavadocBaseUrl + "'" );
+        if (internalJavadocBaseUrl != null && !internalJavadocBaseUrl.getPath().endsWith("/")) {
+            throw new MojoExecutionException("Given parameter 'internalJavadocBaseUrl' must end with a slash but is '"
+                    + internalJavadocBaseUrl + "'");
         }
-        try
-        {
-            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies( project.getArtifacts() );
-            pluginDescriptor.setDependencies( deps );
+        try {
+            List<ComponentDependency> deps = GeneratorUtils.toComponentDependencies(project.getArtifacts());
+            pluginDescriptor.setDependencies(deps);
 
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( encoding );
-            request.setSkipErrorNoDescriptorsFound( skipErrorNoDescriptorsFound );
-            request.setDependencies( filterMojoDependencies() );
-            request.setLocal( this.local );
-            request.setRemoteRepos( this.remoteRepos );
-            request.setInternalJavadocBaseUrl( internalJavadocBaseUrl );
-            request.setInternalJavadocVersion( internalJavadocVersion );
-            request.setExternalJavadocBaseUrls( externalJavadocBaseUrls );
-            request.setSettings( settings );
+            PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
+            request.setEncoding(encoding);
+            request.setSkipErrorNoDescriptorsFound(skipErrorNoDescriptorsFound);
+            request.setDependencies(filterMojoDependencies());
+            request.setLocal(this.local);
+            request.setRemoteRepos(this.remoteRepos);
+            request.setInternalJavadocBaseUrl(internalJavadocBaseUrl);
+            request.setInternalJavadocVersion(internalJavadocVersion);
+            request.setExternalJavadocBaseUrls(externalJavadocBaseUrls);
+            request.setSettings(settings);
 
-            mojoScanner.populatePluginDescriptor( request );
-            request.setPluginDescriptor( extendPluginDescriptor( request ) );
+            mojoScanner.populatePluginDescriptor(request);
+            request.setPluginDescriptor(extendPluginDescriptor(request));
 
             outputDirectory.mkdirs();
 
             PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
-            pluginDescriptorGenerator.execute( outputDirectory, request );
+            pluginDescriptorGenerator.execute(outputDirectory, request);
 
-            buildContext.refresh( outputDirectory );
-        }
-        catch ( GeneratorException e )
-        {
-            throw new MojoExecutionException( "Error writing plugin descriptor", e );
-        }
-        catch ( InvalidPluginDescriptorException | ExtractionException e )
-        {
-            throw new MojoExecutionException( "Error extracting plugin descriptor: '" + e.getLocalizedMessage() + "'",
-                                              e );
-        }
-        catch ( LinkageError e )
-        {
-            throw new MojoExecutionException( "The API of the mojo scanner is not compatible with this plugin version."
-                                                  + " Please check the plugin dependencies configured"
-                                                  + " in the POM and ensure the versions match.",
-                                              e );
+            buildContext.refresh(outputDirectory);
+        } catch (GeneratorException e) {
+            throw new MojoExecutionException("Error writing plugin descriptor", e);
+        } catch (InvalidPluginDescriptorException | ExtractionException e) {
+            throw new MojoExecutionException(
+                    "Error extracting plugin descriptor: '" + e.getLocalizedMessage() + "'", e);
+        } catch (LinkageError e) {
+            throw new MojoExecutionException(
+                    "The API of the mojo scanner is not compatible with this plugin version."
+                            + " Please check the plugin dependencies configured"
+                            + " in the POM and ensure the versions match.",
+                    e);
         }
     }
 
-    private PluginDescriptor extendPluginDescriptor( PluginToolsRequest request )
-    {
-        ExtendedPluginDescriptor extendedPluginDescriptor = 
-                        new ExtendedPluginDescriptor( request.getPluginDescriptor() );
-        extendedPluginDescriptor.setRequiredJavaVersion( getRequiredJavaVersion( request ) );
-        extendedPluginDescriptor.setRequiredMavenVersion( getRequiredMavenVersion( request ) );
+    private PluginDescriptor extendPluginDescriptor(PluginToolsRequest request) {
+        ExtendedPluginDescriptor extendedPluginDescriptor = new ExtendedPluginDescriptor(request.getPluginDescriptor());
+        extendedPluginDescriptor.setRequiredJavaVersion(getRequiredJavaVersion(request));
+        extendedPluginDescriptor.setRequiredMavenVersion(getRequiredMavenVersion(request));
         return extendedPluginDescriptor;
     }
 
-    private String getRequiredMavenVersion( PluginToolsRequest request )
-    {
-        if ( !VALUE_AUTO.equals( requiredMavenVersion ) )
-        {
+    private String getRequiredMavenVersion(PluginToolsRequest request) {
+        if (!VALUE_AUTO.equals(requiredMavenVersion)) {
             return requiredMavenVersion;
         }
-        getLog().debug( "Trying to derive Maven version automatically from project prerequisites..." );
-        String requiredMavenVersion = project.getPrerequisites() != null ? project.getPrerequisites().getMaven()
-                                        : null;
-        if ( requiredMavenVersion == null )
-        {
-            getLog().debug( "Trying to derive Maven version automatically from referenced Maven Plugin API artifact "
-                            + "version..." );
+        getLog().debug("Trying to derive Maven version automatically from project prerequisites...");
+        String requiredMavenVersion =
+                project.getPrerequisites() != null ? project.getPrerequisites().getMaven() : null;
+        if (requiredMavenVersion == null) {
+            getLog().debug("Trying to derive Maven version automatically from referenced Maven Plugin API artifact "
+                    + "version...");
             requiredMavenVersion = request.getUsedMavenApiVersion();
         }
-        if ( requiredMavenVersion == null )
-        {
-            getLog().warn( "Cannot determine the required Maven version automatically, it is recommended to "
-                + "configure some explicit value manually." );
+        if (requiredMavenVersion == null) {
+            getLog().warn("Cannot determine the required Maven version automatically, it is recommended to "
+                    + "configure some explicit value manually.");
         }
         return requiredMavenVersion;
     }
 
-    private String getRequiredJavaVersion( PluginToolsRequest request )
-    {
-        if ( !VALUE_AUTO.equals( requiredJavaVersion ) )
-        {
+    private String getRequiredJavaVersion(PluginToolsRequest request) {
+        if (!VALUE_AUTO.equals(requiredJavaVersion)) {
             return requiredJavaVersion;
         }
-        String requiredJavaVersion = request.getRequiredJavaVersion();
-        if ( requiredJavaVersion == null )
-        {
-            getLog().warn( "Cannot determine the required Java version automatically, it is recommended to "
-                            + "configure some explicit value manually." );
+        String minRequiredJavaVersion = request.getRequiredJavaVersion();
+        if (minRequiredJavaVersion == null) {
+            getLog().warn("Cannot determine the minimally required Java version automatically, it is recommended to "
+                    + "configure some explicit value manually.");
+            return null;
         }
-        
-        return requiredJavaVersion;
+
+        return minRequiredJavaVersion;
     }
 
     /**
      * Collects all dependencies expected to be in "provided" scope but are NOT in "provided" scope.
      */
-    private Set<Artifact> dependenciesNotInProvidedScope()
-    {
+    private Set<Artifact> dependenciesNotInProvidedScope() {
         LinkedHashSet<Artifact> wrongScopedDependencies = new LinkedHashSet<>();
 
-        for ( Artifact dependency : project.getArtifacts() )
-        {
+        for (Artifact dependency : project.getArtifacts()) {
             String ga = dependency.getGroupId() + ":" + dependency.getArtifactId();
-            if ( expectedProvidedScopeGroupIds.contains( dependency.getGroupId() )
-                && !expectedProvidedScopeExclusions.contains( ga )
-                && !Artifact.SCOPE_PROVIDED.equals( dependency.getScope() ) )
-            {
-                wrongScopedDependencies.add( dependency );
+            if (expectedProvidedScopeGroupIds.contains(dependency.getGroupId())
+                    && !expectedProvidedScopeExclusions.contains(ga)
+                    && !Artifact.SCOPE_PROVIDED.equals(dependency.getScope())) {
+                wrongScopedDependencies.add(dependency);
             }
         }
 
@@ -486,28 +455,20 @@ public class DescriptorGeneratorMojo
      * list
      * @see #mojoDependencies
      */
-    private Set<Artifact> filterMojoDependencies()
-    {
+    private Set<Artifact> filterMojoDependencies() {
         Set<Artifact> filteredArtifacts;
-        if ( mojoDependencies == null )
-        {
-            filteredArtifacts = new LinkedHashSet<>( project.getArtifacts() );
-        }
-        else if ( mojoDependencies.isEmpty() )
-        {
+        if (mojoDependencies == null) {
+            filteredArtifacts = new LinkedHashSet<>(project.getArtifacts());
+        } else if (mojoDependencies.isEmpty()) {
             filteredArtifacts = null;
-        }
-        else
-        {
+        } else {
             filteredArtifacts = new LinkedHashSet<>();
 
-            ArtifactFilter filter = new IncludesArtifactFilter( mojoDependencies );
+            ArtifactFilter filter = new IncludesArtifactFilter(mojoDependencies);
 
-            for ( Artifact artifact : project.getArtifacts() )
-            {
-                if ( filter.include( artifact ) )
-                {
-                    filteredArtifacts.add( artifact );
+            for (Artifact artifact : project.getArtifacts()) {
+                if (filter.include(artifact)) {
+                    filteredArtifacts.add(artifact);
                 }
             }
         }

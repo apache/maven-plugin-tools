@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-plugin-tools-annotations</artifactId>
@@ -61,7 +61,7 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
@@ -73,7 +73,7 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-archiver</artifactId>
     </dependency>
-        
+
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>

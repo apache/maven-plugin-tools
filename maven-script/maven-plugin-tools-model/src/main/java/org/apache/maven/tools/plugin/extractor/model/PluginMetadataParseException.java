@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.model;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.model;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.model;
 
 import java.io.File;
 
@@ -27,9 +26,7 @@ import java.io.File;
  * @deprecated Scripting support for mojos is deprecated and is planned tp be removed in maven 4.0
  */
 @Deprecated
-public class PluginMetadataParseException
-    extends Exception
-{
+public class PluginMetadataParseException extends Exception {
     /** serialVersionUID */
     static final long serialVersionUID = 4022348153707995574L;
 
@@ -42,9 +39,8 @@ public class PluginMetadataParseException
      * @param message could be null
      * @param cause could be null
      */
-    public PluginMetadataParseException( File metadataFile, String message, Throwable cause )
-    {
-        super( "Error parsing file: " + metadataFile + ". Reason: " + message, cause );
+    public PluginMetadataParseException(File metadataFile, String message, Throwable cause) {
+        super("Error parsing file: " + metadataFile + ". Reason: " + message, cause);
 
         this.metadataFile = metadataFile;
         this.originalMessage = message;
@@ -54,9 +50,8 @@ public class PluginMetadataParseException
      * @param metadataFile could be null
      * @param message could be null
      */
-    public PluginMetadataParseException( File metadataFile, String message )
-    {
-        super( "Error parsing file: " + metadataFile + ". Reason: " + message );
+    public PluginMetadataParseException(File metadataFile, String message) {
+        super("Error parsing file: " + metadataFile + ". Reason: " + message);
 
         this.metadataFile = metadataFile;
         this.originalMessage = message;
@@ -65,16 +60,14 @@ public class PluginMetadataParseException
     /**
      * @return the metadata file
      */
-    public File getMetadataFile()
-    {
+    public File getMetadataFile() {
         return metadataFile;
     }
 
     /**
      * @return the original message
      */
-    public String getOriginalMessage()
-    {
+    public String getOriginalMessage() {
         return originalMessage;
     }
 }

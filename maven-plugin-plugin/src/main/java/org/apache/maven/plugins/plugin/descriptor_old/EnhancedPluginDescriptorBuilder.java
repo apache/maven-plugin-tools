@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.plugin.descriptor_old;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugins.plugin.descriptor_old;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.plugin.descriptor_old;
 
 import java.net.URI;
 
@@ -38,49 +37,44 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
  * Populates the slightly extended {@link Parameter} object {@link EnhancedParameterWrapper}.
  */
 @Deprecated
-public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder
-{
+public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder {
     private final boolean requireAddingMissingParameterSinceField;
-    
-    public EnhancedPluginDescriptorBuilder( RuntimeInformation rtInfo )
-    {
-        this( rtInfo.isMavenVersion( "[,3.3.9]" ) );
+
+    public EnhancedPluginDescriptorBuilder(RuntimeInformation rtInfo) {
+        this(rtInfo.isMavenVersion("[,3.3.9]"));
     }
 
-    EnhancedPluginDescriptorBuilder( boolean requireAddingMissingParameterSinceField )
-    {
+    EnhancedPluginDescriptorBuilder(boolean requireAddingMissingParameterSinceField) {
         this.requireAddingMissingParameterSinceField = requireAddingMissingParameterSinceField;
     }
 
     @Override
-    public MojoDescriptor buildComponentDescriptor( PlexusConfiguration c, PluginDescriptor pluginDescriptor )
-        throws PlexusConfigurationException
-    {
-        MojoDescriptor mojoDescriptor = super.buildComponentDescriptor( c, pluginDescriptor );
-        
+    public MojoDescriptor buildComponentDescriptor(PlexusConfiguration c, PluginDescriptor pluginDescriptor)
+            throws PlexusConfigurationException {
+        MojoDescriptor mojoDescriptor = super.buildComponentDescriptor(c, pluginDescriptor);
+
         // ----------------------------------------------------------------------
         // Parameters
         // ----------------------------------------------------------------------
 
-        PlexusConfiguration[] parameterConfigurations = c.getChild( "parameters" ).getChildren( "parameter" );
+        PlexusConfiguration[] parameterConfigurations = c.getChild("parameters").getChildren("parameter");
 
-        for ( PlexusConfiguration d : parameterConfigurations )
-        {
-            String parameterName = d.getChild( "name" ).getValue();
-            // don't call getParameterMap() to not populate 
-            Parameter pd = mojoDescriptor.getParameterMap().get( parameterName );
-            if ( requireAddingMissingParameterSinceField )
-            {
-                addMissingParameterSinceField( pd, d );
+        for (PlexusConfiguration d : parameterConfigurations) {
+            String parameterName = d.getChild("name").getValue();
+            // don't call getParameterMap() to not populate
+            Parameter pd = mojoDescriptor.getParameterMap().get(parameterName);
+            if (requireAddingMissingParameterSinceField) {
+                addMissingParameterSinceField(pd, d);
             }
-            PlexusConfiguration configTypeJavadocUrl = d.getChild( "typeJavadocUrl", false );
-            if ( configTypeJavadocUrl != null )
-            {
+            PlexusConfiguration configTypeJavadocUrl = d.getChild("typeJavadocUrl", false);
+            if (configTypeJavadocUrl != null) {
                 String parameterTypeJavadocUrl = configTypeJavadocUrl.getValue();
-                EnhancedParameterWrapper enhancedParameter = new EnhancedParameterWrapper( pd );
-                enhancedParameter.setTypeJavadocUrl( URI.create( parameterTypeJavadocUrl ) );
-                mojoDescriptor.getParameters().set( mojoDescriptor.getParameters().indexOf( pd ), enhancedParameter );
-                mojoDescriptor.getParameterMap().put( parameterName, enhancedParameter );
+                EnhancedParameterWrapper enhancedParameter = new EnhancedParameterWrapper(pd);
+                enhancedParameter.setTypeJavadocUrl(URI.create(parameterTypeJavadocUrl));
+                mojoDescriptor
+                        .getParameters()
+                        .set(mojoDescriptor.getParameters().indexOf(pd), enhancedParameter);
+                mojoDescriptor.getParameterMap().put(parameterName, enhancedParameter);
             }
         }
         return mojoDescriptor;
@@ -90,15 +84,14 @@ public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder
      * Reads the plugin descriptor and adds the fix for <a href="https://issues.apache.org/jira/browse/MNG-6109">
      * MNG-6109</a> when using Maven-3.3.9 and before.
      * Method can be removed once Maven 3.5.0 is the prerequisite for this plugin.
-     * @throws PlexusConfigurationException 
-     * 
+     * @throws PlexusConfigurationException
+     *
      * @since 3.5.1
      * @see <a href="https://issues.apache.org/jira/browse/MNG-6109">MNG-6109</a>
      * @see <a href="https://issues.apache.org/jira/browse/MPLUGIN-319">MPLUGIN-319</a>
      */
-     void addMissingParameterSinceField( Parameter pd, PlexusConfiguration d ) throws PlexusConfigurationException
-     {
-         String parameterSince = d.getChild( "since" ).getValue();
-         pd.setSince( parameterSince );
-     }
+    void addMissingParameterSinceField(Parameter pd, PlexusConfiguration d) throws PlexusConfigurationException {
+        String parameterSince = d.getChild("since").getValue();
+        pd.setSince(parameterSince);
+    }
 }

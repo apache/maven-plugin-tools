@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,15 +24,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
 
-@Mojo( name = "execute" )
-@Execute( goal = "compiler", lifecycle = "my-lifecycle", customPhase = "my-phase-id" )
-public class ExecuteMojo extends AbstractMojo
-{
+@Mojo(name = "execute")
+@Execute(goal = "compiler", lifecycle = "my-lifecycle", customPhase = "my-phase-id")
+public class ExecuteMojo extends AbstractMojo {
 
     @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-    }
-
+    public void execute() throws MojoExecutionException, MojoFailureException {}
 }

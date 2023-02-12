@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.scanner;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.scanner;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -66,10 +65,7 @@ import org.objectweb.asm.Type;
  */
 @Named
 @Singleton
-public class DefaultMojoAnnotationsScanner
-    extends AbstractLogEnabled
-    implements MojoAnnotationsScanner
-{
+public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements MojoAnnotationsScanner {
     public static final String MVN4_API = "org.apache.maven.api.plugin.annotations.";
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
@@ -82,66 +78,60 @@ public class DefaultMojoAnnotationsScanner
     public static final String COMPONENT_V3 = Component.class.getName();
 
     // classes with a dash must be ignored
-    private static final Pattern SCANNABLE_CLASS = Pattern.compile( "[^-]+\\.class" );
+    private static final Pattern SCANNABLE_CLASS = Pattern.compile("[^-]+\\.class");
     private static final String EMPTY = "";
 
     private Reflector reflector = new Reflector();
 
     @Override
-    public Map<String, MojoAnnotatedClass> scan( MojoAnnotationsScannerRequest request )
-        throws ExtractionException
-    {
+    public Map<String, MojoAnnotatedClass> scan(MojoAnnotationsScannerRequest request) throws ExtractionException {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
-        try
-        {
-            for ( Artifact dependency : request.getDependencies() )
-            {
-                scan( mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true );
-                if ( request.getMavenApiVersion() == null
-                     && dependency.getGroupId().equals( "org.apache.maven" )
-                     && ( dependency.getArtifactId().equals( "maven-plugin-api" )
-                        || dependency.getArtifactId().equals( "maven-api-core" ) ) )
-                {
-                    request.setMavenApiVersion( dependency.getVersion() );
+        try {
+            for (Artifact dependency : request.getDependencies()) {
+                scan(mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true);
+                if (request.getMavenApiVersion() == null
+                        && dependency.getGroupId().equals("org.apache.maven")
+                        && (dependency.getArtifactId().equals("maven-plugin-api")
+                                || dependency.getArtifactId().equals("maven-api-core"))) {
+                    request.setMavenApiVersion(dependency.getVersion());
                 }
             }
 
-            for ( File classDirectory : request.getClassesDirectories() )
-            {
-                scan( mojoAnnotatedClasses, classDirectory, request.getIncludePatterns(),
-                      request.getProject().getArtifact(), false );
-                
+            for (File classDirectory : request.getClassesDirectories()) {
+                scan(
+                        mojoAnnotatedClasses,
+                        classDirectory,
+                        request.getIncludePatterns(),
+                        request.getProject().getArtifact(),
+                        false);
             }
-        }
-        catch ( IOException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new ExtractionException(e.getMessage(), e);
         }
 
         return mojoAnnotatedClasses;
     }
 
-    protected void scan( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, File source,
-                         List<String> includePatterns, Artifact artifact, boolean excludeMojo )
-        throws IOException, ExtractionException
-    {
-        if ( source == null || ! source.exists() )
-        {
+    protected void scan(
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+            File source,
+            List<String> includePatterns,
+            Artifact artifact,
+            boolean excludeMojo)
+            throws IOException, ExtractionException {
+        if (source == null || !source.exists()) {
             return;
         }
 
         Map<String, MojoAnnotatedClass> scanResult;
-        if ( source.isDirectory() )
-        {
-            scanResult = scanDirectory( source, includePatterns, artifact, excludeMojo );
-        }
-        else
-        {
-            scanResult = scanArchive( source, artifact, excludeMojo );
+        if (source.isDirectory()) {
+            scanResult = scanDirectory(source, includePatterns, artifact, excludeMojo);
+        } else {
+            scanResult = scanArchive(source, artifact, excludeMojo);
         }
 
-        mojoAnnotatedClasses.putAll( scanResult );
+        mojoAnnotatedClasses.putAll(scanResult);
     }
 
     /**
@@ -152,32 +142,32 @@ public class DefaultMojoAnnotationsScanner
      * @throws IOException
      * @throws ExtractionException
      */
-    protected Map<String, MojoAnnotatedClass> scanArchive( File archiveFile, Artifact artifact, boolean excludeMojo )
-        throws IOException, ExtractionException
-    {
+    protected Map<String, MojoAnnotatedClass> scanArchive(File archiveFile, Artifact artifact, boolean excludeMojo)
+            throws IOException, ExtractionException {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         String zipEntryName = null;
-        try ( ZipInputStream archiveStream = new ZipInputStream( new FileInputStream( archiveFile ) ) )
-        {
+        try (ZipInputStream archiveStream = new ZipInputStream(new FileInputStream(archiveFile))) {
             String archiveFilename = archiveFile.getAbsolutePath();
-            for ( ZipEntry zipEntry = archiveStream.getNextEntry(); zipEntry != null;
-                  zipEntry = archiveStream.getNextEntry() )
-            {
+            for (ZipEntry zipEntry = archiveStream.getNextEntry();
+                    zipEntry != null;
+                    zipEntry = archiveStream.getNextEntry()) {
                 zipEntryName = zipEntry.getName();
-                if ( !SCANNABLE_CLASS.matcher( zipEntryName ).matches() )
-                {
+                if (!SCANNABLE_CLASS.matcher(zipEntryName).matches()) {
                     continue;
                 }
-                analyzeClassStream( mojoAnnotatedClasses, archiveStream, artifact, excludeMojo, archiveFilename,
-                                    zipEntry.getName() );
+                analyzeClassStream(
+                        mojoAnnotatedClasses,
+                        archiveStream,
+                        artifact,
+                        excludeMojo,
+                        archiveFilename,
+                        zipEntry.getName());
             }
-        }
-        catch ( IllegalArgumentException e )
-        {
+        } catch (IllegalArgumentException e) {
             // In case of a class with newer specs an IllegalArgumentException can be thrown
-            getLogger().error( "Failed to analyze " + archiveFile.getAbsolutePath() + "!/" + zipEntryName );
-            
+            getLogger().error("Failed to analyze " + archiveFile.getAbsolutePath() + "!/" + zipEntryName);
+
             throw e;
         }
 
@@ -193,214 +183,189 @@ public class DefaultMojoAnnotationsScanner
      * @throws IOException
      * @throws ExtractionException
      */
-    protected Map<String, MojoAnnotatedClass> scanDirectory( File classDirectory, List<String> includePatterns,
-                                                             Artifact artifact, boolean excludeMojo )
-        throws IOException, ExtractionException
-    {
+    protected Map<String, MojoAnnotatedClass> scanDirectory(
+            File classDirectory, List<String> includePatterns, Artifact artifact, boolean excludeMojo)
+            throws IOException, ExtractionException {
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir( classDirectory );
+        scanner.setBasedir(classDirectory);
         scanner.addDefaultExcludes();
-        if ( includePatterns != null )
-        {
-            scanner.setIncludes( includePatterns.toArray( new String[includePatterns.size()] ) );
+        if (includePatterns != null) {
+            scanner.setIncludes(includePatterns.toArray(new String[includePatterns.size()]));
         }
         scanner.scan();
         String[] classFiles = scanner.getIncludedFiles();
         String classDirname = classDirectory.getAbsolutePath();
 
-        for ( String classFile : classFiles )
-        {
-            if ( !SCANNABLE_CLASS.matcher( classFile ).matches() )
-            {
+        for (String classFile : classFiles) {
+            if (!SCANNABLE_CLASS.matcher(classFile).matches()) {
                 continue;
             }
 
-            try ( InputStream is = //
-                    new BufferedInputStream( new FileInputStream( new File( classDirectory, classFile ) ) ) )
-            {
-                analyzeClassStream( mojoAnnotatedClasses, is, artifact, excludeMojo, classDirname, classFile );
+            try (InputStream is = //
+                    new BufferedInputStream(new FileInputStream(new File(classDirectory, classFile)))) {
+                analyzeClassStream(mojoAnnotatedClasses, is, artifact, excludeMojo, classDirname, classFile);
             }
         }
         return mojoAnnotatedClasses;
     }
 
-    private void analyzeClassStream( Map<String, MojoAnnotatedClass> mojoAnnotatedClasses, InputStream is,
-                                     Artifact artifact, boolean excludeMojo, String source, String file )
-        throws IOException, ExtractionException
-    {
-        MojoClassVisitor mojoClassVisitor = new MojoClassVisitor( );
-        try
-        {
-            ClassReader rdr = new ClassReader( is );
-            rdr.accept( mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG );
-        }
-        catch ( ArrayIndexOutOfBoundsException aiooe )
-        {
-            getLogger().warn( "Error analyzing class " + file + " in " + source + ": ignoring class",
-                              getLogger().isDebugEnabled() ? aiooe : null );
+    private void analyzeClassStream(
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+            InputStream is,
+            Artifact artifact,
+            boolean excludeMojo,
+            String source,
+            String file)
+            throws IOException, ExtractionException {
+        MojoClassVisitor mojoClassVisitor = new MojoClassVisitor();
+        try {
+            ClassReader rdr = new ClassReader(is);
+            rdr.accept(mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
+        } catch (ArrayIndexOutOfBoundsException aiooe) {
+            getLogger()
+                    .warn(
+                            "Error analyzing class " + file + " in " + source + ": ignoring class",
+                            getLogger().isDebugEnabled() ? aiooe : null);
             return;
-        }
-        catch ( IllegalArgumentException iae )
-        {
-            if ( iae.getMessage() == null )
-            {
-                getLogger().warn( "Error analyzing class " + file + " in " + source + ": ignoring class",
-                        getLogger().isDebugEnabled() ? iae : null );
+        } catch (IllegalArgumentException iae) {
+            if (iae.getMessage() == null) {
+                getLogger()
+                        .warn(
+                                "Error analyzing class " + file + " in " + source + ": ignoring class",
+                                getLogger().isDebugEnabled() ? iae : null);
                 return;
-            }
-            else
-            {
+            } else {
                 throw iae;
             }
         }
 
-        analyzeVisitors( mojoClassVisitor );
+        analyzeVisitors(mojoClassVisitor);
 
         MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
 
-        if ( excludeMojo )
-        {
-            mojoAnnotatedClass.setMojo( null );
+        if (excludeMojo) {
+            mojoAnnotatedClass.setMojo(null);
         }
 
-        if ( mojoAnnotatedClass != null ) // see MPLUGIN-206 we can have intermediate classes without annotations
+        if (mojoAnnotatedClass != null) // see MPLUGIN-206 we can have intermediate classes without annotations
         {
-            if ( getLogger().isDebugEnabled() && mojoAnnotatedClass.hasAnnotations() )
-            {
-                getLogger().debug( "found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
-                                       + mojoAnnotatedClass );
+            if (getLogger().isDebugEnabled() && mojoAnnotatedClass.hasAnnotations()) {
+                getLogger()
+                        .debug("found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
+                                + mojoAnnotatedClass);
             }
-            mojoAnnotatedClass.setArtifact( artifact );
-            mojoAnnotatedClasses.put( mojoAnnotatedClass.getClassName(), mojoAnnotatedClass );
-            mojoAnnotatedClass.setClassVersion( mojoClassVisitor.getVersion() );
+            mojoAnnotatedClass.setArtifact(artifact);
+            mojoAnnotatedClasses.put(mojoAnnotatedClass.getClassName(), mojoAnnotatedClass);
+            mojoAnnotatedClass.setClassVersion(mojoClassVisitor.getVersion());
         }
     }
 
-    protected void populateAnnotationContent( Object content, MojoAnnotationVisitor mojoAnnotationVisitor )
-        throws ReflectorException
-    {
-        for ( Map.Entry<String, Object> entry : mojoAnnotationVisitor.getAnnotationValues().entrySet() )
-        {
-            reflector.invoke( content, entry.getKey(), new Object[] { entry.getValue() } );
+    protected void populateAnnotationContent(Object content, MojoAnnotationVisitor mojoAnnotationVisitor)
+            throws ReflectorException {
+        for (Map.Entry<String, Object> entry :
+                mojoAnnotationVisitor.getAnnotationValues().entrySet()) {
+            reflector.invoke(content, entry.getKey(), new Object[] {entry.getValue()});
         }
     }
 
-    protected void analyzeVisitors( MojoClassVisitor mojoClassVisitor )
-        throws ExtractionException
-    {
+    protected void analyzeVisitors(MojoClassVisitor mojoClassVisitor) throws ExtractionException {
         final MojoAnnotatedClass mojoAnnotatedClass = mojoClassVisitor.getMojoAnnotatedClass();
 
-        try
-        {
+        try {
             // @Mojo annotation
-            MojoAnnotationVisitor mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( MOJO_V3 );
-            if ( mojoAnnotationVisitor == null )
-            {
-                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( MOJO_V4 );
+            MojoAnnotationVisitor mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(MOJO_V3);
+            if (mojoAnnotationVisitor == null) {
+                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(MOJO_V4);
             }
-            if ( mojoAnnotationVisitor != null )
-            {
+            if (mojoAnnotationVisitor != null) {
                 MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
-                populateAnnotationContent( mojoAnnotationContent, mojoAnnotationVisitor );
+                populateAnnotationContent(mojoAnnotationContent, mojoAnnotationVisitor);
 
-                if ( mojoClassVisitor.getAnnotationVisitor( Deprecated.class ) != null )
-                {
-                    mojoAnnotationContent.setDeprecated( EMPTY );
+                if (mojoClassVisitor.getAnnotationVisitor(Deprecated.class) != null) {
+                    mojoAnnotationContent.setDeprecated(EMPTY);
                 }
 
-                mojoAnnotatedClass.setMojo( mojoAnnotationContent );
+                mojoAnnotatedClass.setMojo(mojoAnnotationContent);
             }
 
             // @Execute annotation
-            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( EXECUTE_V3 );
-            if ( mojoAnnotationVisitor == null )
-            {
-                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor( EXECUTE_V4 );
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(EXECUTE_V3);
+            if (mojoAnnotationVisitor == null) {
+                mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(EXECUTE_V4);
             }
-            if ( mojoAnnotationVisitor != null )
-            {
+            if (mojoAnnotationVisitor != null) {
                 ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
-                populateAnnotationContent( executeAnnotationContent, mojoAnnotationVisitor );
-                mojoAnnotatedClass.setExecute( executeAnnotationContent );
+                populateAnnotationContent(executeAnnotationContent, mojoAnnotationVisitor);
+                mojoAnnotatedClass.setExecute(executeAnnotationContent);
             }
 
             // @Parameter annotations
-            List<MojoParameterVisitor> mojoParameterVisitors = mojoClassVisitor.findParameterVisitors(
-                    new HashSet<>( Arrays.asList( PARAMETER_V3, PARAMETER_V4 ) ) );
-            for ( MojoParameterVisitor parameterVisitor : mojoParameterVisitors )
-            {
-                ParameterAnnotationContent parameterAnnotationContent =
-                    new ParameterAnnotationContent( parameterVisitor.getFieldName(), parameterVisitor.getClassName(),
-                                                    parameterVisitor.getTypeParameters(),
-                                                    parameterVisitor.isAnnotationOnMethod() );
+            List<MojoParameterVisitor> mojoParameterVisitors =
+                    mojoClassVisitor.findParameterVisitors(new HashSet<>(Arrays.asList(PARAMETER_V3, PARAMETER_V4)));
+            for (MojoParameterVisitor parameterVisitor : mojoParameterVisitors) {
+                ParameterAnnotationContent parameterAnnotationContent = new ParameterAnnotationContent(
+                        parameterVisitor.getFieldName(),
+                        parameterVisitor.getClassName(),
+                        parameterVisitor.getTypeParameters(),
+                        parameterVisitor.isAnnotationOnMethod());
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = parameterVisitor.getAnnotationVisitorMap();
-                MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get( PARAMETER_V3 );
-                if ( fieldAnnotationVisitor == null )
-                {
-                    fieldAnnotationVisitor = annotationVisitorMap.get( PARAMETER_V4 );
+                MojoAnnotationVisitor fieldAnnotationVisitor = annotationVisitorMap.get(PARAMETER_V3);
+                if (fieldAnnotationVisitor == null) {
+                    fieldAnnotationVisitor = annotationVisitorMap.get(PARAMETER_V4);
                 }
 
-                if ( fieldAnnotationVisitor != null )
-                {
-                    populateAnnotationContent( parameterAnnotationContent, fieldAnnotationVisitor );
+                if (fieldAnnotationVisitor != null) {
+                    populateAnnotationContent(parameterAnnotationContent, fieldAnnotationVisitor);
                 }
 
-                if ( annotationVisitorMap.containsKey( Deprecated.class.getName() ) )
-                {
-                    parameterAnnotationContent.setDeprecated( EMPTY );
+                if (annotationVisitorMap.containsKey(Deprecated.class.getName())) {
+                    parameterAnnotationContent.setDeprecated(EMPTY);
                 }
 
-                mojoAnnotatedClass.getParameters().put( parameterAnnotationContent.getFieldName(),
-                                                        parameterAnnotationContent );
+                mojoAnnotatedClass
+                        .getParameters()
+                        .put(parameterAnnotationContent.getFieldName(), parameterAnnotationContent);
             }
 
             // @Component annotations
-            List<MojoFieldVisitor> mojoFieldVisitors = mojoClassVisitor.findFieldWithAnnotation(
-                    new HashSet<>( Arrays.asList( COMPONENT_V3, COMPONENT_V4 ) ) );
-            for ( MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors )
-            {
+            List<MojoFieldVisitor> mojoFieldVisitors =
+                    mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(COMPONENT_V3, COMPONENT_V4)));
+            for (MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors) {
                 ComponentAnnotationContent componentAnnotationContent =
-                    new ComponentAnnotationContent( mojoFieldVisitor.getFieldName() );
+                        new ComponentAnnotationContent(mojoFieldVisitor.getFieldName());
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
-                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get( COMPONENT_V3 );
-                if ( annotationVisitor == null )
-                {
-                    annotationVisitor = annotationVisitorMap.get( COMPONENT_V4 );
+                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get(COMPONENT_V3);
+                if (annotationVisitor == null) {
+                    annotationVisitor = annotationVisitorMap.get(COMPONENT_V4);
                 }
 
-                if ( annotationVisitor != null )
-                {
-                    for ( Map.Entry<String, Object> entry : annotationVisitor.getAnnotationValues().entrySet() )
-                    {
+                if (annotationVisitor != null) {
+                    for (Map.Entry<String, Object> entry :
+                            annotationVisitor.getAnnotationValues().entrySet()) {
                         String methodName = entry.getKey();
-                        if ( "role".equals( methodName ) )
-                        {
+                        if ("role".equals(methodName)) {
                             Type type = (Type) entry.getValue();
-                            componentAnnotationContent.setRoleClassName( type.getClassName() );
-                        }
-                        else
-                        {
-                            reflector.invoke( componentAnnotationContent, entry.getKey(),
-                                              new Object[]{ entry.getValue() } );
+                            componentAnnotationContent.setRoleClassName(type.getClassName());
+                        } else {
+                            reflector.invoke(
+                                    componentAnnotationContent, entry.getKey(), new Object[] {entry.getValue()});
                         }
                     }
 
-                    if ( StringUtils.isEmpty( componentAnnotationContent.getRoleClassName() ) )
-                    {
-                        componentAnnotationContent.setRoleClassName( mojoFieldVisitor.getClassName() );
+                    if (StringUtils.isEmpty(componentAnnotationContent.getRoleClassName())) {
+                        componentAnnotationContent.setRoleClassName(mojoFieldVisitor.getClassName());
                     }
                 }
-                mojoAnnotatedClass.getComponents().put( componentAnnotationContent.getFieldName(),
-                                                        componentAnnotationContent );
+                mojoAnnotatedClass
+                        .getComponents()
+                        .put(componentAnnotationContent.getFieldName(), componentAnnotationContent);
             }
-        }
-        catch ( ReflectorException e )
-        {
-            throw new ExtractionException( e.getMessage(), e );
+        } catch (ReflectorException e) {
+            throw new ExtractionException(e.getMessage(), e);
         }
     }
 }

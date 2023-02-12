@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.javadoc;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.javadoc;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.javadoc;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -30,9 +29,7 @@ import java.util.Optional;
  * any whitespace characters. Also the member type is always resolved to one of {@link MemberType} (in case the
  * reference contains a member part).
  */
-public class FullyQualifiedJavadocReference
-    extends JavadocReference
-{
+public class FullyQualifiedJavadocReference extends JavadocReference {
 
     /** if false, points to a class/package which is part of the current classloader (and not any of its parents) */
     private final boolean isExternal;
@@ -42,78 +39,80 @@ public class FullyQualifiedJavadocReference
     private final Optional<MemberType> memberType;
 
     /** The type of the member part of the reference. */
-    public enum MemberType
-    {
-        FIELD, METHOD, CONSTRUCTOR
+    public enum MemberType {
+        FIELD,
+        METHOD,
+        CONSTRUCTOR
     }
 
-    public FullyQualifiedJavadocReference( String packageName, boolean isExternal )
-    {
-        this( packageName, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), isExternal );
+    public FullyQualifiedJavadocReference(String packageName, boolean isExternal) {
+        this(packageName, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), isExternal);
     }
 
-    public FullyQualifiedJavadocReference( String packageName, Optional<String> label, boolean isExternal )
-    {
-        this( packageName, Optional.empty(), Optional.empty(), Optional.empty(), label, isExternal );
+    public FullyQualifiedJavadocReference(String packageName, Optional<String> label, boolean isExternal) {
+        this(packageName, Optional.empty(), Optional.empty(), Optional.empty(), label, isExternal);
     }
 
-    public FullyQualifiedJavadocReference( String packageName, String className, boolean isExternal )
-    {
-        this( packageName, Optional.of( className ), Optional.empty(), Optional.empty(), Optional.empty(),
-              isExternal );
+    public FullyQualifiedJavadocReference(String packageName, String className, boolean isExternal) {
+        this(packageName, Optional.of(className), Optional.empty(), Optional.empty(), Optional.empty(), isExternal);
     }
 
-    public FullyQualifiedJavadocReference( String packageName, String className, String member, MemberType memberType,
-                                           boolean isExternal )
-    {
-        this( packageName, Optional.of( className ), Optional.of( member ), Optional.of( memberType ),
-              Optional.empty(), isExternal );
+    public FullyQualifiedJavadocReference(
+            String packageName, String className, String member, MemberType memberType, boolean isExternal) {
+        this(
+                packageName,
+                Optional.of(className),
+                Optional.of(member),
+                Optional.of(memberType),
+                Optional.empty(),
+                isExternal);
     }
 
-    public FullyQualifiedJavadocReference( String packageName, Optional<String> className, Optional<String> member,
-                                           Optional<MemberType> memberType, Optional<String> label, boolean isExternal )
-    {
-        this( Optional.empty(), Optional.of( packageName ), className, member, memberType, label, isExternal );
+    public FullyQualifiedJavadocReference(
+            String packageName,
+            Optional<String> className,
+            Optional<String> member,
+            Optional<MemberType> memberType,
+            Optional<String> label,
+            boolean isExternal) {
+        this(Optional.empty(), Optional.of(packageName), className, member, memberType, label, isExternal);
     }
 
-    public FullyQualifiedJavadocReference( Optional<String> moduleName, Optional<String> packageName,
-                                           Optional<String> className, Optional<String> member,
-                                           Optional<MemberType> memberType, Optional<String> label,
-                                           boolean isExternal )
-    {
-        super( moduleName, className, member, label );
+    public FullyQualifiedJavadocReference(
+            Optional<String> moduleName,
+            Optional<String> packageName,
+            Optional<String> className,
+            Optional<String> member,
+            Optional<MemberType> memberType,
+            Optional<String> label,
+            boolean isExternal) {
+        super(moduleName, className, member, label);
         this.packageName = packageName;
         this.isExternal = isExternal;
-        if ( !moduleName.isPresent() && !packageName.isPresent() )
-        {
-            throw new IllegalArgumentException( "At least one of module name or package name needs to be set" );
+        if (!moduleName.isPresent() && !packageName.isPresent()) {
+            throw new IllegalArgumentException("At least one of module name or package name needs to be set");
         }
-        if ( member.isPresent() )
-        {
-            if ( !memberType.isPresent() )
-            {
-                throw new IllegalArgumentException( "When member is set, also the member type needs to be set" );
+        if (member.isPresent()) {
+            if (!memberType.isPresent()) {
+                throw new IllegalArgumentException("When member is set, also the member type needs to be set");
             }
-            if ( member.get().matches( ".*\\s.*" ) )
-            {
-                throw new IllegalArgumentException( "member must not contain any whitespace characters!" );
+            if (member.get().matches(".*\\s.*")) {
+                throw new IllegalArgumentException("member must not contain any whitespace characters!");
             }
         }
         this.memberType = memberType;
     }
 
     /**
-     * 
+     *
      * @return {@code true} in case this class/package is part of another classloader
      */
-    public boolean isExternal()
-    {
+    public boolean isExternal() {
         return isExternal;
     }
 
     /** @return the package name of the referenced class */
-    public Optional<String> getPackageName()
-    {
+    public Optional<String> getPackageName() {
         return packageName;
     }
 
@@ -121,64 +120,53 @@ public class FullyQualifiedJavadocReference
      * @return the simple class name of the referenced class, may be prefixed by the declaring class names, separated by
      *         '.' (for inner classes)
      */
-    public Optional<String> getClassName()
-    {
+    public Optional<String> getClassName() {
         return getPackageNameClassName();
     }
 
     /** @return the type of the member. Only empty if no member is set. */
-    public Optional<MemberType> getMemberType()
-    {
+    public Optional<MemberType> getMemberType() {
         return memberType;
     }
 
-    public Optional<String> getFullyQualifiedClassName()
-    {
-        if ( getClassName().isPresent() && getPackageName().isPresent() )
-        {
-            return Optional.of( getPackageName().get() + "." + getClassName().get() );
-        }
-        else
-        {
+    public Optional<String> getFullyQualifiedClassName() {
+        if (getClassName().isPresent() && getPackageName().isPresent()) {
+            return Optional.of(getPackageName().get() + "." + getClassName().get());
+        } else {
             return Optional.empty();
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "FullyQualifiedJavadocReference [moduleName=" + getModuleName() + ", packageName=" + packageName
-            + ", className=" + getClassName() + ", memberType=" + memberType + ", member=" + getMember() + ", label="
-            + getLabel() + ", isExternal=" + isExternal + "]";
+                + ", className=" + getClassName() + ", memberType=" + memberType + ", member=" + getMember()
+                + ", label="
+                + getLabel() + ", isExternal=" + isExternal + "]";
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash( memberType, packageName, isExternal );
+        result = prime * result + Objects.hash(memberType, packageName, isExternal);
         return result;
     }
 
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( this == obj )
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( !super.equals( obj ) )
-        {
+        if (!super.equals(obj)) {
             return false;
         }
-        if ( getClass() != obj.getClass() )
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         FullyQualifiedJavadocReference other = (FullyQualifiedJavadocReference) obj;
-        return Objects.equals( memberType, other.memberType ) && Objects.equals( packageName, other.packageName )
-                        && isExternal == other.isExternal;
+        return Objects.equals(memberType, other.memberType)
+                && Objects.equals(packageName, other.packageName)
+                && isExternal == other.isExternal;
     }
-
 }

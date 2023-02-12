@@ -1,5 +1,3 @@
-package org.apache.maven.script.ant;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -8,9 +6,9 @@ package org.apache.maven.script.ant;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,16 +16,7 @@ package org.apache.maven.script.ant;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
+package org.apache.maven.script.ant;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -71,178 +60,165 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 // at least one test class must be public for test-javadoc report
-public class AntMojoWrapperTest
-{
-    
+public class AntMojoWrapperTest {
+
     private BuildListener buildListener;
 
     @BeforeEach
-    public void setUp() 
-    {
-        buildListener = mock( BuildListener.class );
+    public void setUp() {
+        buildListener = mock(BuildListener.class);
     }
-    
+
     @Test
     void test2xStylePlugin()
-        throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
-        ComponentConfigurationException, ArchiverException, URISyntaxException
-    {
+            throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
+                    ComponentConfigurationException, ArchiverException, URISyntaxException {
         String pluginXml = "META-INF/maven/plugin-2.1.xml";
 
-        List<String> messages = run( pluginXml );
+        List<String> messages = run(pluginXml);
 
-        assertPresence( messages, "Unpacked Ant build scripts (in Maven build directory)." );
-        assertPresence( messages, "Maven parameter expression evaluator for Ant properties." );
-        assertPresence( messages, "Maven standard project-based classpath references." );
-        assertPresence( messages, "Maven standard plugin-based classpath references." );
-        assertPresence( messages, "Maven project, session, mojo-execution, or path-translation parameter information is" );
-        assertPresence( messages, "maven-script-ant < 2.1.0, or used maven-plugin-tools-ant < 2.2 during release" );
+        assertPresence(messages, "Unpacked Ant build scripts (in Maven build directory).");
+        assertPresence(messages, "Maven parameter expression evaluator for Ant properties.");
+        assertPresence(messages, "Maven standard project-based classpath references.");
+        assertPresence(messages, "Maven standard plugin-based classpath references.");
+        assertPresence(
+                messages, "Maven project, session, mojo-execution, or path-translation parameter information is");
+        assertPresence(messages, "maven-script-ant < 2.1.0, or used maven-plugin-tools-ant < 2.2 during release");
 
         ArgumentCaptor<BuildEvent> buildEvent = ArgumentCaptor.forClass(BuildEvent.class);
-        verify( buildListener, atLeastOnce() ).messageLogged( buildEvent.capture() );
+        verify(buildListener, atLeastOnce()).messageLogged(buildEvent.capture());
 
         // last message
-        assertThat( buildEvent.getValue().getMessage(), startsWith( "plugin classpath is: " ) );
-        assertThat( buildEvent.getValue().getMessage(), endsWith( ".test.jar" ) );
+        assertThat(buildEvent.getValue().getMessage(), startsWith("plugin classpath is: "));
+        assertThat(buildEvent.getValue().getMessage(), endsWith(".test.jar"));
     }
 
-    private void assertPresence( List<String> messages, String test )
-    {
-        assertTrue( messages.stream().noneMatch( s -> s.contains( test ) ),
-                "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE." );
+    private void assertPresence(List<String> messages, String test) {
+        assertTrue(
+                messages.stream().noneMatch(s -> s.contains(test)),
+                "Test string: '" + test + "' was found in output, but SHOULD NOT BE THERE.");
     }
 
-    private List<String> run( String pluginXml )
-        throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
-        ComponentConfigurationException, ArchiverException, URISyntaxException
-    {
+    private List<String> run(String pluginXml)
+            throws PlexusConfigurationException, IOException, ComponentInstantiationException, MojoExecutionException,
+                    ComponentConfigurationException, ArchiverException, URISyntaxException {
         StackTraceElement stack = new Throwable().getStackTrace()[1];
-        System.out.println( "\n\nRunning: " + stack.getMethodName() + "\n\n" );
+        System.out.println("\n\nRunning: " + stack.getMethodName() + "\n\n");
 
-        URL resource = Thread.currentThread().getContextClassLoader().getResource( pluginXml );
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(pluginXml);
 
-        assertNotNull( resource, "plugin descriptor not found: '" + pluginXml + "'." );
+        assertNotNull(resource, "plugin descriptor not found: '" + pluginXml + "'.");
 
         PluginDescriptor pd;
-        try ( Reader reader = new InputStreamReader( resource.openStream() ) )
-        {
-            pd = new PluginDescriptorBuilder().build( reader, pluginXml );
+        try (Reader reader = new InputStreamReader(resource.openStream())) {
+            pd = new PluginDescriptorBuilder().build(reader, pluginXml);
         }
 
         Map<String, Object> config = new HashMap<>();
-        config.put( "basedir", new File( "." ).getAbsoluteFile() );
-        config.put( "messageLevel", "info" );
+        config.put("basedir", new File(".").getAbsoluteFile());
+        config.put("messageLevel", "info");
 
-        MojoDescriptor md = pd.getMojo( "test" );
+        MojoDescriptor md = pd.getMojo("test");
 
-        AntMojoWrapper wrapper =
-            new AntMojoWrapper( new AntScriptInvoker( md, Thread.currentThread().getContextClassLoader() ) );
+        AntMojoWrapper wrapper = new AntMojoWrapper(
+                new AntScriptInvoker(md, Thread.currentThread().getContextClassLoader()));
 
-        wrapper.enableLogging( new ConsoleLogger( Logger.LEVEL_DEBUG, "test" ) );
+        wrapper.enableLogging(new ConsoleLogger(Logger.LEVEL_DEBUG, "test"));
 
-        Artifact artifact = mock( Artifact.class );
-        PathTranslator pt = mock( PathTranslator.class );
+        Artifact artifact = mock(Artifact.class);
+        PathTranslator pt = mock(PathTranslator.class);
 
-        File pluginXmlFile = Paths.get( resource.toURI() ).toFile();
+        File pluginXmlFile = Paths.get(resource.toURI()).toFile();
 
-        File jarFile = Files.createTempFile( "AntMojoWrapperTest.", ".test.jar" ).toFile();
+        File jarFile = Files.createTempFile("AntMojoWrapperTest.", ".test.jar").toFile();
         jarFile.deleteOnExit();
 
         JarArchiver archiver = new JarArchiver();
-        archiver.setDestFile( jarFile );
-        archiver.addFile( pluginXmlFile, pluginXml );
+        archiver.setDestFile(jarFile);
+        archiver.addFile(pluginXmlFile, pluginXml);
         archiver.createArchive();
 
-        when( artifact.getFile() ).thenReturn( jarFile );
+        when(artifact.getFile()).thenReturn(jarFile);
 
         Model model = new Model();
 
         Build build = new Build();
-        build.setDirectory( "target" );
+        build.setDirectory("target");
 
-        model.setBuild( build );
+        model.setBuild(build);
 
-        MavenProject project = new MavenProject( model );
-        project.setFile( new File( "pom.xml" ).getAbsoluteFile() );
+        MavenProject project = new MavenProject(model);
+        project.setFile(new File("pom.xml").getAbsoluteFile());
 
-        pd.setPluginArtifact( artifact );
-        pd.setArtifacts( Collections.singletonList( artifact ) );
+        pd.setPluginArtifact(artifact);
+        pd.setArtifacts(Collections.singletonList(artifact));
 
-        config.put( "project", project );
-        config.put( "session", new MavenSession( null, null, null, null, null, null, null, null, null, null ) );
-        config.put( "mojoExecution", new MojoExecution( md ) );
+        config.put("project", project);
+        config.put("session", new MavenSession(null, null, null, null, null, null, null, null, null, null));
+        config.put("mojoExecution", new MojoExecution(md));
 
         ComponentRequirement cr = new ComponentRequirement();
-        cr.setRole( PathTranslator.class.getName() );
+        cr.setRole(PathTranslator.class.getName());
 
-        wrapper.addComponentRequirement( cr, pt );
+        wrapper.addComponentRequirement(cr, pt);
 
-        wrapper.setComponentConfiguration( config );
+        wrapper.setComponentConfiguration(config);
 
         TestBuildListener tbl = new TestBuildListener();
-        
-        wrapper.getAntProject().addBuildListener( buildListener );
-        
+
+        wrapper.getAntProject().addBuildListener(buildListener);
+
         PrintStream oldOut = System.out;
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            System.setOut( new PrintStream( baos ) );
+        try {
+            System.setOut(new PrintStream(baos));
 
             wrapper.execute();
-        }
-        finally
-        {
-            System.setOut( oldOut );
+        } finally {
+            System.setOut(oldOut);
         }
 
-        System.out.println( "\n\n" + stack.getMethodName() + " executed; verifying...\n\n" );
+        System.out.println("\n\n" + stack.getMethodName() + " executed; verifying...\n\n");
 
         List<String> messages = new ArrayList<>();
-        if ( !tbl.messages.isEmpty() )
-        {
-            messages.addAll( tbl.messages );
+        if (!tbl.messages.isEmpty()) {
+            messages.addAll(tbl.messages);
         }
-        
-        messages.add( baos.toString() );
-        
+
+        messages.add(baos.toString());
+
         return messages;
     }
 
-    private static final class TestBuildListener
-        implements BuildListener
-    {
+    private static final class TestBuildListener implements BuildListener {
         private final List<String> messages = new ArrayList<>();
 
-        public void buildFinished( BuildEvent arg0 )
-        {
+        public void buildFinished(BuildEvent arg0) {}
+
+        public void buildStarted(BuildEvent arg0) {}
+
+        public void messageLogged(BuildEvent event) {
+            messages.add(event.getMessage());
         }
 
-        public void buildStarted( BuildEvent arg0 )
-        {
-        }
+        public void targetFinished(BuildEvent arg0) {}
 
-        public void messageLogged( BuildEvent event )
-        {
-            messages.add( event.getMessage() );
-        }
+        public void targetStarted(BuildEvent arg0) {}
 
-        public void targetFinished( BuildEvent arg0 )
-        {
-        }
+        public void taskFinished(BuildEvent arg0) {}
 
-        public void targetStarted( BuildEvent arg0 )
-        {
-        }
-
-        public void taskFinished( BuildEvent arg0 )
-        {
-        }
-
-        public void taskStarted( BuildEvent arg0 )
-        {
-        }
+        public void taskStarted(BuildEvent arg0) {}
     }
 }

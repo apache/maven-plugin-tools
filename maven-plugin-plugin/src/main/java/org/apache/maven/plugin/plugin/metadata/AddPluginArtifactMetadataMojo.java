@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.plugin.metadata;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.plugin.plugin.metadata;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.plugin.metadata;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
@@ -47,14 +46,12 @@ import org.apache.maven.project.MavenProject;
  *
  * @since 2.0
  */
-@Mojo( name = "addPluginArtifactMetadata", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true )
-public class AddPluginArtifactMetadataMojo
-    extends AbstractMojo
-{
+@Mojo(name = "addPluginArtifactMetadata", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
+public class AddPluginArtifactMetadataMojo extends AbstractMojo {
     /**
      * The project artifact, which should have the <code>latest</code> metadata added to it.
      */
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
     /**
@@ -68,41 +65,36 @@ public class AddPluginArtifactMetadataMojo
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
+    @Parameter(defaultValue = "false", property = "maven.plugin.skip")
     private boolean skip;
 
     /** {@inheritDoc} */
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( skip )
-        {
-            getLog().warn( "Execution skipped" );
+    public void execute() throws MojoExecutionException {
+        if (skip) {
+            getLog().warn("Execution skipped");
             return;
         }
         Artifact projectArtifact = project.getArtifact();
 
         Versioning versioning = new Versioning();
-        versioning.setLatest( projectArtifact.getVersion() );
+        versioning.setLatest(projectArtifact.getVersion());
         versioning.updateTimestamp();
-        ArtifactRepositoryMetadata metadata = new ArtifactRepositoryMetadata( projectArtifact, versioning );
-        projectArtifact.addMetadata( metadata );
+        ArtifactRepositoryMetadata metadata = new ArtifactRepositoryMetadata(projectArtifact, versioning);
+        projectArtifact.addMetadata(metadata);
 
-        GroupRepositoryMetadata groupMetadata = new GroupRepositoryMetadata( project.getGroupId() );
-        groupMetadata.addPluginMapping( getGoalPrefix(), project.getArtifactId(), project.getName() );
+        GroupRepositoryMetadata groupMetadata = new GroupRepositoryMetadata(project.getGroupId());
+        groupMetadata.addPluginMapping(getGoalPrefix(), project.getArtifactId(), project.getName());
 
-        projectArtifact.addMetadata( groupMetadata );
+        projectArtifact.addMetadata(groupMetadata);
     }
 
     /**
      * @return the goal prefix parameter or the goal prefix from the Plugin artifactId.
      */
-    private String getGoalPrefix()
-    {
-        if ( goalPrefix == null )
-        {
-            goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+    private String getGoalPrefix() {
+        if (goalPrefix == null) {
+            goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId(project.getArtifactId());
         }
 
         return goalPrefix;

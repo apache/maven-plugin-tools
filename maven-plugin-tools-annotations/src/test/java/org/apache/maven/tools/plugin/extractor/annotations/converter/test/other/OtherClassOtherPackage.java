@@ -1,4 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.test.other;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,13 +16,11 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.test.other
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.test.other;
 
-public class OtherClassOtherPackage
-{
+public class OtherClassOtherPackage {
 
     String field1;
-    public enum EmbeddedEnum
-    {
 
-    }
+    public enum EmbeddedEnum {}
 }

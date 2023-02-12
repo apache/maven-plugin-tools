@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,52 +16,47 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 
 /**
  * Touches a test file.
  *
  * @since 1.2
  */
-@Mojo( name = "first", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INTEGRATION_TEST )
-public class FirstMojo
-    extends FooMojo
-{
+@Mojo(
+        name = "first",
+        requiresDependencyResolution = ResolutionScope.TEST,
+        defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+public class FirstMojo extends FooMojo {
 
     /**
      * @since 0.1
      * @deprecated As of 0.2
      */
-    @Parameter( alias = "alias" )
+    @Parameter(alias = "alias")
     private String aliasedParam;
 
-    @Component( role = MavenProjectHelper.class )// , roleHint = "default"
+    @Component(role = MavenProjectHelper.class) // , roleHint = "default"
     private Object projectHelper;
 
-    public void execute()
-        throws MojoExecutionException
-    {
-        if ( bar == null )
-        {
-            throw new MojoExecutionException( "bar == null" );
+    public void execute() throws MojoExecutionException {
+        if (bar == null) {
+            throw new MojoExecutionException("bar == null");
         }
-        if ( beer == null )
-        {
-            throw new MojoExecutionException( "beer == null" );
+        if (beer == null) {
+            throw new MojoExecutionException("beer == null");
         }
-        if ( projectHelper == null )
-        {
-            throw new MojoExecutionException( "projectHelper == null" );
+        if (projectHelper == null) {
+            throw new MojoExecutionException("projectHelper == null");
         }
     }
-
 }

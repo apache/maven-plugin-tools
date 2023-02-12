@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -29,14 +28,11 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.LinkUti
  * Supports <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/javadoc/doc-comment-spec.html#linkplain">
  * inline linkplain taglet</a>.
  */
-@Named( "linkplain" )
+@Named("linkplain")
 @Singleton
-public class LinkPlainTagToHtmlConverter
-    extends JavadocInlineTagToHtmlConverter
-{
+public class LinkPlainTagToHtmlConverter extends JavadocInlineTagToHtmlConverter {
     @Override
-    public String convert( String text, ConverterContext context )
-    {
-        return LinkUtils.createLink( text, context );
+    public String convert(String text, ConverterContext context) {
+        return LinkUtils.createLink(text, context);
     }
 }

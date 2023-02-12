@@ -1,5 +1,3 @@
-package org.apache.maven.plugin.coreit;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,22 +16,18 @@ package org.apache.maven.plugin.coreit;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugin.coreit;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Does nothing special.
- * 
+ *
  */
-@Mojo( name = "second", requiresDependencyCollection = ResolutionScope.COMPILE, threadSafe = true )
-public class SecondMojo
-    extends AbstractMojo
-{
+@Mojo(name = "second", requiresDependencyCollection = ResolutionScope.COMPILE, threadSafe = true)
+public class SecondMojo extends AbstractMojo {
 
-    public void execute()
-    {
-    }
-
+    public void execute() {}
 }

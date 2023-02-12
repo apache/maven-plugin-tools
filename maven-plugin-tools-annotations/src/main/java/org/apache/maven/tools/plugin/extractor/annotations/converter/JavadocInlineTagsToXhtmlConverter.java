@@ -1,5 +1,3 @@
-package org.apache.maven.tools.plugin.extractor.annotations.converter;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,11 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.tools.plugin.extractor.annotations.converter;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -30,28 +33,22 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 /**
  * Replaces inline javadoc taglets by their according XHTML representation.
  */
 @Named
 @Singleton
-public class JavadocInlineTagsToXhtmlConverter
-{
-    private static final Logger LOG = LoggerFactory.getLogger( JavadocInlineTagsToXhtmlConverter.class );
+public class JavadocInlineTagsToXhtmlConverter {
+    private static final Logger LOG = LoggerFactory.getLogger(JavadocInlineTagsToXhtmlConverter.class);
 
     private final Map<String, JavadocInlineTagToHtmlConverter> converters;
-    
-    private static final Pattern INLINE_TAG_PATTERN = Pattern.compile( "\\{@([^\\s]*)(?:\\s([^\\}]*))?\\}" );
+
+    private static final Pattern INLINE_TAG_PATTERN = Pattern.compile("\\{@([^\\s]*)(?:\\s([^\\}]*))?\\}");
     private static final int GROUP_TAG_NAME = 1;
     private static final int GROUP_REFERENCE = 2;
 
     @Inject
-    public JavadocInlineTagsToXhtmlConverter( Map<String, JavadocInlineTagToHtmlConverter> converters )
-    {
+    public JavadocInlineTagsToXhtmlConverter(Map<String, JavadocInlineTagToHtmlConverter> converters) {
         this.converters = converters;
     }
 
@@ -61,44 +58,35 @@ public class JavadocInlineTagsToXhtmlConverter
      * @param context
      * @return
      */
-    public String convert( String text, ConverterContext context )
-    {
-        Matcher matcher = INLINE_TAG_PATTERN.matcher( text );
+    public String convert(String text, ConverterContext context) {
+        Matcher matcher = INLINE_TAG_PATTERN.matcher(text);
         StringBuffer sb = new StringBuffer();
-        while ( matcher.find() )
-        {
-            String tagName = matcher.group( GROUP_TAG_NAME );
-            JavadocTagToHtmlConverter converter = converters.get( tagName );
+        while (matcher.find()) {
+            String tagName = matcher.group(GROUP_TAG_NAME);
+            JavadocTagToHtmlConverter converter = converters.get(tagName);
             String patternReplacement;
-            if ( converter == null )
-            {
-                patternReplacement = matcher.group( 0 ) + "<!-- unsupported tag '" + tagName + "' -->";
-                LOG.warn( "Found unsupported javadoc inline tag '{}' in {}", tagName, context.getLocation() );
-            }
-            else
-            {
-                try
-                {
-                    patternReplacement = converter.convert( matcher.group( GROUP_REFERENCE ), context );
-                }
-                catch ( Throwable t )
-                {
-                    patternReplacement = matcher.group( 0 ) + "<!-- error processing javadoc tag '" + tagName + "': "
-                                         + t.getMessage() + " -->"; // leave original javadoc in place
-                    LOG.warn( "Error converting javadoc inline tag '{}' in {}", tagName, context.getLocation(), t );
+            if (converter == null) {
+                patternReplacement = matcher.group(0) + "<!-- unsupported tag '" + tagName + "' -->";
+                LOG.warn("Found unsupported javadoc inline tag '{}' in {}", tagName, context.getLocation());
+            } else {
+                try {
+                    patternReplacement = converter.convert(matcher.group(GROUP_REFERENCE), context);
+                } catch (Throwable t) {
+                    patternReplacement = matcher.group(0) + "<!-- error processing javadoc tag '" + tagName + "': "
+                            + t.getMessage() + " -->"; // leave original javadoc in place
+                    LOG.warn("Error converting javadoc inline tag '{}' in {}", tagName, context.getLocation(), t);
                 }
             }
-            matcher.appendReplacement( sb, Matcher.quoteReplacement( patternReplacement ) );
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(patternReplacement));
         }
-        matcher.appendTail( sb );
-        return toXHTML( sb.toString() );
+        matcher.appendTail(sb);
+        return toXHTML(sb.toString());
     }
 
-    static String toXHTML( String bodySnippet )
-    {
+    static String toXHTML(String bodySnippet) {
         String html = "<html><head></head><body>" + bodySnippet + "</body>"; // make it a valid HTML document
-        final Document document = Jsoup.parse( html );
-        document.outputSettings().syntax( Document.OutputSettings.Syntax.xml );
+        final Document document = Jsoup.parse(html);
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         return document.body().html();
     }
 }

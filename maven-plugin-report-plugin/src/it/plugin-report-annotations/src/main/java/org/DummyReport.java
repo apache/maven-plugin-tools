@@ -1,5 +1,3 @@
-package org;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,11 @@ package org;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org;
+
+import java.io.File;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
@@ -31,22 +34,16 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.apache.maven.reporting.MavenReportException;
 
-import java.io.File;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
  * Dummy Reporting Plugin.
  */
-@Mojo( name = "report", requiresReports = true )
-@Execute( phase = LifecyclePhase.COMPILE )
-public class DummyReport
-    extends AbstractMavenReport
-{
+@Mojo(name = "report", requiresReports = true)
+@Execute(phase = LifecyclePhase.COMPILE)
+public class DummyReport extends AbstractMavenReport {
     /**
      * Report output directory.
      */
-    @Parameter( defaultValue = "${project.build.directory}/generated-site/xdoc" )
+    @Parameter(defaultValue = "${project.build.directory}/generated-site/xdoc")
     private File outputDirectory;
 
     /**
@@ -58,16 +55,15 @@ public class DummyReport
     /**
      * The Maven Project.
      */
-    @Parameter( property = "project", readonly = true, required = true )
+    @Parameter(property = "project", readonly = true, required = true)
     private MavenProject project;
-
 
     /**
      * The goal prefix that will appear before the ":".
      *
      * @since 2.4
      */
-    @Parameter( property = "goalPrefix" )
+    @Parameter(property = "goalPrefix")
     protected String goalPrefix;
 
     /**
@@ -75,7 +71,7 @@ public class DummyReport
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", property = "maven.plugin.skip" )
+    @Parameter(defaultValue = "false", property = "maven.plugin.skip")
     private boolean skip;
 
     /**
@@ -83,82 +79,71 @@ public class DummyReport
      *
      * @since 2.8
      */
-    @Parameter( defaultValue = "false", property = "maven.plugin.report.skip" )
+    @Parameter(defaultValue = "false", property = "maven.plugin.report.skip")
     private boolean skipReport;
 
     /**
      * {@inheritDoc}
      */
-    protected Renderer getSiteRenderer()
-    {
+    protected Renderer getSiteRenderer() {
         return siteRenderer;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected String getOutputDirectory()
-    {
+    protected String getOutputDirectory() {
         return outputDirectory.getPath();
     }
 
     /**
      * {@inheritDoc}
      */
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean canGenerateReport()
-    {
+    public boolean canGenerateReport() {
         return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected void executeReport( Locale locale )
-        throws MavenReportException
-    {
-        if ( !canGenerateReport() )
-        {
+    protected void executeReport(Locale locale) throws MavenReportException {
+        if (!canGenerateReport()) {
             return;
         }
-        if ( skip || skipReport )
-        {
-            getLog().info( "Maven Plugin Plugin Report generation skipped." );
+        if (skip || skipReport) {
+            getLog().info("Maven Plugin Plugin Report generation skipped.");
             return;
         }
 
         // Generate the plugin's documentation
-        generatePluginDocumentation( locale );
+        generatePluginDocumentation(locale);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.plugin.description" );
+    public String getDescription(Locale locale) {
+        return getBundle(locale).getString("report.plugin.description");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.plugin.name" );
+    public String getName(Locale locale) {
+        return getBundle(locale).getString("report.plugin.name");
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return "plugin-info";
     }
 
@@ -167,12 +152,10 @@ public class DummyReport
      * @param locale           not null
      * @throws MavenReportException if any
      */
-    private void generatePluginDocumentation( Locale locale )
-        throws MavenReportException
-    {
-        File outputDir = new File( getOutputDirectory() );
+    private void generatePluginDocumentation(Locale locale) throws MavenReportException {
+        File outputDir = new File(getOutputDirectory());
         outputDir.mkdirs();
-        PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), locale );
+        PluginOverviewRenderer r = new PluginOverviewRenderer(getSink(), locale);
         r.render();
     }
 
@@ -180,27 +163,23 @@ public class DummyReport
      * @param locale not null
      * @return the bundle for this report
      */
-    protected static ResourceBundle getBundle( Locale locale )
-    {
-        return ResourceBundle.getBundle( "plugin-report", locale, DummyReport.class.getClassLoader() );
+    protected static ResourceBundle getBundle(Locale locale) {
+        return ResourceBundle.getBundle("plugin-report", locale, DummyReport.class.getClassLoader());
     }
 
     /**
      * Generates an overview page with the list of goals
      * and a link to the goal's page.
      */
-    static class PluginOverviewRenderer
-        extends AbstractMavenReportRenderer
-    {
+    static class PluginOverviewRenderer extends AbstractMavenReportRenderer {
         private final Locale locale;
 
         /**
          * @param sink    not null
          * @param locale  not null
          */
-        PluginOverviewRenderer( Sink sink, Locale locale )
-        {
-            super( sink );
+        PluginOverviewRenderer(Sink sink, Locale locale) {
+            super(sink);
 
             this.locale = locale;
         }
@@ -208,18 +187,16 @@ public class DummyReport
         /**
          * {@inheritDoc}
          */
-        public String getTitle()
-        {
-            return getBundle( locale ).getString( "report.plugin.title" );
+        public String getTitle() {
+            return getBundle(locale).getString("report.plugin.title");
         }
 
         /**
          * {@inheritDoc}
          */
-        public void renderBody()
-        {
-            startSection( getTitle() );
-            paragraph( "This is a report." );
+        public void renderBody() {
+            startSection(getTitle());
+            paragraph("This is a report.");
             endSection();
         }
     }
