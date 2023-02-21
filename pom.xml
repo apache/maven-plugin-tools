@@ -247,11 +247,15 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-velocity</artifactId>
-        <version>2.0</version>
+        <version>1.2</version>
         <exclusions>
           <exclusion>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-container-default</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -259,8 +263,8 @@
       <!-- other -->
       <dependency>
         <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity-engine-core</artifactId>
-        <version>2.3</version>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
       </dependency>
 
       <dependency>
