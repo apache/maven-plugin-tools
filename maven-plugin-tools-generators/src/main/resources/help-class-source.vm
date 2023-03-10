@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Display help information on ${artifactId}.<br>
+ * Display help information on ${artifactId}.<br/>
  * Call <code>mvn ${goalPrefix}:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author maven-plugin-tools
 #if ( !$useAnnotations )     
