@@ -51,8 +51,6 @@ import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMember;
 import com.thoughtworks.qdox.model.JavaMethod;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
@@ -60,7 +58,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -85,6 +82,11 @@ import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 import org.objectweb.asm.Opcodes;
 
 /**
@@ -570,23 +572,26 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             JavaProjectBuilder builder, Artifact artifact, PluginToolsRequest request, String classifier)
             throws ExtractionException {
         try {
-            Artifact sourcesArtifact = repositorySystem.createArtifactWithClassifier(
+            org.eclipse.aether.artifact.Artifact sourcesArtifact = new DefaultArtifact(
                     artifact.getGroupId(),
                     artifact.getArtifactId(),
-                    artifact.getVersion(),
-                    artifact.getType(),
-                    classifier);
+                    classifier,
+                    artifact.getArtifactHandler().getExtension(),
+                    artifact.getVersion());
 
-            ArtifactResolutionRequest req = new ArtifactResolutionRequest();
-            req.setArtifact(sourcesArtifact);
-            req.setLocalRepository(request.getLocal());
-            req.setRemoteRepositories(request.getRemoteRepos());
-            ArtifactResolutionResult res = repositorySystem.resolve(req);
-            if (res.hasMissingArtifacts() || res.hasExceptions()) {
-                getLogger()
-                        .warn("Unable to get sources artifact for " + artifact.getGroupId() + ":"
-                                + artifact.getArtifactId() + ":" + artifact.getVersion()
-                                + ". Some javadoc tags (@since, @deprecated and comments) won't be used");
+            ArtifactRequest resolveRequest =
+                    new ArtifactRequest(sourcesArtifact, request.getProject().getRemoteProjectRepositories(), null);
+            try {
+                ArtifactResult result = repositorySystem.resolveArtifact(request.getRepoSession(), resolveRequest);
+                sourcesArtifact = result.getArtifact();
+            } catch (ArtifactResolutionException e) {
+                String message = "Unable to get sources artifact for " + artifact.getId()
+                        + ". Some javadoc tags (@since, @deprecated and comments) won't be used";
+                if (getLogger().isDebugEnabled()) {
+                    getLogger().warn(message, e);
+                } else {
+                    getLogger().warn(message);
+                }
                 return;
             }
 

@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.RepositorySystemSession;
 
 /**
  * Default implementation of {@link PluginToolsRequest}, which is used to pass parameters to components used to extract
@@ -53,9 +53,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
 
     private Set<Artifact> dependencies;
 
-    private List<ArtifactRepository> remoteRepos;
-
-    private ArtifactRepository local;
+    private RepositorySystemSession repoSession;
 
     private URI internalJavadocBaseUrl;
 
@@ -162,25 +160,12 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     }
 
     @Override
-    public List<ArtifactRepository> getRemoteRepos() {
-        return remoteRepos;
+    public RepositorySystemSession getRepoSession() {
+        return repoSession;
     }
 
-    @Override
-    public PluginToolsRequest setRemoteRepos(List<ArtifactRepository> remoteRepos) {
-        this.remoteRepos = remoteRepos;
-        return this;
-    }
-
-    @Override
-    public ArtifactRepository getLocal() {
-        return local;
-    }
-
-    @Override
-    public PluginToolsRequest setLocal(ArtifactRepository local) {
-        this.local = local;
-        return this;
+    public void setRepoSession(RepositorySystemSession repoSession) {
+        this.repoSession = repoSession;
     }
 
     @Override

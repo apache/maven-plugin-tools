@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -49,6 +48,7 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.eclipse.aether.RepositorySystemSession;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 /**
@@ -229,22 +229,8 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     @Parameter(defaultValue = "${settings}", readonly = true, required = true)
     private Settings settings;
 
-    /**
-     * List of Remote Repositories used by the resolver
-     *
-     * @since 3.0
-     */
-    @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
-    private List<ArtifactRepository> remoteRepos;
-
-    /**
-     * Location of the local repository.
-     *
-     * @since 3.0
-     */
-    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
-    private ArtifactRepository local;
-
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
+    private RepositorySystemSession repoSession;
     /**
      * The required Java version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
      * Maven versions. Can be either one of the following formats:
@@ -360,8 +346,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             request.setEncoding(encoding);
             request.setSkipErrorNoDescriptorsFound(skipErrorNoDescriptorsFound);
             request.setDependencies(filterMojoDependencies());
-            request.setLocal(this.local);
-            request.setRemoteRepos(this.remoteRepos);
+            request.setRepoSession(repoSession);
             request.setInternalJavadocBaseUrl(internalJavadocBaseUrl);
             request.setInternalJavadocVersion(internalJavadocVersion);
             request.setExternalJavadocBaseUrls(externalJavadocBaseUrls);
