@@ -97,7 +97,7 @@
     <!-- SLF4J version must match the version exported from the mavenVersion, 
     https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
     <slf4jVersion>1.7.5</slf4jVersion>
-    <antVersion>1.10.12</antVersion>
+    <antVersion>1.10.13</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the 
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
