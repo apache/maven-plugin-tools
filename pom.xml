@@ -102,7 +102,7 @@
     <!-- whenever the ASM version is updated also the 
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
     needs to be updated as well -->
-    <asmVersion>9.4</asmVersion>
+    <asmVersion>9.5</asmVersion>
     <doxiaVersion>1.11.1</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
     <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
