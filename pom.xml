@@ -94,9 +94,7 @@
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-alpha-4</maven4Version>
     <mavenVersion>3.2.5</mavenVersion>
-    <!-- SLF4J version must match the version exported from the mavenVersion, 
-    https://github.com/apache/maven/blob/12a6b3acb947671f09b81f49094c53f426d8cea1/pom.xml#L63 -->
-    <slf4jVersion>1.7.5</slf4jVersion>
+    <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.13</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the 
