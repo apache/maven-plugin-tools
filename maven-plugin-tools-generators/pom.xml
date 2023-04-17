@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.8.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-plugin-tools-generators</artifactId>
@@ -63,7 +63,7 @@
     <!-- other -->
     <dependency>
       <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity-engine-core</artifactId>
+      <artifactId>velocity</artifactId>
     </dependency>
 
     <dependency>

@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.8.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -95,7 +95,7 @@
     <maven4Version>4.0.0-alpha-4</maven4Version>
     <mavenVersion>3.2.5</mavenVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <antVersion>1.10.12</antVersion>
+    <antVersion>1.10.13</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the 
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
@@ -106,7 +106,7 @@
     <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
-    <project.build.outputTimestamp>2023-01-20T07:42:25Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-02-22T11:44:51Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
@@ -251,14 +251,18 @@
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-container-default</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
       <!-- other -->
       <dependency>
         <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity-engine-core</artifactId>
-        <version>2.3</version>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
       </dependency>
 
       <dependency>

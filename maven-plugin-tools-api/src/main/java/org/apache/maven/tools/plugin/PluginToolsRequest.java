@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
+import org.eclipse.aether.RepositorySystemSession;
 
 /**
  * Request that encapsulates all information relevant to the process of extracting
@@ -111,37 +111,22 @@ public interface PluginToolsRequest {
     PluginToolsRequest setDependencies(Set<Artifact> dependencies);
 
     /**
+     * Return a Repository Session
      *
-     * @return the remote repositories
-     * @since 3.0
+     * @return a Repository Session
+     * @since 3.8.2
      */
-    List<ArtifactRepository> getRemoteRepos();
+    RepositorySystemSession getRepoSession();
 
     /**
+     * Set a Repository Session
      *
-     * @param remoteRepos the remote repositories
-     * @return This request.
-     * @since 3.0
+     * @param repoSession a Repository Session
+     * @since 3.8.2
      */
-    PluginToolsRequest setRemoteRepos(List<ArtifactRepository> remoteRepos);
+    void setRepoSession(RepositorySystemSession repoSession);
 
     /**
-     *
-     * @return the local artifact repository
-     * @since 3.0
-     */
-    ArtifactRepository getLocal();
-
-    /**
-     *
-     * @param local the local repository
-     * @return This request.
-     * @since 3.0
-     */
-    PluginToolsRequest setLocal(ArtifactRepository local);
-
-    /**
-     *
      * @param baseUrl may be relative to the current site's root
      * @return This request.
      * @since 3.7.0
@@ -183,7 +168,6 @@ public interface PluginToolsRequest {
     List<URI> getExternalJavadocBaseUrls();
 
     /**
-     *
      * @param settings the Maven settings
      * @return This request.
      * @since 3.7.0
