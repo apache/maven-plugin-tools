@@ -101,7 +101,7 @@
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
     needs to be updated as well -->
     <asmVersion>9.5</asmVersion>
-    <doxiaVersion>1.11.1</doxiaVersion>
+    <doxiaVersion>1.12.0</doxiaVersion>
     <doxia-sitetoolsVersion>1.11.1</doxia-sitetoolsVersion>
     <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
