@@ -23,13 +23,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.model.Plugin;
@@ -56,6 +55,7 @@ import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginXdocGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -121,6 +121,12 @@ public class PluginReport extends AbstractMavenReport {
     private RuntimeInformation rtInfo;
 
     /**
+     * Internationalization component.
+     */
+    @Component
+    private I18N i18n;
+
+    /**
      * Path to enhanced plugin descriptor to generate the report from (must contain some XHTML values)
      *
      * @since 3.7.0
@@ -175,7 +181,7 @@ public class PluginReport extends AbstractMavenReport {
 
         // Write the overview
         PluginOverviewRenderer r = new PluginOverviewRenderer(
-                getProject(), requirementsHistories, getSink(), pluginDescriptor, locale, hasExtensionsToLoad);
+                getSink(), i18n, locale, getProject(), requirementsHistories, pluginDescriptor, hasExtensionsToLoad);
         r.render();
     }
 
@@ -190,11 +196,12 @@ public class PluginReport extends AbstractMavenReport {
     }
 
     /**
-     * {@inheritDoc}
+     * @param locale The locale
+     * @param key The key to search for
+     * @return The text appropriate for the locale.
      */
-    @Override
-    public String getDescription(Locale locale) {
-        return getBundle(locale).getString("report.plugin.description");
+    private String getI18nString(Locale locale, String key) {
+        return i18n.getString("plugin-report", locale, "report.plugin." + key);
     }
 
     /**
@@ -202,7 +209,15 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Override
     public String getName(Locale locale) {
-        return getBundle(locale).getString("report.plugin.name");
+        return getI18nString(locale, "name");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription(Locale locale) {
+        return getI18nString(locale, "description");
     }
 
     /**
@@ -241,43 +256,43 @@ public class PluginReport extends AbstractMavenReport {
     }
 
     /**
-     * @param locale not null
-     * @return the bundle for this report
-     */
-    protected static ResourceBundle getBundle(Locale locale) {
-        return ResourceBundle.getBundle("plugin-report", locale, PluginReport.class.getClassLoader());
-    }
-
-    /**
      * Generates an overview page with the list of goals
      * and a link to the goal's page.
      */
     static class PluginOverviewRenderer extends AbstractMavenReportRenderer {
+        private final I18N i18n;
+
+        private final Locale locale;
+
         private final MavenProject project;
 
         private final List<RequirementsHistory> requirementsHistories;
 
         private final PluginDescriptor pluginDescriptor;
 
-        private final Locale locale;
-
         private final boolean hasExtensionsToLoad;
 
         /**
+         * @param sink                  not null
+         * @param i18n                  not null
+         * @param locale                not null
          * @param project               not null
          * @param requirementsHistories not null
-         * @param sink                  not null
          * @param pluginDescriptor      not null
-         * @param locale                not null
          */
         PluginOverviewRenderer(
+                Sink sink,
+                I18N i18n,
+                Locale locale,
                 MavenProject project,
                 List<RequirementsHistory> requirementsHistories,
-                Sink sink,
                 PluginDescriptor pluginDescriptor,
-                Locale locale,
                 boolean hasExtensionsToLoad) {
             super(sink);
+
+            this.i18n = i18n;
+
+            this.locale = locale;
 
             this.project = project;
 
@@ -285,17 +300,20 @@ public class PluginReport extends AbstractMavenReport {
 
             this.pluginDescriptor = pluginDescriptor;
 
-            this.locale = locale;
-
             this.hasExtensionsToLoad = hasExtensionsToLoad;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public String getTitle() {
-            return getBundle(locale).getString("report.plugin.title");
+            return getI18nString("title");
+        }
+
+        /**
+         * @param key The key.
+         * @return The translated string.
+         */
+        protected String getI18nString(String key) {
+            return i18n.getString("plugin-report", locale, "report.plugin." + key);
         }
 
         /**
@@ -307,17 +325,15 @@ public class PluginReport extends AbstractMavenReport {
 
             if (!(pluginDescriptor.getMojos() != null
                     && pluginDescriptor.getMojos().size() > 0)) {
-                paragraph(getBundle(locale).getString("report.plugin.goals.nogoal"));
+                paragraph(getI18nString("goals.nogoal"));
                 endSection();
                 return;
             }
 
-            paragraph(getBundle(locale).getString("report.plugin.goals.intro"));
+            paragraph(getI18nString("goals.intro"));
 
             boolean hasMavenReport = false;
-            for (Iterator<MojoDescriptor> i = pluginDescriptor.getMojos().iterator(); i.hasNext(); ) {
-                MojoDescriptor mojo = i.next();
-
+            for (MojoDescriptor mojo : pluginDescriptor.getMojos()) {
                 if (GeneratorUtils.isMavenReport(mojo.getImplementation(), project)) {
                     hasMavenReport = true;
                 }
@@ -325,9 +341,9 @@ public class PluginReport extends AbstractMavenReport {
 
             startTable();
 
-            String goalColumnName = getBundle(locale).getString("report.plugin.goals.column.goal");
-            String isMavenReport = getBundle(locale).getString("report.plugin.goals.column.isMavenReport");
-            String descriptionColumnName = getBundle(locale).getString("report.plugin.goals.column.description");
+            String goalColumnName = getI18nString("goals.column.goal");
+            String isMavenReport = getI18nString("goals.column.isMavenReport");
+            String descriptionColumnName = getI18nString("goals.column.description");
             if (hasMavenReport) {
                 tableHeader(new String[] {goalColumnName, isMavenReport, descriptionColumnName});
             } else {
@@ -348,25 +364,20 @@ public class PluginReport extends AbstractMavenReport {
 
                 String description;
                 if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
-                    description = "<strong>" + getBundle(locale).getString("report.plugin.goal.deprecated")
-                            + "</strong> " + mojo.getDeprecated();
+                    description = "<strong>" + getI18nString("goal.deprecated") + "</strong> " + mojo.getDeprecated();
                 } else if (StringUtils.isNotEmpty(mojo.getDescription())) {
                     description = mojo.getDescription();
                 } else {
-                    description = getBundle(locale).getString("report.plugin.goal.nodescription");
+                    description = getI18nString("goal.nodescription");
                 }
 
                 sink.tableRow();
                 tableCell(createLinkPatternedText(goalName, goalDocumentationLink));
                 if (hasMavenReport) {
                     if (GeneratorUtils.isMavenReport(mojo.getImplementation(), project)) {
-                        sink.tableCell();
-                        sink.text(getBundle(locale).getString("report.plugin.isReport"));
-                        sink.tableCell_();
+                        tableCell(getI18nString("isReport"));
                     } else {
-                        sink.tableCell();
-                        sink.text(getBundle(locale).getString("report.plugin.isNotReport"));
-                        sink.tableCell_();
+                        tableCell(getI18nString("isNotReport"));
                     }
                 }
                 tableCell(description, true);
@@ -375,25 +386,22 @@ public class PluginReport extends AbstractMavenReport {
 
             endTable();
 
-            startSection(getBundle(locale).getString("report.plugin.systemrequirements"));
+            startSection(getI18nString("systemrequirements"));
 
-            paragraph(getBundle(locale).getString("report.plugin.systemrequirements.intro"));
+            paragraph(getI18nString("systemrequirements.intro"));
 
             startTable();
 
             String maven = discoverMavenRequirement(project, pluginDescriptor);
             sink.tableRow();
-            tableCell(getBundle(locale).getString("report.plugin.systemrequirements.maven"));
-            tableCell(
-                    (maven != null
-                            ? maven
-                            : getBundle(locale).getString("report.plugin.systemrequirements.nominimum")));
+            tableCell(getI18nString("systemrequirements.maven"));
+            tableCell((maven != null ? maven : getI18nString("systemrequirements.nominimum")));
             sink.tableRow_();
 
             String jdk = discoverJdkRequirement(project, pluginDescriptor);
             sink.tableRow();
-            tableCell(getBundle(locale).getString("report.plugin.systemrequirements.jdk"));
-            tableCell((jdk != null ? jdk : getBundle(locale).getString("report.plugin.systemrequirements.nominimum")));
+            tableCell(getI18nString("systemrequirements.jdk"));
+            tableCell((jdk != null ? jdk : getI18nString("systemrequirements.nominimum")));
             sink.tableRow_();
 
             endTable();
@@ -412,14 +420,14 @@ public class PluginReport extends AbstractMavenReport {
                 return;
             }
 
-            startSection(getBundle(locale).getString("report.plugin.systemrequirements.history"));
-            paragraph(getBundle(locale).getString("report.plugin.systemrequirements.history.intro"));
+            startSection(getI18nString("systemrequirements.history"));
+            paragraph(getI18nString("systemrequirements.history.intro"));
 
             startTable();
             tableHeader(new String[] {
-                getBundle(locale).getString("report.plugin.systemrequirements.history.version"),
-                getBundle(locale).getString("report.plugin.systemrequirements.history.maven"),
-                getBundle(locale).getString("report.plugin.systemrequirements.history.jdk")
+                getI18nString("systemrequirements.history.version"),
+                getI18nString("systemrequirements.history.maven"),
+                getI18nString("systemrequirements.history.jdk")
             });
 
             requirementsHistories.forEach(requirementsHistory -> {
@@ -440,90 +448,86 @@ public class PluginReport extends AbstractMavenReport {
          * @param hasMavenReport If the plugin has a report or not
          */
         private void renderUsageSection(boolean hasMavenReport) {
-            startSection(getBundle(locale).getString("report.plugin.usage"));
+            startSection(getI18nString("usage"));
 
             // Configuration
-            sink.paragraph();
-            text(getBundle(locale).getString("report.plugin.usage.intro"));
-            sink.paragraph_();
+            paragraph(getI18nString("usage.intro"));
 
             StringBuilder sb = new StringBuilder();
-            sb.append("<project>").append('\n');
-            sb.append("  ...").append('\n');
-            sb.append("  <build>").append('\n');
-            sb.append("    <!-- " + getBundle(locale).getString("report.plugin.usage.pluginManagement") + " -->")
-                    .append('\n');
-            sb.append("    <pluginManagement>").append('\n');
-            sb.append("      <plugins>").append('\n');
-            sb.append("        <plugin>").append('\n');
+            sb.append("<project>").append(Markup.EOL);
+            sb.append("  ...").append(Markup.EOL);
+            sb.append("  <build>").append(Markup.EOL);
+            sb.append("    <!-- " + getI18nString("usage.pluginManagement") + " -->")
+                    .append(Markup.EOL);
+            sb.append("    <pluginManagement>").append(Markup.EOL);
+            sb.append("      <plugins>").append(Markup.EOL);
+            sb.append("        <plugin>").append(Markup.EOL);
             sb.append("          <groupId>")
                     .append(pluginDescriptor.getGroupId())
                     .append("</groupId>")
-                    .append('\n');
+                    .append(Markup.EOL);
             sb.append("          <artifactId>")
                     .append(pluginDescriptor.getArtifactId())
                     .append("</artifactId>")
-                    .append('\n');
+                    .append(Markup.EOL);
             sb.append("          <version>")
                     .append(pluginDescriptor.getVersion())
                     .append("</version>")
-                    .append('\n');
+                    .append(Markup.EOL);
             if (hasExtensionsToLoad) {
-                sb.append("          <extensions>true</extensions>").append('\n');
+                sb.append("          <extensions>true</extensions>").append(Markup.EOL);
             }
-            sb.append("        </plugin>").append('\n');
-            sb.append("        ...").append('\n');
-            sb.append("      </plugins>").append('\n');
-            sb.append("    </pluginManagement>").append('\n');
-            sb.append("    <!-- " + getBundle(locale).getString("report.plugin.usage.plugins") + " -->")
-                    .append('\n');
-            sb.append("    <plugins>").append('\n');
-            sb.append("      <plugin>").append('\n');
+            sb.append("        </plugin>").append(Markup.EOL);
+            sb.append("        ...").append(Markup.EOL);
+            sb.append("      </plugins>").append(Markup.EOL);
+            sb.append("    </pluginManagement>").append(Markup.EOL);
+            sb.append("    <!-- " + getI18nString("usage.plugins") + " -->").append(Markup.EOL);
+            sb.append("    <plugins>").append(Markup.EOL);
+            sb.append("      <plugin>").append(Markup.EOL);
             sb.append("        <groupId>")
                     .append(pluginDescriptor.getGroupId())
                     .append("</groupId>")
-                    .append('\n');
+                    .append(Markup.EOL);
             sb.append("        <artifactId>")
                     .append(pluginDescriptor.getArtifactId())
                     .append("</artifactId>")
-                    .append('\n');
-            sb.append("      </plugin>").append('\n');
-            sb.append("      ...").append('\n');
-            sb.append("    </plugins>").append('\n');
-            sb.append("  </build>").append('\n');
+                    .append(Markup.EOL);
+            sb.append("      </plugin>").append(Markup.EOL);
+            sb.append("      ...").append(Markup.EOL);
+            sb.append("    </plugins>").append(Markup.EOL);
+            sb.append("  </build>").append(Markup.EOL);
 
             if (hasMavenReport) {
-                sb.append("  ...").append('\n');
-                sb.append("  <!-- " + getBundle(locale).getString("report.plugin.usage.reporting") + " -->")
-                        .append('\n');
-                sb.append("  <reporting>").append('\n');
-                sb.append("    <plugins>").append('\n');
-                sb.append("      <plugin>").append('\n');
+                sb.append("  ...").append(Markup.EOL);
+                sb.append("  <!-- " + getI18nString("usage.reporting") + " -->").append(Markup.EOL);
+                sb.append("  <reporting>").append(Markup.EOL);
+                sb.append("    <plugins>").append(Markup.EOL);
+                sb.append("      <plugin>").append(Markup.EOL);
                 sb.append("        <groupId>")
                         .append(pluginDescriptor.getGroupId())
                         .append("</groupId>")
-                        .append('\n');
+                        .append(Markup.EOL);
                 sb.append("        <artifactId>")
                         .append(pluginDescriptor.getArtifactId())
                         .append("</artifactId>")
-                        .append('\n');
+                        .append(Markup.EOL);
                 sb.append("        <version>")
                         .append(pluginDescriptor.getVersion())
                         .append("</version>")
-                        .append('\n');
-                sb.append("      </plugin>").append('\n');
-                sb.append("      ...").append('\n');
-                sb.append("    </plugins>").append('\n');
-                sb.append("  </reporting>").append('\n');
+                        .append(Markup.EOL);
+                sb.append("      </plugin>").append(Markup.EOL);
+                sb.append("      ...").append(Markup.EOL);
+                sb.append("    </plugins>").append(Markup.EOL);
+                sb.append("  </reporting>").append(Markup.EOL);
             }
 
-            sb.append("  ...").append('\n');
-            sb.append("</project>").append('\n');
+            sb.append("  ...").append(Markup.EOL);
+            sb.append("</project>");
 
             verbatimText(sb.toString());
 
             sink.paragraph();
-            linkPatternedText(getBundle(locale).getString("report.plugin.configuration.end"));
+            linkPatternedText(getI18nString("configuration.end"));
             sink.paragraph_();
 
             endSection();
