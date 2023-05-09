@@ -298,7 +298,9 @@ public class HelpMojo
             append( sb, "Deprecated. " + deprecated.getTextContent(), 3 );
             append( sb, "", 0 );
         }
-        append( sb, parameterDescription, 3 );
+        if ( isNotEmpty( parameterDescription ) ) {
+            append( sb, parameterDescription, 3 );
+        }
         if ( "true".equals( getValue( parameter, "required" ) ) )
         {
             append( sb, "Required: Yes", 3 );
@@ -449,7 +451,7 @@ public class HelpMojo
         }
         return level;
     }
-    
+
     private static String getPropertyFromExpression( String expression )
     {
         if ( expression != null && expression.startsWith( "${" ) && expression.endsWith( "}" )

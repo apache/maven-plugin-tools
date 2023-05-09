@@ -20,6 +20,5 @@ help-deprecated-annotation-only:test
       Parameter description in javadoc.
 
     undocumentedParam
-      
       Required: Yes
       User property: test.undocumented

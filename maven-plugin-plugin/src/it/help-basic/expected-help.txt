@@ -20,6 +20,5 @@ help:test
       This parameter is deprecated.
 
     undocumentedParam
-      
       Required: Yes
       User property: test.undocumented
