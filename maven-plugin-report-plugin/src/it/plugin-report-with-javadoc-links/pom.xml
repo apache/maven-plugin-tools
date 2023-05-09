@@ -27,7 +27,7 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>MPLUGIN-417</name> 
+  <name>MPLUGIN-417</name>
   <description>
     Test basic site generation containing javadoc links to internal and external javadoc sites.
   </description>
@@ -70,7 +70,7 @@ under the License.
       <artifactId>maven-reporting-impl</artifactId>
       <version>@reportingImplVersion@</version>
     </dependency>
-    
+
   </dependencies>
 
   <build>
@@ -78,7 +78,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>@compilerPluginVersion@</version>
         <configuration>
           <!-- old maven-parent, so fix it like this. -->
           <source>${maven.compiler.source}</source>
@@ -124,7 +124,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>@javadocPluginVersion@</version>
         <configuration>
           <excludePackageNames>org.internal</excludePackageNames>
         </configuration>

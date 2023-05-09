@@ -27,7 +27,7 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>MPLUGIN-105</name> 
+  <name>MPLUGIN-105</name>
   <description>
     Test basic site generation to guard against regression.
   </description>
@@ -79,7 +79,7 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.4</version>
+          <version>@compilerPluginVersion@</version>
         </plugin>
       </plugins>
     </pluginManagement>

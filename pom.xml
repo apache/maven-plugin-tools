@@ -97,13 +97,15 @@
     <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.13</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
-    <!-- whenever the ASM version is updated also the 
-    maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING 
+    <!-- whenever the ASM version is updated also the
+    maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
     <asmVersion>9.5</asmVersion>
-    <plexusUtilsVersion>3.5.0</plexusUtilsVersion>
+    <plexusUtilsVersion>3.5.1</plexusUtilsVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
+    <compilerPluginVersion>3.11.0</compilerPluginVersion>
+    <javadocPluginVersion>3.5.0</javadocPluginVersion>
     <project.build.outputTimestamp>2023-04-18T16:00:57Z</project.build.outputTimestamp>
   </properties>
 
@@ -217,7 +219,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-archiver</artifactId>
-        <version>4.6.3</version>
+        <version>4.7.1</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -251,7 +253,7 @@
       <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
-        <version>1.15.4</version>
+        <version>1.16.1</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
@@ -296,7 +298,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

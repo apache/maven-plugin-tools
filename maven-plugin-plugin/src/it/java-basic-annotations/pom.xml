@@ -29,8 +29,8 @@ under the License.
 
   <name>Maven Integration Test :: basic-java-annotations</name>
   <description>
-    Test plugin-plugin, which tests maven-plugin-tools-api and 
-    maven-plugin-tools-java. This will generate a plugin descriptor from 
+    Test plugin-plugin, which tests maven-plugin-tools-api and
+    maven-plugin-tools-java. This will generate a plugin descriptor from
     java-based mojo sources, install the plugin, and then use it.
   </description>
 
@@ -70,7 +70,7 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.4</version>
+          <version>@compilerPluginVersion@</version>
         </plugin>
       </plugins>
     </pluginManagement>

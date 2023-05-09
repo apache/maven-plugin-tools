@@ -20,7 +20,7 @@
 expected = new File( basedir, "expected-help.txt" ).text.trim().replace( "\r", "" )
 
 log = new File( basedir, "help.log" ).text.replace( "\r", "" )
-log = log.substring( log.indexOf( "[INFO] help 1.0-SNAPSHOT" ) )
+log = log.substring( log.indexOf( "[INFO] help-deprecated-annotation-only 1.0-SNAPSHOT" ) )
 log = log.substring( 0, log.indexOf( "[INFO]", 5 ) ).trim()
 
 assert log == expected

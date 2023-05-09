@@ -29,8 +29,8 @@ under the License.
 
   <name>Maven Integration Test :: annotation-with-inheritance-from-deps</name>
   <description>
-    Test plugin-plugin, which tests maven-plugin-tools-api and 
-    maven-plugin-tools-java. This will generate a plugin descriptor from 
+    Test plugin-plugin, which tests maven-plugin-tools-api and
+    maven-plugin-tools-java. This will generate a plugin descriptor from
     java-based mojo sources, install the plugin, and then use it.
   </description>
 
@@ -79,7 +79,7 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>@compilerPluginVersion@</version>
           <configuration>
             <source>1.8</source>
             <target>1.8</target>

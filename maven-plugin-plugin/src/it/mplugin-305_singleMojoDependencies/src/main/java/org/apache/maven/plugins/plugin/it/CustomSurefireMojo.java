@@ -23,7 +23,8 @@ import java.util.List;
 
 import org.apache.maven.plugin.surefire.AbstractSurefireMojo;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.surefire.suite.RunResult;
+import org.apache.maven.surefire.api.suite.RunResult;
+import org.apache.maven.surefire.extensions.ForkNodeFactory;
 
 @Mojo(name = "custom-surefire")
 public class CustomSurefireMojo extends AbstractSurefireMojo {
@@ -40,12 +41,28 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
         return null;
     }
 
-    public Boolean getFailIfNoSpecifiedTests() {
+    public String getEnableProcessChecker() {
+        return null;
+    }
+
+    public String getEncoding() {
+        return null;
+    }
+
+    public boolean getFailIfNoSpecifiedTests() {
+        return false;
+    }
+
+    public ForkNodeFactory getForkNode() {
         return null;
     }
 
     public int getForkedProcessTimeoutInSeconds() {
         return 0;
+    }
+
+    public File getMainBuildPath() {
+        return null;
     }
 
     public double getParallelTestsTimeoutForcedInSeconds() {
@@ -57,6 +74,10 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
     }
 
     public String getReportFormat() {
+        return null;
+    }
+
+    public String getReportSchemaLocation() {
         return null;
     }
 
@@ -108,15 +129,31 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
         return false;
     }
 
+    public boolean useModulePath() {
+        return false;
+    }
+
     public void setBasedir(File arg0) {}
 
     public void setClassesDirectory(File arg0) {}
 
     public void setDebugForkedProcess(String arg0) {}
 
+    public void setEncoding(String arg0) {}
+
+    public void setExcludes(List<String> arg0) {}
+
+    public void setExcludeJUnit5Engines(String[] arg0) {}
+
     public void setFailIfNoSpecifiedTests(boolean arg0) {}
 
+    public void setForkedProcessExitTimeoutInSeconds(int arg0) {}
+
     public void setForkedProcessTimeoutInSeconds(int arg0) {}
+
+    public void setIncludeJUnit5Engines(String[] arg0) {}
+
+    public void setMainBuildPath(File arg0) {}
 
     public void setParallelTestsTimeoutForcedInSeconds(double arg0) {}
 
@@ -128,11 +165,19 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
 
     public void setReportsDirectory(File arg0) {}
 
+    public void setRunOrder(String arg0) {}
+
+    public void setRunOrderRandomSeed(Long arg0) {}
+
     public void setSkip(boolean arg0) {}
 
     public void setSkipExec(boolean arg0) {}
 
     public void setSkipTests(boolean arg0) {}
+
+    public void setSuiteXmlFiles(File[] arg0) {}
+
+    public void setSystemPropertiesFile(File arg0) {}
 
     public void setTest(String arg0) {}
 
@@ -142,7 +187,11 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
 
     public void setUseManifestOnlyJar(boolean arg0) {}
 
+    public void setUseModulePath(boolean arg0) {}
+
     public void setUseSystemClassLoader(boolean arg0) {}
+
+    public void setIncludes(List<String> arg0) {}
 
     @Override
     protected String[] getDefaultIncludes() {
@@ -150,7 +199,32 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
     }
 
     @Override
+    public String[] getExcludeJUnit5Engines() {
+        return null;
+    }
+
+    @Override
+    protected String[] getExcludedEnvironmentVariables() {
+        return null;
+    }
+
+    @Override
+    public List<String> getExcludes() {
+        return null;
+    }
+
+    @Override
     public File getExcludesFile() {
+        return null;
+    }
+
+    @Override
+    public int getForkedProcessExitTimeoutInSeconds() {
+        return 0;
+    }
+
+    @Override
+    public String[] getIncludeJUnit5Engines() {
         return null;
     }
 
@@ -180,7 +254,17 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
     }
 
     @Override
+    public Long getRunOrderRandomSeed() {
+        return null;
+    }
+
+    @Override
     public File[] getSuiteXmlFiles() {
+        return null;
+    }
+
+    @Override
+    public File getSystemPropertiesFile() {
         return null;
     }
 
@@ -196,15 +280,6 @@ public class CustomSurefireMojo extends AbstractSurefireMojo {
     protected boolean isSkipExecution() {
         return false;
     }
-
-    @Override
-    public void setIncludes(List<String> arg0) {}
-
-    @Override
-    public void setRunOrder(String arg0) {}
-
-    @Override
-    public void setSuiteXmlFiles(File[] arg0) {}
 
     @Override
     protected List<File> suiteXmlFiles() {

@@ -1,7 +1,7 @@
-[INFO] help 1.0-SNAPSHOT
+[INFO] help-deprecated-annotation-only 1.0-SNAPSHOT
   Tests generation and compilation of the help mojo.
 
-help:test
+help-deprecated-annotation-only:test
   Deprecated. No reason given
 
   MOJO-DESCRIPTION. Some "quotation" marks and backslashes '\\', some important
