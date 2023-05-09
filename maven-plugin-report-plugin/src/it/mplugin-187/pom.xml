@@ -26,7 +26,7 @@ under the License.
   <artifactId>mplugin-187</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <description>Verify that plugin:report succeeds</description>
+  <description>Verify that plugin-report:report succeeds</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,7 +36,7 @@ under the License.
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
         <version>@project.version@</version>
       </plugin>
     </plugins>
