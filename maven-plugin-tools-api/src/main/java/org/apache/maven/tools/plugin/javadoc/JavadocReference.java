@@ -23,8 +23,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.codehaus.plexus.util.StringUtils;
-
 /**
  * Describes a code reference used in javadoc tags {@code see}, {@code link} and {@code linkplain}.
  * The format of the reference given as string is {@code module/package.class#member label}.
@@ -78,7 +76,7 @@ public class JavadocReference {
 
     private static Optional<String> getOptionalGroup(Matcher matcher, int index) {
         String group = matcher.group(index);
-        if (StringUtils.isNotEmpty(group)) {
+        if (group != null && !group.isEmpty()) {
             return Optional.of(group);
         } else {
             return Optional.empty();

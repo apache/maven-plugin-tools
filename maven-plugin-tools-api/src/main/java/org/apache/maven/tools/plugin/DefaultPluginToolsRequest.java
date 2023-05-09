@@ -28,7 +28,6 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystemSession;
 
 /**
@@ -119,7 +118,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
      */
     @Override
     public PluginToolsRequest setEncoding(String encoding) {
-        if (StringUtils.isNotEmpty(encoding)) {
+        if (encoding != null && !encoding.isEmpty()) {
             this.encoding = encoding;
         } else {
             this.encoding = DEFAULT_ENCODING;

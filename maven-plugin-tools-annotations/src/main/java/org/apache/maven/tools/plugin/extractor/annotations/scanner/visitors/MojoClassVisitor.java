@@ -153,7 +153,7 @@ public class MojoClassVisitor extends ClassVisitor {
      * @return the list of type parameters (may be empty)
      */
     private List<String> extractTypeParameters(int access, String signature, boolean isField) {
-        if (StringUtils.isEmpty(signature)) {
+        if (signature == null || signature.isEmpty()) {
             return Collections.emptyList();
         }
         TraceSignatureVisitor traceSignatureVisitor = new TraceSignatureVisitor(access);

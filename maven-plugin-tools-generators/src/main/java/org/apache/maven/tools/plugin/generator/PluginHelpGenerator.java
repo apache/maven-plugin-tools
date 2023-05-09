@@ -31,7 +31,6 @@ import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
@@ -146,7 +145,7 @@ public class PluginHelpGenerator extends AbstractLogEnabled {
      * @return The implementation.
      */
     private String getImplementation() {
-        return StringUtils.isEmpty(helpPackageName)
+        return (helpPackageName == null || helpPackageName.isEmpty())
                 ? HELP_MOJO_CLASS_NAME
                 : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
     }

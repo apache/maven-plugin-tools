@@ -241,7 +241,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
 
         String description = mojoDescriptor.getDescription();
 
-        if (StringUtils.isNotEmpty(description)) {
+        if (description != null && !description.isEmpty()) {
             w.startElement("description");
             w.writeText(getTextValue(type, containsXhtmlTextValues, mojoDescriptor.getDescription()));
             w.endElement();
@@ -438,7 +438,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
             for (Parameter parameter : parameters) {
                 String expression = getExpression(parameter);
 
-                if (StringUtils.isNotEmpty(expression) && expression.startsWith("${component.")) {
+                if ((expression != null && !expression.isEmpty()) && expression.startsWith("${component.")) {
                     // treat it as a component...a requirement, in other words.
 
                     // remove "component." plus expression delimiters
@@ -535,7 +535,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
 
                 // strip type by parameter type (generics) information
                 String parameterType = StringUtils.chomp(parameter.getType(), "<");
-                if (StringUtils.isNotEmpty(parameterType)) {
+                if (parameterType != null && !parameterType.isEmpty()) {
                     w.addAttribute("implementation", parameterType);
                 }
 

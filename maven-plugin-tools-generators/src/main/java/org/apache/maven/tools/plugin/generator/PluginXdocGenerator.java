@@ -286,7 +286,7 @@ public class PluginXdocGenerator implements Generator {
         }
 
         value = mojoDescriptor.isDependencyResolutionRequired();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.dependencyResolutionRequired", value));
@@ -297,7 +297,7 @@ public class PluginXdocGenerator implements Generator {
             ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
 
             value = extendedMojoDescriptor.getDependencyCollectionRequired();
-            if (StringUtils.isNotEmpty(value)) {
+            if (value != null && !value.isEmpty()) {
                 addedUl = addUl(w, addedUl);
                 w.startElement("li");
                 w.writeMarkup(format("pluginxdoc.mojodescriptor.dependencyCollectionRequired", value));
@@ -314,7 +314,7 @@ public class PluginXdocGenerator implements Generator {
         w.endElement(); // li
 
         value = mojoDescriptor.getSince();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.since", value));
@@ -322,7 +322,7 @@ public class PluginXdocGenerator implements Generator {
         }
 
         value = mojoDescriptor.getPhase();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.phase", value));
@@ -330,7 +330,7 @@ public class PluginXdocGenerator implements Generator {
         }
 
         value = mojoDescriptor.getExecutePhase();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.executePhase", value));
@@ -338,7 +338,7 @@ public class PluginXdocGenerator implements Generator {
         }
 
         value = mojoDescriptor.getExecuteGoal();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.executeGoal", value));
@@ -346,7 +346,7 @@ public class PluginXdocGenerator implements Generator {
         }
 
         value = mojoDescriptor.getExecuteLifecycle();
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             addedUl = addUl(w, addedUl);
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.mojodescriptor.executeLifecycle", value));
@@ -565,7 +565,7 @@ public class PluginXdocGenerator implements Generator {
     }
 
     private boolean addUl(XMLWriter w, boolean addedUl, String content) {
-        if (StringUtils.isNotEmpty(content)) {
+        if (content != null && !content.isEmpty()) {
             return addUl(w, addedUl);
         }
         return addedUl;
@@ -580,7 +580,7 @@ public class PluginXdocGenerator implements Generator {
     }
 
     private String getPropertyFromExpression(String expression) {
-        if (StringUtils.isNotEmpty(expression)
+        if ((expression != null && !expression.isEmpty())
                 && expression.startsWith("${")
                 && expression.endsWith("}")
                 && !expression.substring(2).contains("${")) {
@@ -597,7 +597,7 @@ public class PluginXdocGenerator implements Generator {
      * @param w     not null
      */
     private void writeDetail(String param, String value, XMLWriter w) {
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             w.startElement("li");
             w.writeMarkup(format("pluginxdoc.detail", new String[] {param, value}));
             w.endElement(); // li
