@@ -99,7 +99,7 @@ public class PluginXdocGenerator implements Generator {
 
     /**
      * @param project not null.
-     * @param locale  not null wanted locale.
+     * @param locale  not null.
      */
     public PluginXdocGenerator(
             MavenProject project,
@@ -107,11 +107,7 @@ public class PluginXdocGenerator implements Generator {
             File reportOutputDirectory,
             boolean disableInternalJavadocLinkValidation) {
         this.project = project;
-        if (locale == null) {
-            this.locale = Locale.ENGLISH;
-        } else {
-            this.locale = locale;
-        }
+        this.locale = locale;
         this.reportOutputDirectory = reportOutputDirectory;
         this.disableInternalJavadocLinkValidation = disableInternalJavadocLinkValidation;
     }
@@ -446,7 +442,6 @@ public class PluginXdocGenerator implements Generator {
 
             w.startElement("div");
             if (StringUtils.isNotEmpty(parameter.getDescription())) {
-
                 w.writeMarkup(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
             } else {
                 w.writeMarkup(getString("pluginxdoc.nodescription"));
@@ -631,6 +626,7 @@ public class PluginXdocGenerator implements Generator {
 
         w.startElement("table");
         w.addAttribute("border", "0");
+        w.addAttribute("class", "bodyTable");
 
         w.startElement("tr");
         w.startElement("th");

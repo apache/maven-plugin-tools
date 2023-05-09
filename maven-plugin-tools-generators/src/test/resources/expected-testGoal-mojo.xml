@@ -47,7 +47,7 @@
         </li>
       </ul>
       <subsection name="Required Parameters">
-        <table border="0">
+        <table border="0" class="bodyTable">
           <tr>
             <th>Name</th>
             <th>Type</th>
@@ -81,7 +81,7 @@
         </table>
       </subsection>
       <subsection name="Optional Parameters">
-        <table border="0">
+        <table border="0" class="bodyTable">
           <tr>
             <th>Name</th>
             <th>Type</th>
