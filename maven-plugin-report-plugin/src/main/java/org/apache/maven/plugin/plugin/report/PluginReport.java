@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.tools.SiteTool;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -76,8 +77,8 @@ public class PluginReport extends AbstractMavenReport {
      *
      * @since 3.7.0
      */
-    @Parameter(defaultValue = "${project.build.directory}/generated-site/xdoc")
-    private File outputDirectory;
+    @Parameter(defaultValue = "${project.build.directory}/generated-site")
+    private File generatedSiteDirectory;
 
     /**
      * Set this to "true" to skip generating the report.
@@ -222,7 +223,12 @@ public class PluginReport extends AbstractMavenReport {
     private void generateMojosDocumentation(PluginDescriptor pluginDescriptor, Locale locale)
             throws MavenReportException {
         try {
-            File outputDir = outputDirectory;
+            File outputDir;
+            if (!locale.equals(SiteTool.DEFAULT_LOCALE)) {
+                outputDir = new File(new File(generatedSiteDirectory, locale.toString()), "xdoc");
+            } else {
+                outputDir = new File(generatedSiteDirectory, "xdoc");
+            }
             outputDir.mkdirs();
 
             PluginXdocGenerator generator = new PluginXdocGenerator(

@@ -28,3 +28,11 @@ assert !pluginInfo.text.contains('Disk Space')
 // check JDK and Maven requirements
 assert pluginInfo.text.contains('1.8')
 assert pluginInfo.text.contains('3.2.5')
+
+assert new File( basedir, 'target/site/de/noop-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/de/report-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/de/plugin-info.html' ).isFile()
+
+assert new File( basedir, 'target/site/fr/noop-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/fr/report-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/fr/plugin-info.html' ).isFile()
