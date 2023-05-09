@@ -192,9 +192,7 @@ public class PluginXdocGenerator implements Generator {
         w.writeMarkup(getString("pluginxdoc.mojodescriptor.fullname"));
         w.endElement(); // p
         w.startElement("p");
-        w.writeMarkup(mojoDescriptor.getPluginDescriptor().getGroupId() + ":"
-                + mojoDescriptor.getPluginDescriptor().getArtifactId() + ":"
-                + mojoDescriptor.getPluginDescriptor().getVersion() + ":" + mojoDescriptor.getGoal());
+        w.writeMarkup(mojoDescriptor.getPluginDescriptor().getId() + ":" + mojoDescriptor.getGoal());
         w.endElement(); // p
 
         String context = "goal " + mojoDescriptor.getGoal();
