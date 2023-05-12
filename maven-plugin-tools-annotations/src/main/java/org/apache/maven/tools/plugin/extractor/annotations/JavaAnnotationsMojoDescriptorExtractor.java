@@ -756,7 +756,7 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
                                     + "forbidden characters ${}: " + property,
                             null);
                 }
-                parameter.setExpression(StringUtils.isEmpty(property) ? "" : "${" + property + "}");
+                parameter.setExpression((property == null || property.isEmpty()) ? "" : "${" + property + "}");
                 StringBuilder type = new StringBuilder(parameterAnnotationContent.getClassName());
                 if (!parameterAnnotationContent.getTypeParameters().isEmpty()) {
                     type.append(parameterAnnotationContent.getTypeParameters().stream()
@@ -818,7 +818,7 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             return mojoAnnotatedClass;
         }
         String parentClassName = mojoAnnotatedClass.getParentClassName();
-        if (StringUtils.isEmpty(parentClassName)) {
+        if (parentClassName == null || parentClassName.isEmpty()) {
             return null;
         }
         MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);

@@ -51,7 +51,6 @@ import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * <p>
@@ -218,7 +217,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         if (requiresDependencyResolution != null) {
             String v = requiresDependencyResolution.getValue();
 
-            if (StringUtils.isEmpty(v)) {
+            if (v == null || v.isEmpty()) {
                 v = "runtime";
             }
 
@@ -231,7 +230,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         if (requiresDependencyCollection != null) {
             String v = requiresDependencyCollection.getValue();
 
-            if (StringUtils.isEmpty(v)) {
+            if (v == null || v.isEmpty()) {
                 v = "runtime";
             }
 
@@ -296,7 +295,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         if (tag != null) {
             String value = tag.getValue();
 
-            if (StringUtils.isNotEmpty(value)) {
+            if (value != null && !value.isEmpty()) {
                 defaultValue = Boolean.valueOf(value).booleanValue();
             }
         }
@@ -318,7 +317,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         if (tag != null) {
             String value = tag.getValue();
 
-            if (StringUtils.isNotEmpty(value)) {
+            if (value != null && !value.isEmpty()) {
                 return Boolean.valueOf(value).booleanValue();
             } else {
                 return defaultForTag;
@@ -433,20 +432,20 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
 
                 String name = parameter.getNamedParameter(JavadocMojoAnnotation.PARAMETER_NAME);
 
-                if (!StringUtils.isEmpty(name)) {
+                if (!(name == null || name.isEmpty())) {
                     pd.setName(name);
                 }
 
                 String alias = parameter.getNamedParameter(JavadocMojoAnnotation.PARAMETER_ALIAS);
 
-                if (!StringUtils.isEmpty(alias)) {
+                if (!(alias == null || alias.isEmpty())) {
                     pd.setAlias(alias);
                 }
 
                 String expression = parameter.getNamedParameter(JavadocMojoAnnotation.PARAMETER_EXPRESSION);
                 String property = parameter.getNamedParameter(JavadocMojoAnnotation.PARAMETER_PROPERTY);
 
-                if (StringUtils.isNotEmpty(expression) && StringUtils.isNotEmpty(property)) {
+                if ((expression != null && !expression.isEmpty()) && (property != null && !property.isEmpty())) {
                     getLogger().error(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
                     getLogger().error("  Cannot use both:");
                     getLogger().error("    @parameter expression=\"${property}\"");
@@ -459,7 +458,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                             null);
                 }
 
-                if (StringUtils.isNotEmpty(expression)) {
+                if (expression != null && !expression.isEmpty()) {
                     getLogger().warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
                     getLogger().warn("  The syntax");
                     getLogger().warn("    @parameter expression=\"${property}\"");
@@ -467,13 +466,13 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                     getLogger().warn("    @parameter property=\"property\"");
                     getLogger().warn("  instead.");
 
-                } else if (StringUtils.isNotEmpty(property)) {
+                } else if (property != null && !property.isEmpty()) {
                     expression = "${" + property + "}";
                 }
 
                 pd.setExpression(expression);
 
-                if (StringUtils.isNotEmpty(expression) && expression.startsWith("${component.")) {
+                if ((expression != null && !expression.isEmpty()) && expression.startsWith("${component.")) {
                     getLogger().warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
                     getLogger().warn("  The syntax");
                     getLogger().warn("    @parameter expression=\"${component.<role>#<roleHint>}\"");

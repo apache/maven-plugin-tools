@@ -378,7 +378,7 @@ public class PluginReport extends AbstractMavenReport {
 
             this.project = project;
 
-            this.requirements = (requirements == null ? new Requirements() : requirements);
+            this.requirements = requirements == null ? new Requirements() : requirements;
 
             this.requirementsHistories = requirementsHistories;
 
@@ -496,7 +496,7 @@ public class PluginReport extends AbstractMavenReport {
             sink.tableRow_();
 
             String memory = requirements.getMemory();
-            if (StringUtils.isNotEmpty(memory)) {
+            if (memory != null && !memory.isEmpty()) {
                 sink.tableRow();
                 tableCell(getBundle(locale).getString("report.plugin.systemrequirements.memory"));
                 tableCell(memory);
@@ -504,7 +504,7 @@ public class PluginReport extends AbstractMavenReport {
             }
 
             String diskSpace = requirements.getDiskSpace();
-            if (StringUtils.isNotEmpty(diskSpace)) {
+            if (diskSpace != null && !diskSpace.isEmpty()) {
                 sink.tableRow();
                 tableCell(getBundle(locale).getString("report.plugin.systemrequirements.diskspace"));
                 tableCell(diskSpace);
@@ -668,9 +668,9 @@ public class PluginReport extends AbstractMavenReport {
         private static String discoverMavenRequirement(MavenProject project, Requirements requirements) {
             String maven = requirements.getMaven();
             if (maven == null) {
-                maven = (project.getPrerequisites() != null
+                maven = project.getPrerequisites() != null
                         ? project.getPrerequisites().getMaven()
-                        : null);
+                        : null;
             }
             if (maven == null) {
                 maven = "2.0";

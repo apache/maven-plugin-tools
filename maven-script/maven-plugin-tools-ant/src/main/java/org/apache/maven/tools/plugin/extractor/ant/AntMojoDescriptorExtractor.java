@@ -40,7 +40,6 @@ import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
@@ -195,7 +194,7 @@ public class AntMojoDescriptorExtractor extends AbstractScriptedMojoDescriptorEx
                         String implementation = relativePath;
 
                         String dImpl = descriptor.getImplementation();
-                        if (StringUtils.isNotEmpty(dImpl)) {
+                        if (dImpl != null && !dImpl.isEmpty()) {
                             if (PluginMetadataParser.IMPL_BASE_PLACEHOLDER.equals(dImpl)) {
                                 implementation = relativePath;
                             } else {

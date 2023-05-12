@@ -174,7 +174,7 @@ public final class GeneratorUtils {
      */
     @Deprecated
     static String decodeJavadocTags(String description) {
-        if (StringUtils.isEmpty(description)) {
+        if (description == null || description.isEmpty()) {
             return "";
         }
 
@@ -198,13 +198,13 @@ public final class GeneratorUtils {
                 Matcher link = Pattern.compile(pattern).matcher(text);
                 if (link.matches()) {
                     text = link.group(label);
-                    if (StringUtils.isEmpty(text)) {
+                    if (text == null || text.isEmpty()) {
                         text = link.group(clazz);
-                        if (StringUtils.isEmpty(text)) {
+                        if (text == null || text.isEmpty()) {
                             text = "";
                         }
                         if (StringUtils.isNotEmpty(link.group(member))) {
-                            if (StringUtils.isNotEmpty(text)) {
+                            if (text != null && !text.isEmpty()) {
                                 text += '.';
                             }
                             text += link.group(member);
@@ -235,7 +235,7 @@ public final class GeneratorUtils {
     @Deprecated
     public static String makeHtmlValid(String description) {
 
-        if (StringUtils.isEmpty(description)) {
+        if (description == null || description.isEmpty()) {
             return "";
         }
 
@@ -258,7 +258,7 @@ public final class GeneratorUtils {
         tidy.parse(new ByteArrayInputStream(commentCleaned.getBytes(StandardCharsets.UTF_8)), out);
         commentCleaned = new String(out.toByteArray(), StandardCharsets.UTF_8);
 
-        if (StringUtils.isEmpty(commentCleaned)) {
+        if (commentCleaned == null || commentCleaned.isEmpty()) {
             return "";
         }
 
@@ -291,7 +291,7 @@ public final class GeneratorUtils {
      */
     @Deprecated
     public static String toText(String html) {
-        if (StringUtils.isEmpty(html)) {
+        if (html == null || html.isEmpty()) {
             return "";
         }
 

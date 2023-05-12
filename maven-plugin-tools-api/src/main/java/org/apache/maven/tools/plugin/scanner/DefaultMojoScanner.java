@@ -39,7 +39,6 @@ import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractorComparator
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author jdcasey
@@ -172,7 +171,7 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
             this.activeExtractors = new HashSet<>();
 
             for (String extractor : extractors) {
-                if (StringUtils.isNotEmpty(extractor)) {
+                if (extractor != null && !extractor.isEmpty()) {
                     this.activeExtractors.add(extractor);
                 }
             }

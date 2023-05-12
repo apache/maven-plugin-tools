@@ -126,7 +126,7 @@ public class PluginMetadataParser {
                 dParam.setSince(param.getSince());
 
                 String property = param.getProperty();
-                if (StringUtils.isNotEmpty(property)) {
+                if (property != null && !property.isEmpty()) {
                     dParam.setName(property);
                 } else {
                     dParam.setName(param.getName());

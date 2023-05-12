@@ -90,7 +90,7 @@ public final class PluginUtils {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(basedir);
         scanner.setIncludes(new String[] {include});
-        if (!StringUtils.isEmpty(exclude)) {
+        if (!(exclude == null || exclude.isEmpty())) {
             scanner.setExcludes(new String[] {exclude, StringUtils.join(FileUtils.getDefaultExcludes(), ",")});
         } else {
             scanner.setExcludes(FileUtils.getDefaultExcludes());

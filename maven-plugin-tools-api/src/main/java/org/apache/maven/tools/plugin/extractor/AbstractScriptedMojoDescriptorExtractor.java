@@ -33,7 +33,6 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @deprecated Scripting support for Mojos is deprecated and is planned to be removed in Maven 4.0
@@ -62,7 +61,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLo
                 gatherFilesByBasedir(project.getBasedir(), project.getScriptSourceRoots(), scriptExtension, request);
 
         List<MojoDescriptor> mojoDescriptors;
-        if (!StringUtils.isEmpty(metadataExtension)) {
+        if (!(metadataExtension == null || metadataExtension.isEmpty())) {
             @SuppressWarnings("unchecked")
             Map<String, Set<File>> metadataFilesKeyedByBasedir = gatherFilesByBasedir(
                     project.getBasedir(), project.getScriptSourceRoots(), metadataExtension, request);
