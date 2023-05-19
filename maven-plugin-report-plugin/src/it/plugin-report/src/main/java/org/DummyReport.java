@@ -176,7 +176,7 @@ public class DummyReport extends AbstractMavenReport {
         }
 
         /** {@inheritDoc} */
-        public void renderBody() {
+        protected void renderBody() {
             startSection(getTitle());
             paragraph("This is a report.");
             endSection();

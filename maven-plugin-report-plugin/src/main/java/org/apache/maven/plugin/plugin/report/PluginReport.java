@@ -320,7 +320,7 @@ public class PluginReport extends AbstractMavenReport {
          * {@inheritDoc}
          */
         @Override
-        public void renderBody() {
+        protected void renderBody() {
             startSection(getTitle());
 
             if (!(pluginDescriptor.getMojos() != null
