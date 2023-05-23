@@ -37,6 +37,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionResult;
+import org.apache.maven.project.ProjectDependenciesResolver;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
@@ -49,6 +54,8 @@ import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 /**
@@ -276,6 +283,9 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     @Component
     protected BuildContext buildContext;
 
+    @Component
+    protected ProjectDependenciesResolver projectDependenciesResolver;
+
     public void generate() throws MojoExecutionException {
 
         if (!"maven-plugin".equalsIgnoreCase(project.getArtifactId())
@@ -294,15 +304,15 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
         }
 
         if (checkExpectedProvidedScope) {
-            Set<Artifact> wrongScopedArtifacts = dependenciesNotInProvidedScope();
+            Set<Dependency> wrongScopedArtifacts = dependenciesNotInProvidedScope();
             if (!wrongScopedArtifacts.isEmpty()) {
                 StringBuilder message = new StringBuilder(
-                        LS + LS + "Some dependencies of Maven Plugins are expected to be in provided scope." + LS
+                        LS + LS + "Some direct dependencies of Maven Plugins are expected to be in provided scope." + LS
                                 + "Please make sure that dependencies listed below declared in POM" + LS
                                 + "have set '<scope>provided</scope>' as well." + LS + LS
                                 + "The following dependencies are in wrong scope:" + LS);
-                for (Artifact artifact : wrongScopedArtifacts) {
-                    message.append(" * ").append(artifact).append(LS);
+                for (Dependency dependency : wrongScopedArtifacts) {
+                    message.append(" * ").append(dependency.getArtifact()).append(LS);
                 }
                 message.append(LS).append(LS);
 
@@ -418,12 +428,23 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     /**
      * Collects all dependencies expected to be in "provided" scope but are NOT in "provided" scope.
      */
-    private Set<Artifact> dependenciesNotInProvidedScope() {
-        LinkedHashSet<Artifact> wrongScopedDependencies = new LinkedHashSet<>();
+    private Set<Dependency> dependenciesNotInProvidedScope() throws MojoExecutionException {
+        LinkedHashSet<Dependency> wrongScopedDependencies = new LinkedHashSet<>();
 
-        for (Artifact dependency : project.getArtifacts()) {
-            String ga = dependency.getGroupId() + ":" + dependency.getArtifactId();
-            if (expectedProvidedScopeGroupIds.contains(dependency.getGroupId())
+        DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
+        request.setMavenProject(project);
+        request.setRepositorySession(repoSession);
+        DependencyResolutionResult result = null;
+        try {
+            result = projectDependenciesResolver.resolve(request);
+        } catch (DependencyResolutionException e) {
+            throw new MojoExecutionException("Unable to collect project dependencies", e);
+        }
+        for (DependencyNode node : result.getDependencyGraph().getChildren()) {
+            Dependency dependency = node.getDependency();
+            String ga = dependency.getArtifact().getGroupId() + ":"
+                    + dependency.getArtifact().getArtifactId();
+            if (expectedProvidedScopeGroupIds.contains(dependency.getArtifact().getGroupId())
                     && !expectedProvidedScopeExclusions.contains(ga)
                     && !Artifact.SCOPE_PROVIDED.equals(dependency.getScope())) {
                 wrongScopedDependencies.add(dependency);
