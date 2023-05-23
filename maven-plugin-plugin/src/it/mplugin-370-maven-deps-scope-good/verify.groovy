@@ -19,4 +19,4 @@
 
 File buildLog = new File( basedir, "build.log" );
 assert buildLog.isFile()
-assert !buildLog.text.contains( "Some dependencies of Maven Plugins are expected to be in provided scope." )
+assert !buildLog.text.contains( "Some direct dependencies of Maven Plugins are expected to be in provided scope." )
