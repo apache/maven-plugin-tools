@@ -58,6 +58,10 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-xml</artifactId>
+    </dependency>
     <!-- for retrieving package-list or element-list of existing javadoc sites -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
