@@ -68,13 +68,13 @@
             </td>
             <td>
               <br/>
-              <strong>Default value is</strong>
+              <strong>Default value</strong>:
               <code>&lt;/markup-must-be-escaped&gt;</code>
               <br/>
-              <strong>User property is</strong>
+              <strong>User property</strong>:
               <code>project.build.directory</code>
               <br/>
-              <strong>Alias is</strong>
+              <strong>Alias</strong>:
               <code>some.alias</code>
             </td>
           </tr>
