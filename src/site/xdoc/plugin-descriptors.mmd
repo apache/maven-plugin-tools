@@ -8,8 +8,8 @@ flowchart LR
     P3 --> |populates| P4
     subgraph output["Plugin Descriptors Serializations"]
          O1(["plugin.xml (plain text)"])
-         O2(["plugin-help.xml (plain text)"])
-         O3(["plugin-enhanced.xml (html)"])
+         O2(["plugin-help.xml (plain text with extended elements)"])
+         O3(["plugin-enhanced.xml (html, transient, not part of final JAR)"])
     end 
     subgraph generators["maven-plugin-tools-generators"]
         G1["PluginXdocGenerator"] --> |generates| R2([XDoc])

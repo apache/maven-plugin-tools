@@ -122,15 +122,43 @@
       </table>
 
       <subsection name="Plugin Descriptors">
-        <p>The plugin descriptor is first being generated in memory finally containing some values in HTML format before being persisted into three different formats.
+        <p>The plugin descriptor is first being generated in memory finally containing some values in HTML format before being persisted into three different XML files.
         The formats differ in
           <ul>
-            <li>whether they contain extended attributes (not part of the <a href="https://maven.apache.org/ref/current/maven-plugin-api/plugin.html">Plugin Descriptor Spec</a></li>
-            <li>whether descriptive values contain HTML or plain text</li>
+            <li>whether they contain all elements or just a limited set of elements defined by the <a href="https://maven.apache.org/ref/current/maven-plugin-api/plugin.html">Plugin Descriptor Spec</a></li>
+            <li>whether descriptive elements contain HTML or plain text values</li>
+            <li>whether they are packaged in the resulting JAR or not</li>
           </ul>
         Javadoc tags are in general being resolved and replaced by their XHTML value before they end up in the according plugin descriptor attributes <code>description</code> and <code>deprecated</code>.
         Also javadoc code links via <code>{@link}</code> or <code>@see</code> are replaced by links to the according Javadoc pages if configured accordingly.
+        Plaintext is afterwards being generated out of the XHTML (where most XHTML element are just stripped and links are emitted inside angle brackets).
         </p>
+        <table>
+          <tr>
+            <th>File name</th>
+            <th>Allows HTML</th>
+            <th>Limited Elements</th>
+            <th>Contained in JAR</th>
+          </tr>
+          <tr>
+            <td>plugin.xml</td>
+            <td>no</td>
+            <td>no</td>
+            <td>yes</td>
+          </tr>
+          <tr>
+            <td>plugin-help.xml</td>
+            <td>no</td>
+            <td>yes</td>
+            <td>yes</td>
+          </tr>
+          <tr>
+            <td>plugin-enhanced.xml</td>
+            <td>no</td>
+            <td>yes</td>
+            <td>no (volatile file)</td>
+          </tr>
+        </table>
         <p>
           <img src="images/plugin-descriptors.svg" width="759" border="0" />
         </p>
