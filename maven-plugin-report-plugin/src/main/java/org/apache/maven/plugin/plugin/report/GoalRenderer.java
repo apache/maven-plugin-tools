@@ -1,0 +1,544 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.plugin.plugin.report;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.sink.SinkFactory;
+import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.EnhancedParameterWrapper;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
+import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
+import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.codehaus.plexus.i18n.I18N;
+
+public class GoalRenderer extends AbstractPluginReportRenderer {
+
+    /** Regular expression matching an XHTML link with group 1 = link target, group 2 = link label. */
+    private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">(.*?)</a>");
+
+    public static GoalRenderer create(
+            SinkFactory sinkFactory,
+            File outputDirectory,
+            I18N i18n,
+            Locale locale,
+            MavenProject project,
+            MojoDescriptor descriptor,
+            boolean disableInternalJavadocLinkValidation,
+            Log log)
+            throws IOException {
+        String filename = descriptor.getGoal() + "-mojo.html";
+        Sink sink = sinkFactory.createSink(outputDirectory, filename);
+        return new GoalRenderer(
+                sink, i18n, locale, project, descriptor, outputDirectory, disableInternalJavadocLinkValidation, log);
+    }
+
+    /** The directory where the generated site is written. Used for resolving relative links to javadoc. */
+    private final File reportOutputDirectory;
+
+    private final MojoDescriptor descriptor;
+    private final boolean disableInternalJavadocLinkValidation;
+
+    private final Log log;
+
+    // only used from tests directly
+    GoalRenderer(
+            Sink sink,
+            I18N i18n,
+            Locale locale,
+            MavenProject project,
+            MojoDescriptor descriptor,
+            File reportOutputDirectory,
+            boolean disableInternalJavadocLinkValidation,
+            Log log) {
+        super(sink, locale, i18n, project);
+        this.reportOutputDirectory = reportOutputDirectory;
+        this.descriptor = descriptor;
+        this.disableInternalJavadocLinkValidation = disableInternalJavadocLinkValidation;
+        this.log = log;
+    }
+
+    @Override
+    public String getTitle() {
+        return descriptor.getFullGoalName();
+    }
+
+    @Override
+    protected void renderBody() {
+        startSection(descriptor.getFullGoalName());
+        renderReportNotice();
+        renderDescription(
+                "goal.fullname", descriptor.getPluginDescriptor().getId() + ":" + descriptor.getGoal(), false);
+
+        String context = "goal " + descriptor.getGoal();
+        if (StringUtils.isNotEmpty(descriptor.getDeprecated())) {
+            renderDescription("goal.deprecated", getXhtmlWithValidatedLinks(descriptor.getDeprecated(), context), true);
+        }
+        if (StringUtils.isNotEmpty(descriptor.getDescription())) {
+            renderDescription(
+                    "goal.description", getXhtmlWithValidatedLinks(descriptor.getDescription(), context), true);
+        } else {
+            renderDescription("goal.description", getI18nString("goal.nodescription"), false);
+        }
+        renderAttributes();
+
+        List<Parameter> parameterList = filterParameters(
+                descriptor.getParameters() != null ? descriptor.getParameters() : Collections.emptyList());
+        if (parameterList.isEmpty()) {
+            startSection(getI18nString("goal.parameters"));
+            sink.paragraph();
+            sink.text(getI18nString("goal.noParameter"));
+            sink.paragraph_();
+            endSection();
+        } else {
+            renderParameterOverviewTable(
+                    getI18nString("goal.requiredParameters"),
+                    parameterList.stream().filter(Parameter::isRequired).iterator());
+            renderParameterOverviewTable(
+                    getI18nString("goal.optionalParameters"),
+                    parameterList.stream().filter(p -> !p.isRequired()).iterator());
+            renderParameterDetails(parameterList.iterator());
+        }
+        endSection();
+    }
+
+    /** Filter parameters to only retain those which must be documented, i.e. neither components nor read-only ones.
+     *
+     * @param parameterList not null
+     * @return the parameters list without components. */
+    private static List<Parameter> filterParameters(Collection<Parameter> parameterList) {
+        return parameterList.stream()
+                .filter(p -> p.isEditable()
+                        && (p.getExpression() == null || !p.getExpression().startsWith("${component.")))
+                .collect(Collectors.toList());
+    }
+
+    private void renderReportNotice() {
+        if (PluginUtils.isMavenReport(descriptor.getImplementation(), project)) {
+            renderDescription("goal.notice.prefix", getI18nString("goal.notice.isMavenReport"), false);
+        }
+    }
+
+    /**
+     * A description consists of a term/prefix and the actual description text
+     */
+    private void renderDescription(String prefixKey, String description, boolean isHtmlMarkup) {
+        // TODO: convert to dt and dd elements
+        renderDescriptionPrefix(prefixKey);
+        sink.paragraph();
+        if (isHtmlMarkup) {
+            sink.rawText(description);
+        } else {
+            sink.text(description);
+        }
+        sink.paragraph_(); // p
+    }
+
+    private void renderDescriptionPrefix(String prefixKey) {
+        sink.paragraph();
+        sink.inline(Semantics.STRONG);
+        sink.text(getI18nString(prefixKey));
+        sink.inline_();
+        sink.text(":");
+        sink.paragraph_();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void renderAttributes() {
+        renderDescriptionPrefix("goal.attributes");
+        sink.list();
+
+        renderAttribute(descriptor.isProjectRequired(), "goal.projectRequired");
+        renderAttribute(descriptor.isRequiresReports(), "goal.reportingMojo");
+        renderAttribute(descriptor.isAggregator(), "goal.aggregator");
+        renderAttribute(descriptor.isDirectInvocationOnly(), "goal.directInvocationOnly");
+        renderAttribute(descriptor.isDependencyResolutionRequired(), "goal.dependencyResolutionRequired");
+
+        if (descriptor instanceof ExtendedMojoDescriptor) {
+            ExtendedMojoDescriptor extendedDescriptor = (ExtendedMojoDescriptor) descriptor;
+            renderAttribute(extendedDescriptor.getDependencyCollectionRequired(), "goal.dependencyCollectionRequired");
+        }
+
+        renderAttribute(descriptor.isThreadSafe(), "goal.threadSafe");
+        renderAttribute(!descriptor.isThreadSafe(), "goal.notThreadSafe");
+        renderAttribute(descriptor.getSince(), "goal.since");
+        renderAttribute(descriptor.getPhase(), "goal.phase");
+        renderAttribute(descriptor.getExecutePhase(), "goal.executePhase");
+        renderAttribute(descriptor.getExecuteGoal(), "goal.executeGoal");
+        renderAttribute(descriptor.getExecuteLifecycle(), "goal.executeLifecycle");
+        renderAttribute(descriptor.isOnlineRequired(), "goal.onlineRequired");
+        renderAttribute(!descriptor.isInheritedByDefault(), "goal.notInheritedByDefault");
+
+        sink.list_();
+    }
+
+    private void renderAttribute(boolean condition, String attributeKey) {
+        renderAttribute(condition, attributeKey, Optional.empty());
+    }
+
+    private void renderAttribute(String conditionAndCodeArgument, String attributeKey) {
+        renderAttribute(
+                StringUtils.isNotEmpty(conditionAndCodeArgument),
+                attributeKey,
+                Optional.ofNullable(conditionAndCodeArgument));
+    }
+
+    private void renderAttribute(boolean condition, String attributeKey, Optional<String> codeArgument) {
+        if (condition) {
+            sink.listItem();
+            linkPatternedText(getI18nString(attributeKey));
+            if (codeArgument.isPresent()) {
+                text(": ");
+                sink.inline(Semantics.CODE);
+                sink.text(codeArgument.get());
+                sink.inline_();
+            }
+            text(".");
+            sink.listItem_();
+        }
+    }
+
+    private void renderParameterOverviewTable(String title, Iterator<Parameter> parameters) {
+        // don't emit empty tables
+        if (!parameters.hasNext()) {
+            return;
+        }
+        startSection(title);
+        startTable();
+        tableHeader(new String[] {
+            getI18nString("goal.parameter.name.header"),
+            getI18nString("goal.parameter.type.header"),
+            getI18nString("goal.parameter.since.header"),
+            getI18nString("goal.parameter.description.header")
+        });
+        while (parameters.hasNext()) {
+            renderParameterOverviewTableRow(parameters.next());
+        }
+        endTable();
+        endSection();
+    }
+
+    private void renderTableCellWithCode(String text) {
+        renderTableCellWithCode(text, Optional.empty());
+    }
+
+    private void renderTableCellWithCode(String text, URI link) {
+        renderTableCellWithCode(text, Optional.of(link));
+    }
+
+    private void renderTableCellWithCode(String text, Optional<URI> link) {
+        sink.tableCell();
+        sink.inline(Semantics.CODE);
+        if (link.isPresent()) {
+            sink.link(link.get().toString(), null);
+        }
+        sink.text(text);
+        if (link.isPresent()) {
+            sink.link_();
+        }
+        sink.inline_();
+        sink.tableCell_();
+    }
+
+    private void renderParameterOverviewTableRow(Parameter parameter) {
+        sink.tableRow();
+        // name
+        try {
+            renderTableCellWithCode(
+                    format("goal.parameter.name", parameter.getName()), new URI(null, null, parameter.getName()));
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Cannot create fragment link from " + parameter.getName(), e);
+        }
+
+        // type
+        Map.Entry<String, Optional<URI>> type = getLinkedType(parameter, true);
+        renderTableCellWithCode(type.getKey(), type.getValue());
+
+        // since
+        String since = StringUtils.defaultIfEmpty(parameter.getSince(), "-");
+        renderTableCellWithCode(since);
+
+        // description
+        sink.tableCell();
+        String description;
+        String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
+        if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
+            String deprecated = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
+            description = format("goal.parameter.deprecated", deprecated);
+        } else if (StringUtils.isNotEmpty(parameter.getDescription())) {
+            description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
+        } else {
+            description = getI18nString("goal.nodescription");
+        }
+        sink.rawText(description);
+        renderTableCellDetail("goal.parameter.defaultValue", parameter.getDefaultValue());
+        renderTableCellDetail("goal.parameter.property", getPropertyFromExpression(parameter.getExpression()));
+        renderTableCellDetail("goal.parameter.alias", parameter.getAlias());
+        sink.tableCell_();
+
+        sink.tableRow_();
+    }
+
+    private void renderParameterDetails(Iterator<Parameter> parameters) {
+
+        startSection(getI18nString("goal.parameter.details"));
+
+        while (parameters.hasNext()) {
+            Parameter parameter = parameters.next();
+            // TODO: rework parameter, currently 3 are generated: one from skin, one from startSection (all lowercase)
+            // and one manually
+            sink.anchor(parameter.getName());
+            startSection(format("goal.parameter.name", parameter.getName()));
+            sink.anchor_();
+            String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
+            if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
+                sink.division();
+                String deprecated = getXhtmlWithValidatedLinks(parameter.getDeprecated(), context);
+                sink.rawText(format("goal.parameter.deprecated", deprecated));
+                sink.division_();
+            }
+
+            sink.division();
+            if (StringUtils.isNotEmpty(parameter.getDescription())) {
+                sink.rawText(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
+            } else {
+                sink.text(getI18nString("goal.nodescription"));
+            }
+            sink.division_();
+
+            sink.list();
+            Map.Entry<String, Optional<URI>> typeAndLink = getLinkedType(parameter, false);
+            renderDetail(getI18nString("goal.parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
+
+            if (StringUtils.isNotEmpty(parameter.getSince())) {
+                renderDetail(getI18nString("goal.parameter.since"), parameter.getSince());
+            }
+
+            if (parameter.isRequired()) {
+                renderDetail(getI18nString("goal.parameter.required"), getI18nString("yes"));
+            } else {
+                renderDetail(getI18nString("goal.parameter.required"), getI18nString("no"));
+            }
+
+            String expression = parameter.getExpression();
+            String property = getPropertyFromExpression(expression);
+            if (property == null) {
+                renderDetail(getI18nString("goal.parameter.expression"), expression);
+            } else {
+                renderDetail(getI18nString("goal.parameter.property"), property);
+            }
+
+            renderDetail(getI18nString("goal.parameter.defaultValue"), parameter.getDefaultValue());
+
+            renderDetail(getI18nString("goal.parameter.alias"), parameter.getAlias());
+
+            sink.list_(); // ul
+
+            if (parameters.hasNext()) {
+                sink.horizontalRule();
+            }
+            endSection();
+        }
+        endSection();
+    }
+
+    private void renderTableCellDetail(String nameKey, String value) {
+        if (StringUtils.isNotEmpty(value)) {
+            sink.lineBreak();
+            sink.inline(Semantics.STRONG);
+            sink.text(getI18nString(nameKey));
+            sink.inline_();
+            sink.text(": ");
+            sink.inline(Semantics.CODE);
+            sink.text(value);
+            sink.inline_();
+        }
+    }
+
+    private void renderDetail(String param, String value) {
+        renderDetail(param, value, Optional.empty());
+    }
+
+    private void renderDetail(String param, String value, Optional<URI> valueLink) {
+        if (value != null && !value.isEmpty()) {
+            sink.listItem();
+            sink.inline(Semantics.STRONG);
+            sink.text(param);
+            sink.inline_();
+            sink.text(": ");
+            if (valueLink.isPresent()) {
+                sink.link(valueLink.get().toString());
+            }
+            sink.inline(Semantics.CODE);
+            sink.text(value);
+            sink.inline_();
+            if (valueLink.isPresent()) {
+                sink.link_();
+            }
+            sink.listItem_();
+        }
+    }
+
+    private static String getPropertyFromExpression(String expression) {
+        if ((expression != null && !expression.isEmpty())
+                && expression.startsWith("${")
+                && expression.endsWith("}")
+                && !expression.substring(2).contains("${")) {
+            // expression="${xxx}" -> property="xxx"
+            return expression.substring(2, expression.length() - 1);
+        }
+        // no property can be extracted
+        return null;
+    }
+
+    static String getShortType(String type) {
+        // split into type arguments and main type
+        int startTypeArguments = type.indexOf('<');
+        if (startTypeArguments == -1) {
+            return getShortTypeOfSimpleType(type);
+        } else {
+            StringBuilder shortType = new StringBuilder();
+            shortType.append(getShortTypeOfSimpleType(type.substring(0, startTypeArguments)));
+            shortType
+                    .append("<")
+                    .append(getShortTypeOfTypeArgument(type.substring(startTypeArguments + 1, type.lastIndexOf(">"))))
+                    .append(">");
+            return shortType.toString();
+        }
+    }
+
+    private static String getShortTypeOfTypeArgument(String type) {
+        String[] typeArguments = type.split(",\\s*");
+        StringBuilder shortType = new StringBuilder();
+        for (int i = 0; i < typeArguments.length; i++) {
+            String typeArgument = typeArguments[i];
+            if (typeArgument.contains("<")) {
+                // nested type arguments lead to ellipsis
+                return "...";
+            } else {
+                shortType.append(getShortTypeOfSimpleType(typeArgument));
+                if (i < typeArguments.length - 1) {
+                    shortType.append(",");
+                }
+            }
+        }
+        return shortType.toString();
+    }
+
+    private static String getShortTypeOfSimpleType(String type) {
+        int index = type.lastIndexOf('.');
+        return type.substring(index + 1);
+    }
+
+    private Map.Entry<String, Optional<URI>> getLinkedType(Parameter parameter, boolean isShortType) {
+        final String typeValue;
+        if (isShortType) {
+            typeValue = getShortType(parameter.getType());
+        } else {
+            typeValue = parameter.getType();
+        }
+        URI uri = null;
+        if (parameter instanceof EnhancedParameterWrapper) {
+            EnhancedParameterWrapper enhancedParameter = (EnhancedParameterWrapper) parameter;
+            if (enhancedParameter.getTypeJavadocUrl() != null) {
+                URI javadocUrl = enhancedParameter.getTypeJavadocUrl();
+                // optionally check if link is valid
+                if (javadocUrl.isAbsolute()
+                        || disableInternalJavadocLinkValidation
+                        || JavadocLinkGenerator.isLinkValid(javadocUrl, reportOutputDirectory.toPath())) {
+                    uri = enhancedParameter.getTypeJavadocUrl();
+                }
+            }
+        }
+        return new SimpleEntry<>(typeValue, Optional.ofNullable(uri));
+    }
+
+    String getXhtmlWithValidatedLinks(String xhtmlText, String context) {
+        if (disableInternalJavadocLinkValidation) {
+            return xhtmlText;
+        }
+        StringBuffer sanitizedXhtmlText = new StringBuffer();
+        // find all links which are not absolute
+        Matcher matcher = HTML_LINK_PATTERN.matcher(xhtmlText);
+        while (matcher.find()) {
+            URI link;
+            try {
+                link = new URI(matcher.group(1));
+                if (!link.isAbsolute() && !JavadocLinkGenerator.isLinkValid(link, reportOutputDirectory.toPath())) {
+                    matcher.appendReplacement(sanitizedXhtmlText, matcher.group(2));
+                    log.debug(String.format("Removed invalid link %s in %s", link, context));
+                } else {
+                    matcher.appendReplacement(sanitizedXhtmlText, matcher.group(0));
+                }
+            } catch (URISyntaxException e) {
+                log.warn(String.format(
+                        "Invalid URI %s found in %s. Cannot validate, leave untouched", matcher.group(1), context));
+                matcher.appendReplacement(sanitizedXhtmlText, matcher.group(0));
+            }
+        }
+        matcher.appendTail(sanitizedXhtmlText);
+        return sanitizedXhtmlText.toString();
+    }
+
+    /** Convenience method.
+     *
+     * @param key  not null
+     * @param arg1 not null
+     * @return Localized, formatted text identified by <code>key</code>.
+     * @see #format(String, Object[]) */
+    private String format(String key, Object arg1) {
+        return format(key, new Object[] {arg1});
+    }
+
+    /** Looks up the value for <code>key</code> in the <code>ResourceBundle</code>, then formats that value for the specified
+     * <code>Locale</code> using <code>args</code>.
+     *
+     * @param key  not null
+     * @param args not null
+     * @return Localized, formatted text identified by <code>key</code>. */
+    private String format(String key, Object[] args) {
+        String pattern = getI18nString(key);
+        // we don't need quoting so spare us the confusion in the resource bundle to double them up in some keys
+        pattern = StringUtils.replace(pattern, "'", "''");
+
+        MessageFormat messageFormat = new MessageFormat(pattern, locale);
+        return messageFormat.format(args);
+    }
+}
