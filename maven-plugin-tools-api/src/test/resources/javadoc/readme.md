@@ -4,7 +4,7 @@ generated with the last LTS versions of the [javadoc tool](https://docs.oracle.c
 The output was generated with command
 
 ```
-javadoc -sourcepath ../../../java/ -subpackages org.apache.maven.tools.plugin.extractor.annotations.converter.test
+javadoc -sourcepath ../../../../../../maven-plugin-tools-annotations/src/test/java -subpackages org.apache.maven.tools.plugin.extractor.annotations.converter.test
 ```
 
-with the according JDK inside each of the folders `jdk17`, `jdk11` and `jdk8`.
+with the according JDK inside each of the folders `jdk21`, `jdk17`, `jdk11` and `jdk8`.

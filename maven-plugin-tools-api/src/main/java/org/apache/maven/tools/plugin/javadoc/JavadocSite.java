@@ -302,20 +302,15 @@ class JavadocSite {
     static URI createLink(
             FullyQualifiedJavadocReference javadocReference,
             URI baseUri,
-            BiFunction<URI, FullyQualifiedJavadocReference, URI> fragmentAppender) {
-        return createLink(javadocReference, baseUri, fragmentAppender, Optional.empty());
-    }
-
-    static URI createLink(
-            FullyQualifiedJavadocReference javadocReference,
-            URI baseUri,
             BiFunction<URI, FullyQualifiedJavadocReference, URI> fragmentAppender,
-            Optional<String> pathPrefix)
+            Optional<String> resolvedModuleName)
             throws IllegalArgumentException {
         try {
             URI uri = createLink(
                     baseUri,
-                    javadocReference.getModuleName(),
+                    javadocReference.getModuleName().isPresent()
+                            ? javadocReference.getModuleName()
+                            : resolvedModuleName,
                     javadocReference.getPackageName(),
                     javadocReference.getClassName());
             return fragmentAppender.apply(uri, javadocReference);

@@ -44,6 +44,7 @@ class JavadocSiteTest {
 
     static Stream<Arguments> jdkNamesAndVersions() {
         return Stream.of(
+                Arguments.of("jdk21", JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER, "21"),
                 Arguments.of("jdk17", JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER, "17"),
                 Arguments.of("jdk11", JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER, "11"),
                 Arguments.of("jdk8", JavadocLinkGenerator.JavadocToolVersionRange.JDK8_OR_9, "8"));
