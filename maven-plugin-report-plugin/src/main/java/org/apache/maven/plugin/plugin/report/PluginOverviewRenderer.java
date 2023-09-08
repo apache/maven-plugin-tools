@@ -32,10 +32,10 @@ import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.utils.xml.Xpp3Dom;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Generates an overview page with the list of goals

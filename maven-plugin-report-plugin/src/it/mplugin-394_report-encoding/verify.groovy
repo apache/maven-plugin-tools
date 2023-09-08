@@ -17,7 +17,7 @@
  * under the License.
  */
 
-generated = new File( basedir, "target/generated-site/xdoc/test-mojo.xml").getText("UTF-8")
+generated = new File( basedir, "target/site/test-mojo.html").getText("UTF-8")
 
 assert generated.contains("Mojo-Description with some non-ASCII characters: €àáâãäåæòóôõöø")
 assert generated.contains("Parameter-Description with some non-ASCII characters: ÈÉÊË€")

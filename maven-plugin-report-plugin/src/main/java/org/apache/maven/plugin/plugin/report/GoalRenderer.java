@@ -265,15 +265,15 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private void renderTableCellWithCode(String text, Optional<URI> link) {
         sink.tableCell();
-        sink.inline(Semantics.CODE);
         if (link.isPresent()) {
             sink.link(link.get().toString(), null);
         }
+        sink.inline(Semantics.CODE);
         sink.text(text);
+        sink.inline_();
         if (link.isPresent()) {
             sink.link_();
         }
-        sink.inline_();
         sink.tableCell_();
     }
 
