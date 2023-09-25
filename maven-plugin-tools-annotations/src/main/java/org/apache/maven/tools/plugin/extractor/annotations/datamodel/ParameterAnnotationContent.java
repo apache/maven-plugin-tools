@@ -208,11 +208,7 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
         if (!Objects.equals(defaultValue, that.defaultValue)) {
             return false;
         }
-        if (!Objects.equals(property, that.property)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(property, that.property);
     }
 
     @Override
