@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
@@ -209,13 +210,15 @@ public class PluginReport extends AbstractMavenReport {
             for (MojoDescriptor descriptor : pluginDescriptor.getMojos()) {
                 GoalRenderer renderer;
                 try {
-                    renderer = GoalRenderer.create(
-                            getSinkFactory(),
-                            getReportOutputDirectory(),
+                    String filename = descriptor.getGoal() + "-mojo.html";
+                    Sink sink = getSinkFactory().createSink(outputDirectory, filename);
+                    renderer = new GoalRenderer(
+                            sink,
                             i18n,
                             locale,
                             project,
                             descriptor,
+                            outputDirectory,
                             disableInternalJavadocLinkValidation,
                             getLog());
                 } catch (IOException e) {

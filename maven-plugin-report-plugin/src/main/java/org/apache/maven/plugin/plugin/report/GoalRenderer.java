@@ -19,7 +19,6 @@
 package org.apache.maven.plugin.plugin.report;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -37,7 +36,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.SinkFactory;
 import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -54,22 +52,6 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     /** Regular expression matching an XHTML link with group 1 = link target, group 2 = link label. */
     private static final Pattern HTML_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">(.*?)</a>");
 
-    public static GoalRenderer create(
-            SinkFactory sinkFactory,
-            File outputDirectory,
-            I18N i18n,
-            Locale locale,
-            MavenProject project,
-            MojoDescriptor descriptor,
-            boolean disableInternalJavadocLinkValidation,
-            Log log)
-            throws IOException {
-        String filename = descriptor.getGoal() + "-mojo.html";
-        Sink sink = sinkFactory.createSink(outputDirectory, filename);
-        return new GoalRenderer(
-                sink, i18n, locale, project, descriptor, outputDirectory, disableInternalJavadocLinkValidation, log);
-    }
-
     /** The directory where the generated site is written. Used for resolving relative links to javadoc. */
     private final File reportOutputDirectory;
 
@@ -78,8 +60,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private final Log log;
 
-    // only used from tests directly
-    GoalRenderer(
+    public GoalRenderer(
             Sink sink,
             I18N i18n,
             Locale locale,
@@ -104,35 +85,33 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     protected void renderBody() {
         startSection(descriptor.getFullGoalName());
         renderReportNotice();
-        renderDescription(
-                "goal.fullname", descriptor.getPluginDescriptor().getId() + ":" + descriptor.getGoal(), false);
+        renderDescription("fullname", descriptor.getPluginDescriptor().getId() + ":" + descriptor.getGoal(), false);
 
         String context = "goal " + descriptor.getGoal();
         if (StringUtils.isNotEmpty(descriptor.getDeprecated())) {
-            renderDescription("goal.deprecated", getXhtmlWithValidatedLinks(descriptor.getDeprecated(), context), true);
+            renderDescription("deprecated", getXhtmlWithValidatedLinks(descriptor.getDeprecated(), context), true);
         }
         if (StringUtils.isNotEmpty(descriptor.getDescription())) {
-            renderDescription(
-                    "goal.description", getXhtmlWithValidatedLinks(descriptor.getDescription(), context), true);
+            renderDescription("description", getXhtmlWithValidatedLinks(descriptor.getDescription(), context), true);
         } else {
-            renderDescription("goal.description", getI18nString("goal.nodescription"), false);
+            renderDescription("description", getI18nString("nodescription"), false);
         }
         renderAttributes();
 
         List<Parameter> parameterList = filterParameters(
                 descriptor.getParameters() != null ? descriptor.getParameters() : Collections.emptyList());
         if (parameterList.isEmpty()) {
-            startSection(getI18nString("goal.parameters"));
+            startSection(getI18nString("parameters"));
             sink.paragraph();
-            sink.text(getI18nString("goal.noParameter"));
+            sink.text(getI18nString("noParameter"));
             sink.paragraph_();
             endSection();
         } else {
             renderParameterOverviewTable(
-                    getI18nString("goal.requiredParameters"),
+                    getI18nString("requiredParameters"),
                     parameterList.stream().filter(Parameter::isRequired).iterator());
             renderParameterOverviewTable(
-                    getI18nString("goal.optionalParameters"),
+                    getI18nString("optionalParameters"),
                     parameterList.stream().filter(p -> !p.isRequired()).iterator());
             renderParameterDetails(parameterList.iterator());
         }
@@ -152,7 +131,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private void renderReportNotice() {
         if (PluginUtils.isMavenReport(descriptor.getImplementation(), project)) {
-            renderDescription("goal.notice.prefix", getI18nString("goal.notice.isMavenReport"), false);
+            renderDescription("notice.prefix", getI18nString("notice.isMavenReport"), false);
         }
     }
 
@@ -182,29 +161,29 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     @SuppressWarnings("deprecation")
     private void renderAttributes() {
-        renderDescriptionPrefix("goal.attributes");
+        renderDescriptionPrefix("attributes");
         sink.list();
 
-        renderAttribute(descriptor.isProjectRequired(), "goal.projectRequired");
-        renderAttribute(descriptor.isRequiresReports(), "goal.reportingMojo");
-        renderAttribute(descriptor.isAggregator(), "goal.aggregator");
-        renderAttribute(descriptor.isDirectInvocationOnly(), "goal.directInvocationOnly");
-        renderAttribute(descriptor.isDependencyResolutionRequired(), "goal.dependencyResolutionRequired");
+        renderAttribute(descriptor.isProjectRequired(), "projectRequired");
+        renderAttribute(descriptor.isRequiresReports(), "reportingMojo");
+        renderAttribute(descriptor.isAggregator(), "aggregator");
+        renderAttribute(descriptor.isDirectInvocationOnly(), "directInvocationOnly");
+        renderAttribute(descriptor.isDependencyResolutionRequired(), "dependencyResolutionRequired");
 
         if (descriptor instanceof ExtendedMojoDescriptor) {
             ExtendedMojoDescriptor extendedDescriptor = (ExtendedMojoDescriptor) descriptor;
-            renderAttribute(extendedDescriptor.getDependencyCollectionRequired(), "goal.dependencyCollectionRequired");
+            renderAttribute(extendedDescriptor.getDependencyCollectionRequired(), "dependencyCollectionRequired");
         }
 
-        renderAttribute(descriptor.isThreadSafe(), "goal.threadSafe");
-        renderAttribute(!descriptor.isThreadSafe(), "goal.notThreadSafe");
-        renderAttribute(descriptor.getSince(), "goal.since");
-        renderAttribute(descriptor.getPhase(), "goal.phase");
-        renderAttribute(descriptor.getExecutePhase(), "goal.executePhase");
-        renderAttribute(descriptor.getExecuteGoal(), "goal.executeGoal");
-        renderAttribute(descriptor.getExecuteLifecycle(), "goal.executeLifecycle");
-        renderAttribute(descriptor.isOnlineRequired(), "goal.onlineRequired");
-        renderAttribute(!descriptor.isInheritedByDefault(), "goal.notInheritedByDefault");
+        renderAttribute(descriptor.isThreadSafe(), "threadSafe");
+        renderAttribute(!descriptor.isThreadSafe(), "notThreadSafe");
+        renderAttribute(descriptor.getSince(), "since");
+        renderAttribute(descriptor.getPhase(), "phase");
+        renderAttribute(descriptor.getExecutePhase(), "executePhase");
+        renderAttribute(descriptor.getExecuteGoal(), "executeGoal");
+        renderAttribute(descriptor.getExecuteLifecycle(), "executeLifecycle");
+        renderAttribute(descriptor.isOnlineRequired(), "onlineRequired");
+        renderAttribute(!descriptor.isInheritedByDefault(), "notInheritedByDefault");
 
         sink.list_();
     }
@@ -243,10 +222,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         startSection(title);
         startTable();
         tableHeader(new String[] {
-            getI18nString("goal.parameter.name.header"),
-            getI18nString("goal.parameter.type.header"),
-            getI18nString("goal.parameter.since.header"),
-            getI18nString("goal.parameter.description.header")
+            getI18nString("parameter.name.header"),
+            getI18nString("parameter.type.header"),
+            getI18nString("parameter.since.header"),
+            getI18nString("parameter.description.header")
         });
         while (parameters.hasNext()) {
             renderParameterOverviewTableRow(parameters.next());
@@ -282,7 +261,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         // name
         try {
             renderTableCellWithCode(
-                    format("goal.parameter.name", parameter.getName()), new URI(null, null, parameter.getName()));
+                    format("parameter.name", parameter.getName()), new URI(null, null, parameter.getName()));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Cannot create fragment link from " + parameter.getName(), e);
         }
@@ -301,16 +280,16 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
         if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
             String deprecated = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
-            description = format("goal.parameter.deprecated", deprecated);
+            description = format("parameter.deprecated", deprecated);
         } else if (StringUtils.isNotEmpty(parameter.getDescription())) {
             description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
         } else {
-            description = getI18nString("goal.nodescription");
+            description = getI18nString("nodescription");
         }
         sink.rawText(description);
-        renderTableCellDetail("goal.parameter.defaultValue", parameter.getDefaultValue());
-        renderTableCellDetail("goal.parameter.property", getPropertyFromExpression(parameter.getExpression()));
-        renderTableCellDetail("goal.parameter.alias", parameter.getAlias());
+        renderTableCellDetail("parameter.defaultValue", parameter.getDefaultValue());
+        renderTableCellDetail("parameter.property", getPropertyFromExpression(parameter.getExpression()));
+        renderTableCellDetail("parameter.alias", parameter.getAlias());
         sink.tableCell_();
 
         sink.tableRow_();
@@ -318,20 +297,21 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private void renderParameterDetails(Iterator<Parameter> parameters) {
 
-        startSection(getI18nString("goal.parameter.details"));
+        startSection(getI18nString("parameter.details"));
 
         while (parameters.hasNext()) {
             Parameter parameter = parameters.next();
-            // TODO: rework parameter, currently 3 are generated: one from skin, one from startSection (all lowercase)
-            // and one manually
+            // TODO: rework anchors, currently 3 are generated: one from skin (JS), one from startSection (all lowercase)
+            // and one manually (keeping case-sensitivity for backwards compatibility)
             sink.anchor(parameter.getName());
-            startSection(format("goal.parameter.name", parameter.getName()));
+            
+            startSection(format("parameter.name", parameter.getName()));
             sink.anchor_();
             String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
             if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
                 sink.division();
                 String deprecated = getXhtmlWithValidatedLinks(parameter.getDeprecated(), context);
-                sink.rawText(format("goal.parameter.deprecated", deprecated));
+                sink.rawText(format("parameter.deprecated", deprecated));
                 sink.division_();
             }
 
@@ -339,35 +319,35 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             if (StringUtils.isNotEmpty(parameter.getDescription())) {
                 sink.rawText(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
             } else {
-                sink.text(getI18nString("goal.nodescription"));
+                sink.text(getI18nString("nodescription"));
             }
             sink.division_();
 
             sink.list();
             Map.Entry<String, Optional<URI>> typeAndLink = getLinkedType(parameter, false);
-            renderDetail(getI18nString("goal.parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
+            renderDetail(getI18nString("parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
 
             if (StringUtils.isNotEmpty(parameter.getSince())) {
-                renderDetail(getI18nString("goal.parameter.since"), parameter.getSince());
+                renderDetail(getI18nString("parameter.since"), parameter.getSince());
             }
 
             if (parameter.isRequired()) {
-                renderDetail(getI18nString("goal.parameter.required"), getI18nString("yes"));
+                renderDetail(getI18nString("parameter.required"), getI18nString("yes"));
             } else {
-                renderDetail(getI18nString("goal.parameter.required"), getI18nString("no"));
+                renderDetail(getI18nString("parameter.required"), getI18nString("no"));
             }
 
             String expression = parameter.getExpression();
             String property = getPropertyFromExpression(expression);
             if (property == null) {
-                renderDetail(getI18nString("goal.parameter.expression"), expression);
+                renderDetail(getI18nString("parameter.expression"), expression);
             } else {
-                renderDetail(getI18nString("goal.parameter.property"), property);
+                renderDetail(getI18nString("parameter.property"), property);
             }
 
-            renderDetail(getI18nString("goal.parameter.defaultValue"), parameter.getDefaultValue());
+            renderDetail(getI18nString("parameter.defaultValue"), parameter.getDefaultValue());
 
-            renderDetail(getI18nString("goal.parameter.alias"), parameter.getAlias());
+            renderDetail(getI18nString("parameter.alias"), parameter.getAlias());
 
             sink.list_(); // ul
 
@@ -540,5 +520,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
         MessageFormat messageFormat = new MessageFormat(pattern, locale);
         return messageFormat.format(args);
+    }
+
+    @Override
+    protected String getI18nSection() {
+        return "plugin.goal";
     }
 }

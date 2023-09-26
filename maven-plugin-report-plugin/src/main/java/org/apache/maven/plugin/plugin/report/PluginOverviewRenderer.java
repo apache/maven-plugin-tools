@@ -74,11 +74,6 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         this.hasExtensionsToLoad = hasExtensionsToLoad;
     }
 
-    @Override
-    public String getTitle() {
-        return getI18nString("title");
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -116,13 +111,25 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         mojos.addAll(pluginDescriptor.getMojos());
         PluginUtils.sortMojos(mojos);
         for (MojoDescriptor mojo : mojos) {
-            String goalName = mojo.getFullGoalName();
+            sink.tableRow();
 
+            String goalName = mojo.getFullGoalName();
             /*
              * Added ./ to define a relative path
              * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
              */
             String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
+            sink.tableCell();
+            link(goalDocumentationLink, goalName);
+            sink.tableCell_();
+
+            if (hasMavenReport) {
+                if (PluginUtils.isMavenReport(mojo.getImplementation(), project)) {
+                    tableCell(getI18nString("isReport"));
+                } else {
+                    tableCell(getI18nString("isNotReport"));
+                }
+            }
 
             String description;
             if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
@@ -131,16 +138,6 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
                 description = mojo.getDescription();
             } else {
                 description = getI18nString("goal.nodescription");
-            }
-
-            sink.tableRow();
-            tableCell(createLinkPatternedText(goalName, goalDocumentationLink));
-            if (hasMavenReport) {
-                if (PluginUtils.isMavenReport(mojo.getImplementation(), project)) {
-                    tableCell(getI18nString("isReport"));
-                } else {
-                    tableCell(getI18nString("isNotReport"));
-                }
             }
             tableCell(description, true);
             sink.tableRow_();
@@ -388,5 +385,10 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         }
 
         return null;
+    }
+
+    @Override
+    protected String getI18nSection() {
+        return "plugin";
     }
 }
