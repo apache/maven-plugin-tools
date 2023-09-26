@@ -86,7 +86,7 @@ public class MojoClassVisitor extends ClassVisitor {
     }
 
     public List<MojoFieldVisitor> findFieldWithAnnotation(Set<String> annotationClassNames) {
-        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<MojoFieldVisitor>();
+        List<MojoFieldVisitor> mojoFieldVisitors = new ArrayList<>();
 
         for (MojoFieldVisitor mojoFieldVisitor : this.fieldVisitors) {
             Map<String, MojoAnnotationVisitor> filedVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();

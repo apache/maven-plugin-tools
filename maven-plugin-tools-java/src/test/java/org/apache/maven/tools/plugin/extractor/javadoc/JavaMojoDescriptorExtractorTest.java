@@ -35,7 +35,6 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
@@ -87,7 +86,7 @@ public class JavaMojoDescriptorExtractorTest {
 
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGoalPrefix("test");
-        pluginDescriptor.setDependencies(new ArrayList<ComponentDependency>());
+        pluginDescriptor.setDependencies(new ArrayList<>());
 
         return new DefaultPluginToolsRequest(project, pluginDescriptor).setEncoding("UTF-8");
     }
