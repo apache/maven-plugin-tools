@@ -301,10 +301,11 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
         while (parameters.hasNext()) {
             Parameter parameter = parameters.next();
-            // TODO: rework anchors, currently 3 are generated: one from skin (JS), one from startSection (all lowercase)
+            // TODO: rework anchors, currently 3 are generated: one from skin (JS), one from startSection (all
+            // lowercase)
             // and one manually (keeping case-sensitivity for backwards compatibility)
             sink.anchor(parameter.getName());
-            
+
             startSection(format("parameter.name", parameter.getName()));
             sink.anchor_();
             String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
