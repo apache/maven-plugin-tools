@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
+import org.apache.maven.doxia.util.HtmlTools;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.logging.Log;
@@ -260,8 +261,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         sink.tableRow();
         // name
         try {
+            // link to appropriate section
             renderTableCellWithCode(
-                    format("parameter.name", parameter.getName()), new URI(null, null, parameter.getName()));
+                    format("parameter.name", parameter.getName()),
+                    new URI(null, null, HtmlTools.encodeId(parameter.getName())));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Cannot create fragment link from " + parameter.getName(), e);
         }
@@ -301,9 +304,8 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
         while (parameters.hasNext()) {
             Parameter parameter = parameters.next();
-            // TODO: rework anchors, currently 3 are generated: one from skin (JS), one from startSection (all
-            // lowercase)
-            // and one manually (keeping case-sensitivity for backwards compatibility)
+            // deprecated anchor for backwards-compatibility with XDoc (upper and lower case)
+            // TODO: remove once migrated to Doxia 2.x
             sink.anchor(parameter.getName());
 
             startSection(format("parameter.name", parameter.getName()));
