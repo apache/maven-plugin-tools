@@ -462,7 +462,15 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
                 }
             }
         }
-        Optional<String> link = Optional.ofNullable(uri).map(u -> u.getScheme() + ":" + u.getSchemeSpecificPart());
+        // rely on the decoded link (URL encoding is done by the Sink implementation if necessary)
+        Optional<String> link = Optional.ofNullable(uri).map(u -> {
+            StringBuilder decodedLink = new StringBuilder();
+            if (u.getScheme() != null) {
+                decodedLink.append(u.getScheme()).append(":");
+            }
+            decodedLink.append(u.getSchemeSpecificPart());
+            return decodedLink.toString();
+        });
         return new SimpleEntry<>(typeValue, link);
     }
 
