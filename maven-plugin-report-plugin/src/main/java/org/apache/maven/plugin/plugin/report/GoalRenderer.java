@@ -239,14 +239,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderTableCellWithCode(text, Optional.empty());
     }
 
-    private void renderTableCellWithCode(String text, URI link) {
-        renderTableCellWithCode(text, Optional.of(link));
-    }
-
-    private void renderTableCellWithCode(String text, Optional<URI> link) {
+    private void renderTableCellWithCode(String text, Optional<String> link) {
         sink.tableCell();
         if (link.isPresent()) {
-            sink.link(link.get().toString(), null);
+            sink.link(link.get(), null);
         }
         sink.inline(Semantics.CODE);
         sink.text(text);
@@ -260,17 +256,13 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     private void renderParameterOverviewTableRow(Parameter parameter) {
         sink.tableRow();
         // name
-        try {
-            // link to appropriate section
-            renderTableCellWithCode(
-                    format("parameter.name", parameter.getName()),
-                    new URI(null, null, HtmlTools.encodeId(parameter.getName())));
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Cannot create fragment link from " + parameter.getName(), e);
-        }
+        // link to appropriate section
+        renderTableCellWithCode(
+                format("parameter.name", parameter.getName()),
+                Optional.of("#" + HtmlTools.encodeId(parameter.getName())));
 
         // type
-        Map.Entry<String, Optional<URI>> type = getLinkedType(parameter, true);
+        Map.Entry<String, Optional<String>> type = getLinkedType(parameter, true);
         renderTableCellWithCode(type.getKey(), type.getValue());
 
         // since
@@ -327,7 +319,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             sink.division_();
 
             sink.list();
-            Map.Entry<String, Optional<URI>> typeAndLink = getLinkedType(parameter, false);
+            Map.Entry<String, Optional<String>> typeAndLink = getLinkedType(parameter, false);
             renderDetail(getI18nString("parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
 
             if (StringUtils.isNotEmpty(parameter.getSince())) {
@@ -379,7 +371,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderDetail(param, value, Optional.empty());
     }
 
-    private void renderDetail(String param, String value, Optional<URI> valueLink) {
+    private void renderDetail(String param, String value, Optional<String> valueLink) {
         if (value != null && !value.isEmpty()) {
             sink.listItem();
             sink.inline(Semantics.STRONG);
@@ -387,7 +379,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             sink.inline_();
             sink.text(": ");
             if (valueLink.isPresent()) {
-                sink.link(valueLink.get().toString());
+                sink.link(valueLink.get());
             }
             sink.inline(Semantics.CODE);
             sink.text(value);
@@ -450,7 +442,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         return type.substring(index + 1);
     }
 
-    private Map.Entry<String, Optional<URI>> getLinkedType(Parameter parameter, boolean isShortType) {
+    private Map.Entry<String, Optional<String>> getLinkedType(Parameter parameter, boolean isShortType) {
         final String typeValue;
         if (isShortType) {
             typeValue = getShortType(parameter.getType());
@@ -470,7 +462,8 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
                 }
             }
         }
-        return new SimpleEntry<>(typeValue, Optional.ofNullable(uri));
+        Optional<String> link = Optional.ofNullable(uri).map(u -> u.getScheme() + ":" + u.getSchemeSpecificPart());
+        return new SimpleEntry<>(typeValue, link);
     }
 
     String getXhtmlWithValidatedLinks(String xhtmlText, String context) {
