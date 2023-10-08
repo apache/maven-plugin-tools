@@ -259,6 +259,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         // link to appropriate section
         renderTableCellWithCode(
                 format("parameter.name", parameter.getName()),
+                // no need for additional URI encoding as it returns only URI safe characters
                 Optional.of("#" + HtmlTools.encodeId(parameter.getName())));
 
         // type
@@ -462,16 +463,8 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
                 }
             }
         }
-        // rely on the decoded link (URL encoding is done by the Sink implementation if necessary)
-        Optional<String> link = Optional.ofNullable(uri).map(u -> {
-            StringBuilder decodedLink = new StringBuilder();
-            if (u.getScheme() != null) {
-                decodedLink.append(u.getScheme()).append(":");
-            }
-            decodedLink.append(u.getSchemeSpecificPart());
-            return decodedLink.toString();
-        });
-        return new SimpleEntry<>(typeValue, link);
+        // rely on the encoded URI
+        return new SimpleEntry<>(typeValue, Optional.ofNullable(uri).map(URI::toASCIIString));
     }
 
     String getXhtmlWithValidatedLinks(String xhtmlText, String context) {
