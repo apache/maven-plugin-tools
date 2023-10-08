@@ -30,22 +30,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 class JavadocSiteIT {
 
     static Stream<Arguments> javadocBaseUrls() {
+        // only test LTS versions by default
         return Stream.of(
                 Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/17/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/16/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/15/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/14/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/13/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/12/docs/api/")),
                 Arguments.of(URI.create("https://docs.oracle.com/en/java/javase/11/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/10/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/9/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/8/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/7/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/6/docs/api/")),
-                Arguments.of(URI.create("https://docs.oracle.com/javase/1.5.0/docs/api/")),
-                Arguments.of(URI.create("https://javaalmanac.io/jdk/1.4/api/index.html")),
-                Arguments.of(URI.create("https://javaalmanac.io/jdk/1.3/api/index.html")));
+                Arguments.of(URI.create("https://docs.oracle.com/javase/8/docs/api/")));
     }
 
     @ParameterizedTest

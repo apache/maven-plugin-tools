@@ -31,9 +31,8 @@
   <packaging>maven-plugin</packaging>
 
   <name>Maven Plugin Plugin</name>
-  <description>The Plugin Plugin is used to create a Maven plugin descriptor for any Mojo's found in the source tree,
-    to include in the JAR. It is also used to generate Xdoc files for the Mojos as well as the artifact metadata
-    and a generic help goal.</description>
+  <description>The Plugin Plugin is used to create a Maven plugin descriptor for any Mojos found in the source tree
+    in order to include them the resulting JAR. It is also used to generate a generic help goal.</description>
 
   <prerequisites>
     <maven>${mavenVersion}</maven>

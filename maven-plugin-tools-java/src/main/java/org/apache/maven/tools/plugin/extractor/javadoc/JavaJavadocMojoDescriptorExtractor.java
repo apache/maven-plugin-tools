@@ -510,7 +510,7 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         if (superClass != null) {
             rawParams = extractFieldParameterTags(superClass);
         } else {
-            rawParams = new TreeMap<String, JavaField>();
+            rawParams = new TreeMap<>();
         }
 
         for (JavaField field : javaClass.getFields()) {
