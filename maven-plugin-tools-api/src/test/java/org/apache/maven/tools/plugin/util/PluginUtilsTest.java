@@ -18,10 +18,15 @@
  */
 package org.apache.maven.tools.plugin.util;
 
+import java.util.Collections;
+
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author jdcasey
@@ -60,5 +65,24 @@ class PluginUtilsTest {
 
         String[] files = PluginUtils.findSources(basedir, includes, excludes);
         assertEquals(1, files.length);
+    }
+
+    @Test
+    void testIsMavenReport() throws Exception {
+        try {
+            PluginUtils.isMavenReport(null, null);
+        } catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
+        String impl = "org.apache.maven.tools.plugin.util.stubs.MavenReportStub";
+
+        MavenProjectStub stub = new MavenProjectStub();
+        stub.setCompileSourceRoots(Collections.singletonList(System.getProperty("basedir") + "/target/classes"));
+
+        assertTrue(PluginUtils.isMavenReport(impl, stub));
+
+        impl = "org.apache.maven.tools.plugin.util.stubs.MojoStub";
+        assertFalse(PluginUtils.isMavenReport(impl, stub));
     }
 }

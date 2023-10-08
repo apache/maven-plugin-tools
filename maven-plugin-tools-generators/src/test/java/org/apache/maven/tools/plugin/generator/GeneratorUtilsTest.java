@@ -26,15 +26,12 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.xml.CompactXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author jdcasey
@@ -183,25 +180,6 @@ class GeneratorUtilsTest {
         // javadoc inline tags
         // javadoc = "Generates {@code something} for the project.";
         // assertEquals( "Generates something for the project.", GeneratorUtils.toText( javadoc ) );
-    }
-
-    @Test
-    void testIsMavenReport() throws Exception {
-        try {
-            GeneratorUtils.isMavenReport(null, null);
-        } catch (IllegalArgumentException e) {
-            assertTrue(true);
-        }
-
-        String impl = "org.apache.maven.tools.plugin.generator.stubs.MavenReportStub";
-
-        MavenProjectStub stub = new MavenProjectStub();
-        stub.setCompileSourceRoots(Collections.singletonList(System.getProperty("basedir") + "/target/classes"));
-
-        assertTrue(GeneratorUtils.isMavenReport(impl, stub));
-
-        impl = "org.apache.maven.tools.plugin.util.stubs.MojoStub";
-        assertFalse(GeneratorUtils.isMavenReport(impl, stub));
     }
 
     @Test

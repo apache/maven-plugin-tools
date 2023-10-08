@@ -21,13 +21,13 @@ def mojoDoc = new File( basedir, 'target/site/test-mojo.html' )
 
 assert mojoDoc.isFile()
 
-assert mojoDoc.text.contains('<b>See also:</b> <a class="externalLink" href="https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html">java.util.Collections</a></div>') // mojo description see javadoc tag
+assert mojoDoc.text.contains('<strong>See also:</strong> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html">java.util.Collections</a>') // mojo description see javadoc tag
 
 assert mojoDoc.text.contains('beans parameter leveraging <a href="apidocs/org/SimpleBean.html"><code>SimpleBean</code></a>.') // parameter description
-assert mojoDoc.text.contains('<td><code><a href="apidocs/org/SimpleBean.html">Collection&lt;SimpleBean&gt;</a></code></td>') // type link in parameter overview
-assert mojoDoc.text.contains('<li><b>Type</b>: <code><a href="apidocs/org/SimpleBean.html">java.util.Collection&lt;org.SimpleBean&gt;</a></code></li>') // type link in parameter details
+assert mojoDoc.text.contains('<td><a href="apidocs/org/SimpleBean.html"><code>Collection&lt;SimpleBean&gt;</code></a></td>') // type link in parameter overview
+assert mojoDoc.text.contains('<li><strong>Type</strong>: <a href="apidocs/org/SimpleBean.html"><code>java.util.Collection&lt;org.SimpleBean&gt;</code></a></li>') // type link in parameter details
 
-assert mojoDoc.text.contains('<div>invalid javadoc reference <code>org.apache.maven.artifact.Artifact</code>.</div>') // second parameter description with link being removed (as no javadoc site associated)
+assert mojoDoc.text.contains('invalid javadoc reference <code>org.apache.maven.artifact.Artifact</code>') // second parameter description with link being removed (as no javadoc site associated)
 
 // the third parameter contains an invalid link (as the internal link validation has been switched off)
-assert mojoDoc.text.contains(' <code><a href="apidocs/org/internal/PrivateBean.html">org.internal.PrivateBean</a></code>')
+assert mojoDoc.text.contains(' <a href="apidocs/org/internal/PrivateBean.html"><code>org.internal.PrivateBean</code></a>')

@@ -54,7 +54,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * <li>a standard <a href="/ref/current/maven-plugin-api/plugin.html">Maven Plugin Descriptor XML file</a></li>
  * <li>a descriptor containing a limited set of elements for {@link PluginHelpGenerator}</li>
  * <li>an enhanced descriptor containing HTML values for some elements (instead of plain text as for the other two)
- * for {@link PluginXdocGenerator}</li>
+ * for {@code org.apache.maven.plugin.plugin.report.GoalRenderer}</li>
  * </ol>
  * from a given in-memory descriptor. The in-memory descriptor acting as source is supposed to contain XHTML values
  * for description elements.

@@ -25,14 +25,9 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,11 +38,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.reporting.MavenReport;
+import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -557,43 +551,10 @@ public final class GeneratorUtils {
      * @return <code>true</code> is the Mojo implementation implements <code>MavenReport</code>,
      * <code>false</code> otherwise.
      * @throws IllegalArgumentException if any
+     * @deprecated Use {@link PluginUtils#isMavenReport(String, MavenProject)} instead.
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public static boolean isMavenReport(String impl, MavenProject project) throws IllegalArgumentException {
-        if (impl == null) {
-            throw new IllegalArgumentException("mojo implementation should be declared");
-        }
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (project != null) {
-            List<String> classPathStrings;
-            try {
-                classPathStrings = project.getCompileClasspathElements();
-                if (project.getExecutionProject() != null) {
-                    classPathStrings.addAll(project.getExecutionProject().getCompileClasspathElements());
-                }
-            } catch (DependencyResolutionRequiredException e) {
-                throw new IllegalArgumentException(e);
-            }
-
-            List<URL> urls = new ArrayList<>(classPathStrings.size());
-            for (String classPathString : classPathStrings) {
-                try {
-                    urls.add(new File(classPathString).toURL());
-                } catch (MalformedURLException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            }
-
-            classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), classLoader);
-        }
-
-        try {
-            Class<?> clazz = Class.forName(impl, false, classLoader);
-
-            return MavenReport.class.isAssignableFrom(clazz);
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        return PluginUtils.isMavenReport(impl, project);
     }
 }

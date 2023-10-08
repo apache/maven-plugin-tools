@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-assert new File( basedir, 'target/generated-site' ).exists()
+assert new File( basedir, 'target/site/noop-mojo.html' ).exists()
 
-content = new File( basedir, 'target/generated-site/xdoc/noop-mojo.xml' ).text
+content = new File( basedir, 'target/site/noop-mojo.html' ).text
 
-assert content.contains( '<li>Since version: <code>1.0</code></li>' )
+assert content.contains( '<li>Since version: <code>1.0</code>.</li>' )
 assert content.contains( '<td><code>-</code></td>' )
 assert content.contains( '<td><code>1.1</code></td>' )
 assert content.contains( '<li><strong>Since</strong>: <code>1.1</code></li>' )

@@ -18,7 +18,7 @@
 File pluginInfo = new File( basedir, "target/site/plugin-info.html" );
 assert pluginInfo.isFile()
 
-File touchMojo = new File( basedir, "target/generated-site/xdoc/touch-mojo.xml" );
+File touchMojo = new File( basedir, "target/site/touch-mojo.html" );
 assert touchMojo.isFile()
 
 return true;

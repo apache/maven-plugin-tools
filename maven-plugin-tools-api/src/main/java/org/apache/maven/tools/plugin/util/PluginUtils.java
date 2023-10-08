@@ -18,14 +18,22 @@
  */
 package org.apache.maven.tools.plugin.util;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.MavenReport;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -135,6 +143,52 @@ public final class PluginUtils {
                     return parameter1.getName().compareToIgnoreCase(parameter2.getName());
                 }
             });
+        }
+    }
+
+    /**
+     * @param mojoClassName a fully qualified Mojo implementation class name, not null
+     * @param project a MavenProject instance, could be null
+     * @return <code>true</code> if the Mojo class implements <code>MavenReport</code>,
+     * <code>false</code> otherwise.
+     * @throws IllegalArgumentException if any
+     * @since 3.10.0
+     */
+    public static boolean isMavenReport(String mojoClassName, MavenProject project) throws IllegalArgumentException {
+        if (mojoClassName == null) {
+            throw new IllegalArgumentException("mojo implementation should be declared");
+        }
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (project != null) {
+            List<String> classPathStrings;
+            try {
+                classPathStrings = project.getCompileClasspathElements();
+                if (project.getExecutionProject() != null) {
+                    classPathStrings.addAll(project.getExecutionProject().getCompileClasspathElements());
+                }
+            } catch (DependencyResolutionRequiredException e) {
+                throw new IllegalArgumentException(e);
+            }
+
+            List<URL> urls = new ArrayList<>(classPathStrings.size());
+            for (String classPathString : classPathStrings) {
+                try {
+                    urls.add(new File(classPathString).toURL());
+                } catch (MalformedURLException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+
+            classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), classLoader);
+        }
+
+        try {
+            Class<?> clazz = Class.forName(mojoClassName, false, classLoader);
+
+            return MavenReport.class.isAssignableFrom(clazz);
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }
