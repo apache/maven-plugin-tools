@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import groovy.xml.XmlParser
+
 File touchFile = new File( basedir, "target/touch.txt" )
 assert touchFile.isFile()
 
