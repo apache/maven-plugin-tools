@@ -284,6 +284,13 @@
                 <pomExclude>plugin-info-jdk/pom.xml</pomExclude>
                 <!-- relies on just a given plugin.xml for generating a report, this is no longer supported -->
               </pomExcludes>
+              <extraArtifacts>
+                <!-- used in ITs -->
+                <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:jar:test-sources</extraArtifact>
+                <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:test-jar</extraArtifact>
+                <extraArtifact>org.apache.maven.plugin-tools:maven-script-ant:${project.version}</extraArtifact>
+                <extraArtifact>org.apache.maven.plugin-tools:maven-script-beanshell:${project.version}</extraArtifact>
+              </extraArtifacts>
             </configuration>
             <executions>
               <execution>

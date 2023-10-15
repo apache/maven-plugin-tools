@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import groovy.xml.XmlParser
+
 def latin1File = new File(basedir, 'latin-1/target/classes/META-INF/maven/plugin.xml')
 assert latin1File.exists()
 def latin1Chars = new XmlParser().parse(latin1File).mojos.mojo.description.text()
