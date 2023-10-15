@@ -77,6 +77,10 @@
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-generators</artifactId>
+    </dependency>
 
     <!-- doxia -->
     <dependency>
