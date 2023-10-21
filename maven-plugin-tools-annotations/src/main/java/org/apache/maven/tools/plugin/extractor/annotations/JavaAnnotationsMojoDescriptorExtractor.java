@@ -131,6 +131,8 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V18, "18");
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V19, "19");
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V20, "20");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V21, "21");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V22, "22");
     }
 
     @Inject
