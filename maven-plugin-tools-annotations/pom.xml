@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>3.10.2-SNAPSHOT</version>
+    <version>3.10.2</version>
   </parent>
 
   <artifactId>maven-plugin-tools-annotations</artifactId>
