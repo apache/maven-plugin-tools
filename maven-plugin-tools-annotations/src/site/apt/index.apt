@@ -85,7 +85,7 @@ public class MyMojo
     @Parameter( name = "parameter",
                 alias = "myAlias",
                 property = "a.property",
-                defaultValue = "an expression, possibly with ${variables}",
+                defaultValue = "an expression, possibly with ${variables} and pseudo-parameter expressions ${project.xxx.yyy}",
                 readonly = <false|true>,
                 required = <false|true> )
     private String parameter;
@@ -94,27 +94,42 @@ public class MyMojo
                 hint = "..." )
     private MyComponent component;
 
+    // pseudo-parameters (marked read-only) permitting injection of Maven build context objects
     // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+    //     https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html
+    // plugins targetting Maven 3.2.5+ (after MNG-5695) should not use these pseudo-parameters any more,
+    // but @Component and Maven APIs to get better compiler-time checks
 
-    @Parameter( defaultValue = "${session}", readonly = true )
+    // @Parameter( defaultValue = "${session}", readonly = true )
+    @Component // since Maven 3.2.5, thanks to MNG-5695
     private MavenSession session;
 
-    @Parameter( defaultValue = "${project}", readonly = true )
+    // @Parameter( defaultValue = "${project}", readonly = true )
+    @Component // since Maven 3.2.5, thanks to MNG-5695
     private MavenProject project;
 
-    @Parameter( defaultValue = "${mojoExecution}", readonly = true )
-    private MojoExecution mojo;
+    // @Parameter( defaultValue = "${mojoExecution}", readonly = true )
+    @Component // since Maven 3.2.5, thanks to MNG-5695
+    private MojoExecution mojoExecution;
+
+    @Parameter( defaultValue = "${reactorProjects}", readonly = true )
+    // prefer using session.getProjects()
+    private List<MavenProject> reactorProjects;
 
     @Parameter( defaultValue = "${plugin}", readonly = true ) // Maven 3 only
+    // prefer using mojoExecution.getMojoDescriptor()
     private PluginDescriptor plugin;
 
     @Parameter( defaultValue = "${settings}", readonly = true )
+    // prefer using session.getSettings()
     private Settings settings;
 
     @Parameter( defaultValue = "${project.basedir}", readonly = true )
+    // prefer using project.getBasedir()
     private File basedir;
 
     @Parameter( defaultValue = "${project.build.directory}", readonly = true )
+    // prefer using project.getBuild().getDirectory()
     private File target;
 
     /**
@@ -144,3 +159,10 @@ public class MyMojo
 
  * {{{/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}PluginParameterExpressionEvaluator}},
    used to evaluate plugin parameters values during Mojo configuration,
+
+ * pseudo parameters:
+
+   * <<<PluginParameterExpressionEvaluator>>> {{{https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}javadoc}} /
+   {{{https://maven.apache.org/ref/current/maven-core/xref/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}source}}
+
+   * {{{https://issues.apache.org/jira/browse/MNG-5695}MNG-5695}}: scoped objects added to Guice/Sisu in {{{https://maven.apache.org/ref/current/maven-core/}maven-core}} 3.2.5
