@@ -199,6 +199,9 @@
             <goals>
               <goal>helpmojo</goal>
             </goals>
+            <configuration>
+              <goalPrefix>plugin-report</goalPrefix>
+            </configuration>
           </execution>
         </executions>
       </plugin>

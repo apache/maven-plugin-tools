@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -81,27 +80,22 @@ public abstract class AbstractGeneratorMojo extends AbstractMojo {
             return;
         }
 
-        String defaultGoalPrefix = getDefaultGoalPrefix(project);
-
-        if (goalPrefix == null) {
-            goalPrefix = defaultGoalPrefix;
-        } else if (!goalPrefix.equals(defaultGoalPrefix)) {
-            getLog().warn(LS + LS + "Goal prefix is specified as: '" + goalPrefix + "'. "
-                    + "Maven currently expects it to be '" + defaultGoalPrefix + "'." + LS);
+        if (goalPrefix == null || goalPrefix.isEmpty()) {
+            goalPrefix = getDefaultGoalPrefix(project);
+        }
+        if (goalPrefix.isEmpty()) {
+            throw new MojoExecutionException("You need to specify a goalPrefix as it can not be correctly computed");
         }
 
         generate();
     }
 
     static String getDefaultGoalPrefix(MavenProject project) {
-        String defaultGoalPrefix;
-        if ("maven-plugin-report-plugin".equalsIgnoreCase(project.getArtifactId())) {
-            defaultGoalPrefix = "plugin-report";
-        } else if ("maven-plugin".equalsIgnoreCase(project.getArtifactId())) {
-            defaultGoalPrefix =
-                    project.getGroupId().substring(project.getGroupId().lastIndexOf('.') + 1);
-        } else {
-            defaultGoalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId(project.getArtifactId());
+        String artifactId = project.getArtifactId();
+        String defaultGoalPrefix = artifactId.replaceAll("-?(maven|plugin)-?", "");
+        if (defaultGoalPrefix.isEmpty()) {
+            String groupId = project.getGroupId();
+            defaultGoalPrefix = groupId.substring(groupId.lastIndexOf('.') + 1);
         }
         return defaultGoalPrefix;
     }
