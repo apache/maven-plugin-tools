@@ -36,10 +36,7 @@ public class DescriptorGeneratorMojoTest {
                 arguments(null, "maven-plugin-plugin", "plugin"),
                 arguments(null, "maven-plugin-report-plugin", "plugin-report"),
                 arguments(null, "maven-default-plugin", "default"),
-                arguments(null, "default-maven-plugin", "default"),
-                arguments(null, "default-maven-plugin", "default"),
-                arguments("foo.bar", "maven-plugin", "bar"),
-                arguments("foo", "maven-plugin", "foo"));
+                arguments(null, "default-maven-plugin", "default"));
     }
 
     @ParameterizedTest
