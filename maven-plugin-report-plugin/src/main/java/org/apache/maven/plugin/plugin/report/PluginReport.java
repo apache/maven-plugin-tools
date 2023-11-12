@@ -211,14 +211,14 @@ public class PluginReport extends AbstractMavenReport {
                 GoalRenderer renderer;
                 try {
                     String filename = descriptor.getGoal() + "-mojo.html";
-                    Sink sink = getSinkFactory().createSink(outputDirectory, filename);
+                    Sink sink = getSinkFactory().createSink(getReportOutputDirectory(), filename);
                     renderer = new GoalRenderer(
                             sink,
                             i18n,
                             locale,
                             project,
                             descriptor,
-                            outputDirectory,
+                            getReportOutputDirectory(),
                             disableInternalJavadocLinkValidation,
                             getLog());
                 } catch (IOException e) {
