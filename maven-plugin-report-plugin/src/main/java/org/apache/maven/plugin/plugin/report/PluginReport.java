@@ -128,7 +128,16 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Override
     public boolean canGenerateReport() {
-        return enhancedPluginXmlFile != null && enhancedPluginXmlFile.isFile() && enhancedPluginXmlFile.canRead();
+        if (skip) {
+            getLog().info("Maven Plugin Plugin Report generation skipped.");
+            return false;
+        }
+
+        if (!(enhancedPluginXmlFile != null && enhancedPluginXmlFile.isFile() && enhancedPluginXmlFile.canRead())) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -136,11 +145,6 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
-        if (skip) {
-            getLog().info("Maven Plugin Plugin Report generation skipped.");
-            return;
-        }
-
         PluginDescriptor pluginDescriptor = extractPluginDescriptor();
 
         // Generate the mojos' documentation

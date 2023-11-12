@@ -101,19 +101,16 @@ public class DummyReport extends AbstractMavenReport {
 
     /** {@inheritDoc} */
     public boolean canGenerateReport() {
+        if (skip || skipReport) {
+            getLog().info("Maven Plugin Plugin Report generation skipped.");
+            return false;
+        }
+
         return true;
     }
 
     /** {@inheritDoc} */
     protected void executeReport(Locale locale) throws MavenReportException {
-        if (!canGenerateReport()) {
-            return;
-        }
-        if (skip || skipReport) {
-            getLog().info("Maven Plugin Plugin Report generation skipped.");
-            return;
-        }
-
         // Generate the plugin's documentation
         generatePluginDocumentation(locale);
     }
