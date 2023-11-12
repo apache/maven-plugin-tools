@@ -222,7 +222,7 @@ public class PluginReport extends AbstractMavenReport {
                             disableInternalJavadocLinkValidation,
                             getLog());
                 } catch (IOException e) {
-                    throw new MavenReportException("Can not generate sink for mojo " + descriptor.getGoal(), e);
+                    throw new MavenReportException("Cannot generate sink for mojo " + descriptor.getGoal(), e);
                 }
                 renderer.render();
             }
