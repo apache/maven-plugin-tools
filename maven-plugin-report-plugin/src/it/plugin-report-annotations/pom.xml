@@ -90,6 +90,7 @@ under the License.
         <version>@project.version@</version>
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
         <executions>
           <execution>

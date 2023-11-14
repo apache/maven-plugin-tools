@@ -94,6 +94,7 @@ under the License.
           <externalJavadocBaseUrls>
             <externalJavadocBaseUrl>https://docs.oracle.com/javase/8/docs/api/</externalJavadocBaseUrl>
           </externalJavadocBaseUrls>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
       </plugin>
       <plugin>
