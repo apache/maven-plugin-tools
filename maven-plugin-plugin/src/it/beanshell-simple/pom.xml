@@ -53,7 +53,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${pluginPluginVersion}</version>
         <configuration>
-          <prefix>beanshellBasic</prefix>
+          <goalPrefix>beanshellBasic</goalPrefix>
         </configuration>
         <dependencies>
           <dependency>

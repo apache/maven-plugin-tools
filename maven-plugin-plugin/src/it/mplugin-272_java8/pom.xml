@@ -68,6 +68,7 @@
               <goal>descriptor</goal>
             </goals>
             <configuration>
+              <goalPrefix>prefix</goalPrefix>
             </configuration>
             <phase>process-classes</phase>
           </execution>

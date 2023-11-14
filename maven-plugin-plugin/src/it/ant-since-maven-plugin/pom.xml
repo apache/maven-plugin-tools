@@ -42,6 +42,9 @@
             <version>@project.version@</version>
           </dependency>
         </dependencies>
+        <configuration>
+          <goalPrefix>prefix</goalPrefix>
+        </configuration>
       </plugin>
     </plugins>
   </build>

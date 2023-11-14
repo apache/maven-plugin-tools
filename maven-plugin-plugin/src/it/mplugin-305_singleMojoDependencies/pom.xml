@@ -71,6 +71,7 @@
           <mojoDependencies>
             <mojoDependency>org.apache.maven.surefire:maven-surefire-common</mojoDependency>
           </mojoDependencies>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
         <executions>
           <execution>

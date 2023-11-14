@@ -54,6 +54,9 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <configuration>
+          <goalPrefix>prefix</goalPrefix>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.its.plugin</groupId>

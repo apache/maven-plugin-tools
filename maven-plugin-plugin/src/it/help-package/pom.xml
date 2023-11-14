@@ -61,6 +61,7 @@ under the License.
         <version>@project.version@</version>
         <configuration>
           <helpPackageName>test.help</helpPackageName>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
         <executions>
           <execution>
