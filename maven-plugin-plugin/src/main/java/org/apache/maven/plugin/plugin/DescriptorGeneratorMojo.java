@@ -237,8 +237,8 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      *
      * <ul>
      * <li>A version range which specifies the supported Java versions. It can either use the usual mathematical
-     * syntax like {@code "[2.0.10,2.1.0),[3.0,)"} or use a single version like {@code "2.2.1"}. The latter is a short
-     * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
+     * syntax like {@code "[1.7,9),[11,)"} or use a single version like {@code "1.8"}. The latter is a short
+     * form for {@code "[1.8,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Java version from the binary class version being generated during
      * compilation (determined by the extractor).</li>
      * </ul>
