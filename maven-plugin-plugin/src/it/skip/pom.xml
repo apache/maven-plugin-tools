@@ -50,6 +50,9 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <goalPrefix>prefix</goalPrefix>
+        </configuration>
       </plugin>
     </plugins>
   </build>

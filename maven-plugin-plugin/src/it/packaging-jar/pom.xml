@@ -72,6 +72,7 @@ under the License.
           <packagingTypes>
             <packaging>jar</packaging>
           </packagingTypes>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
         <executions>
           <execution>

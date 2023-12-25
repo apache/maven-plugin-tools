@@ -43,6 +43,9 @@
       <plugin>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <goalPrefix>prefix</goalPrefix>
+        </configuration>
       </plugin>
     </plugins>
   </build>

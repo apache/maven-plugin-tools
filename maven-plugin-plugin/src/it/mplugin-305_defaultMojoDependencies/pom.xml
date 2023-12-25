@@ -68,6 +68,7 @@
             <extractor>java-annotations</extractor>
           </extractors>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          <goalPrefix>prefix</goalPrefix>
         </configuration>
         <executions>
           <execution>

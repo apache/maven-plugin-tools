@@ -57,6 +57,7 @@ under the License.
             <extractors>
               <extractor>java-javadoc</extractor><!-- this extractor does not generate automatic JDK/Maven requirements -->
             </extractors>
+            <goalPrefix>prefix</goalPrefix>
           </configuration>
         </plugin>
         <plugin>

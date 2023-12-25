@@ -54,7 +54,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${pluginPluginVersion}</version>
         <configuration>
-          <prefix>antSimpleUsage</prefix>
+          <goalPrefix>antSimpleUsage</goalPrefix>
         </configuration>
         <dependencies>
           <dependency>
