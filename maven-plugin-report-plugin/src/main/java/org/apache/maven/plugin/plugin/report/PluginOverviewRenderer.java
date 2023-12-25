@@ -87,14 +87,27 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             return;
         }
 
-        paragraph(getI18nString("goals.intro"));
-
         boolean hasMavenReport = false;
         for (MojoDescriptor mojo : pluginDescriptor.getMojos()) {
             if (PluginUtils.isMavenReport(mojo.getImplementation(), project)) {
                 hasMavenReport = true;
+                break;
             }
         }
+
+        renderGoalsSection(hasMavenReport);
+
+        renderSystemRequirementsSection();
+
+        renderRequirementsHistoriesSection();
+
+        renderUsageSection(hasMavenReport);
+
+        endSection();
+    }
+
+    private void renderGoalsSection(boolean hasMavenReport) {
+        paragraph(getI18nString("goals.intro"));
 
         startTable();
 
@@ -144,7 +157,9 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         }
 
         endTable();
+    }
 
+    private void renderSystemRequirementsSection() {
         startSection(getI18nString("systemrequirements"));
 
         paragraph(getI18nString("systemrequirements.intro"));
@@ -166,15 +181,9 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         endTable();
 
         endSection();
-
-        renderRequirementsHistories();
-
-        renderUsageSection(hasMavenReport);
-
-        endSection();
     }
 
-    private void renderRequirementsHistories() {
+    private void renderRequirementsHistoriesSection() {
         if (requirementsHistories.isEmpty()) {
             return;
         }
