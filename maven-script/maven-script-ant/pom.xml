@@ -61,6 +61,7 @@ under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-ant-factory</artifactId>
+      <!-- Do not upgrade, compilation will fail! -->
       <version>1.0-alpha-2.1</version>
       <exclusions>
         <exclusion>
