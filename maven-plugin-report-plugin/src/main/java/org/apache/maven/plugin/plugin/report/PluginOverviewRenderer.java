@@ -95,6 +95,8 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             }
         }
 
+        paragraph(getI18nString("description"));
+
         renderGoalsSection(hasMavenReport);
 
         renderSystemRequirementsSection();
@@ -107,6 +109,8 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
     }
 
     private void renderGoalsSection(boolean hasMavenReport) {
+        startSection(getI18nString("goals"));
+
         paragraph(getI18nString("goals.intro"));
 
         startTable();
@@ -157,6 +161,8 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         }
 
         endTable();
+
+        endSection();
     }
 
     private void renderSystemRequirementsSection() {
