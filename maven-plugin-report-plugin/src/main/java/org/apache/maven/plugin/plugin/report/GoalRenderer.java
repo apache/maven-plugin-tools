@@ -274,10 +274,8 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         sink.tableCell();
         String description;
         String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
-        if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
-            String deprecated = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
-            description = format("parameter.deprecated", deprecated);
-        } else if (StringUtils.isNotEmpty(parameter.getDescription())) {
+        renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
+        if (StringUtils.isNotEmpty(parameter.getDescription())) {
             description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
         } else {
             description = getI18nString("nodescription");
@@ -304,13 +302,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             startSection(format("parameter.name", parameter.getName()));
             sink.anchor_();
             String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
-            if (StringUtils.isNotEmpty(parameter.getDeprecated())) {
-                sink.division();
-                String deprecated = getXhtmlWithValidatedLinks(parameter.getDeprecated(), context);
-                sink.rawText(format("parameter.deprecated", deprecated));
-                sink.division_();
-            }
-
+            renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
             sink.division();
             if (StringUtils.isNotEmpty(parameter.getDescription())) {
                 sink.rawText(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
@@ -353,6 +345,20 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             endSection();
         }
         endSection();
+    }
+
+    private void renderDeprecatedParameterDescription(String deprecated, String context) {
+        if (StringUtils.isNotEmpty(deprecated)) {
+            String deprecatedXhtml = getXhtmlWithValidatedLinks(deprecated, context);
+            sink.division();
+            sink.inline(Semantics.STRONG);
+            sink.text(getI18nString("parameter.deprecated"));
+            sink.inline_();
+            sink.lineBreak();
+            sink.rawText(deprecatedXhtml);
+            sink.division_();
+            sink.lineBreak();
+        }
     }
 
     private void renderTableCellDetail(String nameKey, String value) {

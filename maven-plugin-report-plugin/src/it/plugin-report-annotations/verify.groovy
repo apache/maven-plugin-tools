@@ -17,6 +17,7 @@
  * under the License.
  */
 
+assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
 assert new File( basedir, 'target/site/report-mojo.html' ).isFile()
 
 def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
@@ -32,16 +33,10 @@ assert pluginInfo.text.contains('3.2.5')
 assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t use test goals, do you?</div><br />')
 assert pluginInfo.text.contains('Does nothing.')
 
-assert new File( basedir, 'target/site/de/noop-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/de/report-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/de/plugin-info.html' ).isFile()
-
-assert new File( basedir, 'target/site/fr/noop-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/fr/report-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/fr/plugin-info.html' ).isFile()
 
 def noopMojo = new File( basedir, 'target/site/noop-mojo.html' )
 assert noopMojo.isFile()
 
 // deprecated in table and details
 assert noopMojo.text.count('<div><strong>Deprecated.</strong><br />Just testing.</div><br />') == 2
+

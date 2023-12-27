@@ -27,6 +27,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -148,15 +149,27 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
                 }
             }
 
-            String description;
+            sink.tableCell();
             if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
-                description = "<strong>" + getI18nString("goal.deprecated") + "</strong> " + mojo.getDeprecated();
-            } else if (StringUtils.isNotEmpty(mojo.getDescription())) {
+                sink.division();
+                sink.inline(SinkEventAttributeSet.Semantics.STRONG);
+                sink.text(getI18nString("goal.deprecated"));
+                sink.text(".");
+                sink.inline_();
+                sink.text(" ");
+                sink.rawText(mojo.getDeprecated());
+                sink.division_();
+                sink.lineBreak();
+            }
+
+            String description;
+            if (StringUtils.isNotEmpty(mojo.getDescription())) {
                 description = mojo.getDescription();
             } else {
                 description = getI18nString("goal.nodescription");
             }
-            tableCell(description, true);
+            sink.rawText(description);
+            sink.tableCell_();
             sink.tableRow_();
         }
 
