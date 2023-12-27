@@ -25,9 +25,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -47,36 +45,6 @@ import org.codehaus.plexus.util.StringUtils;
 public final class PluginUtils {
     private PluginUtils() {
         // nop
-    }
-
-    /**
-     * Expression associated with class types to recognize Maven objects (injected in fact as parameters by <a
-     * href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
-     * maven-core's PluginParameterExpressionEvaluator</a>) like components ("real" components are injected by Plexus).
-     *
-     * @deprecated wrong approach (fake components), documented parameter default values instead to learn people how to
-     *             discover them
-     */
-    @Deprecated
-    public static final Map<String, String> MAVEN_COMPONENTS;
-
-    static {
-        Map<String, String> mavenComponents = new HashMap<>();
-
-        mavenComponents.put("org.apache.maven.execution.MavenSession", "${session}");
-        mavenComponents.put("org.apache.maven.project.MavenProject", "${project}");
-        mavenComponents.put("org.apache.maven.plugin.MojoExecution", "${mojoExecution}");
-        mavenComponents.put("org.apache.maven.plugin.descriptor.PluginDescriptor", "${plugin}");
-        mavenComponents.put("org.apache.maven.settings.Settings", "${settings}");
-
-        mavenComponents.put("org.apache.maven.api.Session", "${session}");
-        mavenComponents.put("org.apache.maven.api.Project", "${project}");
-        mavenComponents.put("org.apache.maven.api.MojoExecution", "${mojoExecution}");
-        // TODO: apiv4: add PluginDescriptor to the api ?
-        // mavenComponents.put( "org.apache.maven.api.descriptor.PluginDescriptor", "${plugin}" );
-        mavenComponents.put("org.apache.maven.api.settings.Settings", "${settings}");
-
-        MAVEN_COMPONENTS = Collections.unmodifiableMap(mavenComponents);
     }
 
     /**

@@ -21,9 +21,11 @@ package org.apache.maven.plugins.plugin.descriptor;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -87,7 +89,8 @@ public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder {
 
         PlexusConfiguration[] parameterConfigurations = c.getChild("parameters").getChildren("parameter");
 
-        List<Parameter> parameters = new ArrayList<>(mojoDescriptor.getParameters());
+        List<Parameter> parameters = new ArrayList<>(
+                Optional.ofNullable(mojoDescriptor.getParameters()).orElseGet(Collections::emptyList));
         Map<String, Parameter> parameterMap = new LinkedHashMap<>(mojoDescriptor.getParameterMap());
 
         for (PlexusConfiguration d : parameterConfigurations) {
@@ -107,12 +110,12 @@ public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder {
             }
         }
 
-        // clear() is required for maven < 3.6.2
-        mojoDescriptor.getParameters().clear();
+        // TODO This cruft has been resolved in Maven 3.8.9/3.9.7/4.0.0-alpha-1 with MNG-6776/MNG-7309
+        if (mojoDescriptor.getParameters() != null) {
+            mojoDescriptor.getParameters().clear();
+        }
         // set parameters
         mojoDescriptor.setParameters(parameters);
-        // on maven < 3.6.2, getParameterMap is kept internally in a field
-        // so update it in case we're on an old maven version
         mojoDescriptor.getParameterMap().putAll(parameterMap);
 
         return mojoDescriptor;

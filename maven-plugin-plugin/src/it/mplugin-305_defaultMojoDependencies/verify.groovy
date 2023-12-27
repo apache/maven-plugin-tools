@@ -23,6 +23,6 @@ assert descriptorFile.isFile()
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
 assert pluginDescriptor.mojos.mojo.size() == 1
-assert pluginDescriptor.mojos.mojo.parameters.parameter.size() == 50
+assert pluginDescriptor.mojos.mojo.parameters.parameter.size() == 48
 
 return true;

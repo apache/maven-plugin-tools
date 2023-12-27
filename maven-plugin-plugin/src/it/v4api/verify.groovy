@@ -53,23 +53,7 @@ assert mojo.configuration.touchFile[0].text() == '${first.touchFile}'
 assert mojo.configuration.touchFile[0].'@implementation' == 'java.nio.file.Path'
 assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.directory}/touch.txt'
 
-assert mojo.configuration.session[0].text() == ''
-assert mojo.configuration.session[0].'@implementation' == 'org.apache.maven.api.Session'
-assert mojo.configuration.session[0].'@default-value' == '${session}'
-
-assert mojo.configuration.project[0].text() == ''
-assert mojo.configuration.project[0].'@implementation' == 'org.apache.maven.api.Project'
-assert mojo.configuration.project[0].'@default-value' == '${project}'
-
-assert mojo.configuration.mojo[0].text() == ''
-assert mojo.configuration.mojo[0].'@implementation' == 'org.apache.maven.api.MojoExecution'
-assert mojo.configuration.mojo[0].'@default-value' == '${mojoExecution}'
-
-assert mojo.configuration.settings[0].text() == ''
-assert mojo.configuration.settings[0].'@implementation' == 'org.apache.maven.api.settings.Settings'
-assert mojo.configuration.settings[0].'@default-value' == '${settings}'
-
-assert mojo.requirements.requirement.size() == 2
+assert mojo.requirements.requirement.size() == 6
 
 assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.api.services.ArtifactInstaller'
 assert mojo.requirements.requirement[0].'role-hint'.text() == 'test'
@@ -79,7 +63,23 @@ assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.api.plu
 assert mojo.requirements.requirement[1].'role-hint'.isEmpty()
 assert mojo.requirements.requirement[1].'field-name'.text() == 'log'
 
-assert mojo.parameters.parameter.size() == 7
+assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.api.MojoExecution'
+assert mojo.requirements.requirement[2].'role-hint'.isEmpty()
+assert mojo.requirements.requirement[2].'field-name'.text() == 'mojo'
+
+assert mojo.requirements.requirement[3].role.text() == 'org.apache.maven.api.Project'
+assert mojo.requirements.requirement[3].'role-hint'.isEmpty()
+assert mojo.requirements.requirement[3].'field-name'.text() == 'project'
+
+assert mojo.requirements.requirement[4].role.text() == 'org.apache.maven.api.Session'
+assert mojo.requirements.requirement[4].'role-hint'.isEmpty()
+assert mojo.requirements.requirement[4].'field-name'.text() == 'session'
+
+assert mojo.requirements.requirement[5].role.text() == 'org.apache.maven.api.settings.Settings'
+assert mojo.requirements.requirement[5].'role-hint'.isEmpty()
+assert mojo.requirements.requirement[5].'field-name'.text() == 'settings'
+
+assert mojo.parameters.parameter.size() == 3
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir" }[0]
 assert parameter.name.text() == 'basedir'
@@ -101,16 +101,6 @@ assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "mojo" }[0]
-assert parameter.name.text() == 'mojo'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.api.MojoExecution'
-assert parameter.since.isEmpty()
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
 assert parameter.name.text() == 'namedParam'
 assert parameter.alias.text() == 'alias'
@@ -119,46 +109,6 @@ assert parameter.since.text() == '0.1'
 assert parameter.deprecated.text() == 'As of 0.2'
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "session" }[0]
-assert parameter.name.text() == 'session'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.api.Session'
-assert parameter.since.isEmpty()
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "project" }[0]
-assert parameter.name.text() == 'project'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.api.Project'
-assert parameter.since.isEmpty()
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "mojo" }[0]
-assert parameter.name.text() == 'mojo'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.api.MojoExecution'
-assert parameter.since.isEmpty()
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
-assert parameter.description.text() == ''
-
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "settings" }[0]
-assert parameter.name.text() == 'settings'
-assert parameter.alias.isEmpty()
-assert parameter.type.text() == 'org.apache.maven.api.settings.Settings'
-assert parameter.since.isEmpty()
-assert parameter.deprecated.isEmpty()
-assert parameter.required.text() == 'true'
-assert parameter.editable.text() == 'false'
 assert parameter.description.text() == ''
 
 // check help mojo source and class

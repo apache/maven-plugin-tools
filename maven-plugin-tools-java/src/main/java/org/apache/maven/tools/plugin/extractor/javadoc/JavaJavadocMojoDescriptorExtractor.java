@@ -49,7 +49,6 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
-import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
@@ -399,29 +398,8 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                     roleHint = componentTag.getNamedParameter("role-hint");
                 }
 
-                // recognize Maven-injected objects as components annotations instead of parameters
-                // Note: the expressions we are looking for, i.e. "${project}", are in the values of the Map,
-                // so the lookup mechanism is different here than in maven-plugin-tools-annotations
-                boolean isDeprecated = PluginUtils.MAVEN_COMPONENTS.containsValue(role);
-
-                if (!isDeprecated) {
-                    // normal component
-                    pd.setRequirement(new Requirement(role, roleHint));
-                } else {
-                    // not a component but a Maven object to be transformed into an expression/property
-                    getLogger()
-                            .warn("Deprecated @component Javadoc tag for '" + pd.getName() + "' field in "
-                                    + javaClass.getFullyQualifiedName()
-                                    + ": replace with @Parameter( defaultValue = \"" + role
-                                    + "\", readonly = true )");
-                    pd.setDefaultValue(role);
-                    pd.setRequired(true);
-                }
-
+                pd.setRequirement(new Requirement(role, roleHint));
                 pd.setEditable(false);
-                /* TODO: or better like this? Need @component fields be editable for the user?
-                pd.setEditable( field.getTagByName( READONLY ) == null );
-                */
             } else {
                 // Parameter tag
                 DocletTag parameter = field.getTagByName(JavadocMojoAnnotation.PARAMETER);

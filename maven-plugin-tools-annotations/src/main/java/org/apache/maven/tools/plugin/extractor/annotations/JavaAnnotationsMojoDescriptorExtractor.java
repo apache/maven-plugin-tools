@@ -75,7 +75,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotated
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
-import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -780,28 +779,12 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
                         new org.apache.maven.plugin.descriptor.Parameter();
                 parameter.setName(componentAnnotationContent.getFieldName());
 
-                // recognize Maven-injected objects as components annotations instead of parameters
-                String expression = PluginUtils.MAVEN_COMPONENTS.get(componentAnnotationContent.getRoleClassName());
-                if (expression == null) {
-                    // normal component
-                    parameter.setRequirement(new Requirement(
-                            componentAnnotationContent.getRoleClassName(), componentAnnotationContent.hint()));
-                } else {
-                    // not a component but a Maven object to be transformed into an expression/property: deprecated
-                    getLogger()
-                            .warn("Deprecated @Component annotation for '" + parameter.getName() + "' field in "
-                                    + mojoAnnotatedClass.getClassName()
-                                    + ": replace with @Parameter( defaultValue = \"" + expression
-                                    + "\", readonly = true )");
-                    parameter.setDefaultValue(expression);
-                    parameter.setType(componentAnnotationContent.getRoleClassName());
-                    parameter.setRequired(true);
-                }
+                parameter.setRequirement(new Requirement(
+                        componentAnnotationContent.getRoleClassName(), componentAnnotationContent.hint()));
                 parameter.setDeprecated(componentAnnotationContent.getDeprecated());
                 parameter.setSince(componentAnnotationContent.getSince());
 
-                // same behaviour as JavaMojoDescriptorExtractor
-                // parameter.setRequired( ... );
+                // same behaviour as JavaJavadocMojoDescriptorExtractor
                 parameter.setEditable(false);
 
                 mojoDescriptor.addParameter(parameter);
