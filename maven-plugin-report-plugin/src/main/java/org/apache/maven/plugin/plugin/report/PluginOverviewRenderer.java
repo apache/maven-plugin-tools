@@ -152,6 +152,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
                 sink.text(getI18nString("goal.deprecated"));
                 sink.text(".");
                 sink.inline_();
+                sink.text(" ");
                 sink.rawText(mojo.getDeprecated());
                 sink.division_();
                 sink.lineBreak();

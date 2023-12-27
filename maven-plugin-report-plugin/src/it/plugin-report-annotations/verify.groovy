@@ -30,7 +30,7 @@ assert pluginInfo.text.contains('1.8')
 assert pluginInfo.text.contains('3.2.5')
 
 // deprecated info and description
-assert pluginInfo.text.contains('<div><strong>Deprecated.</strong>You don\'t use test goals, do you?</div><br />')
+assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t use test goals, do you?</div><br />')
 assert pluginInfo.text.contains('Does nothing.')
 
 
