@@ -60,12 +60,14 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
     }
 
     @Override
-    protected void validate(File destinationDirectory) throws Exception {
+    protected void validate(File destinationDirectory, boolean isV4) throws Exception {
         PluginDescriptorBuilder pdb = new PluginDescriptorBuilder();
 
         File pluginDescriptorFile = new File(destinationDirectory, "plugin.xml");
 
         String pd = readFile(pluginDescriptorFile);
+
+        System.err.println(pd);
 
         PluginDescriptor pluginDescriptor = pdb.build(new StringReader(pd));
 
@@ -73,22 +75,18 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
 
         MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().get(0);
 
-        checkMojo(mojoDescriptor);
+        checkMojo(mojoDescriptor, isV4);
 
         // ----------------------------------------------------------------------
         // Dependencies
         // ----------------------------------------------------------------------
 
-        List<ComponentDependency> dependencies = pluginDescriptor.getDependencies();
+        if (!isV4) {
+            List<ComponentDependency> dependencies = pluginDescriptor.getDependencies();
 
-        checkDependency("testGroup", "testArtifact", "0.0.0", dependencies.get(0));
-
-        assertEquals(1, dependencies.size());
-
-        ComponentDependency dependency = dependencies.get(0);
-        assertEquals("testGroup", dependency.getGroupId());
-        assertEquals("testArtifact", dependency.getArtifactId());
-        assertEquals("0.0.0", dependency.getVersion());
+            assertEquals(1, dependencies.size());
+            checkDependency("testGroup", "testArtifact", "0.0.0", dependencies.get(0));
+        }
     }
 
     private String readFile(File pluginDescriptorFile) throws IOException {
@@ -105,15 +103,19 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
         return sWriter.toString();
     }
 
-    private void checkMojo(MojoDescriptor mojoDescriptor) {
+    private void checkMojo(MojoDescriptor mojoDescriptor, boolean isV4) {
         assertEquals("test:testGoal", mojoDescriptor.getFullGoalName());
 
         assertEquals("org.apache.maven.tools.plugin.generator.TestMojo", mojoDescriptor.getImplementation());
 
         // The following should be defaults
-        assertEquals("per-lookup", mojoDescriptor.getInstantiationStrategy());
+        if (!isV4) {
+            assertEquals("per-lookup", mojoDescriptor.getInstantiationStrategy());
+        }
 
-        assertNotNull(mojoDescriptor.isDependencyResolutionRequired());
+        if (!isV4) {
+            assertNotNull(mojoDescriptor.getDependencyResolutionRequired());
+        }
 
         // check the default parameter
         checkParameter(mojoDescriptor.getParameters().get(0));
@@ -124,12 +126,17 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
         assertEquals("parameterWithGenerics", parameterWithGenerics.getName());
         assertEquals("java.util.Collection", parameterWithGenerics.getType());
 
-        PlexusConfiguration configurations = mojoDescriptor.getMojoConfiguration();
-        assertNotNull(configurations);
-        PlexusConfiguration configuration = configurations.getChild("parameterWithGenerics");
-        assertEquals("java.util.Collection", configuration.getAttribute("implementation"));
-        assertEquals("a,b,c", configuration.getAttribute("default-value"));
-        assertEquals("${customParam}", configuration.getValue());
+        if (isV4) {
+            assertEquals("${customParam}", parameterWithGenerics.getExpression());
+            assertEquals("a,b,c", parameterWithGenerics.getDefaultValue());
+        } else {
+            PlexusConfiguration configurations = mojoDescriptor.getMojoConfiguration();
+            assertNotNull(configurations);
+            PlexusConfiguration configuration = configurations.getChild("parameterWithGenerics");
+            assertEquals("java.util.Collection", configuration.getAttribute("implementation"));
+            assertEquals("a,b,c", configuration.getAttribute("default-value"));
+            assertEquals("${customParam}", configuration.getValue());
+        }
     }
 
     private void checkParameter(Parameter parameter) {

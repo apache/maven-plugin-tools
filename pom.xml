@@ -90,7 +90,7 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <maven4Version>4.0.0-alpha-4</maven4Version>
+    <maven4Version>4.0.0-beta-3</maven4Version>
     <maven3Version>3.9.6</maven3Version>
     <resolverVersion>1.9.18</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
@@ -308,6 +308,21 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <configuration>
+            <rules>
+              <enforceBytecodeVersion>
+                <maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+                <excludes>
+                  <exclude>org.apache.maven:*</exclude>
+                </excludes>
+              </enforceBytecodeVersion>
+            </rules>
+            <fail>true</fail>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>

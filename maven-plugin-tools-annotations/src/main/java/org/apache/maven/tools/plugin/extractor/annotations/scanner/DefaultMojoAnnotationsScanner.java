@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -70,7 +71,6 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
     public static final String PARAMETER_V4 = MVN4_API + "Parameter";
-    public static final String COMPONENT_V4 = MVN4_API + "Component";
 
     public static final String MOJO_V3 = Mojo.class.getName();
     public static final String EXECUTE_V3 = Execute.class.getName();
@@ -88,15 +88,23 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = new HashMap<>();
 
         try {
+            String mavenApiVersion = null;
             for (Artifact dependency : request.getDependencies()) {
                 scan(mojoAnnotatedClasses, dependency.getFile(), request.getIncludePatterns(), dependency, true);
                 if (request.getMavenApiVersion() == null
                         && dependency.getGroupId().equals("org.apache.maven")
                         && (dependency.getArtifactId().equals("maven-plugin-api")
                                 || dependency.getArtifactId().equals("maven-api-core"))) {
-                    request.setMavenApiVersion(dependency.getVersion());
+                    String version = dependency.getVersion();
+                    if (mavenApiVersion != null && !Objects.equals(version, mavenApiVersion)) {
+                        throw new UnsupportedOperationException("Mixing Maven 3 and Maven 4 plugins is not supported."
+                                + " Fix your dependencies so that you depend either on maven-plugin-api for a Maven 3 plugin,"
+                                + " or maven-api-core for a Maven 4 plugin.");
+                    }
+                    mavenApiVersion = version;
                 }
             }
+            request.setMavenApiVersion(mavenApiVersion);
 
             for (File classDirectory : request.getClassesDirectories()) {
                 scan(
@@ -332,16 +340,13 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
 
             // @Component annotations
             List<MojoFieldVisitor> mojoFieldVisitors =
-                    mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(COMPONENT_V3, COMPONENT_V4)));
+                    mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(COMPONENT_V3)));
             for (MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors) {
                 ComponentAnnotationContent componentAnnotationContent =
                         new ComponentAnnotationContent(mojoFieldVisitor.getFieldName());
 
                 Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
                 MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get(COMPONENT_V3);
-                if (annotationVisitor == null) {
-                    annotationVisitor = annotationVisitorMap.get(COMPONENT_V4);
-                }
 
                 if (annotationVisitor != null) {
                     for (Map.Entry<String, Object> entry :
