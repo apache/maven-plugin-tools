@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugins.plugin.descriptor;
+package org.apache.maven.plugin.plugin.report;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,46 +33,36 @@ import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class EnhancedPluginDescriptorBuilderTest {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class PluginDescriptorBuilderTest {
 
     @Test
     void testTypeJavaDocUrlElement() throws PlexusConfigurationException, IOException {
-        EnhancedPluginDescriptorBuilder builder = new EnhancedPluginDescriptorBuilder(false);
+        PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
         try (InputStream input = Objects.requireNonNull(this.getClass().getResourceAsStream("/plugin-enhanced.xml"));
                 Reader reader = new XmlStreamReader(input)) {
             PluginDescriptor descriptor = builder.build(reader);
             MojoDescriptor mojoDescriptor = descriptor.getMojo("format-xml");
-            Assertions.assertNotNull(mojoDescriptor);
-            EnhancedParameterWrapper enhancedParameter = assertEnhancedParameter(mojoDescriptor, "excludes");
+            assertNotNull(mojoDescriptor);
+            EnhancedParameterWrapper enhancedParameter = assertParameter(mojoDescriptor, "excludes");
             Assertions.assertEquals(URI.create("apidocs/java/util/Set.html"), enhancedParameter.getTypeJavadocUrl());
             assertParameter(mojoDescriptor, "enableForIncrementalBuild"); // primitive types don't have javadoc
         }
     }
 
-    EnhancedParameterWrapper assertEnhancedParameter(MojoDescriptor mojoDescriptor, String parameterName) {
-        return (EnhancedParameterWrapper) assertParameter(mojoDescriptor, parameterName, true);
-    }
-
-    Parameter assertParameter(MojoDescriptor mojoDescriptor, String parameterName) {
-        return assertParameter(mojoDescriptor, parameterName, false);
-    }
-
-    Parameter assertParameter(MojoDescriptor mojoDescriptor, String parameterName, boolean isEnhancedParameter) {
+    EnhancedParameterWrapper assertParameter(MojoDescriptor mojoDescriptor, String parameterName) {
         // test both getParameters() and getParameterMap() as both use independent objects
         Parameter parameter = mojoDescriptor.getParameters().stream()
                 .filter(p -> p.getName().equals(parameterName))
                 .findFirst()
                 .orElse(null);
-        assertParameter(parameter, isEnhancedParameter);
+        assertNotNull(parameter);
+        assertTrue(parameter instanceof EnhancedParameterWrapper);
         Parameter parameterFromMap = mojoDescriptor.getParameterMap().get(parameterName);
-        assertParameter(parameterFromMap, isEnhancedParameter);
         // check that both are equal
         Assertions.assertEquals(parameter, parameterFromMap);
-        return parameter;
-    }
-
-    void assertParameter(Parameter parameter, boolean isEnhhancedParameter) {
-        Assertions.assertNotNull(parameter);
-        Assertions.assertEquals(isEnhhancedParameter, parameter instanceof EnhancedParameterWrapper);
+        return (EnhancedParameterWrapper) parameter;
     }
 }

@@ -19,12 +19,16 @@
 package org.apache.maven.plugin.plugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -32,6 +36,7 @@ import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -48,7 +53,13 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.io.CachingOutputStream;
+import org.codehaus.plexus.util.io.CachingWriter;
+import org.objectweb.asm.*;
 import org.sonatype.plexus.build.incremental.BuildContext;
+
+import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 
 /**
  * <p>
@@ -77,6 +88,12 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      */
     @Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/maven", readonly = true)
     private File outputDirectory;
+
+    /**
+     * The directory where the generated class files will be put.
+     */
+    @Parameter(defaultValue = "${project.build.outputDirectory}", readonly = true)
+    private File classOutputDirectory;
 
     /**
      * The file encoding of the source files.
@@ -269,7 +286,6 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     protected BuildContext buildContext;
 
     public void generate() throws MojoExecutionException {
-
         if (!"maven-plugin".equalsIgnoreCase(project.getArtifactId())
                 && project.getArtifactId().toLowerCase().startsWith("maven-")
                 && project.getArtifactId().toLowerCase().endsWith("-plugin")
@@ -352,6 +368,12 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
             pluginDescriptorGenerator.execute(outputDirectory, request);
 
+            // Generate the additional factories for v4 mojos
+            generateFactories(request.getPluginDescriptor());
+
+            // Generate index for v4 beans
+            generateIndex();
+
             buildContext.refresh(outputDirectory);
         } catch (GeneratorException e) {
             throw new MojoExecutionException("Error writing plugin descriptor", e);
@@ -365,6 +387,141 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
                             + " in the POM and ensure the versions match.",
                     e);
         }
+    }
+
+    private void generateIndex() throws GeneratorException {
+        try {
+            Set<String> diBeans = new TreeSet<>();
+            try (Stream<Path> paths = Files.walk(classOutputDirectory.toPath())) {
+                List<Path> classes = paths.filter(
+                                p -> p.getFileName().toString().endsWith(".class"))
+                        .collect(Collectors.toList());
+                for (Path classFile : classes) {
+                    String fileString = classFile.toString();
+                    String className = fileString
+                            .substring(0, fileString.length() - ".class".length())
+                            .replace('/', '.');
+                    try (InputStream is = Files.newInputStream(classFile)) {
+                        ClassReader rdr = new ClassReader(is);
+                        rdr.accept(
+                                new ClassVisitor(Opcodes.ASM9) {
+                                    String className;
+
+                                    @Override
+                                    public void visit(
+                                            int version,
+                                            int access,
+                                            String name,
+                                            String signature,
+                                            String superName,
+                                            String[] interfaces) {
+                                        super.visit(version, access, name, signature, superName, interfaces);
+                                        className = name;
+                                    }
+
+                                    @Override
+                                    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                                        if ("Lorg/apache/maven/api/di/Named;".equals(descriptor)) {
+                                            diBeans.add(className.replace('/', '.'));
+                                        }
+                                        return null;
+                                    }
+                                },
+                                ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
+                    }
+
+                    //                    Class<?> clazz = project.getClassRealm().loadClass(className);
+                    //                    boolean hasQualifier = Stream.of(clazz.getAnnotations())
+                    //                            .flatMap(ann -> Stream.of(ann.getClass().getAnnotations()))
+                    //                            .anyMatch(ann -> "org.apache.maven.api.di.Qualifier"
+                    //                                    .equals(ann.annotationType().getName()));
+                    //                    if (hasQualifier) {
+                    //                        diBeans.add(className);
+                    //                    }
+                }
+            }
+            Path path = outputDirectory.toPath().resolve("org.apache.maven.api.di.Inject");
+            if (diBeans.isEmpty()) {
+                Files.deleteIfExists(path);
+            } else {
+                try (CachingWriter w = new CachingWriter(path, StandardCharsets.UTF_8)) {
+                    String content = diBeans.stream().collect(Collectors.joining("\n", "", "\n"));
+                    w.write(content);
+                }
+            }
+        } catch (Exception e) {
+            throw new GeneratorException("Unable to generate index for v4 beans", e);
+        }
+    }
+
+    private void generateFactories(PluginDescriptor pd) throws GeneratorException {
+        try {
+            //            Set<String> diBeans = new TreeSet<>();
+            for (MojoDescriptor md : pd.getMojos()) {
+                if (md.isV4Api()) {
+                    //                    diBeans.add(md.getImplementation() + "Factory");
+                    generateFactory(md);
+                }
+            }
+            //            if (!diBeans.isEmpty()) {
+            //                Path path = outputDirectory.toPath().resolve("org.apache.maven.api.di.Inject");
+            //                if (Files.exists(path)) {
+            //                    try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
+            //                        lines.forEach(diBeans::add);
+            //                    }
+            //                }
+            //                try (CachingWriter w = new CachingWriter(path, StandardCharsets.UTF_8)) {
+            //                    String content = diBeans.stream().collect(Collectors.joining("\n", "", "\n"));
+            //                    w.write(content);
+            //                }
+            //            }
+        } catch (IOException e) {
+            throw new GeneratorException("Unable to generate factories for v4 mojos", e);
+        }
+    }
+
+    private void generateFactory(MojoDescriptor md) throws IOException {
+        String mojoClassName = md.getImplementation();
+        String packageName = mojoClassName.substring(0, mojoClassName.lastIndexOf('.'));
+        String generatorClassName = mojoClassName.substring(mojoClassName.lastIndexOf('.') + 1) + "Factory";
+        String mojoName = md.getId();
+
+        getLog().debug("Generating v4 factory for " + mojoClassName);
+
+        byte[] bin = computeGeneratorClassBytes(packageName, generatorClassName, mojoName, mojoClassName);
+
+        try (OutputStream os = new CachingOutputStream(classOutputDirectory
+                .toPath()
+                .resolve(packageName.replace('.', '/') + "/" + generatorClassName + ".class"))) {
+            os.write(bin);
+        }
+    }
+
+    static byte[] computeGeneratorClassBytes(
+            String packageName, String generatorClassName, String mojoName, String mojoClassName) {
+        String mojo = mojoClassName.replace('.', '/');
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        cw.visitSource(generatorClassName + ".java", null);
+        AnnotationVisitor av = cw.visitAnnotation("Lorg/apache/maven/api/di/Named;", true);
+        av.visit("value", mojoName);
+        av.visitEnd();
+        cw.visitAnnotation("Lorg/apache/maven/api/annotations/Generated;", true).visitEnd();
+        cw.visit(
+                V1_8,
+                ACC_PUBLIC + ACC_SUPER + ACC_SYNTHETIC,
+                packageName.replace(".", "/") + "/" + generatorClassName,
+                null,
+                mojo,
+                null);
+        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "<init>", "()V", null, null);
+        mv.visitCode();
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mojo, "<init>", "()V", false);
+        mv.visitInsn(Opcodes.RETURN);
+        mv.visitMaxs(-1, -1);
+        mv.visitEnd();
+        cw.visitEnd();
+        return cw.toByteArray();
     }
 
     private PluginDescriptor extendPluginDescriptor(PluginToolsRequest request) {

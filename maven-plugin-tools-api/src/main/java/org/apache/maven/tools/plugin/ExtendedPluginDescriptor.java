@@ -18,20 +18,21 @@
  */
 package org.apache.maven.tools.plugin;
 
+import javax.xml.stream.XMLStreamException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.maven.api.plugin.descriptor.lifecycle.Lifecycle;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.lifecycle.Lifecycle;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  * Extensions to {@link PluginDescriptor} not supported by Maven 3.2.5.
@@ -51,11 +52,19 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
     }
 
     public void setRequiredJavaVersion(String requiredJavaVersion) {
-        this.requiredJavaVersion = requiredJavaVersion;
+        try {
+            delegate.setRequiredJavaVersion(requiredJavaVersion);
+        } catch (Throwable t) {
+            this.requiredJavaVersion = requiredJavaVersion;
+        }
     }
 
     public String getRequiredJavaVersion() {
-        return requiredJavaVersion;
+        try {
+            return delegate.getRequiredJavaVersion();
+        } catch (Throwable t) {
+            return requiredJavaVersion;
+        }
     }
 
     @Override
@@ -89,6 +98,12 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
 
     public void addMojo(MojoDescriptor mojoDescriptor) throws DuplicateMojoDescriptorException {
         delegate.addMojo(mojoDescriptor);
+    }
+
+    public void addMojos(List<MojoDescriptor> mojos) throws DuplicateMojoDescriptorException {
+        for (MojoDescriptor mojoDescriptor : mojos) {
+            addMojo(mojoDescriptor);
+        }
     }
 
     public String getGroupId() {
@@ -223,7 +238,7 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
     }
 
     @Override
-    public Lifecycle getLifecycleMapping(String lifecycleId) throws IOException, XmlPullParserException {
+    public Lifecycle getLifecycleMapping(String lifecycleId) throws IOException, XMLStreamException {
         return delegate.getLifecycleMapping(lifecycleId);
     }
 

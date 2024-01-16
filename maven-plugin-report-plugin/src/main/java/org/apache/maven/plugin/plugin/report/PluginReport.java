@@ -35,13 +35,11 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.plugin.descriptor.EnhancedPluginDescriptorBuilder;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
@@ -50,6 +48,7 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
@@ -179,7 +178,7 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
-        PluginDescriptor pluginDescriptor = extractPluginDescriptor();
+        ExtendedPluginDescriptor pluginDescriptor = extractPluginDescriptor();
 
         // Generate the mojos' documentation
         generateMojosDocumentation(pluginDescriptor, locale);
@@ -220,8 +219,8 @@ public class PluginReport extends AbstractMavenReport {
         r.render();
     }
 
-    private PluginDescriptor extractPluginDescriptor() throws MavenReportException {
-        PluginDescriptorBuilder builder = new EnhancedPluginDescriptorBuilder(rtInfo);
+    private ExtendedPluginDescriptor extractPluginDescriptor() throws MavenReportException {
+        PluginDescriptorBuilder builder = new PluginDescriptorBuilder();
 
         try (Reader input = new XmlStreamReader(Files.newInputStream(enhancedPluginXmlFile.toPath()))) {
             return builder.build(input);

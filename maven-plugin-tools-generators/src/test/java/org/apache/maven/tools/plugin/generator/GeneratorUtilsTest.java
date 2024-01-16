@@ -18,6 +18,9 @@
  */
 package org.apache.maven.tools.plugin.generator;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,8 +30,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.plexus.util.xml.CompactXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,9 +50,14 @@ class GeneratorUtilsTest {
         descriptor.setDependencies(Collections.singletonList(dependency));
 
         StringWriter sWriter = new StringWriter();
-        XMLWriter writer = new CompactXMLWriter(sWriter);
+        XMLOutputFactory factory = new com.ctc.wstx.stax.WstxOutputFactory();
+        factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+        factory.setProperty(com.ctc.wstx.api.WstxOutputProperties.P_USE_DOUBLE_QUOTES_IN_XML_DECL, true);
+        factory.setProperty(com.ctc.wstx.api.WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM, true);
+        XMLStreamWriter writer = factory.createXMLStreamWriter(sWriter);
 
         GeneratorUtils.writeDependencies(writer, descriptor);
+        writer.close();
 
         String output = sWriter.toString();
 

@@ -92,9 +92,9 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <maven4Version>4.0.0-alpha-4</maven4Version>
+    <maven4Version>4.0.0-beta-3</maven4Version>
     <maven3Version>3.9.6</maven3Version>
-    <slf4jVersion>1.7.36</slf4jVersion>
+    <slf4jVersion>2.0.11</slf4jVersion>
     <antVersion>1.10.14</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the
@@ -107,6 +107,7 @@
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <javadocPluginVersion>3.5.0</javadocPluginVersion>
+    <woodstoxVersion>6.5.1</woodstoxVersion>
     <project.build.outputTimestamp>2024-05-03T06:48:24Z</project.build.outputTimestamp>
   </properties>
 
@@ -166,17 +167,27 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
-        <version>${maven3Version}</version>
+        <version>${maven4Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-xml-impl</artifactId>
+        <version>${maven4Version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${maven4Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
-        <version>${maven3Version}</version>
+        <version>${maven4Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
-        <version>${maven3Version}</version>
+        <version>${maven4Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -199,6 +210,11 @@
             <artifactId>plexus-container-default</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>${woodstoxVersion}</version>
       </dependency>
 
       <dependency>
@@ -317,9 +333,39 @@
     </dependencies>
   </dependencyManagement>
 
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>maven-2126</id>
+      <url>https://repository.apache.org/content/repositories/maven-2126/</url>
+    </repository>
+  </repositories>
+
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <configuration>
+            <rules>
+              <enforceBytecodeVersion>
+                <maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+                <excludes>
+                  <exclude>org.apache.maven:*</exclude>
+                </excludes>
+              </enforceBytecodeVersion>
+            </rules>
+            <fail>true</fail>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
