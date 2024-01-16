@@ -81,6 +81,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
         this.requiresDependencyResolution = ResolutionScope.valueOf(requiresDependencyResolution);
     }
 
+    public void dependencyResolutionRequired(String dependencyResolutionRequired) {
+        this.requiresDependencyResolution = ResolutionScope.valueOf(dependencyResolutionRequired);
+    }
+
     @Override
     public ResolutionScope requiresDependencyCollection() {
         return requiresDependencyCollection;
@@ -114,6 +118,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
     }
 
     public void requiresProject(boolean requiresProject) {
+        this.requiresProject = requiresProject;
+    }
+
+    public void projectRequired(boolean requiresProject) {
         this.requiresProject = requiresProject;
     }
 

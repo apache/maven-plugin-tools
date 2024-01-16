@@ -60,12 +60,14 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
     }
 
     @Override
-    protected void validate(File destinationDirectory) throws Exception {
+    protected void validate(File destinationDirectory, boolean isV4) throws Exception {
         PluginDescriptorBuilder pdb = new PluginDescriptorBuilder();
 
         File pluginDescriptorFile = new File(destinationDirectory, "plugin.xml");
 
         String pd = readFile(pluginDescriptorFile);
+
+        System.err.println(pd);
 
         PluginDescriptor pluginDescriptor = pdb.build(new StringReader(pd));
 
@@ -73,7 +75,7 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
 
         MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().get(0);
 
-        checkMojo(mojoDescriptor);
+        checkMojo(mojoDescriptor, isV4);
 
         // ----------------------------------------------------------------------
         // Dependencies
@@ -81,14 +83,12 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
 
         List<ComponentDependency> dependencies = pluginDescriptor.getDependencies();
 
-        checkDependency("testGroup", "testArtifact", "0.0.0", dependencies.get(0));
-
-        assertEquals(1, dependencies.size());
-
-        ComponentDependency dependency = dependencies.get(0);
-        assertEquals("testGroup", dependency.getGroupId());
-        assertEquals("testArtifact", dependency.getArtifactId());
-        assertEquals("0.0.0", dependency.getVersion());
+        if (isV4) {
+            assertEquals(0, dependencies.size());
+        } else {
+            assertEquals(1, dependencies.size());
+            checkDependency("testGroup", "testArtifact", "0.0.0", dependencies.get(0));
+        }
     }
 
     private String readFile(File pluginDescriptorFile) throws IOException {
@@ -105,7 +105,7 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
         return sWriter.toString();
     }
 
-    private void checkMojo(MojoDescriptor mojoDescriptor) {
+    private void checkMojo(MojoDescriptor mojoDescriptor, boolean isV4) {
         assertEquals("test:testGoal", mojoDescriptor.getFullGoalName());
 
         assertEquals("org.apache.maven.tools.plugin.generator.TestMojo", mojoDescriptor.getImplementation());
@@ -122,14 +122,26 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
         Parameter parameterWithGenerics = mojoDescriptor.getParameters().get(2);
         assertNotNull(parameterWithGenerics);
         assertEquals("parameterWithGenerics", parameterWithGenerics.getName());
-        assertEquals("java.util.Collection", parameterWithGenerics.getType());
+
+        if (isV4) {
+            assertEquals("java.util.Collection<java.lang.String>", parameterWithGenerics.getType());
+        } else {
+            assertEquals("java.util.Collection", parameterWithGenerics.getType());
+        }
 
         PlexusConfiguration configurations = mojoDescriptor.getMojoConfiguration();
         assertNotNull(configurations);
         PlexusConfiguration configuration = configurations.getChild("parameterWithGenerics");
-        assertEquals("java.util.Collection", configuration.getAttribute("implementation"));
-        assertEquals("a,b,c", configuration.getAttribute("default-value"));
-        assertEquals("${customParam}", configuration.getValue());
+        if (isV4) {
+            assertEquals(0, configuration.getChildren().length);
+            assertEquals("a,b,c", parameterWithGenerics.getParameterV4().getDefaultValue());
+            assertEquals(
+                    "${customParam}", parameterWithGenerics.getParameterV4().getExpression());
+        } else {
+            assertEquals("java.util.Collection", configuration.getAttribute("implementation"));
+            assertEquals("a,b,c", configuration.getAttribute("default-value"));
+            assertEquals("${customParam}", configuration.getValue());
+        }
     }
 
     private void checkParameter(Parameter parameter) {

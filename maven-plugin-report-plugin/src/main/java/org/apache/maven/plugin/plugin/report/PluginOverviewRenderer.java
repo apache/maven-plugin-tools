@@ -27,8 +27,8 @@ import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.i18n.I18N;
 
@@ -40,7 +40,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
 
     private final List<RequirementsHistory> requirementsHistories;
 
-    private final PluginDescriptor pluginDescriptor;
+    private final ExtendedPluginDescriptor pluginDescriptor;
 
     private final boolean hasExtensionsToLoad;
 
@@ -58,7 +58,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             Locale locale,
             MavenProject project,
             List<RequirementsHistory> requirementsHistories,
-            PluginDescriptor pluginDescriptor,
+            ExtendedPluginDescriptor pluginDescriptor,
             boolean hasExtensionsToLoad) {
         super(sink, locale, i18n, project);
 

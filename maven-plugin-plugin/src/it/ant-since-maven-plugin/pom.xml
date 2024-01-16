@@ -43,6 +43,7 @@
           </dependency>
         </dependencies>
         <configuration>
+          <requiredMavenVersion>3.6.3</requiredMavenVersion>
           <goalPrefix>prefix</goalPrefix>
         </configuration>
       </plugin>

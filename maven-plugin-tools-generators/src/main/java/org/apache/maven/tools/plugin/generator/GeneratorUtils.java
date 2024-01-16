@@ -22,6 +22,8 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,8 +46,6 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.XMLWriter;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -62,12 +62,13 @@ public final class GeneratorUtils {
      * @param w not null writer
      * @param pluginDescriptor not null
      */
-    public static void writeDependencies(XMLWriter w, PluginDescriptor pluginDescriptor) {
-        w.startElement("dependencies");
+    public static void writeDependencies(XMLStreamWriter w, PluginDescriptor pluginDescriptor)
+            throws XMLStreamException {
+        w.writeStartElement("dependencies");
 
         List<ComponentDependency> deps = pluginDescriptor.getDependencies();
         for (ComponentDependency dep : deps) {
-            w.startElement("dependency");
+            w.writeStartElement("dependency");
 
             element(w, "groupId", dep.getGroupId());
 
@@ -77,10 +78,10 @@ public final class GeneratorUtils {
 
             element(w, "version", dep.getVersion());
 
-            w.endElement();
+            w.writeEndElement();
         }
 
-        w.endElement();
+        w.writeEndElement();
     }
 
     /**
@@ -88,16 +89,16 @@ public final class GeneratorUtils {
      * @param name  not null
      * @param value could be null
      */
-    public static void element(XMLWriter w, String name, String value) {
-        w.startElement(name);
+    public static void element(XMLStreamWriter w, String name, String value) throws XMLStreamException {
+        w.writeStartElement(name);
 
         if (value == null) {
             value = "";
         }
 
-        w.writeText(value);
+        w.writeCharacters(value);
 
-        w.endElement();
+        w.writeEndElement();
     }
 
     /**
@@ -198,12 +199,12 @@ public final class GeneratorUtils {
                         if (text == null || text.isEmpty()) {
                             text = "";
                         }
-                        if (StringUtils.isNotEmpty(link.group(member))) {
+                        if (link.group(member) != null && !link.group(member).isEmpty()) {
                             if (text != null && !text.isEmpty()) {
                                 text += '.';
                             }
                             text += link.group(member);
-                            if (StringUtils.isNotEmpty(link.group(args))) {
+                            if (link.group(args) != null && !link.group(args).isEmpty()) {
                                 text += "()";
                             }
                         }
