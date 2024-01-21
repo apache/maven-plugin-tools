@@ -81,7 +81,17 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
     private static final Pattern SCANNABLE_CLASS = Pattern.compile("[^-]+\\.class");
     private static final String EMPTY = "";
 
-    private Reflector reflector = new Reflector();
+    private final Reflector reflector = new Reflector();
+
+    private final HashMap<String, String> mojo3To4Translations = new HashMap<>();
+    private final HashMap<String, String> execute3To4Translations = new HashMap<>();
+    private final HashMap<String, String> parameter3To4Translations = new HashMap<>();
+
+    public DefaultMojoAnnotationsScanner() {
+        // Mojo V4 vs Mojo V3
+        mojo3To4Translations.put("projectRequired", "requiresProject");
+        mojo3To4Translations.put("onlineRequired", "requiresOnline");
+    }
 
     @Override
     public Map<String, MojoAnnotatedClass> scan(MojoAnnotationsScannerRequest request) throws ExtractionException {
@@ -266,7 +276,15 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
             throws ReflectorException {
         for (Map.Entry<String, Object> entry :
                 mojoAnnotationVisitor.getAnnotationValues().entrySet()) {
-            reflector.invoke(content, entry.getKey(), new Object[] {entry.getValue()});
+            String entryKey = entry.getKey();
+            if (MOJO_V4.equals(mojoAnnotationVisitor.getAnnotationClassName())) {
+                entryKey = mojo3To4Translations.getOrDefault(entryKey, entryKey);
+            } else if (EXECUTE_V4.equals(mojoAnnotationVisitor.getAnnotationClassName())) {
+                entryKey = execute3To4Translations.getOrDefault(entryKey, entryKey);
+            } else if (PARAMETER_V4.equals(mojoAnnotationVisitor.getAnnotationClassName())) {
+                entryKey = parameter3To4Translations.getOrDefault(entryKey, entryKey);
+            }
+            reflector.invoke(content, entryKey, new Object[] {entry.getValue()});
         }
     }
 

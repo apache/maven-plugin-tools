@@ -31,13 +31,17 @@ import org.objectweb.asm.Opcodes;
  * @since 3.0
  */
 public class MojoAnnotationVisitor extends AnnotationVisitor {
-    private String annotationClassName;
+    private final String annotationClassName;
 
-    private Map<String, Object> annotationValues = new HashMap<>();
+    private final Map<String, Object> annotationValues = new HashMap<>();
 
     MojoAnnotationVisitor(String annotationClassName) {
         super(Opcodes.ASM9);
         this.annotationClassName = annotationClassName;
+    }
+
+    public String getAnnotationClassName() {
+        return annotationClassName;
     }
 
     public Map<String, Object> getAnnotationValues() {
@@ -55,12 +59,12 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
     }
 
     @Override
-    public AnnotationVisitor visitAnnotation(String name, String desc) {
+    public MojoAnnotationVisitor visitAnnotation(String name, String desc) {
         return new MojoAnnotationVisitor(this.annotationClassName);
     }
 
     @Override
-    public AnnotationVisitor visitArray(String s) {
+    public MojoAnnotationVisitor visitArray(String s) {
         return new MojoAnnotationVisitor(this.annotationClassName);
     }
 }
