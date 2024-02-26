@@ -18,6 +18,17 @@
  */
 package org.apache.maven.plugin.plugin.report;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Prerequisites;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * Plugin requirements history.
  *
@@ -59,5 +70,100 @@ public class RequirementsHistory {
         sb.append(", jdk='").append(jdk).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * Tries to determine the Maven requirement from either the plugin descriptor or (if not set) from the
+     * Maven prerequisites element in the POM.
+     *
+     * @param project      not null
+     * @param pluginDescriptor the plugin descriptor (not null)
+     * @return the Maven version or null if not specified
+     */
+    public static String discoverMavenRequirement(MavenProject project, PluginDescriptor pluginDescriptor) {
+        if (StringUtils.isNotBlank(pluginDescriptor.getRequiredMavenVersion())) {
+            return pluginDescriptor.getRequiredMavenVersion();
+        }
+        return Optional.ofNullable(project.getPrerequisites())
+                .map(Prerequisites::getMaven)
+                .orElse(null);
+    }
+
+    /**
+     * Tries to determine the JDK requirement from the following sources (until one is found)
+     * <ol>
+     * <li>use JDK requirement from plugin descriptor</li>
+     * <li>use {@code release} configuration of {@code org.apache.maven.plugins:maven-compiler-plugin}</li>
+     * <li>use {@code maven.compiler.release<} property</li>
+     * <li>use {@code target} configuration of {@code org.apache.maven.plugins:maven-compiler-plugin}</li>
+     * <li>use {@code maven.compiler.target} property</li>
+     * </ol>
+     *
+     * @param project      not null
+     * @param pluginDescriptor the plugin descriptor (not null)
+     * @return the JDK version
+     */
+    public static String discoverJdkRequirement(MavenProject project, PluginDescriptor pluginDescriptor) {
+        String jdk = null;
+        if (pluginDescriptor instanceof ExtendedPluginDescriptor) {
+            ExtendedPluginDescriptor extPluginDescriptor = (ExtendedPluginDescriptor) pluginDescriptor;
+            jdk = extPluginDescriptor.getRequiredJavaVersion();
+        }
+        if (jdk != null) {
+            return jdk;
+        }
+        Plugin compiler = getCompilerPlugin(project.getBuild().getPluginsAsMap());
+        if (compiler == null) {
+            compiler = getCompilerPlugin(project.getPluginManagement().getPluginsAsMap());
+        }
+
+        jdk = getPluginParameter(compiler, "release");
+        if (jdk != null) {
+            return jdk;
+        }
+
+        jdk = project.getProperties().getProperty("maven.compiler.release");
+        if (jdk != null) {
+            return jdk;
+        }
+
+        jdk = getPluginParameter(compiler, "target");
+        if (jdk != null) {
+            return jdk;
+        }
+
+        // default value
+        jdk = project.getProperties().getProperty("maven.compiler.target");
+        if (jdk != null) {
+            return jdk;
+        }
+
+        String version = (compiler == null) ? null : compiler.getVersion();
+
+        if (version != null) {
+            return "Default target for maven-compiler-plugin version " + version;
+        }
+
+        return null;
+    }
+
+    private static Plugin getCompilerPlugin(Map<String, Plugin> pluginsAsMap) {
+        return pluginsAsMap.get("org.apache.maven.plugins:maven-compiler-plugin");
+    }
+
+    private static String getPluginParameter(Plugin plugin, String parameter) {
+        if (plugin != null) {
+            Xpp3Dom pluginConf = (Xpp3Dom) plugin.getConfiguration();
+
+            if (pluginConf != null) {
+                Xpp3Dom target = pluginConf.getChild(parameter);
+
+                if (target != null) {
+                    return target.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 }
