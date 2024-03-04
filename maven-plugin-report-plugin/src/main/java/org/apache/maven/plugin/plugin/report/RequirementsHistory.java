@@ -18,6 +18,9 @@
  */
 package org.apache.maven.plugin.plugin.report;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Prerequisites;
@@ -25,9 +28,6 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Plugin requirements history.
