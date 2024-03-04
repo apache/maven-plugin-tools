@@ -26,7 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
@@ -36,12 +39,24 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.plugin.descriptor.EnhancedPluginDescriptorBuilder;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.xml.XmlStreamReader;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.VersionRangeResolutionException;
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.version.Version;
 
 /**
  * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
@@ -122,6 +137,15 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Parameter(property = "maven.plugin.report.disableInternalJavadocLinkValidation")
     private boolean disableInternalJavadocLinkValidation;
+
+    @Component
+    private MavenSession mavenSession;
+
+    @Component
+    private RepositorySystem repositorySystem;
+
+    @Component
+    private ProjectBuilder projectBuilder;
 
     /**
      * {@inheritDoc}
@@ -231,5 +255,34 @@ public class PluginReport extends AbstractMavenReport {
                 renderer.render();
             }
         }
+    }
+
+    private List<Version> discoverVersions() throws VersionRangeResolutionException {
+        MavenProject currentProject = mavenSession.getCurrentProject();
+        VersionRangeRequest rangeRequest = new VersionRangeRequest();
+        rangeRequest.setArtifact(
+                new DefaultArtifact(currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":[0,)"));
+        rangeRequest.setRepositories(
+                RepositoryUtils.toRepos(mavenSession.getCurrentProject().getRemoteArtifactRepositories()));
+        VersionRangeResult rangeResult =
+                repositorySystem.resolveVersionRange(mavenSession.getRepositorySession(), rangeRequest);
+        return rangeResult.getVersions();
+    }
+
+    private ProjectBuildingResult buildMavenProject(String version) throws ProjectBuildingException {
+        MavenProject currentProject = mavenSession.getCurrentProject();
+        ProjectBuildingRequest buildRequest = new DefaultProjectBuildingRequest();
+        buildRequest.setLocalRepository(mavenSession.getLocalRepository());
+        buildRequest.setRemoteRepositories(mavenSession.getCurrentProject().getRemoteArtifactRepositories());
+        buildRequest.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+        buildRequest.setProcessPlugins(false);
+        buildRequest.setRepositoryMerging(ProjectBuildingRequest.RepositoryMerging.REQUEST_DOMINANT);
+        buildRequest.setSystemProperties(mavenSession.getSystemProperties());
+        buildRequest.setUserProperties(mavenSession.getUserProperties());
+        buildRequest.setRepositorySession(mavenSession.getRepositorySession());
+        return projectBuilder.build(
+                RepositoryUtils.toArtifact(new DefaultArtifact(
+                        currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":pom:" + version)),
+                buildRequest);
     }
 }
