@@ -269,7 +269,7 @@ public class PluginReport extends AbstractMavenReport {
         return rangeResult.getVersions();
     }
 
-    private MavenProject buildMavenProject(String version) throws ProjectBuildingException {
+    private ProjectBuildingResult buildMavenProject(String version) throws ProjectBuildingException {
         MavenProject currentProject = mavenSession.getCurrentProject();
         ProjectBuildingRequest buildRequest = new DefaultProjectBuildingRequest();
         buildRequest.setLocalRepository(mavenSession.getLocalRepository());
@@ -280,10 +280,9 @@ public class PluginReport extends AbstractMavenReport {
         buildRequest.setSystemProperties(mavenSession.getSystemProperties());
         buildRequest.setUserProperties(mavenSession.getUserProperties());
         buildRequest.setRepositorySession(mavenSession.getRepositorySession());
-        ProjectBuildingResult buildResult = projectBuilder.build(
+        return projectBuilder.build(
                 RepositoryUtils.toArtifact(new DefaultArtifact(
                         currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":pom:" + version)),
                 buildRequest);
-        return buildResult.getProject();
     }
 }
