@@ -21,22 +21,16 @@ package org.apache.maven.plugin.plugin.report;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.i18n.I18N;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Generates an overview page with the list of goals
