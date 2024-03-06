@@ -17,9 +17,13 @@
  * under the License.
  */
 
-assert new File( basedir, 'property/target/site/plugin-info.html' ).text.contains( '<td>1.3</td>' )
-assert new File( basedir, 'propertyRelease/target/site/plugin-info.html' ).text.contains( '<td>8</td>' )
-assert new File( basedir, 'pluginManagement/target/site/plugin-info.html' ).text.contains( '<td>1.4</td>' )
-assert new File( basedir, 'plugin/target/site/plugin-info.html' ).text.contains( '<td>5</td>' )
+assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
 
-return true;
+def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
+assert pluginInfo.isFile()
+
+assert pluginInfo.text.contains('3.11.0')
+assert pluginInfo.text.contains('3.10.2')
+assert pluginInfo.text.contains('3.9.0')
+assert pluginInfo.text.contains('3.7.0')
+assert pluginInfo.text.contains('>8<')

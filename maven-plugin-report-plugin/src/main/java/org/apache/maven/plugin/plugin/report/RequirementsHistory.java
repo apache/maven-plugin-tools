@@ -18,6 +18,7 @@
  */
 package org.apache.maven.plugin.plugin.report;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -72,16 +73,23 @@ public class RequirementsHistory {
         return sb.toString();
     }
 
+    public static RequirementsHistory discoverRequirements(MavenProject project) {
+        RequirementsHistory req = new RequirementsHistory();
+        req.version = project.getVersion();
+        req.jdk = discoverJdkRequirement(project, null);
+        req.maven = discoverMavenRequirement(project, null);
+        return req;
+    }
     /**
      * Tries to determine the Maven requirement from either the plugin descriptor or (if not set) from the
      * Maven prerequisites element in the POM.
      *
      * @param project      not null
-     * @param pluginDescriptor the plugin descriptor (not null)
+     * @param pluginDescriptor the plugin descriptor (can be null)
      * @return the Maven version or null if not specified
      */
     public static String discoverMavenRequirement(MavenProject project, PluginDescriptor pluginDescriptor) {
-        if (StringUtils.isNotBlank(pluginDescriptor.getRequiredMavenVersion())) {
+        if (pluginDescriptor != null && StringUtils.isNotBlank(pluginDescriptor.getRequiredMavenVersion())) {
             return pluginDescriptor.getRequiredMavenVersion();
         }
         return Optional.ofNullable(project.getPrerequisites())
@@ -100,7 +108,7 @@ public class RequirementsHistory {
      * </ol>
      *
      * @param project      not null
-     * @param pluginDescriptor the plugin descriptor (not null)
+     * @param pluginDescriptor the plugin descriptor (can be null)
      * @return the JDK version
      */
     public static String discoverJdkRequirement(MavenProject project, PluginDescriptor pluginDescriptor) {
@@ -118,33 +126,32 @@ public class RequirementsHistory {
         }
 
         jdk = getPluginParameter(compiler, "release");
-        if (jdk != null) {
-            return jdk;
+        if (jdk == null) {
+            jdk = project.getProperties().getProperty("maven.compiler.release");
         }
 
-        jdk = project.getProperties().getProperty("maven.compiler.release");
-        if (jdk != null) {
-            return jdk;
+        if (jdk == null) {
+            jdk = getPluginParameter(compiler, "target");
         }
 
-        jdk = getPluginParameter(compiler, "target");
-        if (jdk != null) {
-            return jdk;
+        if (jdk == null) {
+            // default value
+            jdk = project.getProperties().getProperty("maven.compiler.target");
         }
 
-        // default value
-        jdk = project.getProperties().getProperty("maven.compiler.target");
-        if (jdk != null) {
-            return jdk;
+        if (jdk == null) {
+            String version = (compiler == null) ? null : compiler.getVersion();
+
+            if (version != null) {
+                return "Default target for maven-compiler-plugin version " + version;
+            }
+        } else {
+            if (Arrays.asList("1.5", "1.6", "1.7", "1.8").contains(jdk)) {
+                jdk = jdk.substring(2);
+            }
         }
 
-        String version = (compiler == null) ? null : compiler.getVersion();
-
-        if (version != null) {
-            return "Default target for maven-compiler-plugin version " + version;
-        }
-
-        return null;
+        return jdk;
     }
 
     private static Plugin getCompilerPlugin(Map<String, Plugin> pluginsAsMap) {
