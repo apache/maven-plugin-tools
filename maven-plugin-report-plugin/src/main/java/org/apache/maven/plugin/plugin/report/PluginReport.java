@@ -23,10 +23,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelBuildingRequest;
@@ -44,7 +47,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.ProjectBuildingRequest;
-import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.rtinfo.RuntimeInformation;
@@ -107,6 +109,14 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Parameter
     private List<RequirementsHistory> requirementsHistories = new ArrayList<>();
+
+    /**
+     * Plugin's version range for automatic detection of requirements history.
+     *
+     * @since 3.12.0
+     */
+    @Parameter(defaultValue = "[0,)")
+    private String requirementsHistoryDetectionRange;
 
     @Component
     private RuntimeInformation rtInfo;
@@ -173,6 +183,30 @@ public class PluginReport extends AbstractMavenReport {
 
         // Generate the mojos' documentation
         generateMojosDocumentation(pluginDescriptor, locale);
+
+        if (requirementsHistories.isEmpty()) {
+            // detect requirements history
+            String v = null;
+            try {
+                List<Version> versions = discoverVersions(requirementsHistoryDetectionRange);
+                getLog().info("Detecting requirements history for " + requirementsHistoryDetectionRange + ": "
+                        + versions.size());
+
+                Collections.reverse(versions);
+                for (Version version : versions) {
+                    v = version.toString();
+                    MavenProject versionProject = buildMavenProject(v);
+                    RequirementsHistory requirements = RequirementsHistory.discoverRequirements(versionProject);
+                    requirementsHistories.add(requirements);
+                    getLog().info("  - " + requirements);
+                }
+            } catch (VersionRangeResolutionException vrre) {
+                throw new MavenReportException(
+                        "Cannot resolve past versions " + requirementsHistoryDetectionRange, vrre);
+            } catch (ProjectBuildingException pbe) {
+                throw new MavenReportException("Cannot resolve MavenProject for version " + v, pbe);
+            }
+        }
 
         // Write the overview
         PluginOverviewRenderer r = new PluginOverviewRenderer(
@@ -257,19 +291,21 @@ public class PluginReport extends AbstractMavenReport {
         }
     }
 
-    private List<Version> discoverVersions() throws VersionRangeResolutionException {
+    private List<Version> discoverVersions(String range) throws VersionRangeResolutionException {
         MavenProject currentProject = mavenSession.getCurrentProject();
         VersionRangeRequest rangeRequest = new VersionRangeRequest();
         rangeRequest.setArtifact(
-                new DefaultArtifact(currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":[0,)"));
+                new DefaultArtifact(currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":" + range));
         rangeRequest.setRepositories(
                 RepositoryUtils.toRepos(mavenSession.getCurrentProject().getRemoteArtifactRepositories()));
         VersionRangeResult rangeResult =
                 repositorySystem.resolveVersionRange(mavenSession.getRepositorySession(), rangeRequest);
-        return rangeResult.getVersions();
+        return rangeResult.getVersions().stream()
+                .filter(version -> !ArtifactUtils.isSnapshot(version.toString()))
+                .collect(Collectors.toList());
     }
 
-    private ProjectBuildingResult buildMavenProject(String version) throws ProjectBuildingException {
+    private MavenProject buildMavenProject(String version) throws ProjectBuildingException {
         MavenProject currentProject = mavenSession.getCurrentProject();
         ProjectBuildingRequest buildRequest = new DefaultProjectBuildingRequest();
         buildRequest.setLocalRepository(mavenSession.getLocalRepository());
@@ -280,9 +316,11 @@ public class PluginReport extends AbstractMavenReport {
         buildRequest.setSystemProperties(mavenSession.getSystemProperties());
         buildRequest.setUserProperties(mavenSession.getUserProperties());
         buildRequest.setRepositorySession(mavenSession.getRepositorySession());
-        return projectBuilder.build(
-                RepositoryUtils.toArtifact(new DefaultArtifact(
-                        currentProject.getGroupId() + ":" + currentProject.getArtifactId() + ":pom:" + version)),
-                buildRequest);
+        return projectBuilder
+                .build(
+                        RepositoryUtils.toArtifact(new DefaultArtifact(currentProject.getGroupId() + ":"
+                                + currentProject.getArtifactId() + ":pom:" + version)),
+                        buildRequest)
+                .getProject();
     }
 }
