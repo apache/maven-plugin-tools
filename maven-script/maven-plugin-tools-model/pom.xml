@@ -28,7 +28,7 @@
 
   <artifactId>maven-plugin-tools-model</artifactId>
 
-  <name>Maven Plugin Metadata Model</name>
+  <name>Maven Plugin Metadata Model (deprecated)</name>
   <description>The Maven Plugin Metadata Model provides an API to play with the Metadata model.</description>
 
   <dependencies>

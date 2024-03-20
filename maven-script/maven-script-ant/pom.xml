@@ -28,7 +28,7 @@ under the License.
 
   <artifactId>maven-script-ant</artifactId>
 
-  <name>Maven Ant Mojo Support</name>
+  <name>Maven Ant Mojo Support (deprecated)</name>
   <description>Maven Ant Mojo Support, ie write Maven plugins with Ant scripts.</description>
 
   <dependencies>
