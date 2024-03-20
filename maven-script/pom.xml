@@ -29,7 +29,7 @@ under the License.
   <artifactId>maven-script</artifactId>
   <packaging>pom</packaging>
 
-  <name>Maven Script Mojo Support</name>
+  <name>Maven Script Mojo Support (deprecated)</name>
   <description>Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java. Scripting support is deprecated, with Maven 4 only Java based Mojos will be supported.</description>
 
   <modules>

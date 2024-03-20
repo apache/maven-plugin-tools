@@ -28,7 +28,7 @@
 
   <artifactId>maven-plugin-tools-beanshell</artifactId>
 
-  <name>Maven Plugin Tool for Beanshell</name>
+  <name>Maven Plugin Tool for Beanshell (deprecated)</name>
   <description>Descriptor extractor for plugins written in Beanshell.</description>
 
   <dependencies>

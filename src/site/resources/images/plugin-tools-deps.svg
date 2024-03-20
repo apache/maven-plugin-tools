@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="642.633" height="75.03mm" fill-rule="evenodd" stroke-linejoin="round" stroke-width="28.222" preserveAspectRatio="xMidYMid" version="1.2" viewBox="999 999 17003 7503">
+ <g>
+  <g>
+   <path fill="none" d="M2099 5899h12103v1203H2099z"/>
+   <path fill="#E6E6FF" fill-opacity=".502" stroke="#FFF" stroke-opacity=".502" d="M8150 7100H2100V5900h12100v1200z"/>
+   <path fill="none" stroke="#000" d="M8150 7100H2100V5900h12100v1200z"/>
+  </g>
+  <g>
+   <path fill="none" d="M2099 4499h12103v1203H2099z"/>
+   <path fill="#E6E6FF" fill-opacity=".502" stroke="#FFF" stroke-opacity=".502" d="M8150 5700H2100V4500h12100v1200z"/>
+   <path fill="none" stroke="#000" d="M8150 5700H2100V4500h12100v1200z"/>
+  </g>
+  <g>
+   <path fill="none" d="M2398 4699h4258v811H2398z"/>
+   <a target="_parent" xlink:href="../maven-plugin-tools-java/">
+    <path fill="#9CF" d="M4527 5508H2399v-808h4255v808z"/>
+    <path fill="none" stroke="#000" d="M4527 5508H2399v-808h4255v808z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="2721" y="5276" class="TextPosition"><tspan style="white-space:pre">plugin-tools-java</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M6399 3299h6003v811H6399z"/>
+   <a target="_parent" xlink:href="../maven-plugin-tools-generators/">
+    <path fill="#9CF" d="M9400 4108H6400v-808h6000v808z"/>
+    <path fill="none" stroke="#000" d="M9400 4108H6400v-808h6000v808z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="6864" y="3876" class="TextPosition"><tspan style="white-space:pre">plugin-tools-generators</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M4233 999h5168v813H4233z"/>
+   <a target="_parent" xlink:href="../maven-plugin-plugin/">
+    <path fill="#9CF" d="M6817 1810H4234v-810h5165v810z"/>
+    <path fill="none" stroke="#000" d="M6817 1810H4234v-810h5165v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="4588" y="1577" class="TextPosition"><tspan style="white-space:pre">maven-plugin-plugin</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M14599 3399h2203v813h-2203z"/>
+   <a target="_parent" xlink:href="https://maven.apache.org/doxia/">
+    <path fill="#FF9" d="M15700 4210h-1100v-810h2200v810z"/>
+    <path fill="none" stroke="#000" d="M15700 4210h-1100v-810h2200v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="15067" y="3977" class="TextPosition"><tspan style="white-space:pre">Doxia</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M1699 3289h4327v813H1699z"/>
+   <a target="_parent" xlink:href="../maven-plugin-tools-api/">
+    <path fill="#9CF" d="M3862 4100H1700v-810h4324v810z"/>
+    <path fill="none" stroke="#000" d="M3862 4100H1700v-810h4324v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="2182" y="3867" class="TextPosition"><tspan style="white-space:pre">plugin-tools-api</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M3862 1809h2957v1483H3862z"/>
+   <path fill="none" stroke="#000" d="M6817 1810 4219 3111"/>
+   <path d="m4162 3007 8-39-308 322 442-54-34-17-32-24-29-29-23-36-16-40-7-42z"/>
+  </g>
+  <g>
+   <path fill="none" d="M6816 1809h2586v1492H6816z"/>
+   <path fill="none" stroke="#000" d="m6817 1810 2237 1291"/>
+   <path d="m8998 3205-36 16 438 79-288-339 4 37-2 40-9 40-18 40-24 35-31 29z"/>
+  </g>
+  <g>
+   <path fill="none" d="M8799 2089h4403v812H8799z"/>
+   <a target="_parent" xlink:href="https://maven.apache.org/ref/current/maven-plugin-api/">
+    <path fill="#FF9" d="M11000 2899H8800v-809h4400v809z"/>
+    <path fill="none" stroke="#000" d="M11000 2899H8800v-809h4400v809z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="9102" y="2666" class="TextPosition"><tspan style="white-space:pre">maven-plugin-api</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M14399 4698h1719v812h-1719z"/>
+   <a target="_parent" xlink:href="https://github.com/paul-hammant/qdox">
+    <path fill="#FF9" d="M15258 5508h-858v-809h1716v809z"/>
+    <path fill="none" stroke="#000" d="M15258 5508h-858v-809h1716v809z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="14721" y="5275" class="TextPosition"><tspan style="white-space:pre">qdox</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M2399 6100h5803v813H2399z"/>
+   <a target="_parent" xlink:href="../maven-plugin-tools-annotations/">
+    <path fill="#9CF" d="M5300 6911H2400v-810h5800v810z"/>
+    <path fill="none" stroke="#000" d="M5300 6911H2400v-810h5800v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="2667" y="6678" class="TextPosition"><tspan style="white-space:pre">plugin-tools-annotations</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M9399 6100h4503v813H9399z"/>
+   <a target="_parent" xlink:href="../maven-plugin-tools-annotations/">
+    <path fill="#9CF" d="M11650 6911H9400v-810h4500v810z"/>
+    <path fill="none" stroke="#000" d="M11650 6911H9400v-810h4500v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="9624" y="6678" class="TextPosition"><tspan style="white-space:pre">plugin-annotations</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M999 3545h1403v1561H999z"/>
+   <path fill="none" stroke="#000" d="M2400 5104H1000V3695h301"/>
+   <path d="m1305 3814-24 31 419-150-419-150 22 30 18 36 13 40 4 42-3 43-12 41z"/>
+  </g>
+  <g>
+   <path fill="none" d="M999 3546h1403v2962H999z"/>
+   <path fill="none" stroke="#000" d="M2400 6506H1000V3696h302"/>
+   <path d="m1306 3815-24 31 419-150-419-150 22 30 18 36 13 40 4 42-3 43-12 41z"/>
+  </g>
+  <g>
+   <path fill="none" d="M14399 6098h1719v812h-1719z"/>
+   <a target="_parent" xlink:href="https://asm.ow2.io/">
+    <path fill="#FF9" d="M15258 6908h-858v-809h1716v809z"/>
+    <path fill="none" stroke="#000" d="M15258 6908h-858v-809h1716v809z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="14790" y="6675" class="TextPosition"><tspan style="white-space:pre">asm</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M11000 1809h2352v383h-2352z"/>
+   <path fill="none" stroke="#000" d="m13350 1810-1954 234"/>
+   <path d="m11379 1926 19-34-398 199 434 99-26-27-22-34-17-37-10-42-1-43 7-42z"/>
+  </g>
+  <g>
+   <path fill="none" d="M6816 1809h4186v405H6816z"/>
+   <path fill="none" stroke="#000" d="m6817 1810 3785 254"/>
+   <path d="m10597 2183-25 30 428-122-408-178 20 32 16 37 9 40 2 43-6 42-15 40z"/>
+  </g>
+  <g>
+   <path fill="none" d="M8199 6356h1202v301H8199z"/>
+   <path fill="none" stroke="#000" d="M8200 6506h801"/>
+   <path d="m9005 6625-24 31 419-150-419-150 22 30 18 36 13 40 4 42-3 43-12 41z"/>
+  </g>
+  <g>
+   <path fill="none" d="M10099 999h6503v813h-6503z"/>
+   <a target="_parent" xlink:href="../maven-plugin-report-plugin/">
+    <path fill="#9CF" d="M13350 1810h-3250v-810h6500v810z"/>
+    <path fill="none" stroke="#000" d="M13350 1810h-3250v-810h6500v810z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="10391" y="1577" class="TextPosition"><tspan style="white-space:pre">maven-plugin-report-plugin</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M13399 2098h4603v812h-4603z"/>
+   <a target="_parent" xlink:href="https://maven.apache.org/shared/maven-reporting-api/">
+    <path fill="#FF9" d="M15700 2908h-2300v-809h4600v809z"/>
+    <path fill="none" stroke="#000" d="M15700 2908h-2300v-809h4600v809z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="13484" y="2675" class="TextPosition"><tspan style="white-space:pre">maven-reporting-api</tspan></tspan></tspan></text>
+   </a>
+  </g>
+  <g>
+   <path fill="none" d="M13349 1809h2353v390h-2353z"/>
+   <path fill="none" stroke="#000" d="m13350 1810 1954 241"/>
+   <path d="m15293 2169-27 29 434-98-398-200 19 33 14 38 7 40-1 43-9 42-17 39z"/>
+  </g>
+  <g>
+   <path fill="none" d="M15550 2908h301v493h-301z"/>
+   <path fill="none" stroke="#000" d="M15700 2909v92"/>
+   <path d="m15581 3005-31-24 150 419 150-419-30 22-36 18-40 13-42 4-43-3-41-12z"/>
+  </g>
+  <g>
+   <path fill="none" d="M2099 7299h6403v1203H2099z"/>
+   <a target="_parent" xlink:href="../maven-script/">
+    <path fill="#E6E6FF" fill-opacity=".502" stroke="#FFF" stroke-opacity=".502" d="M5300 8500H2100V7300h6400v1200z"/>
+    <path fill="none" stroke="#000" d="M5300 8500H2100V7300h6400v1200z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-style="italic" font-weight="400"><tspan x="2350" y="8072" class="TextPosition"><tspan style="white-space:pre">maven-script (deprecated)</tspan></tspan></tspan></text>
+   </a>
+  </g>
+ </g>
+</svg>

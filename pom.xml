@@ -342,7 +342,8 @@
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
             <excludes combine.children="append">
-              <exclude>src/site/resources/images/plugin-descriptors.svg</exclude>
+              <exclude>src/site/resources/images/*.svg</exclude>
+              <exclude>*.svg</exclude>
               <!-- Jenkins job with local Maven repository -->
               <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude>
               <!-- Hudson Maven3 integration log -->

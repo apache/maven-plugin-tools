@@ -28,7 +28,7 @@ under the License.
 
   <artifactId>maven-script-beanshell</artifactId>
 
-  <name>Maven Beanshell Mojo Support</name>
+  <name>Maven Beanshell Mojo Support (deprecated)</name>
   <description>Maven Beanshell Mojo Support, ie write Maven plugins with Beanshell scripts.</description>
 
   <dependencies>
