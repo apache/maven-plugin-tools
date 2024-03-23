@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -48,7 +49,6 @@ import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.ReaderFactory;
-import org.eclipse.aether.RepositorySystemSession;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 /**
@@ -226,11 +226,12 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      *
      * @since 3.7.0
      */
-    @Parameter(defaultValue = "${settings}", readonly = true, required = true)
+    @Component
     private Settings settings;
 
-    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true, required = true)
-    private RepositorySystemSession repoSession;
+    @Component
+    private MavenSession mavenSession;
+
     /**
      * The required Java version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
      * Maven versions. Can be either one of the following formats:
@@ -346,7 +347,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             request.setEncoding(encoding);
             request.setSkipErrorNoDescriptorsFound(skipErrorNoDescriptorsFound);
             request.setDependencies(filterMojoDependencies());
-            request.setRepoSession(repoSession);
+            request.setRepoSession(mavenSession.getRepositorySession());
             request.setInternalJavadocBaseUrl(internalJavadocBaseUrl);
             request.setInternalJavadocVersion(internalJavadocVersion);
             request.setExternalJavadocBaseUrls(externalJavadocBaseUrls);
