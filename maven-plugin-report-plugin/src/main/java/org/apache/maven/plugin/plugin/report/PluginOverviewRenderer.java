@@ -211,11 +211,32 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             getI18nString("systemrequirements.history.jdk")
         });
 
+        // group by same requirements
+        final List<List<RequirementsHistory>> requirementsVersions = new ArrayList<>();
         requirementsHistories.forEach(requirementsHistory -> {
+            List<RequirementsHistory> current =
+                    requirementsVersions.isEmpty() ? null : requirementsVersions.get(requirementsVersions.size() - 1);
+            if (current != null && current.get(0).hasSameRequirements(requirementsHistory)) {
+                current.add(requirementsHistory);
+            } else {
+                current = new ArrayList<>();
+                current.add(requirementsHistory);
+                requirementsVersions.add(current);
+            }
+        });
+
+        // render by common requirements
+        requirementsVersions.forEach(requirementsHistories -> {
             sink.tableRow();
-            tableCell(requirementsHistory.getVersion());
-            tableCell(requirementsHistory.getMaven());
-            tableCell(requirementsHistory.getJdk());
+            RequirementsHistory current = requirementsHistories.get(0);
+            if (requirementsHistories.size() == 1) {
+                tableCell(current.getVersion());
+            } else {
+                RequirementsHistory from = requirementsHistories.get(requirementsHistories.size() - 1);
+                tableCell("from " + from.getVersion() + " to " + current.getVersion());
+            }
+            tableCell(current.getMaven());
+            tableCell(current.getJdk());
             sink.tableRow_();
         });
         endTable();

@@ -189,8 +189,14 @@ public class PluginReport extends AbstractMavenReport {
             String v = null;
             try {
                 List<Version> versions = discoverVersions(requirementsHistoryDetectionRange);
-                getLog().info("Detecting requirements history for " + requirementsHistoryDetectionRange + ": "
-                        + versions.size());
+                if (versions.isEmpty()) {
+                    getLog().info("No plugin history found for range " + requirementsHistoryDetectionRange);
+                } else {
+                    getLog().info("Detecting plugin requirements history for range "
+                            + requirementsHistoryDetectionRange + ": "
+                            + versions.size() + " releases, from " + versions.get(0) + " to "
+                            + versions.get(versions.size() - 1));
+                }
 
                 Collections.reverse(versions);
                 for (Version version : versions) {
