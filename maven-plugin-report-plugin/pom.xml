@@ -34,7 +34,7 @@
   <description>The Plugin Report Plugin is used to create reports about the plugin being built.</description>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>${maven3Version}</maven>
   </prerequisites>
 
   <properties>
