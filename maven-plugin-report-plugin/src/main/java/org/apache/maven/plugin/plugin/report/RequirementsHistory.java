@@ -20,6 +20,7 @@ package org.apache.maven.plugin.plugin.report;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -172,5 +173,9 @@ public class RequirementsHistory {
         }
 
         return null;
+    }
+
+    public boolean hasSameRequirements(RequirementsHistory other) {
+        return Objects.equals(this.maven, other.getMaven()) && Objects.equals(this.jdk, other.getJdk());
     }
 }

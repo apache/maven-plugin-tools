@@ -24,8 +24,8 @@ under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-plugin-report-plugin</artifactId><!-- intentionally reuse plugin's groupId:artifactId to build its releases history -->
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>maven-assembly-plugin</artifactId><!-- intentionally reuse plugin's groupId:artifactId to build its releases history -->
+  <version>3.7.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>MPLUGIN-511</name>
@@ -84,6 +84,9 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-report-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <requirementsHistoryDetectionRange>[3,3.7.0]</requirementsHistoryDetectionRange>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
