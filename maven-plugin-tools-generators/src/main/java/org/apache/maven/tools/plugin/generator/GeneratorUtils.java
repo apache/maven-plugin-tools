@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,9 +179,9 @@ public final class GeneratorUtils {
         while (matcher.find()) {
             String tag = matcher.group(1);
             String text = matcher.group(2);
-            text = StringUtils.replace(text, "&", "&amp;");
-            text = StringUtils.replace(text, "<", "&lt;");
-            text = StringUtils.replace(text, ">", "&gt;");
+            text = text.replace("&", "&amp;");
+            text = text.replace("<", "&lt;");
+            text = text.replace(">", "&gt;");
             if ("code".equals(tag)) {
                 text = "<code>" + text + "</code>";
             } else if ("link".equals(tag) || "linkplain".equals(tag) || "value".equals(tag)) {
@@ -516,7 +517,7 @@ public final class GeneratorUtils {
         for (MojoDescriptor descriptor : mojoDescriptors) {
 
             String impl = descriptor.getImplementation();
-            if (StringUtils.equals(descriptor.getGoal(), "help") && StringUtils.equals("HelpMojo", impl)) {
+            if (Objects.equals(descriptor.getGoal(), "help") && Objects.equals("HelpMojo", impl)) {
                 continue;
             }
             if (impl.lastIndexOf('.') != -1) {
