@@ -23,7 +23,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -85,13 +84,7 @@ public final class PluginUtils {
      */
     public static void sortMojos(List<MojoDescriptor> mojoDescriptors) {
         if (mojoDescriptors != null) {
-            Collections.sort(mojoDescriptors, new Comparator<MojoDescriptor>() {
-                /** {@inheritDoc} */
-                @Override
-                public int compare(MojoDescriptor mojo0, MojoDescriptor mojo1) {
-                    return mojo0.getGoal().compareToIgnoreCase(mojo1.getGoal());
-                }
-            });
+            mojoDescriptors.sort(Comparator.comparing(MojoDescriptor::getGoal));
         }
     }
 
@@ -104,13 +97,7 @@ public final class PluginUtils {
      */
     public static void sortMojoParameters(List<Parameter> parameters) {
         if (parameters != null) {
-            Collections.sort(parameters, new Comparator<Parameter>() {
-                /** {@inheritDoc} */
-                @Override
-                public int compare(Parameter parameter1, Parameter parameter2) {
-                    return parameter1.getName().compareToIgnoreCase(parameter2.getName());
-                }
-            });
+            parameters.sort(Comparator.comparing(Parameter::getName));
         }
     }
 
