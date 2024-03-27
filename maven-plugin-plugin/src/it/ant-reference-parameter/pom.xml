@@ -50,6 +50,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
+          <requiredMavenVersion>3.6.3</requiredMavenVersion>
           <goalPrefix>antWithRefs</goalPrefix>
         </configuration>
         <dependencies>

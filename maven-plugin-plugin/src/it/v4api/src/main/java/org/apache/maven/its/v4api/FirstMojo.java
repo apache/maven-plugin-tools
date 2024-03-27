@@ -22,11 +22,11 @@ import java.nio.file.Path;
 
 import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.Project;
-import org.apache.maven.api.ResolutionScope;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.di.Inject;
+import org.apache.maven.api.di.Named;
 import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.MojoException;
-import org.apache.maven.api.plugin.annotations.Component;
 import org.apache.maven.api.plugin.annotations.Execute;
 import org.apache.maven.api.plugin.annotations.LifecyclePhase;
 import org.apache.maven.api.plugin.annotations.Mojo;
@@ -42,10 +42,7 @@ import org.apache.maven.api.settings.Settings;
  *
  * @since 1.2
  */
-@Mojo(
-        name = "first",
-        requiresDependencyResolution = ResolutionScope.TEST,
-        defaultPhase = LifecyclePhase.INTEGRATION_TEST)
+@Mojo(name = "first", defaultPhase = LifecyclePhase.INTEGRATION_TEST)
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES, lifecycle = "cobertura")
 public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
 
@@ -66,23 +63,24 @@ public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
     @Parameter(name = "namedParam", alias = "alias")
     private String aliasedParam;
 
-    @Component
+    @Inject
     private Session session;
 
-    @Component
+    @Inject
     private Project project;
 
-    @Component
+    @Inject
     private MojoExecution mojo;
 
-    @Component
+    @Inject
     private Settings settings;
 
-    @Component
+    @Inject
     private Log log;
 
-    @Component(role = ArtifactInstaller.class, hint = "test")
-    private Object custom;
+    @Inject
+    @Named("test")
+    private ArtifactInstaller custom;
 
     public void execute() throws MojoException {}
 }

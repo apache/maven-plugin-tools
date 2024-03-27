@@ -46,6 +46,9 @@ public class ParametersWithGenericsMojo extends AbstractMojo {
     @Parameter
     private Collection<Integer[]> integerArrayCollection;
 
+    @Parameter
+    private Map<String, List<String>> stringListStringMap;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {}
 
