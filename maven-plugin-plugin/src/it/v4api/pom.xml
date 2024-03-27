@@ -55,13 +55,6 @@ under the License.
           <configuration>
             <source>1.8</source><!-- avoid ${maven.compiler.source} since value is not as expected -->
             <target>1.8</target><!-- avoid ${maven.compiler.target} since value is not as expected -->
-            <annotationProcessorPaths>
-              <path>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-di</artifactId>
-                <version>@maven4Version@</version>
-              </path>
-            </annotationProcessorPaths>
           </configuration>
         </plugin>
       </plugins>
