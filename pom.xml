@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.12.0</version>
+  <version>3.12.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -71,7 +71,7 @@
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-plugin-tools.git</developerConnection>
-    <tag>maven-plugin-tools-3.12.0</tag>
+    <tag>maven-plugin-tools-3.9.0</tag>
     <url>https://github.com/apache/maven-plugin-tools/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
@@ -107,7 +107,7 @@
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <javadocPluginVersion>3.5.0</javadocPluginVersion>
-    <project.build.outputTimestamp>2024-03-30T02:05:07Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-03-30T02:05:40Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
