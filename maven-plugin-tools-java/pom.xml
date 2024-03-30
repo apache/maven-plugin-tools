@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>3.11.1-SNAPSHOT</version>
+    <version>3.12.0</version>
   </parent>
 
   <artifactId>maven-plugin-tools-java</artifactId>
