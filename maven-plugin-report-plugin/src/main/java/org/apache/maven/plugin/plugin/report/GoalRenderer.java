@@ -296,11 +296,11 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         while (parameters.hasNext()) {
             Parameter parameter = parameters.next();
             // deprecated anchor for backwards-compatibility with XDoc (upper and lower case)
-            // TODO: remove once migrated to Doxia 2.x
+            // TODO: replace once migrated to Doxia 2.x with two-arg startSection(String, String) method
             sink.anchor(parameter.getName());
+            sink.anchor_();
 
             startSection(format("parameter.name", parameter.getName()));
-            sink.anchor_();
             String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
             renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
             sink.division();
