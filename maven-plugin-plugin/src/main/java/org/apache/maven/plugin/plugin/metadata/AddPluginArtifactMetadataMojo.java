@@ -89,6 +89,7 @@ public class AddPluginArtifactMetadataMojo extends AbstractMojo {
                             .parseVersion("3.9.0")
                             .compareTo(versionScheme.parseVersion(runtimeInformation.getMavenVersion()))
                     < 1) {
+                getLog().info("This Mojo is not used in Maven version 3.9.0 and above");
                 return;
             }
         } catch (InvalidVersionSpecificationException e) {
