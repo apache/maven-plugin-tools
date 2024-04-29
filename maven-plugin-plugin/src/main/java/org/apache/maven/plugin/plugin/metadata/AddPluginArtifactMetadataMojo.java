@@ -18,8 +18,6 @@
  */
 package org.apache.maven.plugin.plugin.metadata;
 
-import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -44,8 +42,8 @@ import org.eclipse.aether.version.VersionScheme;
  * <li>to define plugin mapping in the group</li>
  * </ol>
  *
- * @see ArtifactRepositoryMetadata
- * @see GroupRepositoryMetadata
+ * @see org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata
+ * @see org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata
  *
  * @since 2.0
  */
