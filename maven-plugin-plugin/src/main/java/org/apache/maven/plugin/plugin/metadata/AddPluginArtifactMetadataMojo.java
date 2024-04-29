@@ -18,10 +18,8 @@
  */
 package org.apache.maven.plugin.plugin.metadata;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.ArtifactRepositoryMetadata;
 import org.apache.maven.artifact.repository.metadata.GroupRepositoryMetadata;
-import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -30,6 +28,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.rtinfo.RuntimeInformation;
+import org.eclipse.aether.util.version.GenericVersionScheme;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
+import org.eclipse.aether.version.VersionScheme;
 
 /**
  * Inject any plugin-specific
@@ -69,6 +71,11 @@ public class AddPluginArtifactMetadataMojo extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "maven.plugin.skip")
     private boolean skip;
 
+    @Component
+    private RuntimeInformation runtimeInformation;
+
+    private final VersionScheme versionScheme = new GenericVersionScheme();
+
     /** {@inheritDoc} */
     @Override
     public void execute() throws MojoExecutionException {
@@ -76,18 +83,20 @@ public class AddPluginArtifactMetadataMojo extends AbstractMojo {
             getLog().warn("Execution skipped");
             return;
         }
-        Artifact projectArtifact = project.getArtifact();
+        // nothing if Maven is 3.9+
+        try {
+            if (versionScheme
+                            .parseVersion("3.9.0")
+                            .compareTo(versionScheme.parseVersion(runtimeInformation.getMavenVersion()))
+                    < 1) {
+                return;
+            }
+        } catch (InvalidVersionSpecificationException e) {
+            // not happening with generic
+            throw new MojoExecutionException(e);
+        }
 
-        Versioning versioning = new Versioning();
-        versioning.setLatest(projectArtifact.getVersion());
-        versioning.updateTimestamp();
-        ArtifactRepositoryMetadata metadata = new ArtifactRepositoryMetadata(projectArtifact, versioning);
-        projectArtifact.addMetadata(metadata);
-
-        GroupRepositoryMetadata groupMetadata = new GroupRepositoryMetadata(project.getGroupId());
-        groupMetadata.addPluginMapping(getGoalPrefix(), project.getArtifactId(), project.getName());
-
-        projectArtifact.addMetadata(groupMetadata);
+        LegacySupport.execute(project, getGoalPrefix());
     }
 
     /**

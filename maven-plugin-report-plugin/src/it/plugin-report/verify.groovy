@@ -26,7 +26,7 @@ assert !pluginInfo.text.contains('Memory')
 assert !pluginInfo.text.contains('Disk Space')
 // check JDK and Maven requirements
 assert pluginInfo.text.contains('1.8')
-assert pluginInfo.text.contains('3.2.5')
+assert pluginInfo.text.contains('3.6.3')
 
 // deprecated info and description
 assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t use test goals, do you?</div><br />')

@@ -35,7 +35,7 @@
     in order to include them the resulting JAR. It is also used to generate a generic help goal.</description>
 
   <prerequisites>
-    <maven>${maven3Version}</maven>
+    <maven>3.6.3</maven>
   </prerequisites>
 
   <properties>
