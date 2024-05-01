@@ -165,6 +165,10 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
                 PluginDescriptorFilesGenerator.getJavadocUrlForType(
                         linkGenerator, "java.lang.Map<java.lang.String,java.lang.Integer>"));
         assertEquals(
+                javadocBaseUri.resolve("java/lang/Integer.html"),
+                PluginDescriptorFilesGenerator.getJavadocUrlForType(
+                        linkGenerator, "java.lang.Map<java.lang.String,java.util.List<java.lang.Integer>>"));
+        assertEquals(
                 javadocBaseUri.resolve("java/util/function/BiFunction.html"),
                 PluginDescriptorFilesGenerator.getJavadocUrlForType(
                         linkGenerator,

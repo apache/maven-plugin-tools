@@ -625,7 +625,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
         }
     }
 
-    static URI getJavadocUrlForType(JavadocLinkGenerator javadocLinkGenerator, String type) {
+    private static String extractBinaryNameForJavadoc(String type) {
         final String binaryName;
         int startOfParameterType = type.indexOf("<");
         if (startOfParameterType != -1) {
@@ -637,10 +637,10 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     .split(",\\s*");
             switch (parameterTypes.length) {
                 case 1: // if only one parameter type, assume collection, first parameter type is most interesting
-                    binaryName = parameterTypes[0];
+                    binaryName = extractBinaryNameForJavadoc(parameterTypes[0]);
                     break;
                 case 2: // if two parameter types assume map, second parameter type is most interesting
-                    binaryName = parameterTypes[1];
+                    binaryName = extractBinaryNameForJavadoc(parameterTypes[1]);
                     break;
                 default:
                     // all other cases link to main type
@@ -649,7 +649,11 @@ public class PluginDescriptorFilesGenerator implements Generator {
         } else {
             binaryName = type;
         }
-        return javadocLinkGenerator.createLink(binaryName);
+        return binaryName;
+    }
+
+    static URI getJavadocUrlForType(JavadocLinkGenerator javadocLinkGenerator, String type) {
+        return javadocLinkGenerator.createLink(extractBinaryNameForJavadoc(type));
     }
 
     /**
