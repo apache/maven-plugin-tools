@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>41</version>
+    <version>42</version>
     <relativePath />
   </parent>
 
@@ -93,7 +93,7 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-alpha-4</maven4Version>
-    <maven3Version>3.2.5</maven3Version>
+    <maven3Version>3.9.6</maven3Version>
     <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.14</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
@@ -101,7 +101,7 @@
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
     <asmVersion>9.7</asmVersion>
-    <plexusUtilsVersion>4.0.0</plexusUtilsVersion>
+    <plexusUtilsVersion>4.0.1</plexusUtilsVersion>
     <plexusXmlVersion>3.0.0</plexusXmlVersion>
     <reportingApiVersion>3.1.1</reportingApiVersion>
     <reportingImplVersion>3.2.0</reportingImplVersion>
@@ -374,6 +374,12 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>

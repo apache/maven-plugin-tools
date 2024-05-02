@@ -38,7 +38,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -221,14 +220,6 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     @Parameter(property = "internalJavadocVersion", defaultValue = "${java.version}")
     protected String internalJavadocVersion;
 
-    /**
-     * The Maven Settings, for evaluating proxy settings used to access {@link #javadocLinks}
-     *
-     * @since 3.7.0
-     */
-    @Component
-    private Settings settings;
-
     @Component
     private MavenSession mavenSession;
 
@@ -351,7 +342,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             request.setInternalJavadocBaseUrl(internalJavadocBaseUrl);
             request.setInternalJavadocVersion(internalJavadocVersion);
             request.setExternalJavadocBaseUrls(externalJavadocBaseUrls);
-            request.setSettings(settings);
+            request.setSettings(mavenSession.getSettings());
 
             mojoScanner.populatePluginDescriptor(request);
             request.setPluginDescriptor(extendPluginDescriptor(request));
