@@ -233,11 +233,12 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * form for {@code "[1.8,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Java version from the binary class version being generated during
      * compilation (determined by the extractor).</li>
+     * <li>By default is not set.</li>
      * </ul>
      *
      * @since 3.8.0
      */
-    @Parameter(defaultValue = VALUE_AUTO)
+    @Parameter
     String requiredJavaVersion;
 
     /**
@@ -250,13 +251,14 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * form for {@code "[2.2.1,)"}, i.e. denotes the minimum version required.</li>
      * <li>{@code "auto"} to determine the minimum Maven version from the POM's Maven prerequisite, or if not set the
      * referenced Maven Plugin API version.</li>
+     * <li>By default is not set.</li>
      * </ul>
      * This value takes precedence over the
      * <a href="https://maven.apache.org/pom.html#Prerequisites">POM's Maven prerequisite</a> in Maven 4.
      *
      * @since 3.8.0
      */
-    @Parameter(defaultValue = VALUE_AUTO)
+    @Parameter
     String requiredMavenVersion;
 
     /**

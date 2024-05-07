@@ -82,6 +82,8 @@ under the License.
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
           <goalPrefix>prefix</goalPrefix>
+          <requiredJavaVersion>auto</requiredJavaVersion>
+          <requiredMavenVersion>auto</requiredMavenVersion>
         </configuration>
         <executions>
           <execution>
