@@ -66,6 +66,8 @@ under the License.
         <version>@project.version@</version>
         <configuration>
           <goalPrefix>prefix</goalPrefix>
+          <requiredJavaVersion>auto</requiredJavaVersion>
+          <requiredMavenVersion>auto</requiredMavenVersion>
         </configuration>
         <executions>
           <execution>
