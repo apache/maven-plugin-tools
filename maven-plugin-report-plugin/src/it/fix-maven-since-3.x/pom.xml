@@ -30,7 +30,6 @@
   <inceptionYear>2012</inceptionYear>
 
   <modules>
-    <module>antsample-maven-plugin</module>
     <module>javasample-maven-plugin</module>
   </modules>
 
@@ -60,13 +59,6 @@
             </goals>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-tools-ant</artifactId>
-            <version>@project.version@</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
