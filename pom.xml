@@ -62,7 +62,6 @@
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-script</module>
     <!-- keep at end since ITs require every extractors -->
     <module>maven-plugin-plugin</module>
     <module>maven-plugin-report-plugin</module>
@@ -142,16 +141,6 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-ant</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-beanshell</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -402,6 +391,7 @@
           <version>${surefire.version}</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
         <plugin>
