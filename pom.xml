@@ -94,6 +94,7 @@
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-alpha-4</maven4Version>
     <maven3Version>3.9.6</maven3Version>
+    <resolverVersion>1.9.18</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.14</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
@@ -157,6 +158,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model-builder</artifactId>
+        <version>${maven3Version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
