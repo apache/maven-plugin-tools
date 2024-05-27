@@ -18,47 +18,15 @@
  */
 package org.apache.maven.plugin.coreit;
 
-import java.io.File;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Touches a test file.
- *
- * @goal first
- * @requiresDependencyResolution test
- * @phase integration-test
- * @execute phase="generate-sources" lifecycle="cobertura"
- * @deprecated Don't use!
- * @since 1.2
  */
+@Mojo(name = "test")
 public class FirstMojo extends AbstractMojo {
-
-    /**
-     * Project directory.
-     * @parameter default-value="${basedir}"
-     * @readonly
-     */
-    private File basedir;
-
-    /**
-     * @parameter expression="${first.touchFile}" default-value="${project.build.directory}/touch.txt"
-     * @required
-     */
-    private File touchFile;
-
-    /**
-     * @parameter alias="alias"
-     * @deprecated As of 0.2
-     * @since 0.1
-     */
-    private String aliasedParam;
-
-    /**
-     * @component role="org.apache.maven.project.MavenProjectHelper" roleHint="test"
-     */
-    private Object projectHelper;
 
     public void execute() throws MojoExecutionException {}
 }

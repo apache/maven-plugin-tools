@@ -116,15 +116,12 @@ public class PluginHelpGenerator extends AbstractLogEnabled {
 
     private String getHelpClassSources(String pluginHelpPath) throws IOException {
         VelocityContext context = new VelocityContext();
-        boolean useAnnotations =
-                mavenProject.getArtifactMap().containsKey("org.apache.maven.plugin-tools:maven-plugin-annotations");
 
         context.put("helpPackageName", helpPackageName);
         context.put("pluginHelpPath", pluginHelpPath);
         context.put("artifactId", mavenProject.getArtifactId());
         // TODO: evaluate prefix from deserialized plugin
         context.put("goalPrefix", goalPrefix);
-        context.put("useAnnotations", useAnnotations);
 
         StringWriter stringWriter = new StringWriter();
 
