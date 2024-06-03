@@ -268,7 +268,6 @@
               <filterProperties>
                 <sitePluginVersion>3.12.1</sitePluginVersion>
                 <projectInfoReportsPlugin>3.4.1</projectInfoReportsPlugin>
-                <antVersion>${antVersion}</antVersion>
               </filterProperties>
               <properties>
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>

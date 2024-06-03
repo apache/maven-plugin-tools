@@ -78,19 +78,6 @@
         'maven-plugin-tools-annotations' which fails to load at runtime when not available.
       -->
     </dependency>
-    <!-- define optional runtime dependencies for integration tests -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-ant</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-beanshell</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
 
     <!-- Maven -->
     <dependency>
@@ -166,18 +153,6 @@
     </dependency>
 
     <!-- needed for it tests -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-script-beanshell</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-script-ant</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 
@@ -289,9 +264,7 @@
               <debug>true</debug>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <showErrors>true</showErrors>
-              <filterProperties>
-                <antVersion>${antVersion}</antVersion>
-              </filterProperties>
+              <filterProperties />
               <properties>
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
                 <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
@@ -304,8 +277,6 @@
                 <!-- used in ITs -->
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:jar:test-sources</extraArtifact>
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:test-jar</extraArtifact>
-                <extraArtifact>org.apache.maven.plugin-tools:maven-script-ant:${project.version}</extraArtifact>
-                <extraArtifact>org.apache.maven.plugin-tools:maven-script-beanshell:${project.version}</extraArtifact>
               </extraArtifacts>
             </configuration>
             <executions>

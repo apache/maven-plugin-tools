@@ -62,7 +62,6 @@
     <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-script</module>
     <!-- keep at end since ITs require every extractors -->
     <module>maven-plugin-plugin</module>
     <module>maven-plugin-report-plugin</module>
@@ -96,7 +95,6 @@
     <maven3Version>3.9.6</maven3Version>
     <resolverVersion>1.9.18</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <antVersion>1.10.14</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
@@ -142,16 +140,6 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-ant</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-beanshell</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -362,6 +350,7 @@
           <version>${surefire.version}</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
         <plugin>
