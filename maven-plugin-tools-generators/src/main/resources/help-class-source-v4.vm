@@ -18,8 +18,8 @@
 package ${helpPackageName};
 #end
 
+import org.apache.maven.api.di.Inject;
 import org.apache.maven.api.plugin.MojoException;
-import org.apache.maven.api.plugin.annotations.Component;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
 import org.apache.maven.api.plugin.Log;
@@ -43,11 +43,11 @@ import java.util.List;
  * Call <code>mvn ${goalPrefix}:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author maven-plugin-tools
  */
-@Mojo( name = "help", requiresProject = false )
+@Mojo( name = "help", projectRequired = false )
 public class HelpMojo
     implements org.apache.maven.api.plugin.Mojo
 {
-    @Component
+    @Inject
     private Log logger;
 
     /**
@@ -189,6 +189,21 @@ public class HelpMojo
         return getSingleChild( node, elementName ).getTextContent();
     }
 
+    private static String getValueOr( Node node, String elementName, String def )
+        throws MojoException
+    {
+        List<Node> namedChild = findNamedChild( node, elementName );
+        if ( namedChild.isEmpty() )
+        {
+            return def;
+        }
+        if ( namedChild.size() > 1 )
+        {
+            throw new MojoException( "Multiple " + elementName + " in plugin-help.xml" );
+        }
+        return namedChild.get( 0 ).getTextContent();
+    }
+
     private static Node getSingleChild( Node node, String elementName )
         throws MojoException
     {
@@ -286,10 +301,10 @@ public class HelpMojo
           fieldConfigurationElement =  (Element) findSingleChild( configurationElement, parameterName );
         }
 
-        String parameterDefaultValue = "";
-        if ( fieldConfigurationElement != null && fieldConfigurationElement.hasAttribute( "default-value" ) )
+        String parameterDefaultValue = getValueOr( parameter, "defaultValue", "" );
+        if ( isNotEmpty( parameterDefaultValue ) )
         {
-            parameterDefaultValue = " (Default: " + fieldConfigurationElement.getAttribute( "default-value" ) + ")";
+            parameterDefaultValue = " (Default: " + parameterDefaultValue + ")";
         }
         append( sb, parameterName + parameterDefaultValue, 2 );
         Node deprecated = findSingleChild( parameter, "deprecated" );
@@ -305,9 +320,11 @@ public class HelpMojo
         {
             append( sb, "Required: Yes", 3 );
         }
-        if ( ( fieldConfigurationElement != null ) && isNotEmpty( fieldConfigurationElement.getTextContent() ) )
+
+        String parameterExpression = getValueOr( parameter, "expression", "" );
+        if ( isNotEmpty( parameterExpression ) )
         {
-            String property = getPropertyFromExpression( fieldConfigurationElement.getTextContent() );
+            String property = getPropertyFromExpression( parameterExpression );
             append( sb, "User property: " + property, 3 );
         }
 

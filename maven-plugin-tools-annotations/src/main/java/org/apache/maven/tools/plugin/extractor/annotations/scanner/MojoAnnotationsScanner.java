@@ -51,7 +51,8 @@ public interface MojoAnnotationsScanner {
             Component.class.getName(),
             Deprecated.class.getName(),
             V4_API_ANNOTATIONS_PACKAGE + ".Parameter",
-            V4_API_ANNOTATIONS_PACKAGE + ".Component");
+            V4_API_ANNOTATIONS_PACKAGE + ".Component",
+            V4_API_ANNOTATIONS_PACKAGE + ".Resolution");
 
     List<String> METHOD_LEVEL_ANNOTATIONS = Arrays.asList(
             Parameter.class.getName(), Deprecated.class.getName(), V4_API_ANNOTATIONS_PACKAGE + ".Parameter");

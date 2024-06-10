@@ -36,6 +36,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.util.FileUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -105,7 +106,74 @@ public abstract class AbstractGeneratorTestCase {
         extendPluginDescriptor(pluginDescriptor);
         generator.execute(destinationDirectory, new DefaultPluginToolsRequest(mavenProject, pluginDescriptor));
 
-        validate(destinationDirectory);
+        validate(destinationDirectory, false);
+
+        FileUtils.deleteDirectory(destinationDirectory);
+    }
+
+    @Test
+    @Disabled
+    public void testGeneratorV4() throws Exception {
+        setupGenerator();
+
+        MojoDescriptor mojoDescriptor = new MojoDescriptor();
+        mojoDescriptor.setGoal("testGoal");
+        mojoDescriptor.setImplementation("org.apache.maven.tools.plugin.generator.TestMojo");
+        mojoDescriptor.setDependencyResolutionRequired("compile");
+        mojoDescriptor.setSince("mojoSince");
+
+        List<Parameter> params = new ArrayList<>();
+
+        Parameter param = new Parameter();
+        param.setExpression("${project.build.directory}");
+        param.setDefaultValue("</markup-must-be-escaped>");
+        param.setName("dir");
+        param.setRequired(true);
+        param.setType("java.lang.String");
+        param.setDescription("Test parameter description");
+        param.setAlias("some.alias");
+        param.setSince("paramDirSince");
+        params.add(param);
+
+        param = new Parameter();
+        param.setName("withoutSince");
+        param.setType("java.lang.String");
+        params.add(param);
+
+        mojoDescriptor.setParameters(params);
+
+        PluginDescriptor pluginDescriptor = new PluginDescriptor();
+        mojoDescriptor.setPluginDescriptor(pluginDescriptor);
+
+        pluginDescriptor.addMojo(mojoDescriptor);
+
+        pluginDescriptor.setArtifactId("maven-unitTesting-plugin");
+        pluginDescriptor.setGoalPrefix("test");
+
+        ComponentDependency dependency = new ComponentDependency();
+        dependency.setGroupId("testGroup");
+        dependency.setArtifactId("testArtifact");
+        dependency.setVersion("0.0.0");
+
+        pluginDescriptor.setDependencies(Collections.singletonList(dependency));
+
+        File destinationDirectory =
+                Files.createTempDirectory("testGenerator-outDir").toFile();
+        destinationDirectory.mkdir();
+
+        MavenProject mavenProject = new MavenProject();
+        mavenProject.setGroupId("foo");
+        mavenProject.setArtifactId("bar");
+        Build build = new Build();
+        build.setDirectory(basedir + "/target");
+        build.setOutputDirectory(basedir + "/target");
+        mavenProject.setBuild(build);
+        extendPluginDescriptor(pluginDescriptor);
+        DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(mavenProject, pluginDescriptor);
+        pluginDescriptor.setRequiredMavenVersion("4.0.0");
+        generator.execute(destinationDirectory, request);
+
+        validate(destinationDirectory, true);
 
         FileUtils.deleteDirectory(destinationDirectory);
     }
@@ -145,7 +213,7 @@ public abstract class AbstractGeneratorTestCase {
     //
     // ----------------------------------------------------------------------
 
-    protected void validate(File destinationDirectory) throws Exception {
+    protected void validate(File destinationDirectory, boolean isV4) throws Exception {
         // empty
     }
 }

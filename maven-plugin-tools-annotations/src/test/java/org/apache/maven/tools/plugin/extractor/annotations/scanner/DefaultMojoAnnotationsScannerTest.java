@@ -132,6 +132,12 @@ class DefaultMojoAnnotationsScannerTest {
         assertNotNull(parameter);
         assertEquals("java.util.List", parameter.getClassName());
         assertThat(parameter.getTypeParameters()).containsExactly("java.lang.Number");
+
+        parameter = annotatedClass.getParameters().get("stringListStringMap");
+        assertNotNull(parameter);
+        assertEquals("java.util.Map", parameter.getClassName());
+        assertThat(parameter.getTypeParameters())
+                .containsExactly("java.lang.String", "java.util.List<java.lang.String>");
     }
 
     @Test

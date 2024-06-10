@@ -18,6 +18,8 @@
  */
 package org.apache.maven.tools.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -31,6 +33,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 public class ExtendedMojoDescriptor extends MojoDescriptor {
     private final boolean containsXhtmlTextValues;
     private boolean v4Api;
+    private List<Resolution> resolutions;
 
     public ExtendedMojoDescriptor() {
         this(false);
@@ -63,12 +66,24 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
         this.v4Api = v4Api;
     }
 
+    public List<Resolution> getResolutions() {
+        return resolutions;
+    }
+
+    public void setResolutions(List<Resolution> resolutions) {
+        this.resolutions = resolutions;
+    }
+
+    public void addResolution(Resolution resolution) {
+        if (this.resolutions == null) {
+            this.resolutions = new ArrayList<>();
+        }
+        this.resolutions.add(resolution);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + Objects.hash(containsXhtmlTextValues);
-        return result;
+        return Objects.hash(containsXhtmlTextValues, v4Api, resolutions);
     }
 
     @Override
@@ -83,6 +98,8 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
             return false;
         }
         ExtendedMojoDescriptor other = (ExtendedMojoDescriptor) obj;
-        return containsXhtmlTextValues == other.containsXhtmlTextValues;
+        return Objects.equals(containsXhtmlTextValues, other.containsXhtmlTextValues)
+                && Objects.equals(v4Api, other.v4Api)
+                && Objects.equals(resolutions, other.resolutions);
     }
 }

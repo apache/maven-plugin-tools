@@ -60,6 +60,7 @@ import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.Resolution;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
@@ -71,6 +72,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
@@ -791,6 +793,18 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
                 mojoDescriptor.addParameter(parameter);
             }
 
+            // Dependencies annotations
+            Map<String, ResolutionAnnotationContent> resolutions =
+                    getResolutionsParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
+
+            for (ResolutionAnnotationContent resolutionAnnotationContent : new TreeSet<>(resolutions.values())) {
+                Resolution resolution = new Resolution();
+                resolution.setField(resolutionAnnotationContent.getFieldName());
+                resolution.setPathScope(resolutionAnnotationContent.getPathScope());
+                resolution.setRequestType(resolutionAnnotationContent.getRequestType());
+                mojoDescriptor.addResolution(resolution);
+            }
+
             mojoDescriptor.setPluginDescriptor(pluginDescriptor);
 
             mojoDescriptors.add(mojoDescriptor);
@@ -845,6 +859,39 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             }
         }
         return parameterAnnotationContents;
+    }
+
+    protected Map<String, ResolutionAnnotationContent> getResolutionsParentHierarchy(
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        List<ResolutionAnnotationContent> resolutionAnnotationContents = new ArrayList<>();
+
+        resolutionAnnotationContents =
+                getResolutionsParent(mojoAnnotatedClass, resolutionAnnotationContents, mojoAnnotatedClasses);
+
+        // move to parent first to build the Map
+        Collections.reverse(resolutionAnnotationContents);
+
+        Map<String, ResolutionAnnotationContent> map = new HashMap<>(resolutionAnnotationContents.size());
+
+        for (ResolutionAnnotationContent resolutionAnnotationContent : resolutionAnnotationContents) {
+            map.put(resolutionAnnotationContent.getFieldName(), resolutionAnnotationContent);
+        }
+        return map;
+    }
+
+    protected List<ResolutionAnnotationContent> getResolutionsParent(
+            MojoAnnotatedClass mojoAnnotatedClass,
+            List<ResolutionAnnotationContent> resolutionAnnotationContents,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        resolutionAnnotationContents.addAll(mojoAnnotatedClass.getResolutions().values());
+        String parentClassName = mojoAnnotatedClass.getParentClassName();
+        if (parentClassName != null) {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);
+            if (parent != null) {
+                return getResolutionsParent(parent, resolutionAnnotationContents, mojoAnnotatedClasses);
+            }
+        }
+        return resolutionAnnotationContents;
     }
 
     protected Map<String, ComponentAnnotationContent> getComponentsParentHierarchy(
