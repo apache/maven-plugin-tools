@@ -25,7 +25,7 @@ assert descriptorFile.isFile()
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
 assert pluginDescriptor.requiredJavaVersion.text() == '17'
-assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-beta-3'
+assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-beta-4-SNAPSHOT'
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
@@ -37,8 +37,6 @@ assert mojo.projectRequired.text() == 'true'
 assert mojo.onlineRequired.text() == 'false'
 assert mojo.aggregator.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
-assert mojo.executePhase.text() == 'generate-sources'
-assert mojo.executeLifecycle.text() == 'cobertura'
 
 assert mojo.parameters.parameter.size() == 3
 
@@ -77,6 +75,13 @@ assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 assert parameter.defaultValue.isEmpty()
 assert parameter.expression.isEmpty()
+
+assert mojo.resolutions.resolution.size() == 1
+
+resolution = mojo.resolutions.resolution[0]
+assert resolution.field.text() == 'classPath'
+assert resolution.pathScope.text() == 'main-runtime'
+assert resolution.requestType.text() == ''
 
 // check help mojo source and class
 assert new File( basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class" ).isFile()

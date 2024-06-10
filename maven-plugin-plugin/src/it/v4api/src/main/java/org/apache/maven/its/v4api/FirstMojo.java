@@ -19,19 +19,17 @@
 package org.apache.maven.its.v4api;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.di.Inject;
-import org.apache.maven.api.di.Named;
 import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.MojoException;
-import org.apache.maven.api.plugin.annotations.Execute;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
-import org.apache.maven.api.services.ArtifactInstaller;
-import org.apache.maven.api.settings.Settings;
+import org.apache.maven.api.plugin.annotations.Resolution;
 
 /**
  * Test mojo for the v4 api plugin descriptor generation.
@@ -42,7 +40,6 @@ import org.apache.maven.api.settings.Settings;
  * @since 1.2
  */
 @Mojo(name = "first", defaultPhase = "integration-test")
-@Execute(phase = "generate-sources", lifecycle = "cobertura")
 public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
 
     /**
@@ -62,6 +59,9 @@ public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
     @Parameter(name = "namedParam", alias = "alias")
     private String aliasedParam;
 
+    @Resolution(pathScope = "main-runtime")
+    private List<Path> classPath;
+
     @Inject
     private Session session;
 
@@ -72,14 +72,12 @@ public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
     private MojoExecution mojo;
 
     @Inject
-    private Settings settings;
-
-    @Inject
     private Log log;
 
-    @Inject
-    @Named("test")
-    private ArtifactInstaller custom;
-
-    public void execute() throws MojoException {}
+    public void execute() throws MojoException {
+        log.info("Executing first");
+        for (Path path : classPath) {
+            log.info(path.toString());
+        }
+    }
 }

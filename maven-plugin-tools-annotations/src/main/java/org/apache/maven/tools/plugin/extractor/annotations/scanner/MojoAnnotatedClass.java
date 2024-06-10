@@ -26,6 +26,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 
 /**
  * @author Olivier Lamy
@@ -51,6 +52,11 @@ public class MojoAnnotatedClass {
      * key is field name
      */
     private Map<String, ComponentAnnotationContent> components;
+
+    /**
+     * key is field name
+     */
+    private Map<String, ResolutionAnnotationContent> resolutions;
 
     /**
      * artifact which contains this annotation
@@ -123,6 +129,18 @@ public class MojoAnnotatedClass {
         return this;
     }
 
+    public Map<String, ResolutionAnnotationContent> getResolutions() {
+        if (this.resolutions == null) {
+            this.resolutions = new HashMap<>();
+        }
+        return resolutions;
+    }
+
+    public MojoAnnotatedClass setResolutions(Map<String, ResolutionAnnotationContent> resolutions) {
+        this.resolutions = resolutions;
+        return this;
+    }
+
     public String getParentClassName() {
         return parentClassName;
     }
@@ -163,6 +181,7 @@ public class MojoAnnotatedClass {
         sb.append(", execute=").append(execute);
         sb.append(", parameters=").append(parameters);
         sb.append(", components=").append(components);
+        sb.append(", dependencies=").append(resolutions);
         sb.append(", v4api=").append(v4Api);
         sb.append('}');
         return sb.toString();

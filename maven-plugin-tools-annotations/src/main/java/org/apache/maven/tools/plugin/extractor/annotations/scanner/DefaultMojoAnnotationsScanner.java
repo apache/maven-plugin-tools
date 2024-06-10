@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoAnnotationVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoClassVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
@@ -71,6 +73,7 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
     public static final String PARAMETER_V4 = MVN4_API + "Parameter";
+    public static final String RESOLUTION_V4 = MVN4_API + "Resolution";
 
     public static final String MOJO_V3 = Mojo.class.getName();
     public static final String EXECUTE_V3 = Execute.class.getName();
@@ -339,13 +342,14 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
             }
 
             // @Component annotations
-            List<MojoFieldVisitor> mojoFieldVisitors =
+            List<MojoFieldVisitor> mojoComponentVisitors =
                     mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(COMPONENT_V3)));
-            for (MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors) {
+            for (MojoFieldVisitor mojoComponentVisitor : mojoComponentVisitors) {
                 ComponentAnnotationContent componentAnnotationContent =
-                        new ComponentAnnotationContent(mojoFieldVisitor.getFieldName());
+                        new ComponentAnnotationContent(mojoComponentVisitor.getFieldName());
 
-                Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap =
+                        mojoComponentVisitor.getAnnotationVisitorMap();
                 MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get(COMPONENT_V3);
 
                 if (annotationVisitor != null) {
@@ -362,13 +366,44 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
                     }
 
                     if (StringUtils.isEmpty(componentAnnotationContent.getRoleClassName())) {
-                        componentAnnotationContent.setRoleClassName(mojoFieldVisitor.getClassName());
+                        componentAnnotationContent.setRoleClassName(mojoComponentVisitor.getClassName());
                     }
                 }
                 mojoAnnotatedClass
                         .getComponents()
                         .put(componentAnnotationContent.getFieldName(), componentAnnotationContent);
             }
+
+            // @Resolution annotations
+            List<MojoFieldVisitor> mojoResolutionVisitors =
+                    mojoClassVisitor.findFieldWithAnnotation(Collections.singleton(RESOLUTION_V4));
+            for (MojoFieldVisitor mojoResolutionVisitor : mojoResolutionVisitors) {
+                ResolutionAnnotationContent dependenciesAnnotationContent =
+                        new ResolutionAnnotationContent(mojoResolutionVisitor.getFieldName());
+
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap =
+                        mojoResolutionVisitor.getAnnotationVisitorMap();
+                MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get(RESOLUTION_V4);
+
+                if (annotationVisitor != null) {
+                    for (Map.Entry<String, Object> entry :
+                            annotationVisitor.getAnnotationValues().entrySet()) {
+                        String methodName = entry.getKey();
+                        if ("pathScope".equals(methodName)) {
+                            dependenciesAnnotationContent.setPathScope((String) entry.getValue());
+                        } else if ("requestType".equals(methodName)) {
+                            dependenciesAnnotationContent.setRequestType((String) entry.getValue());
+                        } else {
+                            throw new IllegalStateException("Unsupported method: " + methodName);
+                        }
+                    }
+                }
+
+                mojoAnnotatedClass
+                        .getResolutions()
+                        .put(dependenciesAnnotationContent.getFieldName(), dependenciesAnnotationContent);
+            }
+
         } catch (ReflectorException e) {
             throw new ExtractionException(e.getMessage(), e);
         }

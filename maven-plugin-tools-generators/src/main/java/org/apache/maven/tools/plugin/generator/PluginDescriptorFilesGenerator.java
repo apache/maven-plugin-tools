@@ -37,6 +37,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.Resolution;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -611,6 +612,26 @@ public class PluginDescriptorFilesGenerator implements Generator {
             }
 
             w.endElement();
+        }
+
+        // ----------------------------------------------------------------------
+        // Dependencies
+        // ----------------------------------------------------------------------
+
+        if (mojoDescriptor instanceof ExtendedMojoDescriptor) {
+            ExtendedMojoDescriptor extendedMojoDescriptor = (ExtendedMojoDescriptor) mojoDescriptor;
+            List<Resolution> resolutions = extendedMojoDescriptor.getResolutions();
+            if (resolutions != null && !resolutions.isEmpty()) {
+                w.startElement("resolutions");
+                for (Resolution resolution : resolutions) {
+                    w.startElement("resolution");
+                    GeneratorUtils.element(w, "field", resolution.getField());
+                    GeneratorUtils.element(w, "pathScope", resolution.getPathScope());
+                    GeneratorUtils.element(w, "requestType", resolution.getRequestType());
+                    w.endElement();
+                }
+                w.endElement();
+            }
         }
 
         w.endElement();
