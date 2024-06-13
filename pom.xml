@@ -106,6 +106,7 @@
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <javadocPluginVersion>3.5.0</javadocPluginVersion>
     <project.build.outputTimestamp>2024-05-28T08:15:05Z</project.build.outputTimestamp>
+    <version.maven-invoker-plugin>3.7.0</version.maven-invoker-plugin>
   </properties>
 
   <dependencyManagement>

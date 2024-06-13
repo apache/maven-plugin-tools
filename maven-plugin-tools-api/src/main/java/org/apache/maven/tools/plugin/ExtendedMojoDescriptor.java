@@ -65,10 +65,7 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + Objects.hash(containsXhtmlTextValues);
-        return result;
+        return Objects.hash(containsXhtmlTextValues, v4Api);
     }
 
     @Override
@@ -83,6 +80,7 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
             return false;
         }
         ExtendedMojoDescriptor other = (ExtendedMojoDescriptor) obj;
-        return containsXhtmlTextValues == other.containsXhtmlTextValues;
+        return Objects.equals(containsXhtmlTextValues, other.containsXhtmlTextValues)
+                && Objects.equals(v4Api, other.v4Api);
     }
 }

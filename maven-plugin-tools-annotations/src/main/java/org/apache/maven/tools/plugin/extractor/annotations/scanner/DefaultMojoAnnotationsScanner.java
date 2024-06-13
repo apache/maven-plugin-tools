@@ -339,13 +339,14 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
             }
 
             // @Component annotations
-            List<MojoFieldVisitor> mojoFieldVisitors =
+            List<MojoFieldVisitor> mojoComponentVisitors =
                     mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(COMPONENT_V3)));
-            for (MojoFieldVisitor mojoFieldVisitor : mojoFieldVisitors) {
+            for (MojoFieldVisitor mojoComponentVisitor : mojoComponentVisitors) {
                 ComponentAnnotationContent componentAnnotationContent =
-                        new ComponentAnnotationContent(mojoFieldVisitor.getFieldName());
+                        new ComponentAnnotationContent(mojoComponentVisitor.getFieldName());
 
-                Map<String, MojoAnnotationVisitor> annotationVisitorMap = mojoFieldVisitor.getAnnotationVisitorMap();
+                Map<String, MojoAnnotationVisitor> annotationVisitorMap =
+                        mojoComponentVisitor.getAnnotationVisitorMap();
                 MojoAnnotationVisitor annotationVisitor = annotationVisitorMap.get(COMPONENT_V3);
 
                 if (annotationVisitor != null) {
@@ -362,7 +363,7 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
                     }
 
                     if (StringUtils.isEmpty(componentAnnotationContent.getRoleClassName())) {
-                        componentAnnotationContent.setRoleClassName(mojoFieldVisitor.getClassName());
+                        componentAnnotationContent.setRoleClassName(mojoComponentVisitor.getClassName());
                     }
                 }
                 mojoAnnotatedClass
