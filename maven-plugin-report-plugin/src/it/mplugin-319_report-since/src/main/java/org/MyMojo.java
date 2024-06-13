@@ -19,41 +19,32 @@
 package org;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Does nothing.
  *
- * @goal noop
- * @phase process-sources
- * @requiresDependencyResolution test
- * @requiresDirectInvocation true
- * @requiresOnline
- * @inheritByDefault false
- * @execute phase="compile"
- * @aggregator
  * @since 1.0
  *
  * @deprecated You don't use test goals, do you?
  */
+@Mojo(name = "noop")
 public class MyMojo extends AbstractMojo {
 
     /**
      * This is a test.
-     *
-     * @parameter
-     * @required
      */
     @SuppressWarnings("unused")
+    @Parameter
     private String required;
 
     /**
      * This is a test.
-     *
-     * @parameter expression="${string}" default-value="${project.version}/</markup-must-be-escaped>"
-     * @deprecated Just testing.
      * @since 1.1
      */
     @SuppressWarnings("unused")
+    @Parameter
     private String string;
 
     public void execute() {

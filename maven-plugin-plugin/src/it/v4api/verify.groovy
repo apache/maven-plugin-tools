@@ -24,8 +24,8 @@ assert descriptorFile.isFile()
 
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
-assert pluginDescriptor.requiredJavaVersion.text() == '1.8'
-assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-alpha-4'
+assert pluginDescriptor.requiredJavaVersion.text() == '17'
+assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-beta-3'
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
@@ -33,51 +33,12 @@ assert mojo.goal.text() == 'first'
 assert mojo.implementation.text() == 'org.apache.maven.its.v4api.FirstMojo'
 assert mojo.language.text() == 'java'
 assert mojo.description.text().startsWith('Test mojo for the v4 api plugin descriptor generation.')
-assert mojo.requiresDependencyResolution.text() == 'test'
-assert mojo.requiresDependencyCollection.text() == ''
-assert mojo.requiresProject.text() == 'true'
-assert mojo.requiresOnline.text() == 'false'
-assert mojo.requiresDirectInvocation.text() == 'false'
+assert mojo.projectRequired.text() == 'true'
+assert mojo.onlineRequired.text() == 'false'
 assert mojo.aggregator.text() == 'false'
-assert mojo.threadSafe.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
 assert mojo.executePhase.text() == 'generate-sources'
 assert mojo.executeLifecycle.text() == 'cobertura'
-assert mojo.v4Api.text() == 'true'
-
-assert mojo.configuration.basedir[0].text() == ''
-assert mojo.configuration.basedir[0].'@implementation' == 'java.nio.file.Path'
-assert mojo.configuration.basedir[0].'@default-value' == '${basedir}'
-
-assert mojo.configuration.touchFile[0].text() == '${first.touchFile}'
-assert mojo.configuration.touchFile[0].'@implementation' == 'java.nio.file.Path'
-assert mojo.configuration.touchFile[0].'@default-value' == '${project.build.directory}/touch.txt'
-
-assert mojo.requirements.requirement.size() == 6
-
-assert mojo.requirements.requirement[0].role.text() == 'org.apache.maven.api.services.ArtifactInstaller'
-assert mojo.requirements.requirement[0].'role-hint'.text() == 'test'
-assert mojo.requirements.requirement[0].'field-name'.text() == 'custom'
-
-assert mojo.requirements.requirement[1].role.text() == 'org.apache.maven.api.plugin.Log'
-assert mojo.requirements.requirement[1].'role-hint'.isEmpty()
-assert mojo.requirements.requirement[1].'field-name'.text() == 'log'
-
-assert mojo.requirements.requirement[2].role.text() == 'org.apache.maven.api.MojoExecution'
-assert mojo.requirements.requirement[2].'role-hint'.isEmpty()
-assert mojo.requirements.requirement[2].'field-name'.text() == 'mojo'
-
-assert mojo.requirements.requirement[3].role.text() == 'org.apache.maven.api.Project'
-assert mojo.requirements.requirement[3].'role-hint'.isEmpty()
-assert mojo.requirements.requirement[3].'field-name'.text() == 'project'
-
-assert mojo.requirements.requirement[4].role.text() == 'org.apache.maven.api.Session'
-assert mojo.requirements.requirement[4].'role-hint'.isEmpty()
-assert mojo.requirements.requirement[4].'field-name'.text() == 'session'
-
-assert mojo.requirements.requirement[5].role.text() == 'org.apache.maven.api.settings.Settings'
-assert mojo.requirements.requirement[5].'role-hint'.isEmpty()
-assert mojo.requirements.requirement[5].'field-name'.text() == 'settings'
 
 assert mojo.parameters.parameter.size() == 3
 
@@ -90,6 +51,8 @@ assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == 'Project directory.'
+assert parameter.defaultValue.text() == '${basedir}'
+assert parameter.expression.isEmpty()
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
 assert parameter.name.text() == 'touchFile'
@@ -100,6 +63,8 @@ assert parameter.deprecated.isEmpty()
 assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
+assert parameter.defaultValue.text() == '${project.build.directory}/touch.txt'
+assert parameter.expression.text() == '${first.touchFile}'
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
 assert parameter.name.text() == 'namedParam'
@@ -110,6 +75,8 @@ assert parameter.deprecated.text() == 'As of 0.2'
 assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
+assert parameter.defaultValue.isEmpty()
+assert parameter.expression.isEmpty()
 
 // check help mojo source and class
 assert new File( basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class" ).isFile()

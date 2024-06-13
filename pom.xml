@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.13.2-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
@@ -59,10 +59,8 @@
   <modules>
     <module>maven-plugin-tools-generators</module>
     <module>maven-plugin-tools-api</module>
-    <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
-    <module>maven-script</module>
     <!-- keep at end since ITs require every extractors -->
     <module>maven-plugin-plugin</module>
     <module>maven-plugin-report-plugin</module>
@@ -92,11 +90,10 @@
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
-    <maven4Version>4.0.0-alpha-4</maven4Version>
+    <maven4Version>4.0.0-beta-3</maven4Version>
     <maven3Version>3.9.7</maven3Version>
-    <resolverVersion>1.9.18</resolverVersion>
+    <resolverVersion>1.9.20</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <antVersion>1.10.14</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
@@ -131,27 +128,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-java</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-annotations</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-ant</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-beanshell</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -328,6 +310,21 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <configuration>
+            <rules>
+              <enforceBytecodeVersion>
+                <maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+                <excludes>
+                  <exclude>org.apache.maven:*</exclude>
+                </excludes>
+              </enforceBytecodeVersion>
+            </rules>
+            <fail>true</fail>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
             <sourceFileExcludes>
@@ -362,6 +359,7 @@
           <version>${surefire.version}</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
         <plugin>

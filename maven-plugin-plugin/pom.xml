@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-plugin-tools</artifactId>
-    <version>3.13.2-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.maven.plugins</groupId>
@@ -61,11 +61,6 @@
     <!-- runtime extractors used by default by plugin-tools -->
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-java</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-tools-annotations</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -77,19 +72,6 @@
         Do not use 'provided' scope here. The annotations are a transitive dependency of
         'maven-plugin-tools-annotations' which fails to load at runtime when not available.
       -->
-    </dependency>
-    <!-- define optional runtime dependencies for integration tests -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-ant</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-beanshell</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- Maven -->
@@ -166,18 +148,6 @@
     </dependency>
 
     <!-- needed for it tests -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-script-beanshell</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-script-ant</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 
@@ -289,9 +259,7 @@
               <debug>true</debug>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <showErrors>true</showErrors>
-              <filterProperties>
-                <antVersion>${antVersion}</antVersion>
-              </filterProperties>
+              <filterProperties />
               <properties>
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
                 <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
@@ -304,8 +272,6 @@
                 <!-- used in ITs -->
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:jar:test-sources</extraArtifact>
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:test-jar</extraArtifact>
-                <extraArtifact>org.apache.maven.plugin-tools:maven-script-ant:${project.version}</extraArtifact>
-                <extraArtifact>org.apache.maven.plugin-tools:maven-script-beanshell:${project.version}</extraArtifact>
               </extraArtifacts>
             </configuration>
             <executions>
