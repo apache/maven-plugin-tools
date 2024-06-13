@@ -30,7 +30,6 @@ import java.util.Optional;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.plugin.plugin.report.PluginReport;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.apache.maven.tools.plugin.EnhancedParameterWrapper;

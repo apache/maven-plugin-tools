@@ -18,7 +18,6 @@
  */
 package org.apache.maven.tools.plugin;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,9 +28,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.lifecycle.Lifecycle;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  * Extensions to {@link PluginDescriptor} not supported by Maven 3.2.5.
@@ -89,6 +86,12 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
 
     public void addMojo(MojoDescriptor mojoDescriptor) throws DuplicateMojoDescriptorException {
         delegate.addMojo(mojoDescriptor);
+    }
+
+    public void addMojos(List<MojoDescriptor> mojos) throws DuplicateMojoDescriptorException {
+        for (MojoDescriptor mojoDescriptor : mojos) {
+            addMojo(mojoDescriptor);
+        }
     }
 
     public String getGroupId() {
@@ -220,11 +223,6 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
     @Override
     public void setPluginArtifact(Artifact pluginArtifact) {
         delegate.setPluginArtifact(pluginArtifact);
-    }
-
-    @Override
-    public Lifecycle getLifecycleMapping(String lifecycleId) throws IOException, XmlPullParserException {
-        return delegate.getLifecycleMapping(lifecycleId);
     }
 
     public PluginDescriptor clone() {

@@ -19,6 +19,7 @@
 package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -57,6 +58,20 @@ public class ExecuteAnnotationContent implements Execute {
     }
 
     public void phase(String phase) {
+        if (phase != null && !phase.isEmpty()) {
+            for (LifecyclePhase p : LifecyclePhase.values()) {
+                if (Objects.equals(phase, p.id()) || Objects.equals(phase, p.name())) {
+                    this.phase = p;
+                    this.customPhase = null;
+                    return;
+                }
+            }
+            this.phase = null;
+            this.customPhase = phase;
+        } else {
+            this.phase = null;
+            this.customPhase = null;
+        }
         this.phase = LifecyclePhase.valueOf(phase);
     }
 

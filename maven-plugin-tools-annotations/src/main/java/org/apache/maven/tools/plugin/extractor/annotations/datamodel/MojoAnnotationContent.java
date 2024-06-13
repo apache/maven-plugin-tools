@@ -19,6 +19,7 @@
 package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -69,7 +70,17 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
     }
 
     public void defaultPhase(String phase) {
-        this.defaultPhase = LifecyclePhase.valueOf(phase);
+        if (phase != null && !phase.isEmpty()) {
+            for (LifecyclePhase p : LifecyclePhase.values()) {
+                if (Objects.equals(phase, p.id()) || Objects.equals(phase, p.name())) {
+                    this.defaultPhase = p;
+                    return;
+                }
+            }
+            throw new IllegalArgumentException("Could not find a matching phase for " + phase);
+        } else {
+            this.defaultPhase = null;
+        }
     }
 
     @Override
@@ -79,6 +90,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
 
     public void requiresDependencyResolution(String requiresDependencyResolution) {
         this.requiresDependencyResolution = ResolutionScope.valueOf(requiresDependencyResolution);
+    }
+
+    public void dependencyResolutionRequired(String dependencyResolutionRequired) {
+        this.requiresDependencyResolution = ResolutionScope.valueOf(dependencyResolutionRequired);
     }
 
     @Override
@@ -114,6 +129,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
     }
 
     public void requiresProject(boolean requiresProject) {
+        this.requiresProject = requiresProject;
+    }
+
+    public void projectRequired(boolean requiresProject) {
         this.requiresProject = requiresProject;
     }
 
