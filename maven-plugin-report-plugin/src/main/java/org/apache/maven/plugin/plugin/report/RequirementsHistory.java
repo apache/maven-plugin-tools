@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -121,9 +122,9 @@ public class RequirementsHistory {
         if (jdk != null) {
             return jdk;
         }
-        Plugin compiler = getCompilerPlugin(project.getBuild().getPluginsAsMap());
+        Plugin compiler = getCompilerPlugin(project.getBuild());
         if (compiler == null) {
-            compiler = getCompilerPlugin(project.getPluginManagement().getPluginsAsMap());
+            compiler = getCompilerPlugin(project.getPluginManagement());
         }
 
         jdk = getPluginParameter(compiler, "release");
@@ -155,8 +156,12 @@ public class RequirementsHistory {
         return jdk;
     }
 
-    private static Plugin getCompilerPlugin(Map<String, Plugin> pluginsAsMap) {
-        return pluginsAsMap.get("org.apache.maven.plugins:maven-compiler-plugin");
+    private static Plugin getCompilerPlugin(PluginContainer container) {
+        if (container != null) {
+            Map<String, Plugin> pluginsAsMap = container.getPluginsAsMap();
+            return pluginsAsMap.get("org.apache.maven.plugins:maven-compiler-plugin");
+        }
+        return null;
     }
 
     private static String getPluginParameter(Plugin plugin, String parameter) {
