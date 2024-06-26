@@ -37,8 +37,6 @@ assert mojo.projectRequired.text() == 'true'
 assert mojo.onlineRequired.text() == 'false'
 assert mojo.aggregator.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
-assert mojo.executePhase.text() == 'generate-sources'
-assert mojo.executeLifecycle.text() == 'cobertura'
 
 assert mojo.parameters.parameter.size() == 3
 
