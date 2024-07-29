@@ -39,9 +39,52 @@ Configuring Generation of Documentation Reports
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-report-plugin</artifactId>
         <version>${project.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
       </plugin>
     </plugins>
     ...
+  </reporting>
+  ...
+</project>
++-----+
+
+* Generate Plugin Report without duplicate execution of phase process-classes
+
+ The standard report goal <<<report>>> invokes separate lifecyle of <<<process-classes>>>.
+ In a CI environment you now might execute something like <<<mvn clean deploy site-deploy>>>.
+ During <<<site>>> build the standard reports will trigger <<<process-classes>>> again, depending on your build this may take some time, because
+ stuff like <<<enforcer>>> or generating stubs from a WDSL will be invoked again, which may lead
+ to longer build times.
+
+ As of version 3.14.0 a new report goal is defined, <<<report-no-fork>>> which will not trigger above phase a second time.
+
+ Configure this in your <<<reporting>>> section as follows:
+
++-----+
+<project>
+  ...
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-report-plugin</artifactId>
+        <version>${project.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-no-fork</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
   </reporting>
   ...
 </project>

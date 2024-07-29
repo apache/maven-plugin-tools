@@ -95,6 +95,13 @@ under the License.
         <configuration>
           <enhancedPluginXmlFile>${project.build.outputDirectory}/META-INF/maven/plugin-enhanced.xml</enhancedPluginXmlFile>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>

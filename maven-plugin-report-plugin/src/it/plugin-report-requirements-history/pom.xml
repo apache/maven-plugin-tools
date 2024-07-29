@@ -98,6 +98,13 @@ under the License.
             </requirementsHistory>
           </requirementsHistories>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>

@@ -108,6 +108,7 @@
     <reportingImplVersion>3.2.0</reportingImplVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <javadocPluginVersion>3.5.0</javadocPluginVersion>
+    <enforcerPluginVersion>3.5.0</enforcerPluginVersion>
     <project.build.outputTimestamp>2024-05-28T08:15:05Z</project.build.outputTimestamp>
   </properties>
 
