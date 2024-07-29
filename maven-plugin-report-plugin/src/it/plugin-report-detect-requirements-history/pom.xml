@@ -87,6 +87,13 @@ under the License.
         <configuration>
           <requirementsHistoryDetectionRange>[3,3.7.0]</requirementsHistoryDetectionRange>
         </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
