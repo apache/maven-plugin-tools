@@ -39,7 +39,7 @@
 
   <properties>
     <it.debug>true</it.debug>
-    <doxiaVersion>1.11.1</doxiaVersion>
+    <doxiaVersion>2.0.0-M12</doxiaVersion>
   </properties>
 
   <dependencies>
@@ -120,8 +120,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
-      <!--same version as used by doxia site renderer -->
+      <version>3.14.0</version>
     </dependency>
     <!-- Plexus -->
     <dependency>
@@ -271,8 +270,8 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <filterProperties>
-                <sitePluginVersion>3.12.1</sitePluginVersion>
-                <projectInfoReportsPlugin>3.4.1</projectInfoReportsPlugin>
+                <sitePluginVersion>4.0.0-M16</sitePluginVersion>
+                <projectInfoReportsPlugin>3.6.2</projectInfoReportsPlugin>
               </filterProperties>
               <properties>
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
