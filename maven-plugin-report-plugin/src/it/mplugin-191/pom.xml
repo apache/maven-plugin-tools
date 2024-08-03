@@ -27,7 +27,7 @@ under the License.
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <description>Verify that plugin-info.html and mojo pages are generated in the correct folder</description>
+  <description>Verify that plugin-info.html and mojo pages are generated in the correct directory</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
