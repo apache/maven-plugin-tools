@@ -32,11 +32,13 @@ import java.lang.annotation.Target;
  *
  * @author Olivier Lamy
  * @since 3.0
+ * @deprecated Use <a href="https://maven.apache.org/maven-jsr330.html#how-to-use-jsr-330-in-plugins">JSR 330 annotations</a> or {@link Parameter} with according default expressions instead.
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD})
 @Inherited
+@Deprecated
 public @interface Component {
     /**
      * role of the component to inject.
