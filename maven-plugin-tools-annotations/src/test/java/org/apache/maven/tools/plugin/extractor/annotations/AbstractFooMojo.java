@@ -19,8 +19,8 @@
 package org.apache.maven.tools.plugin.extractor.annotations;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.ResolutionScope;
 
 @Mojo(
         name = "abstract",

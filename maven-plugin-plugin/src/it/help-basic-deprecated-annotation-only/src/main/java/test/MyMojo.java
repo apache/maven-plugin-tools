@@ -19,8 +19,8 @@
 package test;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Parameter;
 
 /**
  * MOJO-DESCRIPTION. Some "quotation" marks and backslashes '\\', some <strong>important</strong> javadoc<br> and an

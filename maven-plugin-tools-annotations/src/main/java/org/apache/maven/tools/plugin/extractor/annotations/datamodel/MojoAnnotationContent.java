@@ -21,10 +21,10 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
-import org.apache.maven.plugins.annotations.InstantiationStrategy;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.api.plugin.annotations.InstantiationStrategy;
+import org.apache.maven.api.plugin.annotations.LifecyclePhase;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.ResolutionScope;
 
 /**
  * @author Olivier Lamy

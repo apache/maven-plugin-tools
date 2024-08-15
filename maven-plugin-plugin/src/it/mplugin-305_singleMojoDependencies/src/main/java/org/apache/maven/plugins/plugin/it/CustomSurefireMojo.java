@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugins.plugin.it;
+package org.apache.maven.api.plugins.plugin.it;
 
 import java.io.File;
 import java.util.List;
 
 import org.apache.maven.plugin.surefire.AbstractSurefireMojo;
-import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.surefire.api.suite.RunResult;
 import org.apache.maven.surefire.extensions.ForkNodeFactory;
 

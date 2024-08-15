@@ -21,8 +21,8 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.api.plugin.annotations.Execute;
+import org.apache.maven.api.plugin.annotations.LifecyclePhase;
 
 /**
  * @author Olivier Lamy
