@@ -204,7 +204,7 @@ public class PluginReport extends AbstractMavenReport {
                     MavenProject versionProject = buildMavenProject(v);
                     RequirementsHistory requirements = RequirementsHistory.discoverRequirements(versionProject);
                     requirementsHistories.add(requirements);
-                    getLog().info("  - " + requirements);
+                    getLog().debug("  - " + requirements);
                 }
             } catch (VersionRangeResolutionException vrre) {
                 throw new MavenReportException(
