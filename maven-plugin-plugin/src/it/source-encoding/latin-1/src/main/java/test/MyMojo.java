@@ -21,7 +21,7 @@ package test;
 // NOTE: This source file is by design encoded using ISO-8859-1!
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Mojo;
 
 /**
  * TEST-CHARS: ÄÖÜäöüß

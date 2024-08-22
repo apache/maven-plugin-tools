@@ -20,7 +20,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 import java.lang.annotation.Annotation;
 
-import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.api.plugin.annotations.Component;
 
 /**
  * @author Olivier Lamy

@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.api.plugin.annotations.Parameter;
 
 /**
  * @author Olivier Lamy

@@ -21,8 +21,8 @@ package org.apache.maven.tools.plugin.extractor.annotations;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Execute;
+import org.apache.maven.api.plugin.annotations.Mojo;
 
 @Mojo(name = "execute")
 @Execute(goal = "compiler", lifecycle = "my-lifecycle", customPhase = "my-phase-id")
