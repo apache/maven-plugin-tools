@@ -39,7 +39,7 @@
 
   <properties>
     <it.debug>true</it.debug>
-    <doxiaVersion>2.0.0-M12</doxiaVersion>
+    <doxiaVersion>2.0.0</doxiaVersion>
   </properties>
 
   <dependencies>
