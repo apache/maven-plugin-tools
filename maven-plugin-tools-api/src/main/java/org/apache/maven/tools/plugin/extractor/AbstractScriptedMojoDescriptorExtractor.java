@@ -40,9 +40,8 @@ import org.slf4j.LoggerFactory;
  * @author jdcasey
  */
 @Deprecated
-public abstract class AbstractScriptedMojoDescriptorExtractor
-        implements MojoDescriptorExtractor {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractScriptedMojoDescriptorExtractor.class);
+public abstract class AbstractScriptedMojoDescriptorExtractor implements MojoDescriptorExtractor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractScriptedMojoDescriptorExtractor.class);
 
     @Override
     public boolean isDeprecated() {
@@ -53,7 +52,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
     @Override
     public List<MojoDescriptor> execute(PluginToolsRequest request)
             throws ExtractionException, InvalidPluginDescriptorException {
-        logger.debug("Running: " + getClass().getName());
+        LOGGER.debug("Running: " + getClass().getName());
         String metadataExtension = getMetadataFileExtension(request);
         String scriptExtension = getScriptFileExtension(request);
 
@@ -78,8 +77,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
                 scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request);
 
         if (!mojoDescriptors.isEmpty()) {
-            logger.warn("Scripting support for mojos is deprecated and is planned to be removed in Maven 4.");
-            logger.warn("Found " + mojoDescriptors.size() + " scripted mojos.");
+            LOGGER.warn("Scripting support for mojos is deprecated and is planned to be removed in Maven 4.");
+            LOGGER.warn("Found " + mojoDescriptors.size() + " scripted mojos.");
         }
 
         return mojoDescriptors;
@@ -143,8 +142,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor
         for (String resourceDir : directories) {
             Set<File> sources = new HashSet<>();
 
-            logger.debug("Scanning script dir: " + resourceDir + " with extractor: "
-                            + getClass().getName());
+            LOGGER.debug("Scanning script dir: " + resourceDir + " with extractor: "
+                    + getClass().getName());
             File dir = new File(resourceDir);
             if (!dir.isAbsolute()) {
                 dir = new File(basedir, resourceDir).getAbsoluteFile();

@@ -37,7 +37,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.ParametersWithGenericsMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
-import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 class DefaultMojoAnnotationsScannerTest {
     private DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();

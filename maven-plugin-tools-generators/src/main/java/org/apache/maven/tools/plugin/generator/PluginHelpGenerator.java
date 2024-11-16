@@ -28,7 +28,6 @@ import java.io.Writer;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
 import org.slf4j.Logger;
