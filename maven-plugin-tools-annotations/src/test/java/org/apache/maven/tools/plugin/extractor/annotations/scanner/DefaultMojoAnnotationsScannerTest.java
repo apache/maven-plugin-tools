@@ -58,7 +58,6 @@ class DefaultMojoAnnotationsScannerTest {
 
     @Test
     void testJava8Annotations() throws Exception {
-        scanner.enableLogging(mock(Logger.class));
         scanner.scanArchive(new File("target/test-classes/java8-annotations.jar"), null, false);
     }
 
@@ -66,7 +65,6 @@ class DefaultMojoAnnotationsScannerTest {
     void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException {
         File directoryToScan = new File(DeprecatedMojo.class.getResource("").getFile());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> result =
                 scanner.scanDirectory(directoryToScan, Collections.singletonList("DeprecatedMojo.class"), null, false);
 
@@ -94,7 +92,6 @@ class DefaultMojoAnnotationsScannerTest {
         File directoryToScan =
                 new File(ParametersWithGenericsMojo.class.getResource("").getFile());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> result = scanner.scanDirectory(
                 directoryToScan, Collections.singletonList("ParametersWithGenericsMojo**.class"), null, false);
 
@@ -147,7 +144,6 @@ class DefaultMojoAnnotationsScannerTest {
         request.setIncludePatterns(Arrays.asList("**/FooMojo.class"));
         request.setProject(new MavenProject());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanner.scan(request);
 
         System.out.println("mojoAnnotatedClasses:" + mojoAnnotatedClasses);

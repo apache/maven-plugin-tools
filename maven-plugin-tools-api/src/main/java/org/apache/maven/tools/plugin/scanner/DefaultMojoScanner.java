@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 @Named
 public class DefaultMojoScanner implements MojoScanner {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultMojoScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger("standalone-scanner-logger");
 
     private Map<String, MojoDescriptorExtractor> mojoDescriptorExtractors;
 
@@ -62,8 +62,6 @@ public class DefaultMojoScanner implements MojoScanner {
     @Inject
     public DefaultMojoScanner(Map<String, MojoDescriptorExtractor> extractors) {
         this.mojoDescriptorExtractors = extractors;
-
-        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "standalone-scanner-logger"));
     }
 
     /**

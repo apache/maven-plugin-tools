@@ -55,7 +55,6 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
         Files.copy(sourceClass, targetDir.resolve(sourceClass.getFileName()));
         JavaAnnotationsMojoDescriptorExtractor mojoDescriptorExtractor = new JavaAnnotationsMojoDescriptorExtractor();
         DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
-        scanner.enableLogging(mock(Logger.class));
         mojoDescriptorExtractor.mojoAnnotationsScanner = scanner;
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         MavenProject mavenProject = new MavenProject();

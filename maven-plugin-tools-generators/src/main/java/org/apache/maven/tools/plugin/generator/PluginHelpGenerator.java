@@ -61,7 +61,7 @@ public class PluginHelpGenerator {
      * Default constructor
      */
     public PluginHelpGenerator() {
-        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "PluginHelpGenerator"));
+        // nop
     }
 
     // ----------------------------------------------------------------------
