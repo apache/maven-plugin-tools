@@ -30,8 +30,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -44,7 +42,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @since 2.4
  */
 public class PluginHelpGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(PluginHelpGenerator.class);
     /**
      * Default generated class name
      */

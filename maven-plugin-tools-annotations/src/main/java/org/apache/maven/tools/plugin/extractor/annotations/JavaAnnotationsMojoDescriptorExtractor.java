@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
 @Named(JavaAnnotationsMojoDescriptorExtractor.NAME)
 @Singleton
 public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExtractor {
-    private static final Logger logger = LoggerFactory.getLogger(JavaAnnotationsMojoDescriptorExtractor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaAnnotationsMojoDescriptorExtractor.class);
     public static final String NAME = "java-annotations";
 
     private static final GroupKey GROUP_KEY = new GroupKey(GroupKey.JAVA_GROUP, 100);
@@ -450,7 +450,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            logger.warn("Failed extracting tag '" + tagName + "' from class " + str);
+            LOGGER.warn("Failed extracting tag '" + tagName + "' from class " + str);
             throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
@@ -490,7 +490,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
 
             return rawParams;
         } catch (NoClassDefFoundError e) {
-            logger.warn("Failed extracting parameters from " + javaClass);
+            LOGGER.warn("Failed extracting parameters from " + javaClass);
             throw e;
         }
     }
@@ -542,7 +542,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            logger.warn("Failed extracting methods from " + str);
+            LOGGER.warn("Failed extracting methods from " + str);
             throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
@@ -591,10 +591,10 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             } catch (ArtifactResolutionException e) {
                 String message = "Unable to get sources artifact for " + artifact.getId()
                         + ". Some javadoc tags (@since, @deprecated and comments) won't be used";
-                if (logger.isDebugEnabled()) {
-                    logger.warn(message, e);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.warn(message, e);
                 } else {
-                    logger.warn(message);
+                    LOGGER.warn(message);
                 }
                 return;
             }
