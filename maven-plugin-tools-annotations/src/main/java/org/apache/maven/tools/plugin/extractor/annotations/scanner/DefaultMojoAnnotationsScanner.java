@@ -50,13 +50,14 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.Mojo
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoClassVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoParameterVisitor;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
 import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mojo scanner with java annotations.
@@ -66,7 +67,8 @@ import org.objectweb.asm.Type;
  */
 @Named
 @Singleton
-public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements MojoAnnotationsScanner {
+public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultMojoAnnotationsScanner.class);
     public static final String MVN4_API = "org.apache.maven.api.plugin.annotations.";
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
@@ -174,7 +176,7 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
             }
         } catch (IllegalArgumentException e) {
             // In case of a class with newer specs an IllegalArgumentException can be thrown
-            getLogger().error("Failed to analyze " + archiveFile.getAbsolutePath() + "!/" + zipEntryName);
+            logger.error("Failed to analyze " + archiveFile.getAbsolutePath() + "!/" + zipEntryName);
 
             throw e;
         }
@@ -232,17 +234,15 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
             ClassReader rdr = new ClassReader(is);
             rdr.accept(mojoClassVisitor, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
         } catch (ArrayIndexOutOfBoundsException aiooe) {
-            getLogger()
-                    .warn(
+            logger.warn(
                             "Error analyzing class " + file + " in " + source + ": ignoring class",
-                            getLogger().isDebugEnabled() ? aiooe : null);
+                            logger.isDebugEnabled() ? aiooe : null);
             return;
         } catch (IllegalArgumentException iae) {
             if (iae.getMessage() == null) {
-                getLogger()
-                        .warn(
+                logger.warn(
                                 "Error analyzing class " + file + " in " + source + ": ignoring class",
-                                getLogger().isDebugEnabled() ? iae : null);
+                                logger.isDebugEnabled() ? iae : null);
                 return;
             } else {
                 throw iae;
@@ -259,9 +259,8 @@ public class DefaultMojoAnnotationsScanner extends AbstractLogEnabled implements
 
         if (mojoAnnotatedClass != null) // see MPLUGIN-206 we can have intermediate classes without annotations
         {
-            if (getLogger().isDebugEnabled() && mojoAnnotatedClass.hasAnnotations()) {
-                getLogger()
-                        .debug("found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
+            if (logger.isDebugEnabled() && mojoAnnotatedClass.hasAnnotations()) {
+                logger.debug("found MojoAnnotatedClass:" + mojoAnnotatedClass.getClassName() + ":"
                                 + mojoAnnotatedClass);
             }
             mojoAnnotatedClass.setArtifact(artifact);

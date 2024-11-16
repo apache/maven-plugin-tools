@@ -36,15 +36,16 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractorComparator;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jdcasey
  */
 @Named
-public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanner {
+public class DefaultMojoScanner implements MojoScanner {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultMojoScanner.class);
 
     private Map<String, MojoDescriptorExtractor> mojoDescriptorExtractors;
 
@@ -78,7 +79,6 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
     @Override
     public void populatePluginDescriptor(PluginToolsRequest request)
             throws ExtractionException, InvalidPluginDescriptorException {
-        Logger logger = getLogger();
 
         int numMojoDescriptors = 0;
 
