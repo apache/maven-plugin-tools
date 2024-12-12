@@ -79,7 +79,6 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -87,6 +86,8 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JavaMojoDescriptorExtractor, a MojoDescriptor extractor to read descriptors from java classes with annotations.
@@ -97,7 +98,8 @@ import org.objectweb.asm.Opcodes;
  */
 @Named(JavaAnnotationsMojoDescriptorExtractor.NAME)
 @Singleton
-public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled implements MojoDescriptorExtractor {
+public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExtractor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaAnnotationsMojoDescriptorExtractor.class);
     public static final String NAME = "java-annotations";
 
     private static final GroupKey GROUP_KEY = new GroupKey(GroupKey.JAVA_GROUP, 100);
@@ -448,7 +450,7 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            getLogger().warn("Failed extracting tag '" + tagName + "' from class " + str);
+            LOGGER.warn("Failed extracting tag '" + tagName + "' from class " + str);
             throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
@@ -488,7 +490,7 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
 
             return rawParams;
         } catch (NoClassDefFoundError e) {
-            getLogger().warn("Failed extracting parameters from " + javaClass);
+            LOGGER.warn("Failed extracting parameters from " + javaClass);
             throw e;
         }
     }
@@ -540,7 +542,7 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             } catch (Throwable t) {
                 str = javaClass.getValue();
             }
-            getLogger().warn("Failed extracting methods from " + str);
+            LOGGER.warn("Failed extracting methods from " + str);
             throw (NoClassDefFoundError) new NoClassDefFoundError(e.getMessage()).initCause(e);
         }
     }
@@ -589,10 +591,10 @@ public class JavaAnnotationsMojoDescriptorExtractor extends AbstractLogEnabled i
             } catch (ArtifactResolutionException e) {
                 String message = "Unable to get sources artifact for " + artifact.getId()
                         + ". Some javadoc tags (@since, @deprecated and comments) won't be used";
-                if (getLogger().isDebugEnabled()) {
-                    getLogger().warn(message, e);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.warn(message, e);
                 } else {
-                    getLogger().warn(message);
+                    LOGGER.warn(message);
                 }
                 return;
             }
