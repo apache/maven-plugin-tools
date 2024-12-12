@@ -36,15 +36,15 @@ import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractorComparator;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jdcasey
  */
 @Named
-public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanner {
+public class DefaultMojoScanner implements MojoScanner {
+    private static final Logger LOGGER = LoggerFactory.getLogger("standalone-scanner-logger");
 
     private Map<String, MojoDescriptorExtractor> mojoDescriptorExtractors;
 
@@ -61,8 +61,6 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
     @Inject
     public DefaultMojoScanner(Map<String, MojoDescriptorExtractor> extractors) {
         this.mojoDescriptorExtractors = extractors;
-
-        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "standalone-scanner-logger"));
     }
 
     /**
@@ -78,13 +76,12 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
     @Override
     public void populatePluginDescriptor(PluginToolsRequest request)
             throws ExtractionException, InvalidPluginDescriptorException {
-        Logger logger = getLogger();
 
         int numMojoDescriptors = 0;
 
         List<MojoDescriptorExtractor> orderedExtractors = getOrderedExtractors();
 
-        logger.debug("Using " + orderedExtractors.size() + " mojo extractors.");
+        LOGGER.debug("Using " + orderedExtractors.size() + " mojo extractors.");
 
         HashMap<String, Integer> groupStats = new HashMap<>();
 
@@ -92,26 +89,26 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
             GroupKey groupKey = extractor.getGroupKey();
             String extractorId = extractor.getName();
 
-            logger.debug("Applying " + extractorId + " mojo extractor");
+            LOGGER.debug("Applying " + extractorId + " mojo extractor");
 
             List<MojoDescriptor> extractorDescriptors = extractor.execute(request);
 
             int extractorDescriptorsCount = extractorDescriptors.size();
 
-            logger.info(extractorId + " mojo extractor found " + extractorDescriptorsCount + " mojo descriptor"
+            LOGGER.info(extractorId + " mojo extractor found " + extractorDescriptorsCount + " mojo descriptor"
                     + (extractorDescriptorsCount > 1 ? "s" : "") + ".");
             numMojoDescriptors += extractorDescriptorsCount;
 
             if (extractor.isDeprecated() && extractorDescriptorsCount > 0) {
-                logger.warn("");
-                logger.warn("Deprecated extractor " + extractorId
+                LOGGER.warn("");
+                LOGGER.warn("Deprecated extractor " + extractorId
                         + " extracted " + extractorDescriptorsCount
                         + " descriptor" + (extractorDescriptorsCount > 1 ? "s" : "")
                         + ". Upgrade your Mojo definitions.");
                 if (GroupKey.JAVA_GROUP.equals(groupKey.getGroup())) {
-                    logger.warn("You should use Mojo Annotations instead of Javadoc tags.");
+                    LOGGER.warn("You should use Mojo Annotations instead of Javadoc tags.");
                 }
-                logger.warn("");
+                LOGGER.warn("");
             }
 
             if (groupStats.containsKey(groupKey.getGroup())) {
@@ -121,7 +118,7 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
             }
 
             for (MojoDescriptor descriptor : extractorDescriptors) {
-                logger.debug("Adding mojo: " + descriptor + " to plugin descriptor.");
+                LOGGER.debug("Adding mojo: " + descriptor + " to plugin descriptor.");
 
                 descriptor.setPluginDescriptor(request.getPluginDescriptor());
 
@@ -129,7 +126,7 @@ public class DefaultMojoScanner extends AbstractLogEnabled implements MojoScanne
             }
         }
 
-        logger.debug("Discovered descriptors by groups: " + groupStats);
+        LOGGER.debug("Discovered descriptors by groups: " + groupStats);
 
         if (numMojoDescriptors == 0 && !request.isSkipErrorNoDescriptorsFound()) {
             throw new InvalidPluginDescriptorException("No mojo definitions were found for plugin: "

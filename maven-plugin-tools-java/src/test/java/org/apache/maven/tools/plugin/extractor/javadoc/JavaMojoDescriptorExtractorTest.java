@@ -35,8 +35,6 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -96,7 +94,6 @@ public class JavaMojoDescriptorExtractorTest {
      */
     protected PluginDescriptor generate(String directory) throws Exception {
         JavaJavadocMojoDescriptorExtractor extractor = new JavaJavadocMojoDescriptorExtractor();
-        extractor.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "test"));
         PluginToolsRequest request = createRequest(directory);
 
         List<MojoDescriptor> mojoDescriptors = extractor.execute(request);

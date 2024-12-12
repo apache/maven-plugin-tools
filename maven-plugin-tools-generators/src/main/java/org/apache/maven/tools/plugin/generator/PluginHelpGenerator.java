@@ -28,9 +28,6 @@ import java.io.Writer;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
@@ -44,7 +41,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
  * @since 2.4
  */
-public class PluginHelpGenerator extends AbstractLogEnabled {
+public class PluginHelpGenerator {
     /**
      * Default generated class name
      */
@@ -60,7 +57,7 @@ public class PluginHelpGenerator extends AbstractLogEnabled {
      * Default constructor
      */
     public PluginHelpGenerator() {
-        this.enableLogging(new ConsoleLogger(Logger.LEVEL_INFO, "PluginHelpGenerator"));
+        // nop
     }
 
     // ----------------------------------------------------------------------
