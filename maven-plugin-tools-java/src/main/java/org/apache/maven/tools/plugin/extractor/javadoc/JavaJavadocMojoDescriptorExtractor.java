@@ -49,7 +49,8 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.MojoDescriptorExtractor;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -65,9 +66,10 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
  */
 @Named(JavaJavadocMojoDescriptorExtractor.NAME)
 @Singleton
-public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
-        implements MojoDescriptorExtractor, JavadocMojoAnnotation {
+public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtractor, JavadocMojoAnnotation {
     public static final String NAME = "java-javadoc";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaJavadocMojoDescriptorExtractor.class);
 
     private static final GroupKey GROUP_KEY = new GroupKey(GroupKey.JAVA_GROUP, 200);
 
@@ -191,10 +193,10 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
         // executionStrategy (and deprecated @attainAlways)
         tag = findInClassHierarchy(javaClass, JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY);
         if (tag != null) {
-            getLogger()
-                    .warn("@" + JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in "
-                            + javaClass.getFullyQualifiedName() + " is deprecated: please use '@"
-                            + JavadocMojoAnnotation.EXECUTION_STATEGY + " always' instead.");
+            LOGGER.warn(
+                    "@" + JavadocMojoAnnotation.MULTI_EXECUTION_STRATEGY + " in {} is deprecated: please use '@"
+                            + JavadocMojoAnnotation.EXECUTION_STATEGY + " always' instead.",
+                    javaClass.getFullyQualifiedName());
             mojoDescriptor.setExecutionStrategy(MojoDescriptor.MULTI_PASS_EXEC_STRATEGY);
         } else {
             mojoDescriptor.setExecutionStrategy(MojoDescriptor.SINGLE_PASS_EXEC_STRATEGY);
@@ -424,12 +426,12 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                 String property = parameter.getNamedParameter(JavadocMojoAnnotation.PARAMETER_PROPERTY);
 
                 if ((expression != null && !expression.isEmpty()) && (property != null && !property.isEmpty())) {
-                    getLogger().error(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
-                    getLogger().error("  Cannot use both:");
-                    getLogger().error("    @parameter expression=\"${property}\"");
-                    getLogger().error("  and");
-                    getLogger().error("    @parameter property=\"property\"");
-                    getLogger().error("  Second syntax is preferred.");
+                    LOGGER.error(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
+                    LOGGER.error("  Cannot use both:");
+                    LOGGER.error("    @parameter expression=\"${property}\"");
+                    LOGGER.error("  and");
+                    LOGGER.error("    @parameter property=\"property\"");
+                    LOGGER.error("  Second syntax is preferred.");
                     throw new InvalidParameterException(
                             javaClass.getFullyQualifiedName() + "#" + field.getName() + ": cannot"
                                     + " use both @parameter expression and property",
@@ -437,12 +439,12 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                 }
 
                 if (expression != null && !expression.isEmpty()) {
-                    getLogger().warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
-                    getLogger().warn("  The syntax");
-                    getLogger().warn("    @parameter expression=\"${property}\"");
-                    getLogger().warn("  is deprecated, please use");
-                    getLogger().warn("    @parameter property=\"property\"");
-                    getLogger().warn("  instead.");
+                    LOGGER.warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
+                    LOGGER.warn("  The syntax");
+                    LOGGER.warn("    @parameter expression=\"${property}\"");
+                    LOGGER.warn("  is deprecated, please use");
+                    LOGGER.warn("    @parameter property=\"property\"");
+                    LOGGER.warn("  instead.");
 
                 } else if (property != null && !property.isEmpty()) {
                     expression = "${" + property + "}";
@@ -451,12 +453,12 @@ public class JavaJavadocMojoDescriptorExtractor extends AbstractLogEnabled
                 pd.setExpression(expression);
 
                 if ((expression != null && !expression.isEmpty()) && expression.startsWith("${component.")) {
-                    getLogger().warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
-                    getLogger().warn("  The syntax");
-                    getLogger().warn("    @parameter expression=\"${component.<role>#<roleHint>}\"");
-                    getLogger().warn("  is deprecated, please use");
-                    getLogger().warn("    @component role=\"<role>\" roleHint=\"<roleHint>\"");
-                    getLogger().warn("  instead.");
+                    LOGGER.warn(javaClass.getFullyQualifiedName() + "#" + field.getName() + ":");
+                    LOGGER.warn("  The syntax");
+                    LOGGER.warn("    @parameter expression=\"${component.<role>#<roleHint>}\"");
+                    LOGGER.warn("  is deprecated, please use");
+                    LOGGER.warn("    @component role=\"<role>\" roleHint=\"<roleHint>\"");
+                    LOGGER.warn("  instead.");
                 }
 
                 if ("${reports}".equals(pd.getExpression())) {

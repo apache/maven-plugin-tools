@@ -30,17 +30,19 @@ import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @deprecated Scripting support for Mojos is deprecated and is planned to be removed in Maven 4.0
  * @author jdcasey
  */
 @Deprecated
-public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLogEnabled
-        implements MojoDescriptorExtractor {
+public abstract class AbstractScriptedMojoDescriptorExtractor implements MojoDescriptorExtractor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractScriptedMojoDescriptorExtractor.class);
+
     @Override
     public boolean isDeprecated() {
         return true;
@@ -50,7 +52,7 @@ public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLo
     @Override
     public List<MojoDescriptor> execute(PluginToolsRequest request)
             throws ExtractionException, InvalidPluginDescriptorException {
-        getLogger().debug("Running: " + getClass().getName());
+        LOGGER.debug("Running: " + getClass().getName());
         String metadataExtension = getMetadataFileExtension(request);
         String scriptExtension = getScriptFileExtension(request);
 
@@ -75,8 +77,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLo
                 scriptFilesKeyedByBasedir, project.getBuild().getOutputDirectory(), request);
 
         if (!mojoDescriptors.isEmpty()) {
-            getLogger().warn("Scripting support for mojos is deprecated and is planned to be removed in Maven 4.");
-            getLogger().warn("Found " + mojoDescriptors.size() + " scripted mojos.");
+            LOGGER.warn("Scripting support for mojos is deprecated and is planned to be removed in Maven 4.");
+            LOGGER.warn("Found " + mojoDescriptors.size() + " scripted mojos.");
         }
 
         return mojoDescriptors;
@@ -140,9 +142,8 @@ public abstract class AbstractScriptedMojoDescriptorExtractor extends AbstractLo
         for (String resourceDir : directories) {
             Set<File> sources = new HashSet<>();
 
-            getLogger()
-                    .debug("Scanning script dir: " + resourceDir + " with extractor: "
-                            + getClass().getName());
+            LOGGER.debug("Scanning script dir: " + resourceDir + " with extractor: "
+                    + getClass().getName());
             File dir = new File(resourceDir);
             if (!dir.isAbsolute()) {
                 dir = new File(basedir, resourceDir).getAbsoluteFile();

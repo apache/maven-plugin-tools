@@ -37,7 +37,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.ParametersWithGenericsMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
-import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 class DefaultMojoAnnotationsScannerTest {
     private DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
@@ -58,7 +56,6 @@ class DefaultMojoAnnotationsScannerTest {
 
     @Test
     void testJava8Annotations() throws Exception {
-        scanner.enableLogging(mock(Logger.class));
         scanner.scanArchive(new File("target/test-classes/java8-annotations.jar"), null, false);
     }
 
@@ -66,7 +63,6 @@ class DefaultMojoAnnotationsScannerTest {
     void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException {
         File directoryToScan = new File(DeprecatedMojo.class.getResource("").getFile());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> result =
                 scanner.scanDirectory(directoryToScan, Collections.singletonList("DeprecatedMojo.class"), null, false);
 
@@ -94,7 +90,6 @@ class DefaultMojoAnnotationsScannerTest {
         File directoryToScan =
                 new File(ParametersWithGenericsMojo.class.getResource("").getFile());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> result = scanner.scanDirectory(
                 directoryToScan, Collections.singletonList("ParametersWithGenericsMojo**.class"), null, false);
 
@@ -141,7 +136,6 @@ class DefaultMojoAnnotationsScannerTest {
         request.setIncludePatterns(Arrays.asList("**/FooMojo.class"));
         request.setProject(new MavenProject());
 
-        scanner.enableLogging(mock(Logger.class));
         Map<String, MojoAnnotatedClass> mojoAnnotatedClasses = scanner.scan(request);
 
         System.out.println("mojoAnnotatedClasses:" + mojoAnnotatedClasses);
