@@ -288,7 +288,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     protected final BuildContext buildContext;
 
     @Inject
-    protected DescriptorGeneratorMojo(MavenProject project, MojoScanner mojoScanner, BuildContext buildContext) {
+    public DescriptorGeneratorMojo(MavenProject project, MojoScanner mojoScanner, BuildContext buildContext) {
         super(project);
         this.mojoScanner = mojoScanner;
         this.buildContext = buildContext;
