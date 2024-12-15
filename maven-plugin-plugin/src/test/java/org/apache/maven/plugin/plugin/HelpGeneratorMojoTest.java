@@ -40,8 +40,7 @@ class HelpGeneratorMojoTest {
     @ParameterizedTest
     @MethodSource
     void packageNameShouldBeCorrect(MavenProject project, String expectedPackageName) {
-        HelpGeneratorMojo mojo = new HelpGeneratorMojo();
-        mojo.project = project;
+        HelpGeneratorMojo mojo = new HelpGeneratorMojo(project, null);
 
         String packageName = mojo.getHelpPackageName();
         assertEquals(expectedPackageName, packageName);

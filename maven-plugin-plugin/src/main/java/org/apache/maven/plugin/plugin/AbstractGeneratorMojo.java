@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -34,11 +33,6 @@ import org.apache.maven.project.MavenProject;
  *
  */
 public abstract class AbstractGeneratorMojo extends AbstractMojo {
-    /**
-     * The project currently being built.
-     */
-    @Component
-    protected MavenProject project;
 
     /**
      * The goal prefix that will appear before the ":".
@@ -66,6 +60,15 @@ public abstract class AbstractGeneratorMojo extends AbstractMojo {
      * System/OS line separator: used to format console messages.
      */
     protected static final String LS = System.lineSeparator();
+
+    /**
+     * The project currently being built.
+     */
+    protected final MavenProject project;
+
+    protected AbstractGeneratorMojo(MavenProject project) {
+        this.project = project;
+    }
 
     protected abstract void generate() throws MojoExecutionException;
 
