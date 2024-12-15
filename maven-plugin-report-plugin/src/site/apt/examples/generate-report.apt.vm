@@ -59,11 +59,13 @@ Configuring Generation of Documentation Reports
 
  The standard report goal <<<report>>> invokes separate lifecyle of <<<process-classes>>>.
  In a CI environment you now might execute something like <<<mvn clean deploy site-deploy>>>.
- During <<<site>>> build the standard reports will trigger <<<process-classes>>> again, depending on your build this may take some time, because
- stuff like <<<enforcer>>> or generating stubs from a WDSL will be invoked again, which may lead
+ During <<<site>>> build the standard reports will trigger <<<process-classes>>> again.
+ Depending on your build this may take some time because
+ stuff like <<<enforcer>>> or generating stubs from a WSDL will be invoked again, which may lead
  to longer build times.
 
- As of version 3.14.0 a new report goal is defined, <<<report-no-fork>>> which will not trigger above phase a second time.
+ As of version 3.14.0 a new report goal is defined, <<<report-no-fork>>> which will not trigger
+ the above phase a second time.
 
  Configure this in your <<<reporting>>> section as follows:
 
