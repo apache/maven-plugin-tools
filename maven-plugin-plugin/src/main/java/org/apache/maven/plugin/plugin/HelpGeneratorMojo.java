@@ -18,6 +18,7 @@
  */
 package org.apache.maven.plugin.plugin;
 
+import javax.inject.Inject;
 import javax.lang.model.SourceVersion;
 
 import java.io.File;
@@ -25,11 +26,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.apache.maven.tools.plugin.generator.PluginHelpGenerator;
 import org.codehaus.plexus.util.StringUtils;
@@ -71,8 +72,13 @@ public class HelpGeneratorMojo extends AbstractGeneratorMojo {
     /**
      * Velocity component.
      */
-    @Component
-    private VelocityComponent velocity;
+    private final VelocityComponent velocity;
+
+    @Inject
+    public HelpGeneratorMojo(MavenProject project, VelocityComponent velocity) {
+        super(project);
+        this.velocity = velocity;
+    }
 
     String getHelpPackageName() {
         String packageName = null;
