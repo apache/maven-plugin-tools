@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.plugin;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
@@ -262,11 +265,16 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     /**
      * The component used for scanning the source tree for mojos.
      */
-    @Component
-    private MojoScanner mojoScanner;
+    private final MojoScanner mojoScanner;
 
-    @Component
-    protected BuildContext buildContext;
+    protected final BuildContext buildContext;
+
+    @Inject
+    public DescriptorGeneratorMojo(MavenProject project, MojoScanner mojoScanner, BuildContext buildContext) {
+        super(project);
+        this.mojoScanner = mojoScanner;
+        this.buildContext = buildContext;
+    }
 
     public void generate() throws MojoExecutionException {
 
