@@ -124,6 +124,7 @@ public class MyMojo
 
     private final MojoExecution mojoExecution;
 
+    @Inject
     public MyMojo(MyComponent component, MavenSession session, MavenProject project, MojoExecution mojoExecution) {
         this.component = component;
         this.session = session;
