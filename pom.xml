@@ -92,7 +92,7 @@
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-beta-4</maven4Version>
     <maven3Version>3.9.9</maven3Version>
-    <resolverVersion>1.9.20</resolverVersion>
+    <resolverVersion>2.0.3</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the
