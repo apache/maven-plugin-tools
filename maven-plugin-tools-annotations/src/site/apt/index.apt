@@ -90,28 +90,6 @@ public class MyMojo
                 required = <false|true> )
     private String parameter;
 
-    @Component( role = MyComponentExtension.class,
-                hint = "..." )
-    private MyComponent component;
-
-    // pseudo-parameters (marked read-only) permitting injection of Maven build context objects
-    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
-    //     https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html
-    // plugins targetting Maven 3.2.5+ (after MNG-5695) should not use these pseudo-parameters any more,
-    // but @Component and Maven APIs to get better compiler-time checks
-
-    // @Parameter( defaultValue = "${session}", readonly = true )
-    @Component // since Maven 3.2.5, thanks to MNG-5695
-    private MavenSession session;
-
-    // @Parameter( defaultValue = "${project}", readonly = true )
-    @Component // since Maven 3.2.5, thanks to MNG-5695
-    private MavenProject project;
-
-    // @Parameter( defaultValue = "${mojoExecution}", readonly = true )
-    @Component // since Maven 3.2.5, thanks to MNG-5695
-    private MojoExecution mojoExecution;
-
     @Parameter( defaultValue = "${reactorProjects}", readonly = true )
     // prefer using session.getProjects()
     private List<MavenProject> reactorProjects;
@@ -131,6 +109,28 @@ public class MyMojo
     @Parameter( defaultValue = "${project.build.directory}", readonly = true )
     // prefer using project.getBuild().getDirectory()
     private File target;
+
+    // pseudo-parameters (marked read-only) permitting injection of Maven build context objects
+    // sample objects taken from Maven API through PluginParameterExpressionEvaluator
+    //     https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html
+    // plugins targeting Maven 3.2.5+ (after MNG-5695) should not use these pseudo-parameters any more,
+    // but @Inject and Maven APIs to get better compiler-time checks
+
+    private final MyComponent component;
+
+    private final MavenSession session;
+
+    private final MavenProject project;
+
+    private final MojoExecution mojoExecution;
+
+    @Inject
+    public MyMojo(MyComponent component, MavenSession session, MavenProject project, MojoExecution mojoExecution) {
+        this.component = component;
+        this.session = session;
+        this.project = project;
+        this.mojoExecution = mojoExecution;
+    }
 
     /**
      * @Parameter for methods can be used only with public setter methods
