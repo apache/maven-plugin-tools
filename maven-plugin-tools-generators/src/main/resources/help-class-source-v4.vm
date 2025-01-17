@@ -253,7 +253,6 @@ public class HelpMojo
         throws MojoException
     {
         String mojoGoal = getValue( mojo, "goal" );
-        Node configurationElement = findSingleChild( mojo, "configuration" );
         Node description = findSingleChild( mojo, "description" );
         if ( goal == null || goal.length() <= 0 || mojoGoal.equals( goal ) )
         {
@@ -283,13 +282,13 @@ public class HelpMojo
 
                 for ( Node parameter : parameters )
                 {
-                    writeParameter( sb, parameter, configurationElement );
+                    writeParameter( sb, parameter );
                 }
             }
         }
     }
 
-    private void writeParameter( StringBuilder sb, Node parameter, Node configurationElement )
+    private void writeParameter( StringBuilder sb, Node parameter )
         throws MojoException
     {
         String parameterName = getValue( parameter, "name" );
