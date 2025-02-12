@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
+ * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>,
  * and one <code><i>goal</i>-mojo.html</code> per goal.
  * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
  *
