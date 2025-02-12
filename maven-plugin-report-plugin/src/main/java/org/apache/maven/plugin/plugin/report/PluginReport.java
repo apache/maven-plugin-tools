@@ -61,7 +61,7 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.version.Version;
 
 /**
- * Generates the Plugin's documentation report: <code>plugin-info.html</code> plugin overview page,
+ * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>
  * and one <code><i>goal</i>-mojo.html</code> per goal.
  * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
  *
