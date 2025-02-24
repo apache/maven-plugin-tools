@@ -103,7 +103,7 @@
     needs to be updated as well -->
     <asmVersion>9.7.1</asmVersion>
     <plexusUtilsVersion>4.0.1</plexusUtilsVersion>
-    <plexusXmlVersion>3.0.1</plexusXmlVersion>
+    <plexusXmlVersion>4.0.4</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
