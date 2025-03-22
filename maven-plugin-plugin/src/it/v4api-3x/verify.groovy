@@ -25,7 +25,7 @@ assert descriptorFile.isFile()
 def pluginDescriptor = new XmlParser().parse( descriptorFile );
 
 assert pluginDescriptor.requiredJavaVersion.text() == '17'
-assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-beta-4'
+assert pluginDescriptor.requiredMavenVersion.text() == '4.0.0-rc-3'
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
