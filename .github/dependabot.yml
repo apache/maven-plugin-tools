@@ -27,6 +27,9 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "maven-plugin-tools-3.x"
+    labels:
+      - 3.x
+      - dependencies
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -38,3 +41,6 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "maven-plugin-tools-3.x"
+    labels:
+      - 3.x
+      - dependencies
