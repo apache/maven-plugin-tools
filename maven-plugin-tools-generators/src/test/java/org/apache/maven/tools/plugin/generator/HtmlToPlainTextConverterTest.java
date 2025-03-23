@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class HtmlToPlainTextConverterTest {
     private final Converter converter;
 
-    public HtmlToPlainTextConverterTest() {
+    private HtmlToPlainTextConverterTest() {
         converter = new HtmlToPlainTextConverter();
     }
 

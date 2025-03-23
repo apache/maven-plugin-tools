@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AntMojoDescriptorExtractorTest {
 
     @Test
-    void testBasicMojoExtraction_CheckInjectedParametersAndRequirements()
+    void testBasicMojoExtractionCheckInjectedParametersAndRequirements()
             throws InvalidPluginDescriptorException, ExtractionException {
         Map<String, Set<File>> scriptMap = buildTestMap("basic");
 

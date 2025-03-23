@@ -30,6 +30,11 @@
   <name>Maven Plugin Tool for Java with Annotations</name>
   <description>Descriptor extractor for plugins written in Java with Java annotations.</description>
 
+  <properties>
+    <!-- Disabled for this project, because the styleguide prevents some functional tests -->
+    <checkstyle.includeTestSourceDirectory>false</checkstyle.includeTestSourceDirectory>
+  </properties>
+
   <dependencies>
     <!-- maven -->
     <dependency>
