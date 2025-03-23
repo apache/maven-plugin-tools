@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestUtils {
 
     @Test
-    void testDirnameFunction_METATEST() throws UnsupportedEncodingException {
+    void testDirnameFunctionMETATEST() throws UnsupportedEncodingException {
         String classname = getClass().getName().replace('.', '/') + ".class";
         String basedir = TestUtils.dirname(classname);
 
