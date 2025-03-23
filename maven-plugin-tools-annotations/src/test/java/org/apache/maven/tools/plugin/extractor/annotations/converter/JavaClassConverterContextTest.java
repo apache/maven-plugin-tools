@@ -54,7 +54,7 @@ class JavaClassConverterContextTest {
 
     private URI javadocBaseUri;
 
-    public JavaClassConverterContextTest() throws URISyntaxException {
+    JavaClassConverterContextTest() throws URISyntaxException {
         builder = new JavaProjectBuilder();
         builder.addSourceFolder(new File("src/test/java"));
 
@@ -302,7 +302,7 @@ class JavaClassConverterContextTest {
                         currentPackageName, "OtherClass", "STATIC_2", MemberType.FIELD, false)));
         // although not explicitly stated, never used for value javadoc tag, as this only supports string constants
         assertEquals(
-                "3l",
+                "3L",
                 context.getStaticFieldValue(new FullyQualifiedJavadocReference(
                         currentPackageName, "OtherClass", "STATIC_3", MemberType.FIELD, false)));
         FullyQualifiedJavadocReference reference =

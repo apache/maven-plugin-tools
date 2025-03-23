@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.other.OtherClassOtherPackage;
 
+@SuppressWarnings("checkstyle:VisibilityModifier")
 public class CurrentClass extends SuperClass {
 
     public String field1;

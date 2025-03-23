@@ -35,7 +35,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
     private final JavadocBlockTagsToXhtmlConverter converter;
     private final JavadocInlineTagsToXhtmlConverter inlineTagsConverter;
 
-    public JavadocBlockTagsToXhtmlConverterTest() {
+    JavadocBlockTagsToXhtmlConverterTest() {
         URI baseUrl = URI.create("https://javadoc.example.com/");
         context = new SimpleConverterContext("my.package", baseUrl);
         inlineTagsConverter = JavadocInlineTagsToXhtmlConverterTest.createInlineTagConverter();

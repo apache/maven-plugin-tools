@@ -18,6 +18,7 @@
  */
 package org.apache.maven.tools.plugin.extractor.annotations.converter.test;
 
+@SuppressWarnings({"checkstyle:StaticVariableName", "checkstyle:VisibilityModifier"})
 public class OtherClass {
     String field1;
     public static String STATIC_1 = "STATIC 1";
@@ -26,7 +27,7 @@ public class OtherClass {
      */
     public static final String STATIC_2 = "STATIC 2";
 
-    protected static Long STATIC_3 = 3l;
+    protected static Long STATIC_3 = 3L;
 
     enum EmbeddedEnum {}
 }
