@@ -111,7 +111,7 @@
           </tr>
           <tr>
             <td>plugin-enhanced.xml</td>
-            <td>no</td>
+            <td>yes</td>
             <td>yes</td>
             <td>no (volatile file)</td>
           </tr>
