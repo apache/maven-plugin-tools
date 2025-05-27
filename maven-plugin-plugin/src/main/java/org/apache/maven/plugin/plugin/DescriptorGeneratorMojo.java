@@ -48,7 +48,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
+import org.apache.maven.tools.plugin.PluginDescriptorHelper;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
@@ -521,10 +521,9 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     }
 
     private PluginDescriptor extendPluginDescriptor(PluginToolsRequest request) {
-        ExtendedPluginDescriptor extendedPluginDescriptor = new ExtendedPluginDescriptor(request.getPluginDescriptor());
-        extendedPluginDescriptor.setRequiredJavaVersion(getRequiredJavaVersion(request));
-        extendedPluginDescriptor.setRequiredMavenVersion(getRequiredMavenVersion(request));
-        return extendedPluginDescriptor;
+        PluginDescriptor pluginDescriptor = request.getPluginDescriptor();
+        pluginDescriptor.setRequiredMavenVersion(getRequiredMavenVersion(request));
+        return PluginDescriptorHelper.setRequiredJavaVersion(pluginDescriptor, getRequiredJavaVersion(request));
     }
 
     private String getRequiredMavenVersion(PluginToolsRequest request) {
