@@ -35,7 +35,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.Requirement;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
+import org.apache.maven.tools.plugin.PluginDescriptorHelper;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
@@ -58,7 +58,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * </ol>
  * from a given in-memory descriptor. The in-memory descriptor acting as source is supposed to contain XHTML values
  * for description elements.
- *
  */
 public class PluginDescriptorFilesGenerator implements Generator {
     private static final Logger LOG = LoggerFactory.getLogger(PluginDescriptorFilesGenerator.class);
@@ -147,11 +146,9 @@ public class PluginDescriptorFilesGenerator implements Generator {
                 GeneratorUtils.element(
                         w, "inheritedByDefault", String.valueOf(pluginDescriptor.isInheritedByDefault()));
 
-                if (pluginDescriptor instanceof ExtendedPluginDescriptor) {
-                    ExtendedPluginDescriptor extPluginDescriptor = (ExtendedPluginDescriptor) pluginDescriptor;
-                    if (StringUtils.isNotBlank(extPluginDescriptor.getRequiredJavaVersion())) {
-                        GeneratorUtils.element(w, "requiredJavaVersion", extPluginDescriptor.getRequiredJavaVersion());
-                    }
+                if (StringUtils.isNotBlank(PluginDescriptorHelper.getRequiredJavaVersion(pluginDescriptor))) {
+                    GeneratorUtils.element(
+                            w, "requiredJavaVersion", PluginDescriptorHelper.getRequiredJavaVersion(pluginDescriptor));
                 }
                 if (StringUtils.isNotBlank(pluginDescriptor.getRequiredMavenVersion())) {
                     GeneratorUtils.element(w, "requiredMavenVersion", pluginDescriptor.getRequiredMavenVersion());
@@ -195,7 +192,6 @@ public class PluginDescriptorFilesGenerator implements Generator {
     }
 
     /**
-     *
      * @param type
      * @param containsXhtmlValue
      * @param text
@@ -585,6 +581,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
 
     /**
      * Writes parameter type information and potentially also the related javadoc URL.
+     *
      * @param w
      * @param type
      * @param javadocLinkGenerator

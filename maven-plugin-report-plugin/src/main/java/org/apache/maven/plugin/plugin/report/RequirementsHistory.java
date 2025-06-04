@@ -29,7 +29,7 @@ import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.Prerequisites;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.ExtendedPluginDescriptor;
+import org.apache.maven.tools.plugin.PluginDescriptorHelper;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
@@ -114,11 +114,7 @@ public class RequirementsHistory {
      * @return the JDK version
      */
     public static String discoverJdkRequirement(MavenProject project, PluginDescriptor pluginDescriptor) {
-        String jdk = null;
-        if (pluginDescriptor instanceof ExtendedPluginDescriptor) {
-            ExtendedPluginDescriptor extPluginDescriptor = (ExtendedPluginDescriptor) pluginDescriptor;
-            jdk = extPluginDescriptor.getRequiredJavaVersion();
-        }
+        String jdk = PluginDescriptorHelper.getRequiredJavaVersion(pluginDescriptor);
         if (jdk != null) {
             return jdk;
         }
