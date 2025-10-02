@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>44</version>
+    <version>45</version>
     <relativePath />
   </parent>
 
@@ -94,11 +94,12 @@
     <maven3Version>3.9.9</maven3Version>
     <resolverVersion>1.9.20</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
+    <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
+    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST-4.x</maven.site.path>
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
-    <asmVersion>9.7.1</asmVersion>
+    <asmVersion>9.8</asmVersion>
     <plexusUtilsVersion>4.0.2</plexusUtilsVersion>
     <plexusXmlVersion>3.0.1</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
