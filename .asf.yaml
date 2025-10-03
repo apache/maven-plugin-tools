@@ -24,6 +24,7 @@ github:
     - maven-plugins
     - maven-plugin-plugin
     - maven
+    - hacktoberfest
   protected_branches:
     master: { }
     maven-plugin-tools-3.14.x: { }
