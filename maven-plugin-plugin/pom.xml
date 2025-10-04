@@ -279,6 +279,9 @@
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:jar:test-sources</extraArtifact>
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:test-jar</extraArtifact>
               </extraArtifacts>
+              <scriptVariables>
+                <maven3Version>${maven3Version}</maven3Version>
+              </scriptVariables>
             </configuration>
             <executions>
               <execution>
