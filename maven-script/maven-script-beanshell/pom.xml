@@ -39,7 +39,7 @@ under the License.
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-bsh-factory</artifactId>
-      <version>1.0-alpha-7</version>
+      <version>1.0-alpha-9</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.plexus</groupId>
