@@ -307,6 +307,9 @@
                 <extraArtifact>org.apache.maven.plugin-tools:maven-script-ant:${project.version}</extraArtifact>
                 <extraArtifact>org.apache.maven.plugin-tools:maven-script-beanshell:${project.version}</extraArtifact>
               </extraArtifacts>
+              <scriptVariables>
+                <maven3Version>${maven3Version}</maven3Version>
+              </scriptVariables>
             </configuration>
             <executions>
               <execution>
