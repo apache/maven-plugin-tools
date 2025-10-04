@@ -281,6 +281,9 @@
                 <!-- used in ITs -->
                 <extraArtifact>org.apache.maven.plugins:maven-plugin-plugin:${project.version}</extraArtifact>
               </extraArtifacts>
+              <scriptVariables>
+                <maven3Version>${maven3Version}</maven3Version>
+              </scriptVariables>
             </configuration>
             <executions>
               <execution>
