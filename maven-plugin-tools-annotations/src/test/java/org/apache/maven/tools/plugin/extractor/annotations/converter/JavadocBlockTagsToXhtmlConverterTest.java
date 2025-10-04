@@ -47,7 +47,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
     @Test
     void testSee() {
         assertEquals(
-                "<br /><strong>See also:</strong> \"Some reference\"",
+                "<br />\n<strong>See also:</strong> \"Some reference\"",
                 converter.convert("see", "\"Some reference\"", context));
         assertEquals(
                 ", <a href=\"example.com\">Example</a>",
@@ -57,7 +57,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
         ConverterContext context2 =
                 new SimpleConverterContext("my.package", URI.create("https://javadoc.example.com/"));
         assertEquals(
-                "<br /><strong>See also:</strong> <a href=\"example.com\">Example</a>",
+                "<br />\n<strong>See also:</strong> <a href=\"example.com\">Example</a>",
                 converter.convert("see", "<a href=\"example.com\">Example</a>", context2));
     }
 
