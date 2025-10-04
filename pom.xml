@@ -93,7 +93,7 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.3.0</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-alpha-4</maven4Version>
-    <maven3Version>3.9.9</maven3Version>
+    <maven3Version>3.9.11</maven3Version>
     <resolverVersion>1.9.20</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.15</antVersion>
