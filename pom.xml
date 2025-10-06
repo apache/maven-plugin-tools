@@ -104,7 +104,7 @@
     <asmVersion>9.8</asmVersion>
     <!-- TODO remove with next parent version update -->
     <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
-    <plexusUtilsVersion>4.0.1</plexusUtilsVersion>
+    <plexusUtilsVersion>4.0.2</plexusUtilsVersion>
     <plexusXmlVersion>3.0.2</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
