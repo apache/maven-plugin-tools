@@ -137,6 +137,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V23, "23");
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V24, "24");
         CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V25, "25");
+        CLASS_VERSION_TO_JAVA_STRING.put(Opcodes.V26, "26");
     }
 
     @Inject
