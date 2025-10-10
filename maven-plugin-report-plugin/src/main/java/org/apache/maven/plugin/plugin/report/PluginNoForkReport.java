@@ -24,8 +24,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>,
- * and one <code><i>goal</i>-mojo.html</code> per goal.
- * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
+ * and one <code><i>goal</i>-goal.html</code> per goal.
+ * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-goal.html">plugin:descriptor</a>.
  *
  * @since 3.14.0
  */
