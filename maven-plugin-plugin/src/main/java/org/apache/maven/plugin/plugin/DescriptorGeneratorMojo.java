@@ -40,7 +40,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -241,9 +240,6 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     @Parameter(property = "internalJavadocVersion", defaultValue = "${java.version}")
     protected String internalJavadocVersion;
 
-    @Component
-    private MavenSession mavenSession;
-
     /**
      * The required Java version to set in the plugin descriptor. This is evaluated by Maven 4 and ignored by earlier
      * Maven versions. Can be either one of the following formats:
@@ -280,6 +276,8 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     @Parameter(defaultValue = VALUE_AUTO)
     String requiredMavenVersion;
 
+    private final MavenSession mavenSession;
+
     /**
      * The component used for scanning the source tree for mojos.
      */
@@ -288,8 +286,10 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     protected final BuildContext buildContext;
 
     @Inject
-    public DescriptorGeneratorMojo(MavenProject project, MojoScanner mojoScanner, BuildContext buildContext) {
+    public DescriptorGeneratorMojo(
+            MavenProject project, MavenSession mavenSession, MojoScanner mojoScanner, BuildContext buildContext) {
         super(project);
+        this.mavenSession = mavenSession;
         this.mojoScanner = mojoScanner;
         this.buildContext = buildContext;
     }
