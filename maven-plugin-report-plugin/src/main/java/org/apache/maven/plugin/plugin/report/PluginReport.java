@@ -18,6 +18,8 @@
  */
 package org.apache.maven.plugin.plugin.report;
 
+import javax.inject.Inject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -35,7 +37,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -118,14 +119,12 @@ public class PluginReport extends AbstractMavenReport {
     @Parameter(defaultValue = "[0,)")
     private String requirementsHistoryDetectionRange;
 
-    @Component
-    private RuntimeInformation rtInfo;
+    private final RuntimeInformation rtInfo;
 
     /**
      * Internationalization component.
      */
-    @Component
-    private I18N i18n;
+    private final I18N i18n;
 
     /**
      * Path to enhanced plugin descriptor to generate the report from (must contain some XHTML values)
@@ -148,14 +147,25 @@ public class PluginReport extends AbstractMavenReport {
     @Parameter(property = "maven.plugin.report.disableInternalJavadocLinkValidation")
     private boolean disableInternalJavadocLinkValidation;
 
-    @Component
-    private MavenSession mavenSession;
+    private final MavenSession mavenSession;
 
-    @Component
-    private RepositorySystem repositorySystem;
+    private final RepositorySystem repositorySystem;
 
-    @Component
-    private ProjectBuilder projectBuilder;
+    private final ProjectBuilder projectBuilder;
+
+    @Inject
+    public PluginReport(
+            RuntimeInformation rtInfo,
+            I18N i18n,
+            MavenSession mavenSession,
+            RepositorySystem repositorySystem,
+            ProjectBuilder projectBuilder) {
+        this.rtInfo = rtInfo;
+        this.i18n = i18n;
+        this.mavenSession = mavenSession;
+        this.repositorySystem = repositorySystem;
+        this.projectBuilder = projectBuilder;
+    }
 
     /**
      * {@inheritDoc}
