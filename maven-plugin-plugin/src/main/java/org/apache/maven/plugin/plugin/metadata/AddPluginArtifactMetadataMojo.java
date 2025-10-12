@@ -18,10 +18,11 @@
  */
 package org.apache.maven.plugin.plugin.metadata;
 
+import javax.inject.Inject;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -52,8 +53,7 @@ public class AddPluginArtifactMetadataMojo extends AbstractMojo {
     /**
      * The project artifact, which should have the <code>latest</code> metadata added to it.
      */
-    @Component
-    private MavenProject project;
+    private final MavenProject project;
 
     /**
      * The prefix for the plugin goal.
@@ -69,10 +69,15 @@ public class AddPluginArtifactMetadataMojo extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "maven.plugin.skip")
     private boolean skip;
 
-    @Component
-    private RuntimeInformation runtimeInformation;
+    private final RuntimeInformation runtimeInformation;
 
     private final VersionScheme versionScheme = new GenericVersionScheme();
+
+    @Inject
+    public AddPluginArtifactMetadataMojo(MavenProject project, RuntimeInformation runtimeInformation) {
+        this.project = project;
+        this.runtimeInformation = runtimeInformation;
+    }
 
     /** {@inheritDoc} */
     @Override

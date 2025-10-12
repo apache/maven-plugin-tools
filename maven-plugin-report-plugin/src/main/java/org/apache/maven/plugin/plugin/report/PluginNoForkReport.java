@@ -18,9 +18,16 @@
  */
 package org.apache.maven.plugin.plugin.report;
 
+import javax.inject.Inject;
+
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.rtinfo.RuntimeInformation;
+import org.codehaus.plexus.i18n.I18N;
+import org.eclipse.aether.RepositorySystem;
 
 /**
  * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>,
@@ -31,4 +38,15 @@ import org.apache.maven.plugins.annotations.Mojo;
  */
 @Mojo(name = "report-no-fork", threadSafe = true)
 @Execute(phase = LifecyclePhase.NONE)
-public class PluginNoForkReport extends PluginReport {}
+public class PluginNoForkReport extends PluginReport {
+
+    @Inject
+    public PluginNoForkReport(
+            RuntimeInformation rtInfo,
+            I18N i18n,
+            MavenSession mavenSession,
+            RepositorySystem repositorySystem,
+            ProjectBuilder projectBuilder) {
+        super(rtInfo, i18n, mavenSession, repositorySystem, projectBuilder);
+    }
+}
