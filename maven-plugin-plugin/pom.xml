@@ -281,6 +281,7 @@
               </extraArtifacts>
               <scriptVariables>
                 <maven3Version>${maven3Version}</maven3Version>
+                <maven4Version>${maven4Version}</maven4Version>
               </scriptVariables>
             </configuration>
             <executions>
