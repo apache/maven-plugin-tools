@@ -20,8 +20,6 @@ package org.apache.maven.tools.plugin.util.stubs;
 
 import java.util.Locale;
 
-import org.apache.maven.doxia.siterenderer.Renderer;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 
@@ -32,24 +30,6 @@ public class MavenReportStub extends AbstractMavenReport {
     /** {@inheritDoc} */
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {}
-
-    /** {@inheritDoc} */
-    @Override
-    protected String getOutputDirectory() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected MavenProject getProject() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected Renderer getSiteRenderer() {
-        return null;
-    }
 
     /** {@inheritDoc} */
     @Override
