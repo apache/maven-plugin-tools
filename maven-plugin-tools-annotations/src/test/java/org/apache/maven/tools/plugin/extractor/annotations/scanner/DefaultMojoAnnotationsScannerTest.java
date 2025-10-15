@@ -40,7 +40,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAn
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codehaus.plexus.testing.PlexusExtension.getBasedir;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -132,7 +131,7 @@ class DefaultMojoAnnotationsScannerTest {
     @Test
     void scanFooMojoClass() throws Exception {
         MojoAnnotationsScannerRequest request = new MojoAnnotationsScannerRequest();
-        request.setClassesDirectories(Collections.singletonList(new File(getBasedir(), "target/test-classes")));
+        request.setClassesDirectories(Collections.singletonList(new File("target/test-classes")));
         request.setIncludePatterns(Arrays.asList("**/FooMojo.class"));
         request.setProject(new MavenProject());
 

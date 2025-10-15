@@ -36,7 +36,6 @@ import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.testing.PlexusTest;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +46,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
-@PlexusTest
 public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCase {
     @Override
     protected void extendPluginDescriptor(PluginDescriptor pluginDescriptor) throws DuplicateParameterException {

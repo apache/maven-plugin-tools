@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests against the locally available javadoc sites. Doesn't require internet connectivity.
@@ -150,12 +150,12 @@ class JavadocSiteTest {
             if (url.getFragment() != null) {
                 Pattern pattern = JavadocSite.getAnchorPattern(url.getFragment());
                 if (!reader.lines().anyMatch(pattern.asPredicate())) {
-                    throw new AssertionFailedError("Although URL " + url + " exists, no line matching the pattern "
-                            + pattern + " found in response");
+                    fail("Although URL " + url + " exists, no line matching the pattern " + pattern
+                            + " found in response");
                 }
             }
         } catch (IOException e) {
-            throw new AssertionFailedError("Could not find URL " + url, e);
+            fail("Could not find URL " + url, e);
         }
     }
 }

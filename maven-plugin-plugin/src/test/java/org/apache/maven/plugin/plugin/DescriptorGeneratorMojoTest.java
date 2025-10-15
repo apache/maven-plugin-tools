@@ -25,8 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 // at least one test class must be public for test-javadoc report
@@ -42,7 +41,7 @@ public class DescriptorGeneratorMojoTest {
     @ParameterizedTest
     @MethodSource("goalPrefixes")
     void defaultGoalPrefix(String groupId, String artifactId, String expectedGoal) {
-        assertThat(DescriptorGeneratorMojo.getDefaultGoalPrefix(newProject(groupId, artifactId)), is(expectedGoal));
+        assertEquals(expectedGoal, DescriptorGeneratorMojo.getDefaultGoalPrefix(newProject(groupId, artifactId)));
     }
 
     private MavenProject newProject(final String groupId, final String artifactId) {
