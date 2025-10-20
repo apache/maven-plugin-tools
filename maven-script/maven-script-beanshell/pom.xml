@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven.plugin-tools</groupId>
     <artifactId>maven-script</artifactId>
-    <version>3.15.2</version>
+    <version>3.15.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-script-beanshell</artifactId>
