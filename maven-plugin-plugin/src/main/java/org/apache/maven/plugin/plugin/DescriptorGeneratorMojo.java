@@ -373,7 +373,12 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             mojoScanner.populatePluginDescriptor(request);
             request.setPluginDescriptor(extendPluginDescriptor(request));
 
-            outputDirectory.mkdirs();
+            if (!outputDirectory.exists()) {
+                if (!outputDirectory.mkdirs()) {
+                    throw new MojoExecutionException(
+                            "Could not create output directory: " + outputDirectory.getAbsolutePath());
+                }
+            }
 
             PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
             pluginDescriptorGenerator.execute(outputDirectory, request);
