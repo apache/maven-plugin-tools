@@ -130,7 +130,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
              * Added ./ to define a relative path
              * @see AbstractMavenReportRenderer#getValidHref(java.lang.String)
              */
-            String goalDocumentationLink = "./" + mojo.getGoal() + "-mojo.html";
+            String goalDocumentationLink = "./" + mojo.getGoal() + "-goal.html";
             sink.tableCell();
             link(goalDocumentationLink, goalName);
             sink.tableCell_();
