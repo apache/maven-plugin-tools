@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -196,7 +197,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * @since 3.5
      */
     @Parameter
-    private List<String> mojoDependencies = null;
+    private final List<String> mojoDependencies = new ArrayList<>();
 
     /**
      * Creates links to existing external javadoc-generated documentation.
