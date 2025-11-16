@@ -465,7 +465,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
                     w.write(content);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new GeneratorException("Unable to generate index for v4 beans", e);
         }
     }
