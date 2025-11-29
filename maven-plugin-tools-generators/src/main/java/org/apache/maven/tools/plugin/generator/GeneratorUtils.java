@@ -21,12 +21,9 @@ package org.apache.maven.tools.plugin.generator;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.parser.ParserDelegator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
@@ -264,44 +261,6 @@ public final class GeneratorUtils {
         commentCleaned = commentCleaned.substring(startPos, endPos);
 
         return commentCleaned;
-    }
-
-    /**
-     * Converts a HTML fragment as extracted from a javadoc comment to a plain text string. This method tries to retain
-     * as much of the text formatting as possible by means of the following transformations:
-     * <ul>
-     * <li>List items are converted to leading tabs (U+0009), followed by the item number/bullet, another tab and
-     * finally the item contents. Each tab denotes an increase of indentation.</li>
-     * <li>Flow breaking elements as well as literal line terminators in preformatted text are converted to a newline
-     * (U+000A) to denote a mandatory line break.</li>
-     * <li>Consecutive spaces and line terminators from character data outside of preformatted text will be normalized
-     * to a single space. The resulting space denotes a possible point for line wrapping.</li>
-     * <li>Each space in preformatted text will be converted to a non-breaking space (U+00A0).</li>
-     * </ul>
-     *
-     * @param html The HTML fragment to convert to plain text, may be <code>null</code>.
-     * @return A string with HTML tags converted into pure text, never <code>null</code>.
-     * @since 2.4.3
-     * @deprecated Replaced by {@link HtmlToPlainTextConverter}
-     */
-    @Deprecated
-    public static String toText(String html) {
-        if (html == null || html.isEmpty()) {
-            return "";
-        }
-
-        final StringBuilder sb = new StringBuilder();
-
-        HTMLEditorKit.Parser parser = new ParserDelegator();
-        HTMLEditorKit.ParserCallback htmlCallback = new MojoParserCallback(sb);
-
-        try {
-            parser.parse(new StringReader(makeHtmlValid(html)), htmlCallback, true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return sb.toString().replace('\"', '\''); // for CDATA
     }
 
     /**

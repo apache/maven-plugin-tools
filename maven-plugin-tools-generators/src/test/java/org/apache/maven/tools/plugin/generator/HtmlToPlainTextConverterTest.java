@@ -18,7 +18,13 @@
  */
 package org.apache.maven.tools.plugin.generator;
 
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -64,6 +70,11 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
+    void testBlankString() {
+        assertEquals("", converter.convert(""));
+    }
+
+    @Test
     void testExplicitNewline() {
         String test =
                 "Some \"quotation\" marks and backslashes '\\\\', some <strong>important</strong> javadoc<br> and an\n"
@@ -72,5 +83,35 @@ class HtmlToPlainTextConverterTest {
                 "Some \"quotation\" marks and backslashes '\\\\', some important javadoc\n"
                         + "and an inline link to foo",
                 converter.convert(test));
+    }
+
+    @ParameterizedTest(name = "{0} to {1}") // With JUnit 6.0.0 the non-printable chars will be kept in display, see
+    // https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests-display-names-quoted-text
+    @MethodSource("provideConvertParamsBreakLines")
+    @DisplayName("Should convert from")
+    void testBreakLines(String javadoc, String expected) {
+        assertEquals(expected, converter.convert(javadoc));
+    }
+
+    private static Stream<Arguments> provideConvertParamsBreakLines() {
+        return Stream.of(
+                Arguments.of("Line1\nLine2", "Line1 Line2"),
+                Arguments.of("Line1\rLine2", "Line1 Line2"),
+                Arguments.of("Line1\r\nLine2", "Line1 Line2"),
+                Arguments.of("Line1<br>Line2", "Line1\nLine2"));
+    }
+
+    @Test
+    void testTrueHtml() {
+        assertEquals(
+                "Generates something for the project.",
+                converter.convert("Generates <i>something</i> for the project."));
+    }
+
+    @Test
+    void testWrongHtml() {
+        assertEquals(
+                "Generates something for the project.",
+                converter.convert("Generates <i>something</i> <b>for the project."));
     }
 }
