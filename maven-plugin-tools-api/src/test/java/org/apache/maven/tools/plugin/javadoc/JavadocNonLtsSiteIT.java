@@ -72,4 +72,11 @@ class JavadocNonLtsSiteIT extends JavadocSiteIT {
     void nestedClass(URI javadocBaseUrl) throws Exception {
         super.nestedClass(javadocBaseUrl);
     }
+
+    @Override
+    @ParameterizedTest
+    @MethodSource("javadocBaseUrls")
+    void clazz(URI javadocBaseUrl) throws Exception {
+        super.clazz(javadocBaseUrl);
+    }
 }

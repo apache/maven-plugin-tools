@@ -112,7 +112,7 @@ public class JavadocLinkGenerator {
             // resolve version
             JavaVersion javadocVersion = JavaVersion.parse(internalJavadocVersion);
             internalJavadocSite =
-                    new JavadocSite(internalJavadocSiteUrl, JavadocToolVersionRange.findMatch(javadocVersion), false);
+                    new JavadocSite(internalJavadocSiteUrl, JavadocToolVersionRange.findMatch(javadocVersion));
         } else {
             internalJavadocSite = null;
         }
@@ -140,7 +140,7 @@ public class JavadocLinkGenerator {
      * Only uses the offline site for references returning {@code false} for
      * {@link FullyQualifiedJavadocReference#isExternal()}.
      * @param javadocReference
-     * @return the (deep-) link towards a javadoc page
+     * @return the (deep-)link to a javadoc page
      * @throws IllegalArgumentException in case no javadoc link could be generated for the given reference
      * @throws IllegalStateException in case no javadoc source sites have been configured
      */
@@ -163,7 +163,7 @@ public class JavadocLinkGenerator {
      * Preferably resolves from the online sites if they provide the given package.
      * @param binaryName a binary name according to
      * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.1">JLS 13.1</a>
-     * @return the (deep-) link towards a javadoc page
+     * @return the (deep-)link to a javadoc page
      * @throws IllegalArgumentException in case no javadoc link could be generated for the given name
      */
     public URI createLink(String binaryName) {
