@@ -21,6 +21,7 @@ package org.apache.maven.tools.plugin.javadoc;
 import java.net.URI;
 import java.util.stream.Stream;
 
+import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -39,7 +40,7 @@ class JavadocSiteIT {
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
     void constructors(URI javadocBaseUrl) throws Exception {
-        JavadocSite site = new JavadocSite(javadocBaseUrl, null);
+        JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "String(byte[],int)", MemberType.CONSTRUCTOR, true)));
     }
@@ -47,7 +48,7 @@ class JavadocSiteIT {
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
     void methods(URI javadocBaseUrl) throws Exception {
-        JavadocSite site = new JavadocSite(javadocBaseUrl, null);
+        JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "copyValueOf(char[],int,int)", MemberType.METHOD, true)));
     }
@@ -55,7 +56,7 @@ class JavadocSiteIT {
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
     void fields(URI javadocBaseUrl) throws Exception {
-        JavadocSite site = new JavadocSite(javadocBaseUrl, null);
+        JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "CASE_INSENSITIVE_ORDER", MemberType.FIELD, true)));
     }
@@ -63,8 +64,15 @@ class JavadocSiteIT {
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
     void nestedClass(URI javadocBaseUrl) throws Exception {
-        JavadocSite site = new JavadocSite(javadocBaseUrl, null);
+        JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
         JavadocSiteTest.assertUrlValid(
                 site.createLink(new FullyQualifiedJavadocReference("java.util", "Map.Entry", true)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("javadocBaseUrls")
+    void clazz(URI javadocBaseUrl) throws Exception {
+        JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
+        JavadocSiteTest.assertUrlValid(site.createLink("java.lang", "String"));
     }
 }
