@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -111,6 +112,17 @@ class JavadocSiteTest {
     }
 
     @Test
+    void classLinkFromPackageAndClassNameWithExternalJavadocRequiringModules() throws URISyntaxException, IOException {
+        URI baseUri = new URI("https://docs.oracle.com/en/java/javase/11/docs/api/");
+        JavadocSite site = new JavadocSite(
+                baseUri,
+                JavadocLinkGenerator.JavadocToolVersionRange.JDK10_OR_HIGHER,
+                Collections.singletonMap("java.lang", "java.base"));
+        // don't request URL to make test independent of network connectivity
+        assertEquals(baseUri.resolve("java.base/java/lang/String.html"), site.createLink("java.lang", "String"));
+    }
+
+    @Test
     void getPackageAndClassName() {
         assertEquals(
                 new AbstractMap.SimpleEntry<>("java.util", "Map"),
@@ -137,7 +149,7 @@ class JavadocSiteTest {
             throws URISyntaxException {
         URI javadocBaseUri =
                 JavadocSiteTest.class.getResource("/javadoc/" + name + "/").toURI();
-        return new JavadocSite(javadocBaseUri, version, false);
+        return new JavadocSite(javadocBaseUri, version);
     }
 
     static void assertUrlValid(final URI url) {

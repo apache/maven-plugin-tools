@@ -158,16 +158,31 @@ class JavadocSite {
         this.requireModuleNameInPath = requireModuleNameInPath;
     }
 
-    /** Constructor for offline sites. This throws {@link UnsupportedOperationException}
+    /** Constructor for offline sites without modules. This throws {@link UnsupportedOperationException}
      *  for {@link #hasEntryFor(Optional, Optional)}. */
-    JavadocSite(final URI url, JavadocLinkGenerator.JavadocToolVersionRange version, boolean requireModuleNameInPath) {
+    JavadocSite(final URI url, JavadocLinkGenerator.JavadocToolVersionRange version) {
         Objects.requireNonNull(url);
         this.baseUri = url;
         Objects.requireNonNull(version);
         this.version = version;
         this.settings = null;
         this.containedPackageNamesAndModules = Collections.emptyMap();
-        this.requireModuleNameInPath = requireModuleNameInPath;
+        this.requireModuleNameInPath = false;
+    }
+
+    /** Constructor for offline sites with modules. This throws {@link UnsupportedOperationException}
+     *  for {@link #hasEntryFor(Optional, Optional)}. */
+    JavadocSite(
+            final URI url,
+            JavadocLinkGenerator.JavadocToolVersionRange version,
+            Map<String, String> containedPackageNamesAndModules) {
+        Objects.requireNonNull(url);
+        this.baseUri = url;
+        Objects.requireNonNull(version);
+        this.version = version;
+        this.settings = null;
+        this.containedPackageNamesAndModules = containedPackageNamesAndModules;
+        this.requireModuleNameInPath = true;
     }
 
     static Map<String, String> getPackageListWithModules(final URI url, final Settings settings) throws IOException {
@@ -236,7 +251,13 @@ class JavadocSite {
                 // url must point to simple class
                 className = className.substring(0, className.length() - 2);
             }
-            return createLink(baseUri, Optional.empty(), Optional.of(packageName), Optional.of(className));
+            Optional<String> moduleName;
+            if (!requireModuleNameInPath) {
+                moduleName = Optional.empty();
+            } else {
+                moduleName = Optional.ofNullable(containedPackageNamesAndModules.get(packageName));
+            }
+            return createLink(baseUri, moduleName, Optional.of(packageName), Optional.of(className));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Could not create link for " + packageName + "." + className, e);
         }
