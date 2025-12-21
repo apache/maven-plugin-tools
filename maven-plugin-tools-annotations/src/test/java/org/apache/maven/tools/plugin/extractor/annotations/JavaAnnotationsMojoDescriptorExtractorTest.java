@@ -52,8 +52,7 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
                 mojoClass.getResource(mojoClass.getSimpleName() + ".class").toURI());
         Files.copy(sourceClass, targetDir.resolve(sourceClass.getFileName()));
         JavaAnnotationsMojoDescriptorExtractor mojoDescriptorExtractor = new JavaAnnotationsMojoDescriptorExtractor();
-        DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
-        mojoDescriptorExtractor.mojoAnnotationsScanner = scanner;
+        mojoDescriptorExtractor.mojoAnnotationsScanner = new DefaultMojoAnnotationsScanner();
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         MavenProject mavenProject = new MavenProject();
         Artifact artifact = new DefaultArtifact("groupId", "artifactId", "1.0.0", null, "jar", "classifier", null);
@@ -67,7 +66,7 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     }
 
     @Test
-    void assertFooMojo() throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
+    void assertFooMojo() throws Exception {
         MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass(FooMojo.class);
         assertEquals("package", mojoDescriptor.getExecutePhase());
         assertEquals("compiler", mojoDescriptor.getExecuteGoal());
@@ -75,8 +74,7 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     }
 
     @Test
-    void assertExecuteMojo()
-            throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
+    void assertExecuteMojo() throws Exception {
         MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass(ExecuteMojo.class);
         assertEquals("my-phase-id", mojoDescriptor.getExecutePhase());
         assertEquals("compiler", mojoDescriptor.getExecuteGoal());
@@ -84,8 +82,7 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     }
 
     @Test
-    void assertExecute2Mojo()
-            throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
+    void assertExecute2Mojo() {
         // two conflicting phase ids set
         assertThrows(InvalidPluginDescriptorException.class, () -> extractDescriptorFromMojoClass(Execute2Mojo.class));
     }

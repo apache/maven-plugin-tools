@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
@@ -46,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
-public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCase {
+class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCase {
     @Override
     protected void extendPluginDescriptor(PluginDescriptor pluginDescriptor) throws DuplicateParameterException {
         Parameter parameterWithGenerics = new Parameter();
@@ -148,7 +147,7 @@ public class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCas
     }
 
     @Test
-    void testGetJavadocUrlForType() throws URISyntaxException {
+    void getJavadocUrlForType() throws Exception {
         URI javadocBaseUri = new URI("http://localhost/apidocs/");
         JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator(javadocBaseUri, "1.8");
         assertEquals(

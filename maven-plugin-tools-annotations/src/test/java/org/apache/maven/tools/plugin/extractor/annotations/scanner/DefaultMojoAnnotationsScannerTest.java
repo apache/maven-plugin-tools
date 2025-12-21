@@ -19,7 +19,6 @@
 package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.annotations.AbstractFooMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.DeprecatedMojo;
 import org.apache.maven.tools.plugin.extractor.annotations.FooMojo;
@@ -49,17 +47,17 @@ class DefaultMojoAnnotationsScannerTest {
     private DefaultMojoAnnotationsScanner scanner = new DefaultMojoAnnotationsScanner();
 
     @Test
-    void testSkipModuleInfoClassInArchive() throws Exception {
+    void skipModuleInfoClassInArchive() throws Exception {
         scanner.scanArchive(new File("target/test-classes/java9-module.jar"), null, false);
     }
 
     @Test
-    void testJava8Annotations() throws Exception {
+    void java8Annotations() throws Exception {
         scanner.scanArchive(new File("target/test-classes/java8-annotations.jar"), null, false);
     }
 
     @Test
-    void scanDeprecatedMojoAnnotatins() throws ExtractionException, IOException {
+    void scanDeprecatedMojoAnnotatins() throws Exception {
         File directoryToScan = new File(DeprecatedMojo.class.getResource("").getFile());
 
         Map<String, MojoAnnotatedClass> result =
@@ -85,7 +83,7 @@ class DefaultMojoAnnotationsScannerTest {
     }
 
     @Test
-    void scanParametersWithGenerics() throws ExtractionException, IOException {
+    void scanParametersWithGenerics() throws Exception {
         File directoryToScan =
                 new File(ParametersWithGenericsMojo.class.getResource("").getFile());
 

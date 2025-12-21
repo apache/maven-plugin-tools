@@ -18,7 +18,6 @@
  */
 package org.apache.maven.tools.plugin.javadoc;
 
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JavadocReferenceTest {
 
     @Test
-    void testParse() throws URISyntaxException {
+    void parse() throws Exception {
         assertEquals(
                 new JavadocReference(Optional.empty(), Optional.empty(), Optional.of("member"), Optional.empty()),
                 JavadocReference.parse("#member"));

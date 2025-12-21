@@ -78,7 +78,7 @@ class DefaultMojoScannerTest {
     }
 
     @Test
-    void testUnspecifiedExtractors() throws Exception {
+    void unspecifiedExtractors() throws Exception {
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
         scanner.populatePluginDescriptor(new DefaultPluginToolsRequest(project, pluginDescriptor));
@@ -87,7 +87,7 @@ class DefaultMojoScannerTest {
     }
 
     @Test
-    void testSpecifiedExtractors() throws Exception {
+    void specifiedExtractors() throws Exception {
         Set<String> activeExtractors = new HashSet<>();
         activeExtractors.add("one");
         activeExtractors.add("");
@@ -103,7 +103,7 @@ class DefaultMojoScannerTest {
     }
 
     @Test
-    void testAllExtractorsThroughNull() throws Exception {
+    void allExtractorsThroughNull() throws Exception {
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
         scanner.setActiveExtractors(null);
@@ -113,7 +113,7 @@ class DefaultMojoScannerTest {
     }
 
     @Test
-    void testNoExtractorsThroughEmptySet() throws Exception {
+    void noExtractorsThroughEmptySet() throws Exception {
         PluginDescriptor pluginDescriptor = createPluginDescriptor();
 
         scanner.setActiveExtractors(Collections.emptySet());
@@ -128,7 +128,7 @@ class DefaultMojoScannerTest {
     }
 
     @Test
-    void testUnknownExtractor() throws Exception {
+    void unknownExtractor() throws Exception {
         Set<String> activeExtractors = new HashSet<>();
         activeExtractors.add("four");
 
