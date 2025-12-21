@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GoalRendererTest {
 
     @Test
-    void testGetShortType() {
+    void getShortType() {
         assertEquals("String", GoalRenderer.getShortType("java.lang.String"));
         assertEquals("List<String>", GoalRenderer.getShortType("java.util.List<java.lang.String>"));
         assertEquals(
@@ -38,7 +38,7 @@ class GoalRendererTest {
     }
 
     @Test
-    void testGetXhtmlWithValidatedLinks() {
+    void getXhtmlWithValidatedLinks() {
         File baseDir = new File(this.getClass().getResource("").getFile());
         GoalRenderer renderer =
                 new GoalRenderer(null, null, Locale.ROOT, null, null, baseDir, false, new SystemStreamLog());

@@ -18,7 +18,6 @@
  */
 package org.apache.maven.tools.plugin.javadoc;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.stream.Stream;
 
@@ -39,7 +38,7 @@ class JavadocSiteIT {
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testConstructors(URI javadocBaseUrl) throws IOException {
+    void constructors(URI javadocBaseUrl) throws Exception {
         JavadocSite site = new JavadocSite(javadocBaseUrl, null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "String(byte[],int)", MemberType.CONSTRUCTOR, true)));
@@ -47,7 +46,7 @@ class JavadocSiteIT {
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testMethods(URI javadocBaseUrl) throws IOException {
+    void methods(URI javadocBaseUrl) throws Exception {
         JavadocSite site = new JavadocSite(javadocBaseUrl, null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "copyValueOf(char[],int,int)", MemberType.METHOD, true)));
@@ -55,7 +54,7 @@ class JavadocSiteIT {
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testFields(URI javadocBaseUrl) throws IOException {
+    void fields(URI javadocBaseUrl) throws Exception {
         JavadocSite site = new JavadocSite(javadocBaseUrl, null);
         JavadocSiteTest.assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "java.lang", "String", "CASE_INSENSITIVE_ORDER", MemberType.FIELD, true)));
@@ -63,7 +62,7 @@ class JavadocSiteIT {
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testNestedClass(URI javadocBaseUrl) throws IOException {
+    void nestedClass(URI javadocBaseUrl) throws Exception {
         JavadocSite site = new JavadocSite(javadocBaseUrl, null);
         JavadocSiteTest.assertUrlValid(
                 site.createLink(new FullyQualifiedJavadocReference("java.util", "Map.Entry", true)));

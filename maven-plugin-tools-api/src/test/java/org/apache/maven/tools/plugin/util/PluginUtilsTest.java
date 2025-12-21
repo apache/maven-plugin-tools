@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class PluginUtilsTest {
     @Test
-    void testShouldTrimArtifactIdToFindPluginId() {
+    void shouldTrimArtifactIdToFindPluginId() {
         assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("maven-artifactId-plugin"));
         assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("maven-plugin-artifactId"));
         assertEquals("artifactId", PluginDescriptor.getGoalPrefixFromArtifactId("artifactId-maven-plugin"));
@@ -43,7 +43,7 @@ class PluginUtilsTest {
     }
 
     @Test
-    void testShouldFindTwoScriptsWhenNoExcludesAreGiven() {
+    void shouldFindTwoScriptsWhenNoExcludesAreGiven() {
         String testScript = "test.txt";
 
         String basedir = TestUtils.dirname(testScript);
@@ -55,7 +55,7 @@ class PluginUtilsTest {
     }
 
     @Test
-    void testShouldFindOneScriptsWhenAnExcludeIsGiven() {
+    void shouldFindOneScriptsWhenAnExcludeIsGiven() {
         String testScript = "test.txt";
 
         String basedir = TestUtils.dirname(testScript);
@@ -68,11 +68,10 @@ class PluginUtilsTest {
     }
 
     @Test
-    void testIsMavenReport() throws Exception {
+    void isMavenReport() {
         try {
             PluginUtils.isMavenReport(null, null);
         } catch (IllegalArgumentException e) {
-            assertTrue(true);
         }
 
         String impl = "org.apache.maven.tools.plugin.util.stubs.MavenReportStub";

@@ -18,7 +18,6 @@
  */
 package org.apache.maven.tools.plugin.javadoc;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.stream.Stream;
 
@@ -52,25 +51,25 @@ class JavadocNonLtsSiteIT extends JavadocSiteIT {
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testConstructors(URI javadocBaseUrl) throws IOException {
-        super.testConstructors(javadocBaseUrl);
+    void constructors(URI javadocBaseUrl) throws Exception {
+        super.constructors(javadocBaseUrl);
     }
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testMethods(URI javadocBaseUrl) throws IOException {
-        super.testMethods(javadocBaseUrl);
+    void methods(URI javadocBaseUrl) throws Exception {
+        super.methods(javadocBaseUrl);
     }
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testFields(URI javadocBaseUrl) throws IOException {
-        super.testFields(javadocBaseUrl);
+    void fields(URI javadocBaseUrl) throws Exception {
+        super.fields(javadocBaseUrl);
     }
 
     @ParameterizedTest
     @MethodSource("javadocBaseUrls")
-    void testNestedClass(URI javadocBaseUrl) throws IOException {
-        super.testNestedClass(javadocBaseUrl);
+    void nestedClass(URI javadocBaseUrl) throws Exception {
+        super.nestedClass(javadocBaseUrl);
     }
 }

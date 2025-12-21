@@ -66,7 +66,7 @@ class JavaClassConverterContextTest {
     }
 
     @Test
-    void testResolveReference() throws URISyntaxException {
+    void resolveReference() throws Exception {
         // test fully qualified unresolvable reference
         assertThrows(
                 IllegalArgumentException.class,
@@ -110,7 +110,7 @@ class JavaClassConverterContextTest {
     }
 
     @Test
-    void testResolveReferenceWithMembers() {
+    void resolveReferenceWithMembers() {
         // field
         assertEquals(
                 new FullyQualifiedJavadocReference(
@@ -196,7 +196,7 @@ class JavaClassConverterContextTest {
     }
 
     @Test
-    void testGetUrl() throws URISyntaxException {
+    void getUrl() throws Exception {
         MojoAnnotationContent mojoAnnotationContent = new MojoAnnotationContent();
         mojoAnnotationContent.name("other-goal");
         MojoAnnotatedClass mojoAnnotatedClass = new MojoAnnotatedClass().setMojo(mojoAnnotationContent);
@@ -276,7 +276,7 @@ class JavaClassConverterContextTest {
     }
 
     @Test
-    void testClassContext() {
+    void classContext() {
         assertTrue(
                 context.isReferencedBy(new FullyQualifiedJavadocReference(currentPackageName, "CurrentClass", false)));
         assertTrue(context.isReferencedBy(new FullyQualifiedJavadocReference(currentPackageName, "SuperClass", false)));
@@ -291,7 +291,7 @@ class JavaClassConverterContextTest {
     }
 
     @Test
-    void testGetStaticFieldValue() {
+    void getStaticFieldValue() {
         assertEquals(
                 "\"STATIC 1\"",
                 context.getStaticFieldValue(new FullyQualifiedJavadocReference(

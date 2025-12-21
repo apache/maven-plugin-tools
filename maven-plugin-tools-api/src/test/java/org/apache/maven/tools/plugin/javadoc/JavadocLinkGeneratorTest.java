@@ -19,7 +19,6 @@
 package org.apache.maven.tools.plugin.javadoc;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -36,9 +35,9 @@ class JavadocLinkGeneratorTest {
 
     @ParameterizedTest
     @MethodSource("org.apache.maven.tools.plugin.javadoc.JavadocSiteTest#jdkNamesAndVersions")
-    void testCreateLinkFromFullyQualifiedJavadocReference(
+    void createLinkFromFullyQualifiedJavadocReference(
             String jdkName, JavadocLinkGenerator.JavadocToolVersionRange versionRange, String version)
-            throws URISyntaxException {
+            throws Exception {
         URI javadocBaseUri = getClass().getResource("/javadoc/" + jdkName + "/").toURI();
         JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator(javadocBaseUri, version);
         // invalid link (must not throw exceptions for internal links
@@ -95,9 +94,9 @@ class JavadocLinkGeneratorTest {
 
     @ParameterizedTest
     @MethodSource("org.apache.maven.tools.plugin.javadoc.JavadocSiteTest#jdkNamesAndVersions")
-    void testCreateLinkFromBinaryName(
+    void createLinkFromBinaryName(
             String jdkName, JavadocLinkGenerator.JavadocToolVersionRange versionRange, String version)
-            throws URISyntaxException {
+            throws Exception {
         URI javadocBaseUri = getClass().getResource("/javadoc/" + jdkName + "/").toURI();
 
         JavadocLinkGenerator linkGenerator = new JavadocLinkGenerator(javadocBaseUri, version);
@@ -114,7 +113,7 @@ class JavadocLinkGeneratorTest {
     }
 
     @Test
-    void testGetMatchingJavadocToolVersionRange() {
+    void getMatchingJavadocToolVersionRange() {
         assertEquals(
                 JavadocLinkGenerator.JavadocToolVersionRange.JDK7_OR_LOWER,
                 JavadocLinkGenerator.JavadocToolVersionRange.findMatch(JavaVersion.parse("1.5.0")));
@@ -136,7 +135,7 @@ class JavadocLinkGeneratorTest {
     }
 
     @Test
-    void testInaccessibleBaseUri() throws URISyntaxException {
+    void inaccessibleBaseUri() {
         // construction fails as no valid site URL is given
         assertThrows(
                 IllegalArgumentException.class,
