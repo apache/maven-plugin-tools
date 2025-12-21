@@ -45,7 +45,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testSee() {
+    void see() {
         assertEquals(
                 "<br /><strong>See also:</strong> \"Some reference\"",
                 converter.convert("see", "\"Some reference\"", context));
@@ -62,7 +62,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testExceptionInTag() {
+    void exceptionInTag() {
         URI baseUrl = URI.create("https://javadoc.example.com/");
         ConverterContext context = new SimpleConverterContext("my.package", baseUrl) {
             @Override

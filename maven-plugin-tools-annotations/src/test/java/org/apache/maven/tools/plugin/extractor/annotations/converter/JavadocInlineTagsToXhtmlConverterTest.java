@@ -56,7 +56,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testComplexJavadoc() {
+    void complexJavadoc() {
         String test = "This is a {@code <>code} and {@link package.Class#member} test {@code code2}\nsome other text";
         assertEquals(
                 "This is a <code>&lt;&gt;code</code> and <a href=\"https://javadoc.example.com/package/Class.html#member\"><code>package.Class.member</code></a> test <code>code2</code> some other text",
@@ -64,7 +64,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testCode() {
+    void code() {
         String test = "{@code text}";
         assertEquals("<code>text</code>", converter.convert(test, context));
 
@@ -79,7 +79,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testLiteral() {
+    void literal() {
         String test = "{@literal text}";
         assertEquals("text", converter.convert(test, context));
 
@@ -91,7 +91,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testLink() {
+    void link() {
         String test = "{@link Class}";
         assertEquals(
                 "<a href=\"https://javadoc.example.com/my/package/Class.html\"><code>Class</code></a>",
@@ -104,7 +104,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testLinkplain() {
+    void linkplain() {
         String test = "{@linkplain Class}";
         assertEquals(
                 "<a href=\"https://javadoc.example.com/my/package/Class.html\">Class</a>",
@@ -152,20 +152,20 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testValue() {
+    void value() {
         String test = "{@value Class#STATIC_FIELD}";
         assertEquals("some field value", converter.convert(test, context));
     }
 
     @Test
-    void testDocroot() {
+    void docroot() {
         String test = "Some <a href=\"{@docRoot}/test.html\">link</a>";
         assertEquals(
                 "Some <a href=\"https://javadoc.example.com/test.html\">link</a>", converter.convert(test, context));
     }
 
     @Test
-    void testMultipleTags() {
+    void multipleTags() {
         String test = "Some code {@code myCode} and link {@linkplain Class}. Something";
         assertEquals(
                 "Some code <code>myCode</code> and link <a href=\"https://javadoc.example.com/my/package/Class.html\">Class</a>. Something",
@@ -173,7 +173,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testExceptionInTag() {
+    void exceptionInTag() {
         URI baseUrl = URI.create("https://javadoc.example.com/");
         ConverterContext context = new SimpleConverterContext("my.package", baseUrl) {
 
@@ -189,7 +189,7 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
-    void testUnknownTag() {
+    void unknownTag() {
         String test = "{@unknown text}";
         assertEquals("{@unknown text}<!-- unsupported tag 'unknown' -->", converter.convert(test, context));
     }

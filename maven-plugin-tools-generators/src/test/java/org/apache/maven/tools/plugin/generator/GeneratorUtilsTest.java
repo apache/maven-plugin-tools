@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class GeneratorUtilsTest {
     @Test
-    void testShouldWriteDependencies() throws Exception {
+    void shouldWriteDependencies() {
         ComponentDependency dependency = new ComponentDependency();
         dependency.setArtifactId("testArtifactId");
         dependency.setGroupId("testGroupId");
@@ -63,7 +63,7 @@ class GeneratorUtilsTest {
     }
 
     @Test
-    void testExcludeProvidedScopeFormComponentDependencies() {
+    void excludeProvidedScopeFormComponentDependencies() {
 
         Artifact a1 = new DefaultArtifact("g", "a1", "1.0", Artifact.SCOPE_COMPILE, "jar", "", null);
         Artifact a2 = new DefaultArtifact("g", "a2", "2.0", Artifact.SCOPE_PROVIDED, "jar", "", null);

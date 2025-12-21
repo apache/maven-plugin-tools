@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * UT for {@link GroupKey}.
  */
-public class GroupKeyTest {
+class GroupKeyTest {
     @Test
-    public void sortOrder() {
+    void sortOrder() {
         TreeSet<GroupKey> groupKeys = new TreeSet<>();
         groupKeys.add(new GroupKey("ant", 1));
         groupKeys.add(new GroupKey("bsh", 1));

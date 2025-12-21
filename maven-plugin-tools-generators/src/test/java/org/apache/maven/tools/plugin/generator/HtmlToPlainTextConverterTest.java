@@ -37,7 +37,7 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
-    void testConvertWithCodeAndLink() {
+    void convertWithCodeAndLink() {
         String test =
                 "This is a <code>code</code> and <a href=\"https://javadoc.example.com/some/javadoc.html\">Link</a>";
         assertEquals(
@@ -45,7 +45,7 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
-    void testMultilineJavadocAndWordWrap() {
+    void multilineJavadocAndWordWrap() {
         String test =
                 "Generates a <a href=\"https://jackrabbit.apache.org/jcr/node-type-notation.html\">CND file</a> containing all\n"
                         + "used node types and namespaces. It uses the <a href=\"https://s.apache.org/jcr-2.0-spec/3_Repository_Model.html#3.7.11%20Standard%20Application%20Node%20Types\">default namespaces and node types</a>\n"
@@ -59,23 +59,23 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
-    void testRelativeUrl() {
+    void relativeUrl() {
         String test = "<a href=\"#field\">field</a>";
         assertEquals("field", converter.convert(test));
     }
 
     @Test
-    void testNullValue() {
+    void nullValue() {
         assertNull(converter.convert(null));
     }
 
     @Test
-    void testBlankString() {
+    void blankString() {
         assertEquals("", converter.convert(""));
     }
 
     @Test
-    void testExplicitNewline() {
+    void explicitNewline() {
         String test =
                 "Some \"quotation\" marks and backslashes '\\\\', some <strong>important</strong> javadoc<br> and an\n"
                         + "inline link to foo";
@@ -89,7 +89,7 @@ class HtmlToPlainTextConverterTest {
     // https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests-display-names-quoted-text
     @MethodSource("provideConvertParamsBreakLines")
     @DisplayName("Should convert from")
-    void testBreakLines(String javadoc, String expected) {
+    void breakLines(String javadoc, String expected) {
         assertEquals(expected, converter.convert(javadoc));
     }
 
@@ -102,14 +102,14 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
-    void testTrueHtml() {
+    void trueHtml() {
         assertEquals(
                 "Generates something for the project.",
                 converter.convert("Generates <i>something</i> for the project."));
     }
 
     @Test
-    void testWrongHtml() {
+    void wrongHtml() {
         assertEquals(
                 "Generates something for the project.",
                 converter.convert("Generates <i>something</i> <b>for the project."));

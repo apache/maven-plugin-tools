@@ -48,7 +48,7 @@ public abstract class AbstractGeneratorTestCase {
     protected String basedir = System.getProperty("basedir");
 
     @Test
-    public void testGenerator() throws Exception {
+    public void generator() throws Exception {
         setupGenerator();
 
         MojoDescriptor mojoDescriptor = new MojoDescriptor();
@@ -113,7 +113,7 @@ public abstract class AbstractGeneratorTestCase {
 
     @Test
     @Disabled
-    public void testGeneratorV4() throws Exception {
+    public void generatorV4() throws Exception {
         setupGenerator();
 
         MojoDescriptor mojoDescriptor = new MojoDescriptor();

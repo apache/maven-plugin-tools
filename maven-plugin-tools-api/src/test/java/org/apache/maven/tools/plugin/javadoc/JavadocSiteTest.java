@@ -52,8 +52,7 @@ class JavadocSiteTest {
 
     @ParameterizedTest
     @MethodSource("jdkNamesAndVersions")
-    void testConstructorLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws URISyntaxException, IOException {
+    void constructorLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version) throws Exception {
         JavadocSite site = getLocalJavadocSite(jdkName, version);
         assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "org.apache.maven.tools.plugin.extractor.annotations.converter.test",
@@ -65,8 +64,7 @@ class JavadocSiteTest {
 
     @ParameterizedTest
     @MethodSource("jdkNamesAndVersions")
-    void testMethodLinks(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws URISyntaxException, IOException {
+    void methodLinks(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version) throws Exception {
         JavadocSite site = getLocalJavadocSite(jdkName, version);
         // test generics signature
         assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
@@ -86,8 +84,7 @@ class JavadocSiteTest {
 
     @ParameterizedTest
     @MethodSource("jdkNamesAndVersions")
-    void testFieldLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws URISyntaxException, IOException {
+    void fieldLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version) throws Exception {
         JavadocSite site = getLocalJavadocSite(jdkName, version);
         assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "org.apache.maven.tools.plugin.extractor.annotations.converter.test",
@@ -99,8 +96,7 @@ class JavadocSiteTest {
 
     @ParameterizedTest
     @MethodSource("jdkNamesAndVersions")
-    void testPackageLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws URISyntaxException, IOException {
+    void packageLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version) throws Exception {
         JavadocSite site = getLocalJavadocSite(jdkName, version);
         assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "org.apache.maven.tools.plugin.extractor.annotations.converter.test", false)));
@@ -108,15 +104,14 @@ class JavadocSiteTest {
 
     @ParameterizedTest
     @MethodSource("jdkNamesAndVersions")
-    void testClassLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws URISyntaxException, IOException {
+    void classLink(String jdkName, JavadocLinkGenerator.JavadocToolVersionRange version) throws Exception {
         JavadocSite site = getLocalJavadocSite(jdkName, version);
         assertUrlValid(site.createLink(new FullyQualifiedJavadocReference(
                 "org.apache.maven.tools.plugin.extractor.annotations.converter.test", "CurrentClass", false)));
     }
 
     @Test
-    void testGetPackageAndClassName() {
+    void getPackageAndClassName() {
         assertEquals(
                 new AbstractMap.SimpleEntry<>("java.util", "Map"),
                 JavadocSite.getPackageAndClassName(Map.class.getName()));
@@ -139,7 +134,7 @@ class JavadocSiteTest {
     }
 
     static JavadocSite getLocalJavadocSite(String name, JavadocLinkGenerator.JavadocToolVersionRange version)
-            throws IOException, URISyntaxException {
+            throws URISyntaxException {
         URI javadocBaseUri =
                 JavadocSiteTest.class.getResource("/javadoc/" + name + "/").toURI();
         return new JavadocSite(javadocBaseUri, version, false);
@@ -149,7 +144,7 @@ class JavadocSiteTest {
         try (BufferedReader reader = JavadocSite.getReader(url.toURL(), null)) {
             if (url.getFragment() != null) {
                 Pattern pattern = JavadocSite.getAnchorPattern(url.getFragment());
-                if (!reader.lines().anyMatch(pattern.asPredicate())) {
+                if (reader.lines().noneMatch(pattern.asPredicate())) {
                     fail("Although URL " + url + " exists, no line matching the pattern " + pattern
                             + " found in response");
                 }

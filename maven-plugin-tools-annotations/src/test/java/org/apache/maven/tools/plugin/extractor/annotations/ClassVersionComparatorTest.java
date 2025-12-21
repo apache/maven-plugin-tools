@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClassVersionComparatorTest {
     @Test
-    void testComparator() {
+    void comparator() {
         Comparator<Integer> comparator = new JavaAnnotationsMojoDescriptorExtractor.ClassVersionComparator();
         assertEquals(0, Integer.signum(comparator.compare(Opcodes.V10, Opcodes.V10)));
         assertEquals(1, Integer.signum(comparator.compare(Opcodes.V11, Opcodes.V10)));
