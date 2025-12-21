@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LinkUtilsTest {
     @Test
-    void testCreateUnresolvableLink() {
+    void createUnresolvableLink() {
         JavadocReference reference = JavadocReference.parse("Unresolvable");
         ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> URI.create(""), reference);
         assertEquals(
@@ -37,7 +37,7 @@ class LinkUtilsTest {
     }
 
     @Test
-    void testCreateLinkWithNoJavadoc() {
+    void createLinkWithNoJavadoc() {
         ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> {
             throw new IllegalArgumentException("Could not get javadoc");
         });
