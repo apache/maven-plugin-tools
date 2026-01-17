@@ -131,6 +131,37 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     private Set<String> extractors;
 
     /**
+     * A set of root directories to exclude from being scanned, if the extractor scans source directories
+     * to obtain metadata.
+     *
+     * <p>Users can specify this to prevent certain generated source roots from being parsed by this plugin
+     * in the event that those source roots contain potentially malformed or incompatible code.
+     *
+     * <p>This is primarily designed to facilitate allowing this plugin to operate with generated sources
+     * that use annotations or documentation in an uncontrollable format that may conflict with the parsing
+     * rules we utilise.
+     *
+     * <p>Note that this only accepts <strong>source roots</strong>. It will not accept
+     * specific paths within a source root (e.g. specific packages). In this context, a source root
+     * would be considered to be a directory holding a full Java package structure which can be
+     * passed directly to {@code javac} for compilation, or {@code javadoc} for documentation.
+     *
+     * <p>As an example, the following configuration will prevent this goal scanning any
+     * generated sources from annotation processors:
+     *
+     * <pre>{@code
+     *   <excludedScanDirectories>
+     *     <excludedScanDirectory>${project.build.directory}/generated-sources/annotations</excludedScanDirectory>
+     *     <excludedScanDirectory>${project.build.directory}/generated-test-sources/annotations</excludedScanDirectory>
+     *   </excludedScanDirectories>
+     * }</pre>
+     *
+     * @since TBC
+     */
+    @Parameter
+    private Set<File> excludedScanDirectories = Collections.emptySet();
+
+    /**
      * By default, an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the
      * descriptor generator mojo is bound to generate-resources phase.
      * But for annotations, the compiled classes are needed, so skip error
@@ -351,6 +382,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
             request.setInternalJavadocVersion(internalJavadocVersion);
             request.setExternalJavadocBaseUrls(externalJavadocBaseUrls);
             request.setSettings(mavenSession.getSettings());
+            request.setExcludedScanDirectories(excludedScanDirectories);
 
             mojoScanner.populatePluginDescriptor(request);
             request.setPluginDescriptor(extendPluginDescriptor(request));

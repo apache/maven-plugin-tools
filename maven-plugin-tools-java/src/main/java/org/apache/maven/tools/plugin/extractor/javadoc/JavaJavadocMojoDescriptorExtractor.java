@@ -548,7 +548,13 @@ public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtract
         MavenProject project = request.getProject();
 
         for (String source : project.getCompileSourceRoots()) {
-            builder.addSourceTree(new File(source));
+            // Allow users to exclude certain paths such as generated sources from being scanned, in the case that
+            // this may be problematic for them (e.g. using obscure unsupported syntax by the parser, comments that
+            // cannot be controlled, etc.)
+            File sourceFile = new File(source);
+            if (!isExcludedDirectory(request.getExcludedScanDirectories(), sourceFile)) {
+                builder.addSourceTree(sourceFile);
+            }
         }
 
         // TODO be more dynamic
@@ -572,5 +578,18 @@ public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtract
                 validateParameter(parameters.get(j), j);
             }
         }
+    }
+
+    private boolean isExcludedDirectory(Collection<File> excludedDirectories, File sourceFile) {
+        for (File excludedScanDirectory : excludedDirectories) {
+            File candidateFile = sourceFile;
+            while (candidateFile != null) {
+                if (excludedScanDirectory.equals(candidateFile)) {
+                    return true;
+                }
+                candidateFile = candidateFile.getParentFile();
+            }
+        }
+        return false;
     }
 }
