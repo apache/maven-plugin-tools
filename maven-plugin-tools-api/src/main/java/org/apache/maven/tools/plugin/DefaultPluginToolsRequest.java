@@ -18,7 +18,9 @@
  */
 package org.apache.maven.tools.plugin;
 
+import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +67,8 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     private String requiredJavaVersion;
 
     private String mavenApiVersion;
+
+    private Collection<File> excludedScanDirectories;
 
     public DefaultPluginToolsRequest(MavenProject project, PluginDescriptor pluginDescriptor) {
         this.project = project;
@@ -231,5 +235,18 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     @Override
     public String getUsedMavenApiVersion() {
         return mavenApiVersion;
+    }
+
+    @Override
+    public Collection<File> getExcludedScanDirectories() {
+        if (excludedScanDirectories == null) {
+            excludedScanDirectories = new HashSet<>();
+        }
+        return excludedScanDirectories;
+    }
+
+    @Override
+    public void setExcludedScanDirectories(Collection<File> excludedScanDirectories) {
+        this.excludedScanDirectories = excludedScanDirectories;
     }
 }

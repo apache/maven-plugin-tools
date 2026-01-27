@@ -254,7 +254,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
 
         JavaProjectBuilder builder = new JavaProjectBuilder(new SortedClassLibraryBuilder());
         builder.setEncoding(request.getEncoding());
-        extendJavaProjectBuilder(builder, request.getProject());
+        extendJavaProjectBuilder(request, builder, request.getProject());
 
         for (MojoAnnotatedClass mojoAnnotatedClass : mojoAnnotatedClasses) {
             if (Objects.equals(
@@ -289,7 +289,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         }
 
         for (MavenProject mavenProject : mavenProjects) {
-            extendJavaProjectBuilder(builder, mavenProject);
+            extendJavaProjectBuilder(request, builder, mavenProject);
         }
 
         return builder;
@@ -630,11 +630,19 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         }
     }
 
-    private void extendJavaProjectBuilder(JavaProjectBuilder builder, final MavenProject project) {
+    private void extendJavaProjectBuilder(
+            PluginToolsRequest request, JavaProjectBuilder builder, final MavenProject project) {
         List<File> sources = new ArrayList<>();
 
         for (String source : project.getCompileSourceRoots()) {
-            sources.add(new File(source));
+            File sourceFile = new File(source);
+
+            // Allow users to exclude certain paths such as generated sources from being scanned, in the case that
+            // this may be problematic for them (e.g. using obscure unsupported syntax by the parser, comments that
+            // cannot be controlled, etc.)
+            if (!isExcludedDirectory(request.getExcludedScanDirectories(), sourceFile)) {
+                sources.add(sourceFile);
+            }
         }
 
         // TODO be more dynamic
@@ -642,7 +650,21 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         if (!project.getCompileSourceRoots().contains(generatedPlugin.getAbsolutePath()) && generatedPlugin.exists()) {
             sources.add(generatedPlugin);
         }
+
         extendJavaProjectBuilder(builder, sources, project.getArtifacts());
+    }
+
+    private boolean isExcludedDirectory(Collection<File> excludedDirectories, File sourceFile) {
+        for (File excludedScanDirectory : excludedDirectories) {
+            File candidateFile = sourceFile;
+            while (candidateFile != null) {
+                if (excludedScanDirectory.equals(candidateFile)) {
+                    return true;
+                }
+                candidateFile = candidateFile.getParentFile();
+            }
+        }
+        return false;
     }
 
     private void extendJavaProjectBuilder(
