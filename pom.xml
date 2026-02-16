@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>45</version>
+    <version>47</version>
     <relativePath />
   </parent>
 
@@ -55,6 +55,10 @@
       <name>Mikolaj Izdebski</name>
     </contributor>
   </contributors>
+
+  <prerequisites>
+    <maven>3.6.3</maven>
+  </prerequisites>
 
   <modules>
     <module>maven-plugin-tools-generators</module>
@@ -89,10 +93,6 @@
     </site>
   </distributionManagement>
 
-  <prerequisites>
-    <maven>3.6.3</maven>
-  </prerequisites>
-
   <properties>
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.5.1</pluginTestingHarnessVersion>
@@ -106,8 +106,6 @@
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
     <asmVersion>9.9.1</asmVersion>
-    <!-- TODO remove with next parent version update -->
-    <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
     <plexusUtilsVersion>4.0.2</plexusUtilsVersion>
     <plexusXmlVersion>3.0.2</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
@@ -315,7 +313,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.14.2</version>
+        <version>5.14.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
