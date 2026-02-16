@@ -110,9 +110,6 @@
     <plexusXmlVersion>3.0.2</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
-    <compilerPluginVersion>${version.maven-compiler-plugin}</compilerPluginVersion>
-    <javadocPluginVersion>${version.maven-javadoc-plugin}</javadocPluginVersion>
-    <enforcerPluginVersion>${version.maven-enforcer-plugin}</enforcerPluginVersion>
     <project.build.outputTimestamp>2025-10-20T19:21:18Z</project.build.outputTimestamp>
   </properties>
 
@@ -309,13 +306,6 @@
         <artifactId>mockito-core</artifactId>
         <version>4.11.0</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>5.14.3</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
