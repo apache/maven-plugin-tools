@@ -78,7 +78,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>@compilerPluginVersion@</version>
+        <version>@version.maven-compiler-plugin@</version>
         <configuration>
           <!-- old maven-parent, so fix it like this. -->
           <source>${maven.compiler.source}</source>
@@ -122,7 +122,7 @@ under the License.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>@javadocPluginVersion@</version>
+        <version>@version.maven-javadoc-plugin@</version>
         <configuration>
           <excludePackageNames>org.internal</excludePackageNames>
         </configuration>

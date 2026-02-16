@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>45</version>
+    <version>47</version>
     <relativePath />
   </parent>
 
@@ -92,9 +92,8 @@
     <pluginTestingHarnessVersion>3.5.1</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-rc-4</maven4Version>
     <maven3Version>3.9.12</maven3Version>
-    <resolverVersion>1.9.24</resolverVersion>
+    <resolverVersion>1.9.25</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST-4.x</maven.site.path>
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
@@ -104,12 +103,7 @@
     <plexusXmlVersion>3.0.1</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
-    <compilerPluginVersion>3.11.0</compilerPluginVersion>
-    <javadocPluginVersion>3.10.1</javadocPluginVersion>
-    <enforcerPluginVersion>3.5.0</enforcerPluginVersion>
     <project.build.outputTimestamp>2025-10-20T18:58:21Z</project.build.outputTimestamp>
-    <!-- Remove format 2.82 property when upgrading to parent 46 as format is updated there -->
-    <version.palantirJavaFormat>2.82.0</version.palantirJavaFormat>
   </properties>
 
   <dependencyManagement>
@@ -286,7 +280,7 @@
           <configuration>
             <rules>
               <enforceBytecodeVersion>
-                <maxJdkVersion>${maven.compiler.target}</maxJdkVersion>
+                <maxJdkVersion>${javaVersion}</maxJdkVersion>
                 <excludes>
                   <exclude>org.apache.maven:*</exclude>
                 </excludes>
