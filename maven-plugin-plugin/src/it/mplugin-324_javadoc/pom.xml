@@ -56,12 +56,12 @@ under the License.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>@compilerPluginVersion@</version>
+          <version>@version.maven-compiler-plugin@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>@javadocPluginVersion@</version>
+          <version>@version.maven-javadoc-plugin@</version>
           <configuration>
             <level>private</level>
           </configuration>

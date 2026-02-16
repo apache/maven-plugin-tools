@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>45</version>
+    <version>47</version>
     <relativePath />
   </parent>
 
@@ -55,6 +55,10 @@
       <name>Mikolaj Izdebski</name>
     </contributor>
   </contributors>
+
+  <prerequisites>
+    <maven>3.6.3</maven>
+  </prerequisites>
 
   <modules>
     <module>maven-plugin-tools-generators</module>
@@ -94,7 +98,7 @@
     <pluginTestingHarnessVersion>3.5.1</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-alpha-4</maven4Version>
     <maven3Version>3.9.12</maven3Version>
-    <resolverVersion>1.9.24</resolverVersion>
+    <resolverVersion>1.9.25</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <antVersion>1.10.15</antVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
@@ -102,15 +106,10 @@
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
     <asmVersion>9.9.1</asmVersion>
-    <!-- TODO remove with next parent version update -->
-    <version.maven-invoker-plugin>3.9.1</version.maven-invoker-plugin>
     <plexusUtilsVersion>4.0.2</plexusUtilsVersion>
     <plexusXmlVersion>3.0.2</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
-    <compilerPluginVersion>${version.maven-compiler-plugin}</compilerPluginVersion>
-    <javadocPluginVersion>${version.maven-javadoc-plugin}</javadocPluginVersion>
-    <enforcerPluginVersion>${version.maven-enforcer-plugin}</enforcerPluginVersion>
     <project.build.outputTimestamp>2025-10-20T19:21:18Z</project.build.outputTimestamp>
   </properties>
 
@@ -307,13 +306,6 @@
         <artifactId>mockito-core</artifactId>
         <version>4.11.0</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>5.14.2</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
