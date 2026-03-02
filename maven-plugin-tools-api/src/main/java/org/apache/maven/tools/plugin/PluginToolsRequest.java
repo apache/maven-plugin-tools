@@ -20,8 +20,6 @@ package org.apache.maven.tools.plugin;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -241,14 +239,5 @@ public interface PluginToolsRequest {
      * @return true if excluded, false otherwise.
      * @since TBC
      */
-    default boolean isExcludedScanDirectory(File sourceFile) {
-        Path sourcePath = sourceFile.toPath();
-        FileSystem sourceFs = sourcePath.getFileSystem();
-        for (String excludedScanDirectory : getExcludedScanDirectories()) {
-            if (sourceFs.getPathMatcher("glob:" + excludedScanDirectory).matches(sourcePath)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    boolean isExcludedScanDirectory(File sourceFile);
 }
