@@ -159,7 +159,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * @since TBC
      */
     @Parameter
-    private Set<File> excludedScanDirectories = Collections.emptySet();
+    private Set<String> excludedScanDirectories = Collections.emptySet();
 
     /**
      * By default, an exception is throw if no mojo descriptor is found. As the maven-plugin is defined in core, the

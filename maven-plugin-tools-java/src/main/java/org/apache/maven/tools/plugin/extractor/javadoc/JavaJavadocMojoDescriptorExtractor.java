@@ -552,7 +552,7 @@ public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtract
             // this may be problematic for them (e.g. using obscure unsupported syntax by the parser, comments that
             // cannot be controlled, etc.)
             File sourceFile = new File(source);
-            if (!isExcludedDirectory(request.getExcludedScanDirectories(), sourceFile)) {
+            if (!request.isExcludedScanDirectory(sourceFile)) {
                 builder.addSourceTree(sourceFile);
             }
         }
@@ -578,18 +578,5 @@ public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtract
                 validateParameter(parameters.get(j), j);
             }
         }
-    }
-
-    private boolean isExcludedDirectory(Collection<File> excludedDirectories, File sourceFile) {
-        for (File excludedScanDirectory : excludedDirectories) {
-            File candidateFile = sourceFile;
-            while (candidateFile != null) {
-                if (excludedScanDirectory.equals(candidateFile)) {
-                    return true;
-                }
-                candidateFile = candidateFile.getParentFile();
-            }
-        }
-        return false;
     }
 }

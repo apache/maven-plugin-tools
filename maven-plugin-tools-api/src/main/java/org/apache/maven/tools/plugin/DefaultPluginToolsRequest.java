@@ -18,7 +18,6 @@
  */
 package org.apache.maven.tools.plugin;
 
-import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
@@ -68,7 +67,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
 
     private String mavenApiVersion;
 
-    private Collection<File> excludedScanDirectories;
+    private Collection<String> excludedScanDirectories;
 
     public DefaultPluginToolsRequest(MavenProject project, PluginDescriptor pluginDescriptor) {
         this.project = project;
@@ -238,7 +237,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     }
 
     @Override
-    public Collection<File> getExcludedScanDirectories() {
+    public Collection<String> getExcludedScanDirectories() {
         if (excludedScanDirectories == null) {
             excludedScanDirectories = new HashSet<>();
         }
@@ -246,7 +245,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     }
 
     @Override
-    public void setExcludedScanDirectories(Collection<File> excludedScanDirectories) {
+    public void setExcludedScanDirectories(Collection<String> excludedScanDirectories) {
         this.excludedScanDirectories = excludedScanDirectories;
     }
 }

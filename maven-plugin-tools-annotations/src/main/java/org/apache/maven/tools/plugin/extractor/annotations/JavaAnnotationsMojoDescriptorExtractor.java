@@ -640,7 +640,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             // Allow users to exclude certain paths such as generated sources from being scanned, in the case that
             // this may be problematic for them (e.g. using obscure unsupported syntax by the parser, comments that
             // cannot be controlled, etc.)
-            if (!isExcludedDirectory(request.getExcludedScanDirectories(), sourceFile)) {
+            if (!request.isExcludedScanDirectory(sourceFile)) {
                 sources.add(sourceFile);
             }
         }
@@ -652,19 +652,6 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         }
 
         extendJavaProjectBuilder(builder, sources, project.getArtifacts());
-    }
-
-    private boolean isExcludedDirectory(Collection<File> excludedDirectories, File sourceFile) {
-        for (File excludedScanDirectory : excludedDirectories) {
-            File candidateFile = sourceFile;
-            while (candidateFile != null) {
-                if (excludedScanDirectory.equals(candidateFile)) {
-                    return true;
-                }
-                candidateFile = candidateFile.getParentFile();
-            }
-        }
-        return false;
     }
 
     private void extendJavaProjectBuilder(
