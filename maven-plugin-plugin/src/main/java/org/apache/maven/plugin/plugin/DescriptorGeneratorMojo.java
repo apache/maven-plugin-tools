@@ -134,6 +134,8 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * A set of root directories to exclude from being scanned, if the extractor scans source directories
      * to obtain metadata.
      *
+     * <p>Globs are also supported here.
+     *
      * <p>Users can specify this to prevent certain generated source roots from being parsed by this plugin
      * in the event that those source roots contain potentially malformed or incompatible code.
      *
