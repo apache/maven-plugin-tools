@@ -18,7 +18,11 @@
  */
 package org.apache.maven.tools.plugin;
 
+import java.io.File;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +69,8 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     private String requiredJavaVersion;
 
     private String mavenApiVersion;
+
+    private Collection<String> excludedScanDirectories;
 
     public DefaultPluginToolsRequest(MavenProject project, PluginDescriptor pluginDescriptor) {
         this.project = project;
@@ -231,5 +237,30 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
     @Override
     public String getUsedMavenApiVersion() {
         return mavenApiVersion;
+    }
+
+    @Override
+    public Collection<String> getExcludedScanDirectories() {
+        if (excludedScanDirectories == null) {
+            excludedScanDirectories = new HashSet<>();
+        }
+        return excludedScanDirectories;
+    }
+
+    @Override
+    public void setExcludedScanDirectories(Collection<String> excludedScanDirectories) {
+        this.excludedScanDirectories = excludedScanDirectories;
+    }
+
+    @Override
+    public boolean isExcludedScanDirectory(File sourceFile) {
+        Path sourcePath = sourceFile.toPath();
+        FileSystem sourceFs = sourcePath.getFileSystem();
+        for (String excludedScanDirectory : getExcludedScanDirectories()) {
+            if (sourceFs.getPathMatcher("glob:" + excludedScanDirectory).matches(sourcePath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
