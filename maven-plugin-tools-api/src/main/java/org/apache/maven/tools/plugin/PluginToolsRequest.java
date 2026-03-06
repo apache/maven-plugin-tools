@@ -18,7 +18,9 @@
  */
 package org.apache.maven.tools.plugin;
 
+import java.io.File;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -211,4 +213,31 @@ public interface PluginToolsRequest {
      * @since 3.8.0
      */
     String getUsedMavenApiVersion();
+
+    /**
+     * Get the collection of directories to exclude from scanning during the detection of sources.
+     *
+     * <p>Treated as globs internally.
+     *
+     * @return the directories to exclude from scanning during detection of sources.
+     * @since TBC
+     */
+    Collection<String> getExcludedScanDirectories();
+
+    /**
+     * Set the collection of directories to exclude from scanning during the detection of sources.
+     *
+     * @param excludedScanDirectories the directories to exclude from scanning during detection of sources.
+     * @since TBC
+     */
+    void setExcludedScanDirectories(Collection<String> excludedScanDirectories);
+
+    /**
+     * Determine if the given scan directory should be excluded.
+     *
+     * @param sourceFile the source file to check.
+     * @return true if excluded, false otherwise.
+     * @since TBC
+     */
+    boolean isExcludedScanDirectory(File sourceFile);
 }
