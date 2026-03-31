@@ -70,10 +70,18 @@ public class EnhancedPluginDescriptorBuilder extends PluginDescriptorBuilder {
         PluginDescriptor pluginDescriptor = super.build(reader, source);
         // elements added in plugin descriptor 1.1
         ExtendedPluginDescriptor extendedPluginDescriptor = new ExtendedPluginDescriptor(pluginDescriptor);
-        extendedPluginDescriptor.setRequiredJavaVersion(
-                configuration.getChild("requiredJavaVersion").getValue());
-        extendedPluginDescriptor.setRequiredMavenVersion(
-                configuration.getChild("requiredMavenVersion").getValue());
+        if (configuration != null) {
+            // Maven 3.x path: buildConfiguration() was called by super.build(), so configuration is available
+            extendedPluginDescriptor.setRequiredJavaVersion(
+                    configuration.getChild("requiredJavaVersion").getValue());
+            extendedPluginDescriptor.setRequiredMavenVersion(
+                    configuration.getChild("requiredMavenVersion").getValue());
+        } else {
+            // Maven 4+ path: PluginDescriptorBuilder no longer calls buildConfiguration(),
+            // but already populates requiredJavaVersion/requiredMavenVersion on the descriptor
+            extendedPluginDescriptor.setRequiredJavaVersion(pluginDescriptor.getRequiredJavaVersion());
+            // requiredMavenVersion is already accessible through ExtendedPluginDescriptor's delegation
+        }
         return extendedPluginDescriptor;
     }
 
