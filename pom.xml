@@ -91,7 +91,7 @@
     <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.5.1</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-rc-4</maven4Version>
-    <maven3Version>3.9.14</maven3Version>
+    <maven3Version>3.9.15</maven3Version>
     <resolverVersion>1.9.25</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <maven.site.path>plugin-tools-archives/plugin-tools-LATEST-4.x</maven.site.path>
