@@ -40,6 +40,9 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * @author Jason van Zyl
  */
 public class PluginDescriptorBuilder {
+
+    boolean isV4;
+
     public PluginDescriptor build(Reader reader) throws PlexusConfigurationException {
         return build(reader, null);
     }
@@ -68,6 +71,11 @@ public class PluginDescriptorBuilder {
 
         if (inheritedByDefault != null) {
             pluginDescriptor.setInheritedByDefault(Boolean.parseBoolean(inheritedByDefault));
+        }
+
+        String requiredMavenVersion = c.getChild("requiredMavenVersion").getValue();
+        if (requiredMavenVersion != null) {
+            isV4 = requiredMavenVersion.startsWith("4");
         }
 
         // ----------------------------------------------------------------------
@@ -277,10 +285,15 @@ public class PluginDescriptorBuilder {
 
             parameter.setSince(d.getChild("since").getValue());
 
-            PlexusConfiguration paramConfig = mojoConfig.getChild(parameter.getName(), false);
-            if (paramConfig != null) {
-                parameter.setExpression(paramConfig.getValue(null));
-                parameter.setDefaultValue(paramConfig.getAttribute("default-value"));
+            if (isV4) {
+                parameter.setExpression(d.getChild("expression").getValue());
+                parameter.setDefaultValue(d.getChild("defaultValue").getValue());
+            } else {
+                PlexusConfiguration paramConfig = mojoConfig.getChild(parameter.getName(), false);
+                if (paramConfig != null) {
+                    parameter.setExpression(paramConfig.getValue(null));
+                    parameter.setDefaultValue(paramConfig.getAttribute("default-value"));
+                }
             }
 
             parameters.add(parameter);
