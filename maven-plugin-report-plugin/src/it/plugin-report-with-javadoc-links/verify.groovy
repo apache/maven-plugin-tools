@@ -17,7 +17,7 @@
  * under the License.
  */
 
-def mojoDoc = new File( basedir, 'target/site/test-mojo.html' )
+def mojoDoc = new File( basedir, 'target/site/test-goal.html' )
 
 assert mojoDoc.isFile()
 

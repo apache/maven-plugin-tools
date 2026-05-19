@@ -17,7 +17,7 @@
  * under the License.
  */
 
-assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/noop-goal.html' ).isFile()
 
 def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
 assert pluginInfo.isFile()
