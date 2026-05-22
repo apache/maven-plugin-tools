@@ -105,8 +105,9 @@ public class MojoClassVisitor extends ClassVisitor {
     public List<MojoParameterVisitor> findParameterVisitors(Set<String> annotationClassNames) {
         return Stream.concat(
                         findFieldWithAnnotation(annotationClassNames).stream(),
-                        methodVisitors.stream().filter(method -> method.getAnnotationVisitorMap().keySet().stream()
-                                .anyMatch(annotationClassNames::contains)))
+                        methodVisitors.stream()
+                                .filter(method -> method.getAnnotationVisitorMap().keySet().stream()
+                                        .anyMatch(annotationClassNames::contains)))
                 .collect(Collectors.toList());
     }
 
