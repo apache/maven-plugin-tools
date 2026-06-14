@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JavadocBlockTagsToXhtmlConverterTest {
+    private static final String NL = System.lineSeparator();
     private final ConverterContext context;
     private final JavadocBlockTagsToXhtmlConverter converter;
     private final JavadocInlineTagsToXhtmlConverter inlineTagsConverter;
@@ -47,7 +48,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
     @Test
     void see() {
         assertEquals(
-                "<br /><strong>See also:</strong> \"Some reference\"",
+                "<br />" + System.lineSeparator() + "<strong>See also:</strong> \"Some reference\"",
                 converter.convert("see", "\"Some reference\"", context));
         assertEquals(
                 ", <a href=\"example.com\">Example</a>",
@@ -57,7 +58,7 @@ class JavadocBlockTagsToXhtmlConverterTest {
         ConverterContext context2 =
                 new SimpleConverterContext("my.package", URI.create("https://javadoc.example.com/"));
         assertEquals(
-                "<br /><strong>See also:</strong> <a href=\"example.com\">Example</a>",
+                "<br />" + NL + "<strong>See also:</strong> <a href=\"example.com\">Example</a>",
                 converter.convert("see", "<a href=\"example.com\">Example</a>", context2));
     }
 
