@@ -170,7 +170,7 @@ public class JavaClassConverterContext implements ConverterContext {
                     // link to other mojo (only for fields = parameters or without member)
                     return new URI(
                             null,
-                            "./" + mojoAnnotatedClass.getMojo().name() + "-mojo.html",
+                            "./" + mojoAnnotatedClass.getMojo().name() + "-goal.html",
                             reference.getMember().orElse(null));
                 }
             }

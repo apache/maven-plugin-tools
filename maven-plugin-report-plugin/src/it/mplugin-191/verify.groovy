@@ -18,7 +18,7 @@
 File pluginInfo = new File( basedir, "target/site/plugin-info.html" );
 assert pluginInfo.isFile()
 
-File touchMojo = new File( basedir, "target/site/touch-mojo.html" );
+File touchMojo = new File( basedir, "target/site/touch-goal.html" );
 assert touchMojo.isFile()
 
 return true;
