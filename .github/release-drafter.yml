@@ -14,14 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-   
-name: Release Drafter
-on:
-  push:
-    branches:
-      - maven-plugin-tools-3.x
-  workflow_dispatch:
 
-jobs:
-  update_release_draft:
-    uses: apache/maven-gh-actions-shared/.github/workflows/release-drafter.yml@v5
+_extends: maven-gh-actions-shared
+tag-template: maven-plugin-tools-$RESOLVED_VERSION
