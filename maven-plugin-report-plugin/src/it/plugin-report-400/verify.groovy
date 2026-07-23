@@ -26,8 +26,8 @@ assert pluginInfo.isFile()
 assert !pluginInfo.text.contains('Memory')
 assert !pluginInfo.text.contains('Disk Space')
 // check JDK and Maven requirements
-assert pluginInfo.text.contains('1.8')
-assert pluginInfo.text.contains(maven3Version)
+assert pluginInfo.text.contains('2.0.0')
+assert pluginInfo.text.contains(maven4Version)
 
 // deprecated info and description
 assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t use test goals, do you?</div><br />')
@@ -44,3 +44,4 @@ def reportMojo = new File( basedir, 'target/site/report-mojo.html' )
 assert reportMojo.isFile()
 
 assert reportMojo.text.contains('<td>Report output directory.<br /><strong>Default</strong>: <code>${project.build.directory}/generated-site/xdoc</code></td>')
+
