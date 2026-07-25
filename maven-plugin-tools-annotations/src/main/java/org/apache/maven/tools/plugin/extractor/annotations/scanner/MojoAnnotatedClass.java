@@ -18,10 +18,13 @@
  */
 package org.apache.maven.tools.plugin.extractor.annotations.scanner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.AfterAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
@@ -41,6 +44,8 @@ public class MojoAnnotatedClass {
     private MojoAnnotationContent mojo;
 
     private ExecuteAnnotationContent execute;
+
+    private List<AfterAnnotationContent> afterAnnotations;
 
     /**
      * key is field name
@@ -99,6 +104,18 @@ public class MojoAnnotatedClass {
         return this;
     }
 
+    public List<AfterAnnotationContent> getAfterAnnotations() {
+        if (this.afterAnnotations == null) {
+            this.afterAnnotations = new ArrayList<>();
+        }
+        return afterAnnotations;
+    }
+
+    public MojoAnnotatedClass setAfterAnnotations(List<AfterAnnotationContent> afterAnnotations) {
+        this.afterAnnotations = afterAnnotations;
+        return this;
+    }
+
     public Map<String, ParameterAnnotationContent> getParameters() {
         if (this.parameters == null) {
             this.parameters = new HashMap<>();
@@ -141,7 +158,11 @@ public class MojoAnnotatedClass {
     }
 
     public boolean hasAnnotations() {
-        return !(getComponents().isEmpty() && getParameters().isEmpty() && execute == null && mojo == null);
+        return !(getComponents().isEmpty()
+                && getParameters().isEmpty()
+                && execute == null
+                && mojo == null
+                && getAfterAnnotations().isEmpty());
     }
 
     public boolean isV4Api() {
@@ -161,6 +182,7 @@ public class MojoAnnotatedClass {
         sb.append(", parentClassName='").append(parentClassName).append('\'');
         sb.append(", mojo=").append(mojo);
         sb.append(", execute=").append(execute);
+        sb.append(", afterAnnotations=").append(afterAnnotations);
         sb.append(", parameters=").append(parameters);
         sb.append(", components=").append(components);
         sb.append(", v4api=").append(v4Api);

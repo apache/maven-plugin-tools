@@ -44,7 +44,9 @@ public interface MojoAnnotationsScanner {
             Execute.class.getName(),
             Deprecated.class.getName(),
             V4_API_ANNOTATIONS_PACKAGE + ".Mojo",
-            V4_API_ANNOTATIONS_PACKAGE + ".Execute");
+            V4_API_ANNOTATIONS_PACKAGE + ".Execute",
+            V4_API_ANNOTATIONS_PACKAGE + ".After",
+            V4_API_ANNOTATIONS_PACKAGE + ".Afters");
 
     List<String> FIELD_LEVEL_ANNOTATIONS = Arrays.asList(
             Parameter.class.getName(),

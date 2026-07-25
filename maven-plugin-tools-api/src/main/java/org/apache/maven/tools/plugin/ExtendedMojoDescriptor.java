@@ -18,6 +18,9 @@
  */
 package org.apache.maven.tools.plugin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -31,6 +34,7 @@ import org.apache.maven.plugin.descriptor.Parameter;
 public class ExtendedMojoDescriptor extends MojoDescriptor {
     private final boolean containsXhtmlTextValues;
     private boolean v4Api;
+    private List<AfterLink> afterLinks;
 
     public ExtendedMojoDescriptor() {
         this(false);
@@ -61,6 +65,66 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
 
     public void setV4Api(boolean v4Api) {
         this.v4Api = v4Api;
+    }
+
+    /**
+     * Returns the after-links declared via {@code @After} annotations.
+     *
+     * @return unmodifiable list of after-links, never {@code null}
+     * @since 4.0.0
+     */
+    public List<AfterLink> getAfterLinks() {
+        return afterLinks != null ? Collections.unmodifiableList(afterLinks) : Collections.emptyList();
+    }
+
+    /**
+     * Adds an after-link.
+     *
+     * @param afterLink the after-link to add
+     * @since 4.0.0
+     */
+    public void addAfterLink(AfterLink afterLink) {
+        if (this.afterLinks == null) {
+            this.afterLinks = new ArrayList<>();
+        }
+        this.afterLinks.add(afterLink);
+    }
+
+    /**
+     * Holds after-link data from the {@code @After} annotation.
+     * <p>
+     * Mirrors the {@code org.apache.maven.api.plugin.descriptor.AfterLink} model class
+     * from the Maven 4 API without introducing a compile-time dependency on it.
+     *
+     * @since 4.0.0
+     */
+    public static class AfterLink {
+        private final String phase;
+        private final String type;
+        private final String scope;
+
+        public AfterLink(String phase, String type, String scope) {
+            this.phase = phase;
+            this.type = type;
+            this.scope = scope;
+        }
+
+        public String getPhase() {
+            return phase;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getScope() {
+            return scope;
+        }
+
+        @Override
+        public String toString() {
+            return "AfterLink{phase='" + phase + "', type='" + type + "', scope='" + scope + "'}";
+        }
     }
 
     @Override

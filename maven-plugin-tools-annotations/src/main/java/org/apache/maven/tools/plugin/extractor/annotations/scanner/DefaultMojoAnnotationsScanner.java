@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.AfterAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
@@ -73,6 +75,8 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
     public static final String PARAMETER_V4 = MVN4_API + "Parameter";
+    public static final String AFTER_V4 = MVN4_API + "After";
+    public static final String AFTERS_V4 = MVN4_API + "Afters";
 
     public static final String MOJO_V3 = Mojo.class.getName();
     public static final String EXECUTE_V3 = Execute.class.getName();
@@ -306,6 +310,37 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
                 ExecuteAnnotationContent executeAnnotationContent = new ExecuteAnnotationContent();
                 populateAnnotationContent(executeAnnotationContent, mojoAnnotationVisitor);
                 mojoAnnotatedClass.setExecute(executeAnnotationContent);
+            }
+
+            // @After annotation(s) — v4 API only
+            List<AfterAnnotationContent> afterAnnotations = new ArrayList<>();
+
+            // single @After
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(AFTER_V4);
+            if (mojoAnnotationVisitor != null) {
+                AfterAnnotationContent afterAnnotationContent = new AfterAnnotationContent();
+                populateAnnotationContent(afterAnnotationContent, mojoAnnotationVisitor);
+                afterAnnotations.add(afterAnnotationContent);
+            }
+
+            // @Afters repeatable container wraps multiple @After in its "value" array attribute
+            mojoAnnotationVisitor = mojoClassVisitor.getAnnotationVisitor(AFTERS_V4);
+            if (mojoAnnotationVisitor != null) {
+                // The @Afters annotation has a "value" array attribute; visitArray("value")
+                // creates a sub-visitor, and each nested @After is visited via visitAnnotation
+                // on that sub-visitor.
+                MojoAnnotationVisitor arrayVisitor = mojoAnnotationVisitor.getArrayVisitor("value");
+                if (arrayVisitor != null) {
+                    for (MojoAnnotationVisitor nestedVisitor : arrayVisitor.getNestedAnnotationVisitors()) {
+                        AfterAnnotationContent afterAnnotationContent = new AfterAnnotationContent();
+                        populateAnnotationContent(afterAnnotationContent, nestedVisitor);
+                        afterAnnotations.add(afterAnnotationContent);
+                    }
+                }
+            }
+
+            if (!afterAnnotations.isEmpty()) {
+                mojoAnnotatedClass.setAfterAnnotations(afterAnnotations);
             }
 
             // @Parameter annotations
