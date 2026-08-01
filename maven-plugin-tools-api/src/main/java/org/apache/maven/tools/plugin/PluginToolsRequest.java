@@ -220,7 +220,7 @@ public interface PluginToolsRequest {
      * <p>Treated as globs internally.
      *
      * @return the directories to exclude from scanning during detection of sources.
-     * @since TBC
+     * @since 3.16.0
      */
     Collection<String> getExcludedScanDirectories();
 
@@ -228,7 +228,7 @@ public interface PluginToolsRequest {
      * Set the collection of directories to exclude from scanning during the detection of sources.
      *
      * @param excludedScanDirectories the directories to exclude from scanning during detection of sources.
-     * @since TBC
+     * @since 3.16.0
      */
     void setExcludedScanDirectories(Collection<String> excludedScanDirectories);
 
@@ -237,7 +237,7 @@ public interface PluginToolsRequest {
      *
      * @param sourceFile the source file to check.
      * @return true if excluded, false otherwise.
-     * @since TBC
+     * @since 3.16.0
      */
     boolean isExcludedScanDirectory(File sourceFile);
 }

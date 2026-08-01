@@ -158,7 +158,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      *   </excludedScanDirectories>
      * }</pre>
      *
-     * @since TBC
+     * @since 3.16.0
      */
     @Parameter
     private Set<String> excludedScanDirectories = Collections.emptySet();
