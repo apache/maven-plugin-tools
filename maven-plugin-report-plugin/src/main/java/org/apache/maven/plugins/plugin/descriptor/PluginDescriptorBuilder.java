@@ -41,7 +41,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  */
 public class PluginDescriptorBuilder {
 
-    boolean isV4;
+    private boolean isV4;
 
     public PluginDescriptor build(Reader reader) throws PlexusConfigurationException {
         return build(reader, null);
@@ -76,6 +76,8 @@ public class PluginDescriptorBuilder {
         String requiredMavenVersion = c.getChild("requiredMavenVersion").getValue();
         if (requiredMavenVersion != null) {
             isV4 = requiredMavenVersion.startsWith("4");
+        } else {
+            isV4 = false;
         }
 
         // ----------------------------------------------------------------------

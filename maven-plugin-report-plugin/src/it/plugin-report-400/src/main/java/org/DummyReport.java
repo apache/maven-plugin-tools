@@ -144,7 +144,6 @@ public class DummyReport extends AbstractMavenReport {
     }
 
     /**
-     * @param pluginDescriptor not null
      * @param locale           not null
      * @throws MavenReportException if any
      */
