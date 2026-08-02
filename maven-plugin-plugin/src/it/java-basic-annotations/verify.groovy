@@ -194,4 +194,10 @@ assert mojo.deprecated.text() == 'No reason given'
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "param" }[0]
 assert parameter.deprecated.text() == 'No reason given'
 
-return true;
+def buildLog = new File(basedir, "build.log").text
+
+assert buildLog.contains('[WARNING] Mojo mplugin-396 uses Plexus Component requirements (@Component annotation) for fields: [projectHelper]')
+assert buildLog.contains('[WARNING] Mojo minimal uses Plexus Component requirements (@Component annotation) for fields: [projectHelper]')
+assert buildLog.contains('[WARNING] Mojo first uses Plexus Component requirements (@Component annotation) for fields: [mojo, plugin, project, projectHelper, session, settings]')
+assert buildLog.contains('[WARNING] Mojo maximal uses Plexus Component requirements (@Component annotation) for fields: [projectHelper]')
+assert buildLog.contains('[WARNING] Use JSR 330 annotations to inject dependencies instead.')
