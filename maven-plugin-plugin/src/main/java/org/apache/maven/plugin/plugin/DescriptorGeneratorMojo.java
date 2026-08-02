@@ -391,6 +391,9 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
 
             outputDirectory.mkdirs();
 
+            ValidateComponentRequirement validateComponentRequirement = new ValidateComponentRequirement();
+            validateComponentRequirement.validate(request.getPluginDescriptor(), getLog());
+
             PluginDescriptorFilesGenerator pluginDescriptorGenerator = new PluginDescriptorFilesGenerator();
             pluginDescriptorGenerator.execute(outputDirectory, request);
 
