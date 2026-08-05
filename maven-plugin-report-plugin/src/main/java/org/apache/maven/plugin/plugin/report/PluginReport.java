@@ -63,8 +63,8 @@ import org.eclipse.aether.version.Version;
 
 /**
  * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>
- * and one <code><i>goal</i>-mojo.html</code> per goal.
- * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
+ * and one <code><i>goal</i>-goal.html</code> per goal.
+ * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-goal.html">plugin:descriptor</a>.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -286,7 +286,7 @@ public class PluginReport extends AbstractMavenReport {
             for (MojoDescriptor descriptor : pluginDescriptor.getMojos()) {
                 GoalRenderer renderer;
                 try {
-                    String filename = descriptor.getGoal() + "-mojo.html";
+                    String filename = descriptor.getGoal() + "-goal.html";
                     Sink sink = getSinkFactory().createSink(getReportOutputDirectory(), filename);
                     renderer = new GoalRenderer(
                             sink,

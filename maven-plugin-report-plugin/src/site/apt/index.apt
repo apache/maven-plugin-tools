@@ -34,9 +34,9 @@ Maven Plugin Report Plugin
 
    The Plugin Report Plugin has two goals:
 
-  * {{{./report-mojo.html}plugin-report:report}} which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo).
+  * {{{./report-goal.html}plugin-report:report}} which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo).
 
-  * {{{./report-no-fork-mojo.html}plugin-report:report-no-fork}} which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo)  without forking the <<<process-classes>>> phase again. Note that this goal does require generation of classes before site generation, e.g. by invoking <<<mvn clean verify site>>>.
+  * {{{./report-no-fork-goal.html}plugin-report:report-no-fork}} which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo)  without forking the <<<process-classes>>> phase again. Note that this goal does require generation of classes before site generation, e.g. by invoking <<<mvn clean verify site>>>.
 
   []
 

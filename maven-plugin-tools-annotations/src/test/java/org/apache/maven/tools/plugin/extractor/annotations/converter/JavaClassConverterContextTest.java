@@ -235,7 +235,7 @@ class JavaClassConverterContextTest {
 
         // field reference in another mojo
         assertEquals(
-                new URI(null, "./other-goal-mojo.html", "field1"),
+                new URI(null, "./other-goal-goal.html", "field1"),
                 context.getUrl(new FullyQualifiedJavadocReference(
                         currentPackageName, "OtherClass", "field1", MemberType.FIELD, false)));
 
