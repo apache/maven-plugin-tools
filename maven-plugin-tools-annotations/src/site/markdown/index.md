@@ -1,41 +1,29 @@
- ------
- Introduction
- ------
- Hervé Boutemy
- ------
- 2012-05-12
- ------
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-~~ Licensed to the Apache Software Foundation (ASF) under one
-~~ or more contributor license agreements.  See the NOTICE file
-~~ distributed with this work for additional information
-~~ regarding copyright ownership.  The ASF licenses this file
-~~ to you under the Apache License, Version 2.0 (the
-~~ "License"); you may not use this file except in compliance
-~~ with the License.  You may obtain a copy of the License at
-~~
-~~   http://www.apache.org/licenses/LICENSE-2.0
-~~
-~~ Unless required by applicable law or agreed to in writing,
-~~ software distributed under the License is distributed on an
-~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-~~ KIND, either express or implied.  See the License for the
-~~ specific language governing permissions and limitations
-~~ under the License.
+http://www.apache.org/licenses/LICENSE-2.0
 
-~~ NOTE: For help with the syntax of this file, see:
-~~ http://maven.apache.org/doxia/references/apt-format.html
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 
-Maven Plugin Tool for Annotations
+# Maven Plugin Tool for Annotations
 
- The Maven Plugin Tool for Annotations is the <<<java-annotations>>> implementation of
- {{{../maven-plugin-tools-api/index.html}maven-plugin-tools-api}}
- to extract descriptors from plugins written in Java with
- {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java Annotations}}.
+The Maven Plugin Tool for Annotations is the `java-annotations` implementation of [maven-plugin-tools-api](../maven-plugin-tools-api/index.html) to extract descriptors from plugins written in Java with [Maven Plugin Tools Java Annotations](../maven-plugin-annotations/index.html).
 
-* Supported Annotations
+## Supported Annotations
 
-+---------+
+```java
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
@@ -145,23 +133,14 @@ public class MyMojo
         ...
     }
 }
-+---------+
+```
 
+## See also
 
-* See also
-
- * {{{../maven-plugin-annotations/index.html}Maven Plugin Tools Java Annotations}}
-
- * {{{/developers/mojo-api-specification.html#The_Descriptor_and_Annotations}Mojo API Specification}}
-
- * {{{/ref/current/maven-plugin-api/plugin.html}META-INF/maven/plugin.xml plugin descriptor}}
-
- * {{{/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}PluginParameterExpressionEvaluator}},
-   used to evaluate plugin parameters values during Mojo configuration,
-
- * pseudo parameters:
-
-   * <<<PluginParameterExpressionEvaluator>>> {{{https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}javadoc}} /
-   {{{https://maven.apache.org/ref/current/maven-core/xref/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html}source}}
-
-   * {{{https://issues.apache.org/jira/browse/MNG-5695}MNG-5695}}: scoped objects added to Guice/Sisu in {{{https://maven.apache.org/ref/current/maven-core/}maven-core}} 3.2.5
+- [Maven Plugin Tools Java Annotations](../maven-plugin-annotations/index.html)
+- [Mojo API Specification](/developers/mojo-api-specification.html#The_Descriptor_and_Annotations)
+- [META-INF/maven/plugin.xml plugin descriptor](/ref/current/maven-plugin-api/plugin.html)
+- [PluginParameterExpressionEvaluator](/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html), used to evaluate plugin parameters values during Mojo configuration,
+- pseudo parameters:
+    - `PluginParameterExpressionEvaluator` [javadoc](https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html) / [source](https://maven.apache.org/ref/current/maven-core/xref/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html)
+    - [MNG-5695](https://issues.apache.org/jira/browse/MNG-5695): scoped objects added to Guice/Sisu in [maven-core](https://maven.apache.org/ref/current/maven-core/) 3.2.5
