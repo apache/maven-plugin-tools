@@ -20,8 +20,6 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,121 +28,101 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.builder.TypeAssembler;
-import com.thoughtworks.qdox.library.ClassNameLibrary;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaField;
-import com.thoughtworks.qdox.model.JavaModule;
-import com.thoughtworks.qdox.model.JavaPackage;
-import com.thoughtworks.qdox.model.JavaType;
-import com.thoughtworks.qdox.parser.structs.TypeDef;
-import com.thoughtworks.qdox.type.TypeResolver;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedMethodLikeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
+import com.github.javaparser.resolution.types.ResolvedReferenceType;
+import org.apache.maven.tools.plugin.extractor.annotations.JavaSourceModel;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 
-/** {@link ConverterContext} based on QDox's {@link JavaClass} and {@link JavaProjectBuilder}. */
+/** {@link ConverterContext} backed by JavaParser source declarations and symbol resolution. */
 public class JavaClassConverterContext implements ConverterContext {
 
-    final JavaClass mojoClass; // this is the mojo's class
+    /** The Mojo class whose documentation is being generated. */
+    private final TypeDeclaration<?> mojoClass;
 
-    final JavaClass declaringClass; // this may be a super class of the mojo's class
+    /** The class declaring the converted Javadoc, possibly a superclass of the Mojo class. */
+    private final TypeDeclaration<?> declaringClass;
 
-    final JavaProjectBuilder javaProjectBuilder;
+    private final Node locationNode;
+    private final JavaSourceModel sourceModel;
+    private final Map<String, MojoAnnotatedClass> mojoAnnotatedClasses;
 
-    final Map<String, MojoAnnotatedClass> mojoAnnotatedClasses;
+    /** The link generator, or {@code null} when no Javadoc site is configured. */
+    private final JavadocLinkGenerator linkGenerator;
 
-    final JavadocLinkGenerator linkGenerator; // may be null in case nothing was configured
-
-    final int lineNumber;
-
-    final Optional<JavaModule> javaModule;
-
-    final Map<String, Object> attributes;
+    private final int lineNumber;
+    private final Map<String, Object> attributes = new HashMap<>();
 
     public JavaClassConverterContext(
-            JavaClass mojoClass,
-            JavaProjectBuilder javaProjectBuilder,
+            TypeDeclaration<?> mojoClass,
+            JavaSourceModel sourceModel,
             Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
             JavadocLinkGenerator linkGenerator,
             int lineNumber) {
-        this(mojoClass, mojoClass, javaProjectBuilder, mojoAnnotatedClasses, linkGenerator, lineNumber);
+        this(mojoClass, mojoClass, mojoClass, sourceModel, mojoAnnotatedClasses, linkGenerator, lineNumber);
     }
 
     public JavaClassConverterContext(
-            JavaClass mojoClass,
-            JavaClass declaringClass,
-            JavaProjectBuilder javaProjectBuilder,
+            TypeDeclaration<?> mojoClass,
+            TypeDeclaration<?> declaringClass,
+            Node locationNode,
+            JavaSourceModel sourceModel,
             Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
             JavadocLinkGenerator linkGenerator,
             int lineNumber) {
         this.mojoClass = mojoClass;
         this.declaringClass = declaringClass;
-        this.javaProjectBuilder = javaProjectBuilder;
+        this.locationNode = locationNode;
+        this.sourceModel = sourceModel;
         this.mojoAnnotatedClasses = mojoAnnotatedClasses;
         this.linkGenerator = linkGenerator;
         this.lineNumber = lineNumber;
-        this.attributes = new HashMap<>();
-
-        javaModule = mojoClass.getJavaClassLibrary().getJavaModules().stream()
-                .filter(m -> m.getDescriptor().getExports().stream()
-                        .anyMatch(e -> e.getSource().getName().equals(getPackageName())))
-                .findFirst();
     }
 
     @Override
     public Optional<String> getModuleName() {
-        // https://github.com/paul-hammant/qdox/issues/113, module name is not exposed
-        return javaModule.map(JavaModule::getName);
+        return sourceModel.getModuleName(getPackageName());
     }
 
     @Override
     public String getPackageName() {
-        return mojoClass.getPackageName();
+        return resolve(mojoClass).getPackageName();
     }
 
     @Override
     public String getLocation() {
-        try {
-            URL url = declaringClass.getSource().getURL();
-            if (url == null) // url is not always available, just emit FQCN in that case
-            {
-                return declaringClass.getPackageName() + declaringClass.getSimpleName() + ":" + lineNumber;
-            }
-            return Paths.get("").toUri().relativize(url.toURI()) + ":" + lineNumber;
-        } catch (URISyntaxException e) {
-            return declaringClass.getSource().getURL() + ":" + lineNumber;
-        }
+        return sourceModel.getLocation(locationNode, lineNumber);
     }
 
-    /**
-     * @param reference
-     * @return true in case either the current context class or any of its super classes are referenced
-     */
+    /** Returns whether {@code reference} identifies the Mojo class or one of its ancestors. */
     @Override
     public boolean isReferencedBy(FullyQualifiedJavadocReference reference) {
-        JavaClass javaClassInHierarchy = this.mojoClass;
-        while (javaClassInHierarchy != null) {
-            if (isClassReferencedByReference(javaClassInHierarchy, reference)) {
-                return true;
-            }
-            // check implemented interfaces
-            for (JavaClass implementedInterfaces : javaClassInHierarchy.getInterfaces()) {
-                if (isClassReferencedByReference(implementedInterfaces, reference)) {
-                    return true;
-                }
-            }
-            javaClassInHierarchy = javaClassInHierarchy.getSuperJavaClass();
+        ResolvedReferenceTypeDeclaration declaration = resolve(mojoClass);
+        if (isClassReferencedByReference(declaration, reference)) {
+            return true;
         }
-        return false;
+        return declaration.getAllAncestors().stream()
+                .map(ResolvedReferenceType::getTypeDeclaration)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .anyMatch(type -> isClassReferencedByReference(type, reference));
     }
 
-    private static boolean isClassReferencedByReference(JavaClass javaClass, FullyQualifiedJavadocReference reference) {
-        return javaClass.getPackageName().equals(reference.getPackageName().orElse(""))
-                && javaClass.getSimpleName().equals(reference.getClassName().orElse(""));
+    private static boolean isClassReferencedByReference(
+            ResolvedReferenceTypeDeclaration declaration, FullyQualifiedJavadocReference reference) {
+        return declaration.getPackageName().equals(reference.getPackageName().orElse(""))
+                && declaration.getClassName().equals(reference.getClassName().orElse(""));
     }
 
     @Override
@@ -157,8 +135,8 @@ public class JavaClassConverterContext implements ConverterContext {
         try {
             if (isReferencedBy(reference)
                     && MemberType.FIELD == reference.getMemberType().orElse(null)) {
-                // link to current goal's parameters
-                return new URI(null, null, reference.getMember().orElse(null)); // just an anchor if same context
+                // Fields in the current Mojo link to parameter anchors on the same page.
+                return new URI(null, null, reference.getMember().orElse(null));
             }
             Optional<String> fqClassName = reference.getFullyQualifiedClassName();
             if (fqClassName.isPresent()) {
@@ -167,7 +145,7 @@ public class JavaClassConverterContext implements ConverterContext {
                         && mojoAnnotatedClass.getMojo() != null
                         && (!reference.getLabel().isPresent()
                                 || MemberType.FIELD == reference.getMemberType().orElse(null))) {
-                    // link to other mojo (only for fields = parameters or without member)
+                    // Fields and whole-class references to another Mojo link to that Mojo's page.
                     return new URI(
                             null,
                             "./" + mojoAnnotatedClass.getMojo().name() + "-mojo.html",
@@ -175,7 +153,7 @@ public class JavaClassConverterContext implements ConverterContext {
                 }
             }
         } catch (URISyntaxException e) {
-            throw new IllegalStateException("Error constructing a valid URL", e); // should not happen
+            throw new IllegalStateException("Error constructing a valid URL", e);
         }
         if (linkGenerator == null) {
             throw new IllegalStateException("No Javadoc Sites given to create URLs to");
@@ -185,86 +163,294 @@ public class JavaClassConverterContext implements ConverterContext {
 
     @Override
     public FullyQualifiedJavadocReference resolveReference(JavadocReference reference) {
-        Optional<FullyQualifiedJavadocReference> resolvedName;
-        // is it already fully qualified?
+        Optional<FullyQualifiedJavadocReference> resolved;
+        // First try the reference exactly as written, which handles fully qualified names.
         if (reference.getPackageNameClassName().isPresent()) {
-            resolvedName = resolveMember(
-                    reference.getPackageNameClassName().get(), reference.getMember(), reference.getLabel());
-            if (resolvedName.isPresent()) {
-                return resolvedName.get();
+            String name = reference.getPackageNameClassName().get();
+            resolved = resolveNamedReference(name, reference.getMember(), reference.getLabel());
+            if (resolved.isPresent()) {
+                return resolved.get();
             }
         }
-        // is it a member only?
+
+        // Search member-only references in the current class or interface first, then its ancestors.
         if (reference.getMember().isPresent()
                 && !reference.getPackageNameClassName().isPresent()) {
-            // search order for not fully qualified names:
-            // 1. The current class or interface (only for members)
-            resolvedName = resolveMember(declaringClass, reference.getMember(), reference.getLabel());
-            if (resolvedName.isPresent()) {
-                return resolvedName.get();
+            resolved = resolveMember(resolve(declaringClass), reference.getMember(), reference.getLabel(), true);
+            if (resolved.isPresent()) {
+                return resolved.get();
             }
-            // 2. Any enclosing classes and interfaces searching the closest first (only members)
-            for (JavaClass nestedClass : declaringClass.getNestedClasses()) {
-                resolvedName = resolveMember(nestedClass, reference.getMember(), reference.getLabel());
-                if (resolvedName.isPresent()) {
-                    return resolvedName.get();
-                }
-            }
-            // 3. Any superclasses and superinterfaces, searching the closest first. (only members)
-            JavaClass superClass = declaringClass.getSuperJavaClass();
-            while (superClass != null) {
-                resolvedName = resolveMember(superClass, reference.getMember(), reference.getLabel());
-                if (resolvedName.isPresent()) {
-                    return resolvedName.get();
-                }
-                superClass = superClass.getSuperJavaClass();
-            }
-        } else {
-            String packageNameClassName = reference.getPackageNameClassName().get();
-            // 4. The current package
-            resolvedName = resolveMember(
-                    declaringClass.getPackageName() + "." + packageNameClassName,
-                    reference.getMember(),
-                    reference.getLabel());
-            if (resolvedName.isPresent()) {
-                return resolvedName.get();
-            }
-            // 5. Any imported packages, classes, and interfaces, searching in the order of the import statement.
-            List<String> importNames = new ArrayList<>();
-            importNames.add("java.lang.*"); // default import
-            importNames.addAll(declaringClass.getSource().getImports());
-            for (String importName : importNames) {
-                if (importName.endsWith(".*")) {
-                    resolvedName = resolveMember(
-                            importName.replace("*", packageNameClassName), reference.getMember(), reference.getLabel());
-                    if (resolvedName.isPresent()) {
-                        return resolvedName.get();
-                    }
-                } else {
-                    if (importName.endsWith(packageNameClassName)) {
-                        resolvedName = resolveMember(importName, reference.getMember(), reference.getLabel());
-                        if (resolvedName.isPresent()) {
-                            return resolvedName.get();
-                        }
-                    } else {
-                        // ends with prefix of reference (nested class name)
-                        int firstDotIndex = packageNameClassName.indexOf(".");
-                        if (firstDotIndex > 0
-                                && importName.endsWith(packageNameClassName.substring(0, firstDotIndex))) {
-                            resolvedName = resolveMember(
-                                    importName,
-                                    packageNameClassName.substring(firstDotIndex + 1),
-                                    reference.getMember(),
-                                    reference.getLabel());
-                            if (resolvedName.isPresent()) {
-                                return resolvedName.get();
-                            }
-                        }
-                    }
+        } else if (reference.getPackageNameClassName().isPresent()) {
+            // Resolve simple and nested type names using Javadoc's lookup order.
+            String name = reference.getPackageNameClassName().get();
+            for (String candidate : classNameCandidates(name)) {
+                resolved = resolveNamedReference(candidate, reference.getMember(), reference.getLabel());
+                if (resolved.isPresent()) {
+                    return resolved.get();
                 }
             }
         }
         throw new IllegalArgumentException("Could not resolve javadoc reference " + reference);
+    }
+
+    private Optional<FullyQualifiedJavadocReference> resolveNamedReference(
+            String name, Optional<String> member, Optional<String> label) {
+        Optional<ResolvedReferenceTypeDeclaration> type = sourceModel.resolveType(name);
+        if (type.isPresent()) {
+            return resolveMember(type.get(), member, label, true);
+        }
+        // Package references cannot contain members.
+        if (!member.isPresent() && sourceModel.hasPackage(name)) {
+            return Optional.of(new FullyQualifiedJavadocReference(name, label, !sourceModel.isInternalPackage(name)));
+        }
+        return Optional.empty();
+    }
+
+    private List<String> classNameCandidates(String name) {
+        List<String> candidates = new ArrayList<>();
+        ResolvedReferenceTypeDeclaration declaration = resolve(declaringClass);
+        // Search order: current package, implicit java.lang import, then explicit imports in declaration order.
+        candidates.add(declaration.getPackageName() + "." + name);
+        candidates.add("java.lang." + name);
+        List<ImportDeclaration> imports = declaringClass
+                .findCompilationUnit()
+                .<List<ImportDeclaration>>map(unit -> new ArrayList<>(unit.getImports()))
+                .orElseGet(Collections::emptyList);
+        for (ImportDeclaration importDeclaration : imports) {
+            if (importDeclaration.isStatic()) {
+                continue;
+            }
+            String importName = importDeclaration.getNameAsString();
+            if (importDeclaration.isAsterisk()) {
+                candidates.add(importName + "." + name);
+            } else if (name.equals(simpleName(importName))) {
+                candidates.add(importName);
+            } else if (name.startsWith(simpleName(importName) + ".")) {
+                // An imported outer type may prefix a nested-type reference.
+                candidates.add(
+                        importName + name.substring(simpleName(importName).length()));
+            }
+        }
+        return candidates;
+    }
+
+    private Optional<FullyQualifiedJavadocReference> resolveMember(
+            ResolvedReferenceTypeDeclaration type,
+            Optional<String> member,
+            Optional<String> label,
+            boolean includeAncestors) {
+        if (!member.isPresent()) {
+            return Optional.of(toReference(type, Optional.empty(), Optional.empty(), label));
+        }
+
+        String memberText = member.get();
+        // Resolve ambiguous member text as a field, method, then constructor.
+        Optional<ResolvedFieldDeclaration> field = findField(type, memberText, includeAncestors);
+        if (field.isPresent()) {
+            return Optional.of(toReference(
+                    field.get().declaringType().asReferenceType(), member, Optional.of(MemberType.FIELD), label));
+        }
+
+        String methodName = methodName(memberText);
+        Optional<List<String>> parameterTypes = parameterTypes(memberText);
+        Optional<ResolvedMethodDeclaration> method = findMethod(type, methodName, parameterTypes, includeAncestors);
+        if (method.isPresent()) {
+            return Optional.of(toReference(
+                    method.get().declaringType(),
+                    Optional.of(canonicalMember(method.get())),
+                    Optional.of(MemberType.METHOD),
+                    label));
+        }
+
+        if (methodName.equals(type.getName())) {
+            Optional<ResolvedConstructorDeclaration> constructor = findConstructor(type, parameterTypes);
+            if (constructor.isPresent()) {
+                return Optional.of(toReference(
+                        type,
+                        Optional.of(canonicalMember(constructor.get())),
+                        Optional.of(MemberType.CONSTRUCTOR),
+                        label));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<ResolvedFieldDeclaration> findField(
+            ResolvedReferenceTypeDeclaration type, String name, boolean includeAncestors) {
+        List<ResolvedFieldDeclaration> fields = includeAncestors ? type.getAllFields() : type.getDeclaredFields();
+        return fields.stream().filter(field -> field.getName().equals(name)).findFirst();
+    }
+
+    private Optional<ResolvedMethodDeclaration> findMethod(
+            ResolvedReferenceTypeDeclaration type,
+            String name,
+            Optional<List<String>> parameterTypes,
+            boolean includeAncestors) {
+        List<ResolvedReferenceTypeDeclaration> hierarchy = new ArrayList<>();
+        hierarchy.add(type);
+        if (includeAncestors) {
+            type.getAllAncestors().stream()
+                    .map(ResolvedReferenceType::getTypeDeclaration)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(hierarchy::add);
+        }
+        for (ResolvedReferenceTypeDeclaration declaration : hierarchy) {
+            Optional<ResolvedMethodDeclaration> method = declaration.getDeclaredMethods().stream()
+                    .filter(candidate -> candidate.getName().equals(name))
+                    .filter(candidate -> matches(candidate, parameterTypes))
+                    .findFirst();
+            if (method.isPresent()) {
+                return method;
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<ResolvedConstructorDeclaration> findConstructor(
+            ResolvedReferenceTypeDeclaration type, Optional<List<String>> parameterTypes) {
+        return type.getConstructors().stream()
+                .filter(candidate -> matches(candidate, parameterTypes))
+                .findFirst();
+    }
+
+    private boolean matches(ResolvedMethodLikeDeclaration declaration, Optional<List<String>> parameterTypes) {
+        if (!parameterTypes.isPresent()) {
+            return true;
+        }
+        if (declaration.getNumberOfParams() != parameterTypes.get().size()) {
+            return false;
+        }
+        for (int index = 0; index < declaration.getNumberOfParams(); index++) {
+            String actual = declaration.getParam(index).getType().erasure().describe();
+            if (!actual.equals(parameterTypes.get().get(index))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Optional<List<String>> parameterTypes(String member) {
+        int opening = member.indexOf('(');
+        int closing = member.lastIndexOf(')');
+        if (opening < 0 && closing < 0) {
+            // Without parentheses, match the first overload found, mirroring javadoc.
+            return Optional.empty();
+        }
+        if (opening < 0 || closing < opening) {
+            throw new IllegalArgumentException("Found opening without closing parentheses or vice versa in " + member);
+        }
+        String arguments = member.substring(opening + 1, closing).trim();
+        if (arguments.isEmpty()) {
+            return Optional.of(Collections.emptyList());
+        }
+        List<String> result = new ArrayList<>();
+        for (String argument : splitArguments(arguments)) {
+            result.add(resolveParameterType(stripArgumentName(argument.trim())));
+        }
+        return Optional.of(result);
+    }
+
+    private static List<String> splitArguments(String arguments) {
+        List<String> result = new ArrayList<>();
+        int genericDepth = 0;
+        int start = 0;
+        for (int index = 0; index < arguments.length(); index++) {
+            char ch = arguments.charAt(index);
+            if (ch == '<') {
+                genericDepth++;
+            } else if (ch == '>') {
+                genericDepth--;
+            } else if (ch == ',' && genericDepth == 0) {
+                result.add(arguments.substring(start, index));
+                start = index + 1;
+            }
+        }
+        result.add(arguments.substring(start));
+        return result;
+    }
+
+    private static String stripArgumentName(String argument) {
+        int genericDepth = 0;
+        for (int index = argument.length() - 1; index >= 0; index--) {
+            char ch = argument.charAt(index);
+            if (ch == '>') {
+                genericDepth++;
+            } else if (ch == '<') {
+                genericDepth--;
+            } else if (Character.isWhitespace(ch) && genericDepth == 0) {
+                return argument.substring(0, index).trim();
+            }
+        }
+        return argument;
+    }
+
+    private String resolveParameterType(String typeName) {
+        String normalized = eraseGenerics(typeName.replace("...", "[]"));
+        int dimensions = 0;
+        while (normalized.endsWith("[]")) {
+            dimensions++;
+            normalized = normalized.substring(0, normalized.length() - 2);
+        }
+        String resolved;
+        if (isPrimitive(normalized)) {
+            resolved = normalized;
+        } else {
+            List<String> candidates = new ArrayList<>();
+            candidates.add(normalized);
+            candidates.addAll(classNameCandidates(normalized));
+            resolved = candidates.stream()
+                    .filter(candidate -> sourceModel.resolveType(candidate).isPresent())
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IllegalArgumentException("Found unresolvable method argument type " + typeName));
+        }
+        StringBuilder result = new StringBuilder(resolved);
+        for (int index = 0; index < dimensions; index++) {
+            result.append("[]");
+        }
+        return result.toString();
+    }
+
+    private static String eraseGenerics(String value) {
+        StringBuilder result = new StringBuilder();
+        int depth = 0;
+        for (int index = 0; index < value.length(); index++) {
+            char ch = value.charAt(index);
+            if (ch == '<') {
+                depth++;
+            } else if (ch == '>') {
+                depth--;
+            } else if (depth == 0) {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    private static boolean isPrimitive(String name) {
+        return "boolean".equals(name)
+                || "byte".equals(name)
+                || "char".equals(name)
+                || "double".equals(name)
+                || "float".equals(name)
+                || "int".equals(name)
+                || "long".equals(name)
+                || "short".equals(name);
+    }
+
+    private FullyQualifiedJavadocReference toReference(
+            ResolvedReferenceTypeDeclaration type,
+            Optional<String> member,
+            Optional<MemberType> memberType,
+            Optional<String> label) {
+        return new FullyQualifiedJavadocReference(
+                type.getPackageName(),
+                Optional.of(type.getClassName()),
+                member,
+                memberType,
+                label,
+                !sourceModel.isInternal(type));
     }
 
     @Override
@@ -276,15 +462,26 @@ public class JavaClassConverterContext implements ConverterContext {
         String fieldName = reference
                 .getMember()
                 .orElseThrow(() -> new IllegalArgumentException("Given reference does not specify a member!"));
-        JavaClass javaClass = javaProjectBuilder.getClassByName(fqcn);
-        JavaField javaField = javaClass.getFieldByName(fieldName);
-        if (javaField == null) {
-            throw new IllegalArgumentException("Could not find field with name " + fieldName + " in class " + fqcn);
+        TypeDeclaration<?> type = sourceModel
+                .getType(fqcn)
+                .orElseThrow(() -> new IllegalArgumentException("Could not find source class " + fqcn));
+        for (FieldDeclaration field : type.getFields()) {
+            Optional<com.github.javaparser.ast.body.VariableDeclarator> variable = field.getVariables().stream()
+                    .filter(candidate -> candidate.getNameAsString().equals(fieldName))
+                    .findFirst();
+            if (variable.isPresent()) {
+                if (!field.isStatic()) {
+                    throw new IllegalArgumentException(
+                            "Field with name " + fieldName + " in class " + fqcn + " is not static");
+                }
+                return variable.get()
+                        .getInitializer()
+                        .map(initializer -> initializer.toString())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "Field with name " + fieldName + " in class " + fqcn + " has no initializer"));
+            }
         }
-        if (!javaField.isStatic()) {
-            throw new IllegalArgumentException("Field with name " + fieldName + " in class " + fqcn + " is not static");
-        }
-        return javaField.getInitializationExpression();
+        throw new IllegalArgumentException("Could not find field with name " + fieldName + " in class " + fqcn);
     }
 
     @Override
@@ -292,189 +489,26 @@ public class JavaClassConverterContext implements ConverterContext {
         return linkGenerator.getInternalJavadocSiteBaseUrl();
     }
 
-    private Optional<FullyQualifiedJavadocReference> resolveMember(
-            String fullyQualifiedPackageNameClassName, Optional<String> member, Optional<String> label) {
-        return resolveMember(fullyQualifiedPackageNameClassName, "", member, label);
+    private static ResolvedReferenceTypeDeclaration resolve(TypeDeclaration<?> declaration) {
+        return declaration.resolve();
     }
 
-    private Optional<FullyQualifiedJavadocReference> resolveMember(
-            String fullyQualifiedPackageNameClassName,
-            String nestedClassName,
-            Optional<String> member,
-            Optional<String> label) {
-        JavaClass javaClass = javaProjectBuilder.getClassByName(fullyQualifiedPackageNameClassName);
-        if (!isClassFound(javaClass)) {
-            JavaPackage javaPackage = javaProjectBuilder.getPackageByName(fullyQualifiedPackageNameClassName);
-            if (javaPackage == null || !nestedClassName.isEmpty()) {
-                // is it a nested class?
-                int lastIndexOfDot = fullyQualifiedPackageNameClassName.lastIndexOf('.');
-                if (lastIndexOfDot > 0) {
-                    String newNestedClassName = nestedClassName;
-                    if (!newNestedClassName.isEmpty()) {
-                        newNestedClassName += '.';
-                    }
-                    newNestedClassName += fullyQualifiedPackageNameClassName.substring(lastIndexOfDot + 1);
-                    return resolveMember(
-                            fullyQualifiedPackageNameClassName.substring(0, lastIndexOfDot),
-                            newNestedClassName,
-                            member,
-                            label);
-                }
-                return Optional.empty();
-            } else {
-                // reference to java package never has a member
-                return Optional.of(
-                        new FullyQualifiedJavadocReference(javaPackage.getName(), label, isExternal(javaPackage)));
-            }
-        } else {
-            if (!nestedClassName.isEmpty()) {
-                javaClass = javaClass.getNestedClassByName(nestedClassName);
-                if (javaClass == null) {
-                    return Optional.empty();
-                }
-            }
-
-            return resolveMember(javaClass, member, label);
-        }
+    private static String methodName(String member) {
+        int opening = member.indexOf('(');
+        return opening < 0 ? member : member.substring(0, opening);
     }
 
-    private boolean isExternal(JavaClass javaClass) {
-        return isExternal(javaClass.getPackage());
+    private static String canonicalMember(ResolvedMethodLikeDeclaration declaration) {
+        return declaration.getName() + "("
+                + declaration.formalParameterTypes().stream()
+                        .map(type -> type.erasure().describe())
+                        .collect(Collectors.joining(","))
+                + ")";
     }
 
-    private boolean isExternal(JavaPackage javaPackage) {
-        return !javaPackage.getJavaClassLibrary().equals(mojoClass.getJavaClassLibrary());
-    }
-
-    private Optional<FullyQualifiedJavadocReference> resolveMember(
-            JavaClass javaClass, Optional<String> member, Optional<String> label) {
-        final Optional<MemberType> memberType;
-        Optional<String> resolvedMember = member;
-        if (member.isPresent()) {
-            // member is either field...
-            if (javaClass.getFieldByName(member.get()) == null) {
-                // ...is method...
-                List<JavaType> parameterTypes = getParameterTypes(member.get());
-                String methodName = getMethodName(member.get());
-                if (javaClass.getMethodBySignature(methodName, parameterTypes) == null) {
-                    // ...or is constructor
-                    if ((!methodName.equals(javaClass.getSimpleName()))
-                            || (javaClass.getConstructor(parameterTypes) == null)) {
-                        return Optional.empty();
-                    } else {
-                        memberType = Optional.of(MemberType.CONSTRUCTOR);
-                    }
-                } else {
-                    memberType = Optional.of(MemberType.METHOD);
-                }
-                // reconstruct member with fully qualified names but leaving out the argument names
-                StringBuilder memberBuilder = new StringBuilder(methodName);
-                memberBuilder.append("(");
-                memberBuilder.append(parameterTypes.stream()
-                        .map(JavaType::getFullyQualifiedName)
-                        .collect(Collectors.joining(",")));
-                memberBuilder.append(")");
-                resolvedMember = Optional.of(memberBuilder.toString());
-            } else {
-                memberType = Optional.of(MemberType.FIELD);
-            }
-        } else {
-            memberType = Optional.empty();
-        }
-        String className = javaClass
-                .getCanonicalName()
-                .substring(javaClass.getPackageName().length() + 1);
-        return Optional.of(new FullyQualifiedJavadocReference(
-                javaClass.getPackageName(),
-                Optional.of(className),
-                resolvedMember,
-                memberType,
-                label,
-                isExternal(javaClass)));
-    }
-
-    private static boolean isClassFound(JavaClass javaClass) {
-        // this is never null due to using the ClassNameLibrary in the builder
-        // but every instance of ClassNameLibrary basically means that the class was not found
-        return !(javaClass.getJavaClassLibrary() instanceof ClassNameLibrary);
-    }
-
-    // https://github.com/paul-hammant/qdox/issues/104
-    private List<JavaType> getParameterTypes(String member) {
-        List<JavaType> parameterTypes = new ArrayList<>();
-        // TypeResolver.byClassName() always resolves types as non existing inner class
-        TypeResolver typeResolver = TypeResolver.byClassName(
-                declaringClass.getPackageName(),
-                declaringClass.getJavaClassLibrary(),
-                declaringClass.getSource().getImports());
-
-        // method parameters are optionally enclosed by parentheses
-        int indexOfOpeningParenthesis = member.indexOf('(');
-        int indexOfClosingParenthesis = member.indexOf(')');
-        final String signatureArguments;
-        if (indexOfOpeningParenthesis >= 0
-                && indexOfClosingParenthesis > 0
-                && indexOfClosingParenthesis > indexOfOpeningParenthesis) {
-            signatureArguments = member.substring(indexOfOpeningParenthesis + 1, indexOfClosingParenthesis);
-        } else if (indexOfOpeningParenthesis == -1 && indexOfClosingParenthesis >= 0
-                || indexOfOpeningParenthesis >= 0 && indexOfOpeningParenthesis == -1) {
-            throw new IllegalArgumentException("Found opening without closing parentheses or vice versa in " + member);
-        } else {
-            // If any method or constructor is entered as a name with no parentheses, such as getValue,
-            // and if there is no field with the same name, then the javadoc command still creates a
-            // link to the method. If this method is overloaded, then the javadoc command links to the
-            // first method its search encounters, which is unspecified
-            // (Source: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html#JSWOR654)
-            return Collections.emptyList();
-        }
-        for (String parameter : signatureArguments.split(",")) {
-            // strip off argument name, only type is relevant
-            String canonicalParameter = parameter.trim();
-            int spaceIndex = canonicalParameter.indexOf(' ');
-            final String typeName;
-            if (spaceIndex > 0) {
-                typeName = canonicalParameter.substring(0, spaceIndex).trim();
-            } else {
-                typeName = canonicalParameter;
-            }
-            if (!typeName.isEmpty()) {
-                String rawTypeName = getRawTypeName(typeName);
-                // already check here for unresolvable types due to https://github.com/paul-hammant/qdox/issues/111
-                if (typeResolver.resolveType(rawTypeName) == null) {
-                    throw new IllegalArgumentException("Found unresolvable method argument type in " + member);
-                }
-                TypeDef typeDef = new TypeDef(getRawTypeName(typeName));
-                int dimensions = getDimensions(typeName);
-                JavaType javaType = TypeAssembler.createUnresolved(typeDef, dimensions, typeResolver);
-
-                parameterTypes.add(javaType);
-            }
-        }
-        return parameterTypes;
-    }
-
-    private static int getDimensions(String type) {
-        return (int) type.chars().filter(ch -> ch == '[').count();
-    }
-
-    private static String getRawTypeName(String typeName) {
-        // strip dimensions
-        int indexOfOpeningBracket = typeName.indexOf('[');
-        if (indexOfOpeningBracket >= 0) {
-            return typeName.substring(0, indexOfOpeningBracket);
-        } else {
-            return typeName;
-        }
-    }
-
-    private static String getMethodName(String member) {
-        // name is separated from arguments either by '(' or spans the full member
-        int indexOfOpeningParentheses = member.indexOf('(');
-        if (indexOfOpeningParentheses == -1) {
-            return member;
-        } else {
-            return member.substring(0, indexOfOpeningParentheses);
-        }
+    private static String simpleName(String name) {
+        int separator = name.lastIndexOf('.');
+        return separator < 0 ? name : name.substring(separator + 1);
     }
 
     @SuppressWarnings("unchecked")

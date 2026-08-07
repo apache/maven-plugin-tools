@@ -20,11 +20,11 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import org.apache.maven.tools.plugin.extractor.annotations.JavaSourceModel;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.CurrentClass;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.test.OtherClass;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
@@ -46,23 +46,24 @@ class JavaClassConverterContextTest {
 
     private final String currentPackageName;
 
-    private final JavaProjectBuilder builder;
+    private final JavaSourceModel sourceModel;
 
-    private final JavaClass contextClass;
+    private final TypeDeclaration<?> contextClass;
 
     private JavadocLinkGenerator linkGenerator;
 
     private URI javadocBaseUri;
 
-    JavaClassConverterContextTest() throws URISyntaxException {
-        builder = new JavaProjectBuilder();
-        builder.addSourceFolder(new File("src/test/java"));
+    JavaClassConverterContextTest() throws Exception {
+        sourceModel = new JavaSourceModel(StandardCharsets.UTF_8);
+        sourceModel.addSourceDirectory(new File("src/test/java"));
+        sourceModel.parse();
 
-        contextClass = builder.getClassByName(CurrentClass.class.getName());
-        currentPackageName = contextClass.getPackageName();
+        contextClass = sourceModel.getType(CurrentClass.class.getName()).orElseThrow(AssertionError::new);
+        currentPackageName = contextClass.resolve().getPackageName();
         javadocBaseUri = new URI("http://localhost/apidocs");
         linkGenerator = new JavadocLinkGenerator(javadocBaseUri, "11");
-        context = new JavaClassConverterContext(contextClass, builder, Collections.emptyMap(), linkGenerator, 10);
+        context = new JavaClassConverterContext(contextClass, sourceModel, Collections.emptyMap(), linkGenerator, 10);
     }
 
     @Test
@@ -202,7 +203,7 @@ class JavaClassConverterContextTest {
         MojoAnnotatedClass mojoAnnotatedClass = new MojoAnnotatedClass().setMojo(mojoAnnotationContent);
         context = new JavaClassConverterContext(
                 contextClass,
-                builder,
+                sourceModel,
                 Collections.singletonMap(
                         "org.apache.maven.tools.plugin.extractor.annotations.converter.test.OtherClass",
                         mojoAnnotatedClass),

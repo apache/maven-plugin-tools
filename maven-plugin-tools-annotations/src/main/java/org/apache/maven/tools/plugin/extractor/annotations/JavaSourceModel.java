@@ -56,7 +56,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 import com.github.javaparser.utils.SourceRoot;
 
 /** Source declarations and type resolution used while extracting Javadocs. */
-final class JavaSourceModel implements Closeable {
+public final class JavaSourceModel implements Closeable {
 
     private final Charset encoding;
     private final Set<Path> sourceDirectories = new LinkedHashSet<>();
@@ -64,29 +64,30 @@ final class JavaSourceModel implements Closeable {
     private final Map<String, TypeDeclaration<?>> types = new LinkedHashMap<>();
     private final Map<String, String> modulesByExportedPackage = new LinkedHashMap<>();
     private final Set<String> packages = new LinkedHashSet<>();
+    private final Set<String> internalPackages = new LinkedHashSet<>();
 
     private ParserConfiguration parserConfiguration;
     private CombinedTypeSolver typeSolver;
     private URLClassLoader classPathLoader;
     private boolean parsed;
 
-    JavaSourceModel(Charset encoding) {
+    public JavaSourceModel(Charset encoding) {
         this.encoding = encoding;
     }
 
-    void addSourceDirectory(File directory) throws IOException {
+    public void addSourceDirectory(File directory) throws IOException {
         if (directory != null && directory.isDirectory()) {
             sourceDirectories.add(directory.toPath().toRealPath());
         }
     }
 
-    void addClassPathEntry(File entry) throws IOException {
+    public void addClassPathEntry(File entry) throws IOException {
         if (entry != null && entry.exists()) {
             classPathEntries.add(entry.toPath().toRealPath());
         }
     }
 
-    void parse() throws IOException {
+    public void parse() throws IOException {
         if (parsed) {
             return;
         }
@@ -132,8 +133,9 @@ final class JavaSourceModel implements Closeable {
                             .collect(Collectors.joining(System.lineSeparator()));
                     throw new IOException("Unable to parse " + path + System.lineSeparator() + problems);
                 }
-                CompilationUnit unit = result.getResult().orElseThrow(
-                        () -> new IOException("Parser returned no compilation unit for " + result.getSourcePath()));
+                CompilationUnit unit = result.getResult()
+                        .orElseThrow(() ->
+                                new IOException("Parser returned no compilation unit for " + result.getSourcePath()));
                 index(unit);
             }
         }
@@ -156,57 +158,72 @@ final class JavaSourceModel implements Closeable {
     private void index(CompilationUnit unit) {
         unit.getPackageDeclaration()
                 .map(declaration -> declaration.getName().asString())
-                .ifPresent(packages::add);
+                .ifPresent(name -> {
+                    packages.add(name);
+                    internalPackages.add(name);
+                });
         for (TypeDeclaration<?> type : unit.findAll(TypeDeclaration.class)) {
             type.getFullyQualifiedName().ifPresent(name -> types.putIfAbsent(name, type));
         }
-        unit.getModule().ifPresent(module -> module.getDirectives().stream()
-                .filter(ModuleExportsDirective.class::isInstance)
-                .map(ModuleExportsDirective.class::cast)
-                .forEach(exports -> modulesByExportedPackage.putIfAbsent(
-                        exports.getName().asString(), module.getName().asString())));
+        unit.getModule()
+                .ifPresent(module -> module.getDirectives().stream()
+                        .filter(ModuleExportsDirective.class::isInstance)
+                        .map(ModuleExportsDirective.class::cast)
+                        .forEach(exports -> modulesByExportedPackage.putIfAbsent(
+                                exports.getName().asString(), module.getName().asString())));
     }
 
-    Collection<TypeDeclaration<?>> getTypes() {
+    public Collection<TypeDeclaration<?>> getTypes() {
         return Collections.unmodifiableCollection(types.values());
     }
 
-    Optional<TypeDeclaration<?>> getType(String fullyQualifiedName) {
+    public Optional<TypeDeclaration<?>> getType(String fullyQualifiedName) {
         return Optional.ofNullable(types.get(fullyQualifiedName));
     }
 
-    Optional<TypeDeclaration<?>> getType(ResolvedReferenceTypeDeclaration declaration) {
+    public Optional<TypeDeclaration<?>> getType(ResolvedReferenceTypeDeclaration declaration) {
         return getType(declaration.getQualifiedName());
     }
 
-    Optional<String> getModuleName(String packageName) {
+    public Optional<String> getModuleName(String packageName) {
         return Optional.ofNullable(modulesByExportedPackage.get(packageName));
     }
 
-    boolean hasPackage(String packageName) {
+    public boolean hasPackage(String packageName) {
         return packages.contains(packageName) || Package.getPackage(packageName) != null;
     }
 
-    boolean isInternal(ResolvedReferenceTypeDeclaration declaration) {
+    public boolean isInternal(ResolvedReferenceTypeDeclaration declaration) {
         return types.containsKey(declaration.getQualifiedName());
     }
 
-    Optional<ResolvedReferenceTypeDeclaration> resolveType(String fullyQualifiedName) {
+    public boolean isInternalPackage(String packageName) {
+        return internalPackages.contains(packageName);
+    }
+
+    public Optional<ResolvedReferenceTypeDeclaration> resolveType(String fullyQualifiedName) {
         ensureParsed();
         SymbolReference<ResolvedReferenceTypeDeclaration> reference = typeSolver.tryToSolveType(fullyQualifiedName);
         return reference.isSolved() ? Optional.of(reference.getCorrespondingDeclaration()) : Optional.empty();
     }
 
-    TypeSolver getTypeSolver() {
+    public TypeSolver getTypeSolver() {
         ensureParsed();
         return typeSolver;
     }
 
-    String getLocation(Node node, int fallbackLine) {
-        int line = node.getBegin().map(position -> position.line).orElse(fallbackLine);
+    public String getLocation(Node node, int fallbackLine) {
+        int line = fallbackLine > 0
+                ? fallbackLine
+                : node.getBegin().map(position -> position.line).orElse(0);
         return node.findCompilationUnit()
                 .flatMap(CompilationUnit::getStorage)
-                .map(storage -> storage.getPath().toString() + ":" + line)
+                .map(storage -> java.nio.file.Paths.get("")
+                                .toAbsolutePath()
+                                .toUri()
+                                .relativize(storage.getPath().toUri())
+                                .toString()
+                        + ":" + line)
                 .orElse("unknown:" + line);
     }
 
