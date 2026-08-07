@@ -106,6 +106,7 @@
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
     <asmVersion>9.10.1</asmVersion>
+    <javaParserVersion>3.28.2</javaParserVersion>
     <plexusUtilsVersion>4.1.0</plexusUtilsVersion>
     <plexusXmlVersion>3.1.0</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
@@ -265,6 +266,11 @@
         <groupId>com.thoughtworks.qdox</groupId>
         <artifactId>qdox</artifactId>
         <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-symbol-solver-core</artifactId>
+        <version>${javaParserVersion}</version>
       </dependency>
       <!-- for XHTML to plain text and HTML to XHTML conversion -->
       <dependency>
