@@ -97,10 +97,6 @@
       <artifactId>jsoup</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.thoughtworks.qdox</groupId>
-      <artifactId>qdox</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-symbol-solver-core</artifactId>
     </dependency>
