@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugin.coreit;
 
-import java.util.List;
+import groovy.xml.XmlParser
 
-import org.immutables.value.Value.Immutable;
-import org.immutables.value.Value.Modifiable;
-import org.jspecify.annotations.Nullable;
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
+assert descriptorFile.isFile()
 
-@Immutable
-@Modifiable
-public interface SomeGeneratedModel {
-    @Nullable
-    List<@Nullable String> getThings();
-}
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
+def mojo = pluginDescriptor.mojos.mojo.find { it.goal.text() == "first" }
+
+assert mojo != null
+assert mojo.description.text() == ""
+
+return true
