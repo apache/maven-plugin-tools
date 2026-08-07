@@ -24,7 +24,6 @@ import javax.inject.Singleton;
 
 import java.util.Map;
 
-import com.thoughtworks.qdox.model.DocletTag;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.block.JavadocBlockTagToHtmlConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +49,6 @@ public class JavadocBlockTagsToXhtmlConverter {
             Map<String, JavadocBlockTagToHtmlConverter> blockTagConverters) {
         this.inlineTagsConverter = inlineTagsConverter;
         this.blockTagConverters = blockTagConverters;
-    }
-
-    public String convert(DocletTag docletTag, ConverterContext context) {
-        return convert(docletTag.getName(), docletTag.getValue(), context);
     }
 
     public String convert(String name, String text, ConverterContext context) {
