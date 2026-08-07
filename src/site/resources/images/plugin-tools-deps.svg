@@ -69,11 +69,11 @@
    </a>
   </g>
   <g>
-   <path fill="none" d="M14399 4698h1719v812h-1719z"/>
-   <a target="_parent" xlink:href="https://github.com/paul-hammant/qdox">
-    <path fill="#FF9" d="M15258 5508h-858v-809h1716v809z"/>
-    <path fill="none" stroke="#000" d="M15258 5508h-858v-809h1716v809z"/>
-    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="14721" y="5275" class="TextPosition"><tspan style="white-space:pre">qdox</tspan></tspan></tspan></text>
+   <path fill="none" d="M13999 4698h2519v812h-2519z"/>
+   <a target="_parent" xlink:href="https://javaparser.org/">
+    <path fill="#FF9" d="M15258 5508h-1258v-809h2516v809z"/>
+    <path fill="none" stroke="#000" d="M15258 5508h-1258v-809h2516v809z"/>
+    <text class="SVGTextShape"><tspan class="TextParagraph" font-family="Arial, sans-serif" font-size="494" font-weight="400"><tspan x="14073" y="5275" class="TextPosition"><tspan style="white-space:pre">JavaParser</tspan></tspan></tspan></text>
    </a>
   </g>
   <g>

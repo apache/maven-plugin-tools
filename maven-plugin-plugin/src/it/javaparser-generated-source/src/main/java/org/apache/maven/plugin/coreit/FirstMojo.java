@@ -18,15 +18,19 @@
  */
 package org.apache.maven.plugin.coreit;
 
-import java.util.List;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
-import org.immutables.value.Value.Immutable;
-import org.immutables.value.Value.Modifiable;
-import org.jspecify.annotations.Nullable;
+/** A Mojo that uses the generated model. */
+@Mojo(name = "first")
+public class FirstMojo extends AbstractMojo {
 
-@Immutable
-@Modifiable
-public interface SomeGeneratedModel {
-    @Nullable
-    List<@Nullable String> getThings();
+    @Parameter
+    private ModifiableSomeGeneratedModel model;
+
+    @Override
+    public void execute() {
+        // Nothing to do.
+    }
 }
