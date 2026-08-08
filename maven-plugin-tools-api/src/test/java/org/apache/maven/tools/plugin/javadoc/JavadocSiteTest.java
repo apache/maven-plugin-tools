@@ -35,7 +35,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -164,5 +166,31 @@ class JavadocSiteTest {
         } catch (IOException e) {
             fail("Could not find URL " + url, e);
         }
+    }
+
+    @Test
+    void nonProxyHostsMatchesAnExactHost() {
+        assertTrue(JavadocSite.isNonProxyHost("internal.example.com", "internal.example.com"));
+        assertFalse(JavadocSite.isNonProxyHost("internal.example.com", "example.com"));
+    }
+
+    @Test
+    void nonProxyHostsTreatsStarAsAWildcardAndDotAsALiteral() {
+        assertTrue(JavadocSite.isNonProxyHost("*.example.com", "docs.example.com"));
+        // the dot is escaped, so it must not match an arbitrary character
+        assertFalse(JavadocSite.isNonProxyHost("*.example.com", "docsXexample.com"));
+    }
+
+    @Test
+    void nonProxyHostsSplitsOnPipe() {
+        assertTrue(JavadocSite.isNonProxyHost("localhost|*.example.com", "docs.example.com"));
+        assertTrue(JavadocSite.isNonProxyHost("localhost|*.example.com", "localhost"));
+        assertFalse(JavadocSite.isNonProxyHost("localhost|*.example.com", "example.org"));
+    }
+
+    @Test
+    void nonProxyHostsToleratesNulls() {
+        assertFalse(JavadocSite.isNonProxyHost(null, "example.com"));
+        assertFalse(JavadocSite.isNonProxyHost("*.example.com", null));
     }
 }
