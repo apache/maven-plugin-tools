@@ -68,8 +68,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
-import org.apache.maven.wagon.proxy.ProxyInfo;
-import org.apache.maven.wagon.proxy.ProxyUtils;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -508,11 +506,8 @@ class JavadocSite {
         if (settings != null && settings.getActiveProxy() != null) {
             Proxy activeProxy = settings.getActiveProxy();
 
-            ProxyInfo proxyInfo = new ProxyInfo();
-            proxyInfo.setNonProxyHosts(activeProxy.getNonProxyHosts());
-
             if (StringUtils.isNotEmpty(activeProxy.getHost())
-                    && (url == null || !ProxyUtils.validateNonProxyHosts(proxyInfo, url.getHost()))) {
+                    && (url == null || !isNonProxyHost(activeProxy.getNonProxyHosts(), url.getHost()))) {
                 HttpHost proxy = new HttpHost(activeProxy.getHost(), activeProxy.getPort());
                 builder.setProxy(proxy);
 
@@ -596,5 +591,24 @@ class JavadocSite {
      */
     public static boolean isNotEmpty(final Collection<?> collection) {
         return collection != null && !collection.isEmpty();
+    }
+
+    /**
+     * Whether a host is covered by a <code>nonProxyHosts</code> setting, and so should be reached directly
+     * rather than through the proxy. The setting is a <code>|</code>-separated list of patterns in which
+     * <code>*</code> stands for any run of characters, as in a Maven <code>settings.xml</code>.
+     */
+    static boolean isNonProxyHost(String nonProxyHosts, String targetHost) {
+        if (nonProxyHosts == null) {
+            return false;
+        }
+
+        String host = targetHost == null ? "" : targetHost;
+        for (String pattern : nonProxyHosts.split("\\|")) {
+            if (host.matches(pattern.replace(".", "\\.").replace("*", ".*"))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
