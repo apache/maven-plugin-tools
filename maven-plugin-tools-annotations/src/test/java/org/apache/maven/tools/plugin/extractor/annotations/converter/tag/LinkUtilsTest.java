@@ -20,8 +20,10 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
 
 import java.net.URI;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.SimpleConverterContext;
+import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
 import org.apache.maven.tools.plugin.javadoc.JavadocReference;
 import org.junit.jupiter.api.Test;
 
@@ -44,5 +46,25 @@ class LinkUtilsTest {
         assertEquals(
                 "NoJavadoc<!-- reference not found in associated javadoc sites -->",
                 LinkUtils.createLink("NoJavadoc", context));
+    }
+
+    @Test
+    void createLinkWithUnresolvedAncestor() {
+        ConverterContext unresolvedReferenceContext = new SimpleConverterContext("myPackage", URI.create("")) {
+            @Override
+            public FullyQualifiedJavadocReference resolveReference(JavadocReference reference) {
+                throw new UnsolvedSymbolException("MissingAncestor");
+            }
+        };
+        assertEquals(
+                "Missing<!-- this link could not be resolved -->",
+                LinkUtils.createLink("Missing", unresolvedReferenceContext));
+
+        ConverterContext unresolvedUrlContext = new SimpleConverterContext("myPackage", (ref) -> {
+            throw new UnsolvedSymbolException("MissingAncestor");
+        });
+        assertEquals(
+                "Missing<!-- reference not found in associated javadoc sites -->",
+                LinkUtils.createLink("Missing", unresolvedUrlContext));
     }
 }
