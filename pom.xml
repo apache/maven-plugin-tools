@@ -237,6 +237,11 @@
 
       <dependency>
         <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-core</artifactId>
+        <version>${javaParserVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
         <artifactId>javaparser-symbol-solver-core</artifactId>
         <version>${javaParserVersion}</version>
       </dependency>
