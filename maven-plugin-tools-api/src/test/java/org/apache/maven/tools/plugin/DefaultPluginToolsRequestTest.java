@@ -139,9 +139,11 @@ class DefaultPluginToolsRequestTest {
 
     @Test
     void globsStillMatch() {
+        // built as a string rather than through Path, which rejects a wildcard on Windows; the separator is
+        // the platform one, so on Windows this also covers a glob that has to survive the translation
         PluginToolsRequest request = newRequest();
-        request.setExcludedScanDirectories(
-                Collections.singleton(GENERATED_SOURCES.getParent().resolve("*").toString()));
+        request.setExcludedScanDirectories(Collections.singleton(GENERATED_SOURCES.getParent()
+                + GENERATED_SOURCES.getFileSystem().getSeparator() + "*"));
 
         assertTrue(request.isExcludedScanDirectory(GENERATED_SOURCES.toFile()));
     }
