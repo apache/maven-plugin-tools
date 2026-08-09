@@ -19,18 +19,16 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.maven.its.gh-944-exclude-source-directory</groupId>
-  <artifactId>gh-944-exclude-source-directory</artifactId>
+  <groupId>org.apache.maven.its.javaparser-nested-mojo</groupId>
+  <artifactId>javaparser-nested-mojo</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Maven Integration Test :: gh-944-exclude-source-directory</name>
-  <description>
-      Test plugin-plugin, plugin.xml descriptor - shouldn't contain explicitly excluded source directories
-  </description>
+  <name>Maven Integration Test :: javaparser-nested-mojo</name>
+  <description>Checks that nested Mojo classes retain their Javadoc metadata.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,26 +41,11 @@ under the License.
       <version>@maven3Version@</version>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>@project.version@</version>
       <scope>provided</scope>
-    </dependency>
-
-    <!-- Dependencies that are needed for the original bug reproduction -->
-    <dependency>
-      <groupId>org.immutables</groupId>
-      <artifactId>value</artifactId>
-      <version>2.12.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jspecify</groupId>
-      <artifactId>jspecify</artifactId>
-      <version>1.0.0</version>
     </dependency>
   </dependencies>
 
@@ -76,33 +59,19 @@ under the License.
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
-
-            <annotationProcessorPaths>
-              <path>
-                <groupId>org.immutables</groupId>
-                <artifactId>value</artifactId>
-                <version>2.12.0</version>
-              </path>
-            </annotationProcessorPaths>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
-          <excludedScanDirectories>
-            <!-- Exclude the source root containing FirstMojo's Javadoc so the exclusion is observable. -->
-            <excludedScanDirectory>**/src/main/java</excludedScanDirectory>
-          </excludedScanDirectories>
-          <goalPrefix>prefix</goalPrefix>
+          <goalPrefix>nested</goalPrefix>
         </configuration>
       </plugin>
     </plugins>
-
   </build>
 </project>

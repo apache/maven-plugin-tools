@@ -21,6 +21,7 @@ package org.apache.maven.tools.plugin.extractor.annotations.converter.tag;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterContext;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference;
 import org.apache.maven.tools.plugin.javadoc.JavadocReference;
@@ -51,7 +52,7 @@ public class LinkUtils {
                 return getReferenceLabel(fqReference, context, labelDecorator, "no javadoc sites associated");
             }
             return createLink(referenceValue, fqReference, context, labelDecorator);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | UnsolvedSymbolException e) {
             LOG.warn(
                     "Unresolvable link in javadoc tag with value {} found in {}: {}",
                     referenceValue,
@@ -75,7 +76,7 @@ public class LinkUtils {
             label = labelDecorator.apply(label);
             link.append(label);
             link.append("</a>");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | UnsolvedSymbolException e) {
             LOG.warn(
                     "Could not get javadoc URL for reference {} at {} (fully qualified {}): {}",
                     referenceValue,
