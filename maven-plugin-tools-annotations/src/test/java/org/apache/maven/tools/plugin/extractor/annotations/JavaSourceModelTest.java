@@ -91,7 +91,9 @@ class JavaSourceModelTest {
         try (JavaSourceModel model = new JavaSourceModel(StandardCharsets.UTF_8)) {
             model.addSourceDirectory(sourceDirectory.toFile());
             IOException exception = assertThrows(IOException.class, model::parse);
-            assertTrue(exception.getMessage().contains(source.toString()));
+            // JavaSourceModel canonicalizes its source directories, so compare against the real path:
+            // on Windows the temporary directory is often reported in its 8.3 short form.
+            assertTrue(exception.getMessage().contains(source.toRealPath().toString()));
         }
     }
 
