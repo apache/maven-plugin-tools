@@ -21,6 +21,7 @@ package org.apache.maven.tools.plugin;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -254,13 +255,67 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
 
     @Override
     public boolean isExcludedScanDirectory(File sourceFile) {
-        Path sourcePath = sourceFile.toPath();
-        FileSystem sourceFs = sourcePath.getFileSystem();
-        for (String excludedScanDirectory : getExcludedScanDirectories()) {
-            if (sourceFs.getPathMatcher("glob:" + excludedScanDirectory).matches(sourcePath)) {
+        return isExcluded(sourceFile.toPath(), getExcludedScanDirectories());
+    }
+
+    /**
+     * Determines whether a source directory is covered by any of the configured exclusions.
+     * <p>
+     * Visible for testing: taking the directory as a {@link Path} keeps the whole decision tied to a single
+     * {@link FileSystem}, so the behaviour on Windows separators can be exercised without running on Windows.
+     *
+     * @param sourceDirectory the source directory to check
+     * @param excludedScanDirectories the configured exclusions, either plain directories or globs
+     * @return true if excluded, false otherwise
+     */
+    static boolean isExcluded(Path sourceDirectory, Collection<String> excludedScanDirectories) {
+        FileSystem fileSystem = sourceDirectory.getFileSystem();
+        boolean windowsSeparators = "\\".equals(fileSystem.getSeparator());
+        Path sourcePath = sourceDirectory.toAbsolutePath().normalize();
+        for (String excludedScanDirectory : excludedScanDirectories) {
+            if (excludedScanDirectory == null || excludedScanDirectory.isEmpty()) {
+                // an empty entry would resolve to the working directory and exclude it silently
+                continue;
+            }
+            // The documented form of this parameter is a plain directory, so compare as paths first. That
+            // is safe with respect to separators, trailing separators and case on every file system.
+            try {
+                Path excludedPath = fileSystem
+                        .getPath(excludedScanDirectory)
+                        .toAbsolutePath()
+                        .normalize();
+                if (sourcePath.equals(excludedPath)) {
+                    return true;
+                }
+            } catch (InvalidPathException e) {
+                // not a plain directory - the Windows parser rejects wildcards, for instance - so it can
+                // only ever have been meant as a glob
+            }
+            if (fileSystem
+                    .getPathMatcher("glob:" + toGlobPattern(excludedScanDirectory, windowsSeparators))
+                    .matches(sourcePath)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Turns a configured exclusion into a glob pattern.
+     * <p>
+     * Configured values normally come from an interpolated property such as
+     * <code>${project.build.directory}/generated-sources/annotations</code> and therefore hold backslashes on
+     * Windows. A backslash is the escape character of the glob syntax and is swallowed by the pattern compiler
+     * on every platform, so such a value could never match a real path, and one ending in a separator even
+     * failed the build with a {@link java.util.regex.PatternSyntaxException}. A forward slash is compiled back
+     * into the Windows separator, so it is the portable way to spell a separator in a glob.
+     *
+     * @param excludedScanDirectory the configured exclusion
+     * @param windowsSeparators whether the file system separates names with a backslash
+     * @return the pattern to hand to {@link FileSystem#getPathMatcher(String)}
+     */
+    static String toGlobPattern(String excludedScanDirectory, boolean windowsSeparators) {
+        // On a file system that allows backslashes in names they may be a deliberate escape, so leave them be.
+        return windowsSeparators ? excludedScanDirectory.replace('\\', '/') : excludedScanDirectory;
     }
 }
