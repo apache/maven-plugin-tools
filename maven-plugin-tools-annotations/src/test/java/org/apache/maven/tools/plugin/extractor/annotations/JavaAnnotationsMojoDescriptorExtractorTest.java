@@ -20,11 +20,14 @@ package org.apache.maven.tools.plugin.extractor.annotations;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+import com.github.javaparser.ast.body.TypeDeclaration;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -40,6 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JavaAnnotationsMojoDescriptorExtractorTest {
     @TempDir
@@ -63,6 +67,32 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
         assertEquals(1, mojoDescriptors.size());
         // there should be only one mojo contained in the one class
         return mojoDescriptors.get(0);
+    }
+
+    @Test
+    void discoverClassesIndexesNestedTypesUnderTheirBinaryNameAsWell() throws Exception {
+        Path sourceDirectory = Files.createDirectories(targetDir.resolve("sources"));
+        Path source = sourceDirectory.resolve("example/Outer.java");
+        Files.createDirectories(source.getParent());
+        Files.write(
+                source,
+                "package example; public class Outer { public static class Inner {} }\n"
+                        .getBytes(StandardCharsets.UTF_8));
+
+        try (JavaSourceModel sourceModel = new JavaSourceModel(StandardCharsets.UTF_8)) {
+            sourceModel.addSourceDirectory(sourceDirectory.toFile());
+            sourceModel.parse();
+
+            Map<String, TypeDeclaration<?>> classes =
+                    new JavaAnnotationsMojoDescriptorExtractor().discoverClasses(sourceModel);
+
+            assertTrue(classes.containsKey("example.Outer"));
+            // the annotation scanner keys classes by their binary name, so nested types must be
+            // reachable as "example.Outer$Inner" too, otherwise their Javadoc is silently dropped
+            assertTrue(classes.containsKey("example.Outer.Inner"));
+            assertTrue(classes.containsKey("example.Outer$Inner"));
+            assertEquals(classes.get("example.Outer.Inner"), classes.get("example.Outer$Inner"));
+        }
     }
 
     @Test

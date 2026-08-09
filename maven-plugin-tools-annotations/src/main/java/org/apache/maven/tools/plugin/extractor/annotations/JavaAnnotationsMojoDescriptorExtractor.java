@@ -221,7 +221,11 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             linkGenerator = null;
         }
 
+        // parse() allocates the class loader backing the model, so it must run inside the
+        // try-with-resources: a parse failure would otherwise leak it together with every
+        // dependency and reactor jar it holds open.
         try (JavaSourceModel sourceModel = scanJavadoc(request, mojoAnnotatedClasses.values())) {
+            sourceModel.parse();
             Map<String, TypeDeclaration<?>> javaClassesMap = discoverClasses(sourceModel);
             populateDataFromJavadoc(sourceModel, mojoAnnotatedClasses, javaClassesMap, linkGenerator);
         } catch (IOException e) {
@@ -296,7 +300,6 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             extendJavaSourceModel(request, sourceModel, mavenProject);
         }
 
-        sourceModel.parse();
         return sourceModel;
     }
 
@@ -485,9 +488,37 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
     protected Map<String, TypeDeclaration<?>> discoverClasses(JavaSourceModel sourceModel) {
         Map<String, TypeDeclaration<?>> result = new HashMap<>();
         for (TypeDeclaration<?> type : sourceModel.getTypes()) {
-            type.getFullyQualifiedName().ifPresent(name -> result.put(name, type));
+            type.getFullyQualifiedName().ifPresent(name -> {
+                result.put(name, type);
+                // The annotation scanner keys classes by their binary name ("pkg.Outer$Inner"), while
+                // JavaParser reports the canonical one ("pkg.Outer.Inner"). Index both so that mojos
+                // declared as nested classes still find their Javadoc.
+                binaryName(type).ifPresent(binary -> result.put(binary, type));
+            });
         }
         return result;
+    }
+
+    private static Optional<String> binaryName(TypeDeclaration<?> type) {
+        return type.getFullyQualifiedName().flatMap(fullyQualifiedName -> {
+            String canonicalNestedName = type.getNameAsString();
+            Node current = type;
+            while (current.getParentNode().isPresent()
+                    && current.getParentNode().get() instanceof TypeDeclaration) {
+                TypeDeclaration<?> parent =
+                        (TypeDeclaration<?>) current.getParentNode().get();
+                canonicalNestedName = parent.getNameAsString() + "." + canonicalNestedName;
+                current = parent;
+            }
+            if (!canonicalNestedName.contains(".")) {
+                // top level type: binary and canonical names are identical
+                return Optional.empty();
+            }
+            String binaryNestedName = canonicalNestedName.replace('.', '$');
+            return Optional.of(
+                    fullyQualifiedName.substring(0, fullyQualifiedName.length() - canonicalNestedName.length())
+                            + binaryNestedName);
+        });
     }
 
     protected void extendJavaSourceModelWithSourcesJar(
