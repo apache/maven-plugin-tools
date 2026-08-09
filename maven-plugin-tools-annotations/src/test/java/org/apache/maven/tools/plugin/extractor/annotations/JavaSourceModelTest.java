@@ -39,8 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JavaSourceModelTest {
@@ -85,15 +85,27 @@ class JavaSourceModelTest {
     }
 
     @Test
-    void reportsSourcePathForInvalidJava() throws Exception {
-        Path source = write("example/Broken.java", "package example; class Broken {\n");
+    void skipsInvalidJavaAndContinuesIndexingValidSources() throws Exception {
+        write("example/Broken.java", "package example; class Broken {\n");
+        write("example/Valid.java", "package example; class Valid {}\n");
 
         try (JavaSourceModel model = new JavaSourceModel(StandardCharsets.UTF_8)) {
             model.addSourceDirectory(sourceDirectory.toFile());
-            IOException exception = assertThrows(IOException.class, model::parse);
-            // JavaSourceModel canonicalizes its source directories, so compare against the real path:
-            // on Windows the temporary directory is often reported in its 8.3 short form.
-            assertTrue(exception.getMessage().contains(source.toRealPath().toString()));
+            model.parse();
+
+            assertFalse(model.getType("example.Broken").isPresent());
+            assertTrue(model.getType("example.Valid").isPresent());
+        }
+    }
+
+    @Test
+    void indexesRuntimePackagesWithoutConsultingTheCallingClassLoader() throws Exception {
+        try (JavaSourceModel model = new JavaSourceModel(StandardCharsets.UTF_8)) {
+            model.parse();
+
+            assertTrue(model.hasPackage("java.util"));
+            assertTrue(model.hasPackage("org.w3c.dom"));
+            assertFalse(model.hasPackage("org.apache.maven.tools.plugin.extractor.annotations"));
         }
     }
 
