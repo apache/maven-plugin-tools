@@ -248,7 +248,7 @@
               <settingsFile>src/it/settings.xml</settingsFile>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <filterProperties>
-                <sitePluginVersion>3.20.0</sitePluginVersion>
+                <sitePluginVersion>${version.maven-site-plugin}</sitePluginVersion>
                 <projectInfoReportsPlugin>3.7.0</projectInfoReportsPlugin>
               </filterProperties>
               <properties>
