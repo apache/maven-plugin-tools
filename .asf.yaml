@@ -27,8 +27,6 @@ github:
     - hacktoberfest
   protected_branches:
     master: { }
-    maven-plugin-tools-3.14.x: { }
-    maven-plugin-tools-3.7.x: { }
     maven-plugin-tools-3.x: { }
   pull_requests:
     del_branch_on_merge: true
