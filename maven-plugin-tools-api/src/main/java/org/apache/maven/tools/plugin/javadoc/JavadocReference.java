@@ -18,8 +18,11 @@
  */
 package org.apache.maven.tools.plugin.javadoc;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,13 +66,15 @@ public class JavadocReference {
      * @throws IllegalArgumentException in case the reference has an invalid format
      */
     public static JavadocReference parse(String reference) {
+        // must match the behaviour of com.sun.tools.javac.parser.ReferenceParser#parseReference
         Matcher matcher = REFERENCE_VALUE_PATTERN.matcher(reference);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid format of javadoc reference: " + reference);
         }
         final Optional<String> moduleName = getOptionalGroup(matcher, GROUP_INDEX_MODULE);
         final Optional<String> packageNameClassName = getOptionalGroup(matcher, GROUP_INDEX_PACKAGECLASS);
-        final Optional<String> member = getOptionalGroup(matcher, GROUP_INDEX_MEMBER);
+        final Optional<String> member =
+                getOptionalGroup(matcher, GROUP_INDEX_MEMBER).map(JavadocReference::normalizeMember);
         final Optional<String> label = getOptionalGroup(matcher, GROUP_INDEX_LABEL);
         return new JavadocReference(moduleName, packageNameClassName, member, label);
     }
@@ -141,5 +146,32 @@ public class JavadocReference {
                 && Objects.equals(member, other.member)
                 && Objects.equals(packageNameClassName, other.packageNameClassName)
                 && Objects.equals(moduleName, other.moduleName);
+    }
+
+    static String normalizeMember(String member) {
+        // for methods:
+        int indexOfParenthesis = member.indexOf('(');
+        if (indexOfParenthesis != -1) {
+            if (!member.endsWith(")")) {
+                throw new IllegalArgumentException("Invalid format of javadoc reference member: " + member);
+            }
+            // for each parameter separated by a comma, remove the parameter name and keep only the type
+            StringTokenizer tokenizer =
+                    new StringTokenizer(member.substring(indexOfParenthesis + 1, member.length() - 1), ",");
+            Collection<String> parameterTypes = new ArrayList<>();
+            while (tokenizer.hasMoreTokens()) {
+                String parameter = tokenizer.nextToken().trim();
+                // remove parameter name if present
+                if (parameter.contains(" ")) {
+                    parameterTypes.add(parameter.substring(0, parameter.indexOf(' ')));
+                } else {
+                    parameterTypes.add(parameter);
+                }
+            }
+            member = member.substring(0, indexOfParenthesis) + "(" + String.join(",", parameterTypes) + ")";
+        }
+        // remove whitespace
+        member = member.replaceAll("\\s+", "");
+        return member;
     }
 }

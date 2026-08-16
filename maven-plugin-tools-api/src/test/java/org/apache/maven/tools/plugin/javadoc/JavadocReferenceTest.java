@@ -60,4 +60,23 @@ class JavadocReferenceTest {
                         Optional.empty(), Optional.empty(), Optional.of("member"), Optional.of("label with spaces")),
                 JavadocReference.parse("#member label with spaces"));
     }
+
+    @Test
+    void parseNonNormalizedMethodReferences() throws Exception {
+        assertEquals(
+                new JavadocReference(
+                        Optional.empty(),
+                        Optional.of("package.Class"),
+                        Optional.of("member(ArgType1,ArgType2)"),
+                        Optional.of("label")),
+                // whitespace between argument and argument names (both should be removed)
+                JavadocReference.parse("package.Class#member(ArgType1 arg1, ArgType2 arg2) label"));
+        assertEquals(
+                new JavadocReference(
+                        Optional.empty(),
+                        Optional.of("package.Class"),
+                        Optional.of("member(ArgType1,ArgType2,ArgType3)"),
+                        Optional.of("label")),
+                JavadocReference.parse("package.Class#member(ArgType1 arg1, ArgType2,ArgType3 arg3) label"));
+    }
 }
