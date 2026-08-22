@@ -18,11 +18,15 @@
  */
 package org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 /**
  * Visitor for annotations.
@@ -34,6 +38,10 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
     private String annotationClassName;
 
     private Map<String, Object> annotationValues = new HashMap<>();
+
+    private List<MojoAnnotationVisitor> nestedAnnotationVisitors;
+
+    private Map<String, MojoAnnotationVisitor> arrayVisitors;
 
     MojoAnnotationVisitor(String annotationClassName) {
         super(Opcodes.ASM9);
@@ -56,11 +64,44 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String name, String desc) {
-        return new MojoAnnotationVisitor(this.annotationClassName);
+        String className = desc != null ? Type.getType(desc).getClassName() : this.annotationClassName;
+        MojoAnnotationVisitor nested = new MojoAnnotationVisitor(className);
+        if (nestedAnnotationVisitors == null) {
+            nestedAnnotationVisitors = new ArrayList<>();
+        }
+        nestedAnnotationVisitors.add(nested);
+        return nested;
     }
 
     @Override
-    public AnnotationVisitor visitArray(String s) {
-        return new MojoAnnotationVisitor(this.annotationClassName);
+    public AnnotationVisitor visitArray(String name) {
+        MojoAnnotationVisitor arrayVisitor = new MojoAnnotationVisitor(this.annotationClassName);
+        if (this.arrayVisitors == null) {
+            this.arrayVisitors = new HashMap<>();
+        }
+        this.arrayVisitors.put(name, arrayVisitor);
+        return arrayVisitor;
+    }
+
+    /**
+     * Returns the sub-visitor created by {@link #visitArray(String)} for the given array attribute.
+     * The sub-visitor's {@link #getNestedAnnotationVisitors()} contains the annotation elements.
+     *
+     * @param name the array attribute name
+     * @return the array sub-visitor, or {@code null} if not visited
+     */
+    public MojoAnnotationVisitor getArrayVisitor(String name) {
+        return arrayVisitors != null ? arrayVisitors.get(name) : null;
+    }
+
+    /**
+     * Returns the nested annotation visitors collected by {@link #visitAnnotation(String, String)}
+     * and by array sub-visitors.  Used to extract elements from repeatable annotation containers
+     * such as {@code @Afters}.
+     *
+     * @return list of nested annotation visitors, never {@code null}
+     */
+    public List<MojoAnnotationVisitor> getNestedAnnotationVisitors() {
+        return nestedAnnotationVisitors != null ? nestedAnnotationVisitors : Collections.emptyList();
     }
 }
