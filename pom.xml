@@ -100,7 +100,7 @@
     needs to be updated as well -->
     <asmVersion>9.10.1</asmVersion>
     <javaParserVersion>3.28.2</javaParserVersion>
-    <plexusUtilsVersion>4.0.3</plexusUtilsVersion>
+    <plexusUtilsVersion>4.1.0</plexusUtilsVersion>
     <plexusXmlVersion>3.0.1</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
