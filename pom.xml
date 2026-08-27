@@ -107,7 +107,7 @@
     needs to be updated as well -->
     <asmVersion>9.10.1</asmVersion>
     <plexusUtilsVersion>4.1.0</plexusUtilsVersion>
-    <plexusXmlVersion>3.0.2</plexusXmlVersion>
+    <plexusXmlVersion>3.1.0</plexusXmlVersion>
     <reportingApiVersion>4.0.0</reportingApiVersion>
     <reportingImplVersion>4.0.0</reportingImplVersion>
     <project.build.outputTimestamp>2026-08-01T17:24:24Z</project.build.outputTimestamp>
