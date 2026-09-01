@@ -285,5 +285,47 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>bootstrap</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-plugin-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-descriptor</id>
+                <phase>none</phase>
+              </execution>
+              <execution>
+                <id>generated-helpmojo</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-plugin-plugin-bootstrap</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <id>bootstrap-helpmojo</id>
+                <goals>
+                  <goal>helpmojo</goal>
+                </goals>
+                <phase>generate-sources</phase>
+              </execution>
+              <execution>
+                <id>bootstrap-descriptor</id>
+                <goals>
+                  <goal>descriptor</goal>
+                </goals>
+                <phase>process-classes</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
