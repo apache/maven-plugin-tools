@@ -333,6 +333,32 @@ public class PluginDescriptorFilesGenerator implements Generator {
         }
 
         // ----------------------------------------------------------------------
+        // After links (v4 API only)
+        // ----------------------------------------------------------------------
+
+        if (isV4 && mojoDescriptor instanceof ExtendedMojoDescriptor) {
+            List<ExtendedMojoDescriptor.AfterLink> afterLinks =
+                    ((ExtendedMojoDescriptor) mojoDescriptor).getAfterLinks();
+            if (!afterLinks.isEmpty()) {
+                w.startElement("afterLinks");
+                for (ExtendedMojoDescriptor.AfterLink afterLink : afterLinks) {
+                    w.startElement("afterLink");
+                    if (afterLink.getPhase() != null) {
+                        GeneratorUtils.element(w, "phase", afterLink.getPhase());
+                    }
+                    if (afterLink.getType() != null) {
+                        GeneratorUtils.element(w, "type", afterLink.getType());
+                    }
+                    if (afterLink.getScope() != null) {
+                        GeneratorUtils.element(w, "scope", afterLink.getScope());
+                    }
+                    w.endElement(); // afterLink
+                }
+                w.endElement(); // afterLinks
+            }
+        }
+
+        // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
 

@@ -69,6 +69,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.converter.ConverterCo
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavaClassConverterContext;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocBlockTagsToXhtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocInlineTagsToXhtmlConverter;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.AfterAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
@@ -691,6 +692,14 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
                 }
             }
 
+            // @After annotations — collect from class hierarchy
+            List<AfterAnnotationContent> afterAnnotations =
+                    getAfterAnnotationsFromHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
+            for (AfterAnnotationContent after : afterAnnotations) {
+                mojoDescriptor.addAfterLink(
+                        new ExtendedMojoDescriptor.AfterLink(after.phase(), after.type(), after.scope()));
+            }
+
             mojoDescriptor.setExecutionStrategy(mojo.executionStrategy());
             // ???
             // mojoDescriptor.alwaysExecute(mojo.a)
@@ -779,6 +788,32 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             return null;
         }
         return findClassWithExecuteAnnotationInParentHierarchy(parent, mojoAnnotatedClasses);
+    }
+
+    /**
+     * Collects all {@code @After} annotations from the class hierarchy, starting from the
+     * most-derived class.  Unlike {@code @Execute}, {@code @After} is repeatable, so
+     * multiple entries may exist on a single class and across the hierarchy.
+     */
+    protected List<AfterAnnotationContent> getAfterAnnotationsFromHierarchy(
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        List<AfterAnnotationContent> result = new ArrayList<>();
+        collectAfterAnnotations(mojoAnnotatedClass, mojoAnnotatedClasses, result);
+        return result;
+    }
+
+    private void collectAfterAnnotations(
+            MojoAnnotatedClass mojoAnnotatedClass,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+            List<AfterAnnotationContent> result) {
+        result.addAll(mojoAnnotatedClass.getAfterAnnotations());
+        String parentClassName = mojoAnnotatedClass.getParentClassName();
+        if (parentClassName != null && !parentClassName.isEmpty()) {
+            MojoAnnotatedClass parent = mojoAnnotatedClasses.get(parentClassName);
+            if (parent != null) {
+                collectAfterAnnotations(parent, mojoAnnotatedClasses, result);
+            }
+        }
     }
 
     protected Map<String, ParameterAnnotationContent> getParametersParentHierarchy(
