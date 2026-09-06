@@ -26,6 +26,7 @@ import org.apache.maven.api.Session;
 import org.apache.maven.api.di.Inject;
 import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.MojoException;
+import org.apache.maven.api.plugin.annotations.After;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
 
@@ -38,6 +39,9 @@ import org.apache.maven.api.plugin.annotations.Parameter;
  * @since 1.2
  */
 @Mojo(name = "first", defaultPhase = "integration-test")
+@After(phase = "integration-test")
+@After(phase = "test", type = After.Type.CHILDREN)
+@After(phase = "clean", scope = "runtime", type = After.Type.DEPENDENCIES)
 public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
 
     /**

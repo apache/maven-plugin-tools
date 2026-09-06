@@ -38,6 +38,23 @@ assert mojo.onlineRequired.text() == 'false'
 assert mojo.aggregator.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
 
+assert mojo.afterLinks.afterLink.size() == 3
+
+afterLink = mojo.afterLinks.afterLink.findAll{ it.phase.text() == "integration-test" }[0]
+assert afterLink.phase.text() == 'integration-test'
+assert afterLink.type.isEmpty()
+assert afterLink.scope.isEmpty()
+
+afterLink = mojo.afterLinks.afterLink.findAll{ it.phase.text() == "test" }[0]
+assert afterLink.phase.text() == 'test'
+assert afterLink.type.text() == 'CHILDREN'
+assert afterLink.scope.isEmpty()
+
+afterLink = mojo.afterLinks.afterLink.findAll{ it.phase.text() == "clean" }[0]
+assert afterLink.phase.text() == 'clean'
+assert afterLink.type.text() == 'DEPENDENCIES'
+assert afterLink.scope.text() == 'runtime'
+
 assert mojo.parameters.parameter.size() == 3
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir" }[0]
