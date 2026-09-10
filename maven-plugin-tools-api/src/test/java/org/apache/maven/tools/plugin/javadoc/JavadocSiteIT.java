@@ -18,15 +18,26 @@
  */
 package org.apache.maven.tools.plugin.javadoc;
 
+import javax.net.ssl.SSLException;
+
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.stream.Stream;
 
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assumptions.abort;
+
+@ExtendWith(JavadocSiteIT.AbortWhenSiteUnreachable.class)
 class JavadocSiteIT {
 
     static Stream<Arguments> javadocBaseUrls() {
@@ -74,5 +85,26 @@ class JavadocSiteIT {
     void clazz(URI javadocBaseUrl) throws Exception {
         JavadocSite site = new JavadocSite(javadocBaseUrl, (Settings) null);
         JavadocSiteTest.assertUrlValid(site.createLink("java.lang", "String"));
+    }
+
+    /**
+     * Turns a failure to reach the remote javadoc site into a skipped test, so that a slow or blocked network does not
+     * make the build red. A wrong link still fails: {@link JavadocSite#getReader(java.net.URL,
+     * org.apache.maven.settings.Settings)} reports every non-200 as {@code FileNotFoundException}, which is not
+     * handled here.
+     */
+    static final class AbortWhenSiteUnreachable implements TestExecutionExceptionHandler {
+        @Override
+        public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+            for (Throwable cause = throwable; cause != null; cause = cause.getCause()) {
+                if (cause instanceof SocketTimeoutException
+                        || cause instanceof SocketException
+                        || cause instanceof UnknownHostException
+                        || cause instanceof SSLException) {
+                    abort("Remote javadoc site is unreachable: " + cause);
+                }
+            }
+            throw throwable;
+        }
     }
 }
