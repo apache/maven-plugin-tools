@@ -70,6 +70,36 @@ class JavaSourceModelTest {
     }
 
     @Test
+    void acceptsTypeAnnotationsNestedInsideGenericTypeArguments() throws Exception {
+        // GH-944: QDox failed to parse a type-use annotation on a type argument nested inside
+        // another generic type, e.g. Feature<Foo, @Nullable List<String>>, as well as the same
+        // annotated type used in an anonymous-class type argument and in a cast expression -
+        // all emitted by annotation processors such as Immutables. JavaParser, which replaced
+        // QDox here, handles all three forms.
+        write(
+                "example/Model.java",
+                "package example;\n"
+                        + "import java.lang.annotation.ElementType;\n"
+                        + "import java.lang.annotation.Target;\n"
+                        + "import java.util.List;\n"
+                        + "class Model {\n"
+                        + "  @Target(ElementType.TYPE_USE) @interface Nullable {}\n"
+                        + "  interface Feature<T, V> {}\n"
+                        + "  interface Token<V> {}\n"
+                        + "  Feature<Model, @Nullable List<String>> jvmArgs;\n"
+                        + "  Token<@Nullable List<String>> token = new Token<@Nullable List<String>>() {};\n"
+                        + "  Object cast(Object value) { return (@Nullable List<String>) value; }\n"
+                        + "}\n");
+
+        try (JavaSourceModel model = new JavaSourceModel(StandardCharsets.UTF_8)) {
+            model.addSourceDirectory(sourceDirectory.toFile());
+            model.parse();
+
+            assertTrue(model.getType("example.Model").isPresent());
+        }
+    }
+
+    @Test
     void indexesNestedTypesAndExportedModules() throws Exception {
         write("module-info.java", "module example.module { exports example; }\n");
         write("example/Outer.java", "package example; public class Outer { public static class Nested {} }\n");
