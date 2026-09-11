@@ -22,14 +22,18 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.library.SortedClassLibraryBuilder;
@@ -553,17 +557,40 @@ public class JavaJavadocMojoDescriptorExtractor implements MojoDescriptorExtract
             // cannot be controlled, etc.)
             File sourceFile = new File(source);
             if (!request.isExcludedScanDirectory(sourceFile)) {
-                builder.addSourceTree(sourceFile);
+                addSourceTree(builder, sourceFile);
             }
         }
 
         // TODO be more dynamic
         File generatedPlugin = new File(project.getBasedir(), "target/generated-sources/plugin");
         if (!project.getCompileSourceRoots().contains(generatedPlugin.getAbsolutePath())) {
-            builder.addSourceTree(generatedPlugin);
+            addSourceTree(builder, generatedPlugin);
         }
 
         return builder.getClasses();
+    }
+
+    /**
+     * Adds every {@code .java} file under {@code sourceTree} to {@code builder} one at a time, skipping
+     * (with a warning) any file QDox cannot parse instead of aborting the whole tree, since a single
+     * unparseable file -- e.g. one containing only comments, or using syntax QDox does not support --
+     * would otherwise hide every mojo declared elsewhere in the tree.
+     */
+    private void addSourceTree(JavaProjectBuilder builder, File sourceTree) {
+        if (!sourceTree.isDirectory()) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(sourceTree.toPath())) {
+            paths.filter(path -> path.toString().endsWith(".java")).forEach(path -> {
+                try {
+                    builder.addSource(path.toFile());
+                } catch (IOException | RuntimeException e) {
+                    LOGGER.warn("Unable to parse {}. Javadoc from this source file will be skipped.", path, e);
+                }
+            });
+        } catch (IOException e) {
+            LOGGER.warn("Unable to scan source tree {}", sourceTree, e);
+        }
     }
 
     /**
