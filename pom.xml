@@ -29,7 +29,7 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>3.16.1-SNAPSHOT</version>
+  <version>3.17.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
