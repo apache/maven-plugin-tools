@@ -59,6 +59,26 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
+    void preformattedBlockKeepsLineBreaksAndIndentation() {
+        // MPLUGIN-535
+        String test = "For example:<pre>\n&lt;binaryUrlPlugins&gt;\n  &lt;binaryUrlPlugin&gt;\n"
+                + "    &lt;url&gt;https://example.org/plugin.exe&lt;/url&gt;\n  &lt;/binaryUrlPlugin&gt;\n"
+                + "&lt;/binaryUrlPlugins&gt;\n</pre>and  after.";
+        assertEquals(
+                "For example:\n<binaryUrlPlugins>\n  <binaryUrlPlugin>\n"
+                        + "    <url>https://example.org/plugin.exe</url>\n  </binaryUrlPlugin>\n"
+                        + "</binaryUrlPlugins>\n\nand after.",
+                converter.convert(test));
+    }
+
+    @Test
+    void nestedLists() {
+        // MPLUGIN-505
+        String test = "<ul><li>one<ul><li>one.a</li><li>one.b</li></ul></li><li>two</li></ul>";
+        assertEquals("\n* one\n  * one.a\n  * one.b\n* two", converter.convert(test));
+    }
+
+    @Test
     void nullValue() {
         assertNull(converter.convert(null));
     }

@@ -59,17 +59,41 @@ public class HtmlToPlainTextConverter implements Converter {
 
     // the formatting rules, implemented in a breadth-first DOM traverse
     private static class FormattingVisitor implements NodeVisitor {
-        private StringBuilder accum = new StringBuilder(); // holds the accumulated text
+        private final StringBuilder accum = new StringBuilder(); // holds the accumulated text
+
+        /** Text outside {@code <pre>} with whitespace collapsed, plus the preformatted blocks kept as they are. */
+        private final StringBuilder result = new StringBuilder();
+
+        /** Stands in for the indentation of nested list items until the whitespace has been collapsed. */
+        private static final char INDENT = '\u0001';
+
+        private int preformattedDepth;
 
         // hit when the node is first seen
         public void head(Node node, int depth) {
             String name = node.nodeName();
             if (node instanceof TextNode) {
-                accum.append(((TextNode) node).text()); // TextNodes carry all user-readable text in the DOM.
+                TextNode textNode = (TextNode) node;
+                // TextNodes carry all user-readable text in the DOM.
+                accum.append(preformattedDepth > 0 ? textNode.getWholeText() : textNode.text());
             } else if (name.equals("li")) {
-                accum.append("\n * ");
+                int listDepth = listDepth(node);
+                accum.append("\n");
+                if (listDepth <= 1) {
+                    accum.append(" * ");
+                } else {
+                    // two spaces per nesting level; the space before the bullet is collapsed away on the top level
+                    for (int i = 1; i < listDepth; i++) {
+                        accum.append(INDENT).append(INDENT);
+                    }
+                    accum.append("* ");
+                }
             } else if (name.equals("dt")) {
                 accum.append("  ");
+            } else if (name.equals("pre")) {
+                flush();
+                preformattedDepth++;
+                accum.append("\n");
             } else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr")) {
                 accum.append("\n");
             }
@@ -78,7 +102,11 @@ public class HtmlToPlainTextConverter implements Converter {
         // hit when all of the node's children (if any) have been visited
         public void tail(Node node, int depth) {
             String name = node.nodeName();
-            if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+            if (name.equals("pre")) {
+                accum.append("\n");
+                flush();
+                preformattedDepth--;
+            } else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
                 accum.append("\n");
             } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
@@ -89,10 +117,34 @@ public class HtmlToPlainTextConverter implements Converter {
             }
         }
 
+        /** Number of enclosing lists of a list item: 1 for a top-level item. */
+        private static int listDepth(Node listItem) {
+            int result = 0;
+            for (Node parent = listItem.parent(); parent != null; parent = parent.parent()) {
+                if (StringUtil.in(parent.nodeName(), "ul", "ol")) {
+                    result++;
+                }
+            }
+            return result;
+        }
+
+        private void flush() {
+            if (preformattedDepth > 0) {
+                result.append(accum);
+            } else {
+                // collate multiple consecutive spaces
+                result.append(accum.toString()
+                        .replaceAll(" +", " ")
+                        .replace("\n ", "\n")
+                        .replace(INDENT, ' '));
+            }
+            accum.setLength(0);
+        }
+
         @Override
         public String toString() {
-            // collate multiple consecutive spaces
-            return accum.toString().replaceAll(" +", " ").replace("\n ", "\n");
+            flush();
+            return result.toString();
         }
     }
 }

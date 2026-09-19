@@ -484,7 +484,9 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             URI link;
             try {
                 link = new URI(matcher.group(1));
-                if (!link.isAbsolute() && !JavadocLinkGenerator.isLinkValid(link, reportOutputDirectory.toPath())) {
+                if (!link.isAbsolute()
+                        && !isLinkToThisReport(link)
+                        && !JavadocLinkGenerator.isLinkValid(link, reportOutputDirectory.toPath())) {
                     matcher.appendReplacement(sanitizedXhtmlText, matcher.group(2));
                     log.debug(String.format("Removed invalid link %s in %s", link, context));
                 } else {
@@ -498,6 +500,26 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         }
         matcher.appendTail(sanitizedXhtmlText);
         return sanitizedXhtmlText.toString();
+    }
+
+    /**
+     * Pages written by this report may not exist yet when a goal page referring to them is rendered, so they cannot be
+     * validated against the output directory like javadoc links.
+     */
+    private boolean isLinkToThisReport(URI link) {
+        String path = link.getPath();
+        if (path == null || path.isEmpty() || path.contains("/")) {
+            return false;
+        }
+        if (path.equals("plugin-info.html")) {
+            return true;
+        }
+        if (descriptor == null || descriptor.getPluginDescriptor() == null) {
+            return false;
+        }
+        return descriptor.getPluginDescriptor().getMojos().stream()
+                .map(mojo -> mojo.getGoal() + "-mojo.html")
+                .anyMatch(path::equals);
     }
 
     /** Convenience method.

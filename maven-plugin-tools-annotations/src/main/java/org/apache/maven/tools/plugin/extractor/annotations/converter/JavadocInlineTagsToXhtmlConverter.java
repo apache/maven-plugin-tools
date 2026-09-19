@@ -23,8 +23,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.JavadocTagToHtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.converter.tag.inline.JavadocInlineTagToHtmlConverter;
@@ -43,9 +41,7 @@ public class JavadocInlineTagsToXhtmlConverter {
 
     private final Map<String, JavadocInlineTagToHtmlConverter> converters;
 
-    private static final Pattern INLINE_TAG_PATTERN = Pattern.compile("\\{@([^\\s]*)(?:\\s([^\\}]*))?\\}");
-    private static final int GROUP_TAG_NAME = 1;
-    private static final int GROUP_REFERENCE = 2;
+    private static final String INLINE_TAG_START = "{@";
 
     @Inject
     public JavadocInlineTagsToXhtmlConverter(Map<String, JavadocInlineTagToHtmlConverter> converters) {
@@ -59,28 +55,68 @@ public class JavadocInlineTagsToXhtmlConverter {
      * @return
      */
     public String convert(String text, ConverterContext context) {
-        Matcher matcher = INLINE_TAG_PATTERN.matcher(text);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            String tagName = matcher.group(GROUP_TAG_NAME);
-            JavadocTagToHtmlConverter converter = converters.get(tagName);
-            String patternReplacement;
-            if (converter == null) {
-                patternReplacement = matcher.group(0) + "<!-- unsupported tag '" + tagName + "' -->";
-                LOG.warn("Found unsupported javadoc inline tag '{}' in {}", tagName, context.getLocation());
-            } else {
-                try {
-                    patternReplacement = converter.convert(matcher.group(GROUP_REFERENCE), context);
-                } catch (Throwable t) {
-                    patternReplacement = matcher.group(0) + "<!-- error processing javadoc tag '" + tagName + "': "
-                            + t.getMessage() + " -->"; // leave original javadoc in place
-                    LOG.warn("Error converting javadoc inline tag '{}' in {}", tagName, context.getLocation(), t);
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        int start;
+        while ((start = text.indexOf(INLINE_TAG_START, pos)) >= 0) {
+            int nameEnd = start + INLINE_TAG_START.length();
+            while (nameEnd < text.length()
+                    && !Character.isWhitespace(text.charAt(nameEnd))
+                    && text.charAt(nameEnd) != '}') {
+                nameEnd++;
+            }
+            int end = findClosingBrace(text, nameEnd);
+            if (end < 0) {
+                // unbalanced braces: leave the rest of the text untouched
+                break;
+            }
+            String tagName = text.substring(start + INLINE_TAG_START.length(), nameEnd);
+            // the single whitespace character separating the tag name from its argument is not part of the argument
+            String reference = nameEnd < end ? text.substring(nameEnd + 1, end) : null;
+            String original = text.substring(start, end + 1);
+            sb.append(text, pos, start);
+            sb.append(convertTag(tagName, reference, original, context));
+            pos = end + 1;
+        }
+        sb.append(text, pos, text.length());
+        return toXHTML(sb.toString());
+    }
+
+    /**
+     * Finds the brace closing the inline tag whose argument starts at {@code from}. Braces inside the argument are
+     * allowed as long as they are balanced, as with {@code {@code ${project.basedir}}} in javadoc itself.
+     *
+     * @return the index of the closing brace, or {@code -1} if the braces are not balanced
+     */
+    private static int findClosingBrace(String text, int from) {
+        int depth = 1;
+        for (int i = from; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '{') {
+                depth++;
+            } else if (c == '}') {
+                depth--;
+                if (depth == 0) {
+                    return i;
                 }
             }
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(patternReplacement));
         }
-        matcher.appendTail(sb);
-        return toXHTML(sb.toString());
+        return -1;
+    }
+
+    private String convertTag(String tagName, String reference, String original, ConverterContext context) {
+        JavadocTagToHtmlConverter converter = converters.get(tagName);
+        if (converter == null) {
+            LOG.warn("Found unsupported javadoc inline tag '{}' in {}", tagName, context.getLocation());
+            return original + "<!-- unsupported tag '" + tagName + "' -->";
+        }
+        try {
+            return converter.convert(reference, context);
+        } catch (Throwable t) {
+            LOG.warn("Error converting javadoc inline tag '{}' in {}", tagName, context.getLocation(), t);
+            // leave original javadoc in place
+            return original + "<!-- error processing javadoc tag '" + tagName + "': " + t.getMessage() + " -->";
+        }
     }
 
     static String toXHTML(String bodySnippet) {
