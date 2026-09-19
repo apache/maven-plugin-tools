@@ -44,7 +44,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.path.PathTranslator;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -52,7 +51,6 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.factory.ant.AntScriptInvoker;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -137,7 +135,6 @@ public class AntMojoWrapperTest {
         wrapper.enableLogging(new ConsoleLogger(Logger.LEVEL_DEBUG, "test"));
 
         Artifact artifact = mock(Artifact.class);
-        PathTranslator pt = mock(PathTranslator.class);
 
         File pluginXmlFile = Paths.get(resource.toURI()).toFile();
 
@@ -167,11 +164,6 @@ public class AntMojoWrapperTest {
         config.put("project", project);
         config.put("session", new MavenSession(null, null, null, null, null, null, null, null, null, null));
         config.put("mojoExecution", new MojoExecution(md));
-
-        ComponentRequirement cr = new ComponentRequirement();
-        cr.setRole(PathTranslator.class.getName());
-
-        wrapper.addComponentRequirement(cr, pt);
 
         wrapper.setComponentConfiguration(config);
 

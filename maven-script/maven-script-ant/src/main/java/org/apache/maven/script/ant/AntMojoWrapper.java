@@ -35,7 +35,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginParameterExpressionEvaluator;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.path.PathTranslator;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.Path;
@@ -70,8 +69,6 @@ public class AntMojoWrapper extends AbstractMojo implements ContextEnabled, MapO
 
     private MavenSession session;
 
-    private PathTranslator pathTranslator;
-
     private Logger logger;
 
     private transient List<String> unconstructedParts = new ArrayList<>();
@@ -91,15 +88,9 @@ public class AntMojoWrapper extends AbstractMojo implements ContextEnabled, MapO
         }
 
         @SuppressWarnings("unchecked")
-        Map<String, PathTranslator> refs = scriptInvoker.getReferences();
+        Map<String, Object> refs = scriptInvoker.getReferences();
         if (refs != null) {
             allConfig.putAll(refs);
-
-            for (Map.Entry<String, PathTranslator> entry : refs.entrySet()) {
-                if (entry.getKey().startsWith(PathTranslator.class.getName())) {
-                    pathTranslator = entry.getValue();
-                }
-            }
         }
 
         mavenProject = (MavenProject) allConfig.get("project");
@@ -189,7 +180,7 @@ public class AntMojoWrapper extends AbstractMojo implements ContextEnabled, MapO
 
     private void addClasspathReferences() throws MojoExecutionException {
         try {
-            if (mavenProject != null && session != null && pathTranslator != null) {
+            if (mavenProject != null && session != null) {
                 ExpressionEvaluator exprEvaluator = new PluginParameterExpressionEvaluator(session, mojoExecution);
 
                 PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(antProject);
@@ -304,14 +295,6 @@ public class AntMojoWrapper extends AbstractMojo implements ContextEnabled, MapO
 
     public void setSession(MavenSession session) {
         this.session = session;
-    }
-
-    public PathTranslator getPathTranslator() {
-        return pathTranslator;
-    }
-
-    public void setPathTranslator(PathTranslator pathTranslator) {
-        this.pathTranslator = pathTranslator;
     }
 
     public AntScriptInvoker getScriptInvoker() {
