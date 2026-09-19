@@ -40,3 +40,6 @@ assert noopMojo.isFile()
 // deprecated in table and details
 assert noopMojo.text.count('<div><strong>Deprecated.</strong><br />Just testing.</div><br />') == 2
 
+// MPLUGIN-515: both dependency scopes are rendered as goal attributes
+assert noopMojo.text.contains('Requires dependency resolution of artifacts in scope: <code>test</code>.')
+assert noopMojo.text.contains('Requires dependency collection of artifacts in scope: <code>compile</code>.')
