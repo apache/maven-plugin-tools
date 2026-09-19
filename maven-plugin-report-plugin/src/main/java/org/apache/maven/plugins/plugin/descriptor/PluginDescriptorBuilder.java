@@ -188,25 +188,25 @@ public class PluginDescriptorBuilder {
 
         mojo.setDescription(c.getChild("description").getValue());
 
-        PlexusConfiguration dependencyResolution = c.getChild("requiresDependencyResolution", false);
+        String dependencyResolution = childValue(c, "dependencyResolution", "requiresDependencyResolution");
 
         if (dependencyResolution != null) {
-            mojo.setDependencyResolutionRequired(dependencyResolution.getValue());
+            mojo.setDependencyResolutionRequired(dependencyResolution);
         }
 
-        PlexusConfiguration dependencyCollection = c.getChild("requiresDependencyCollection", false);
+        String dependencyCollection = childValue(c, "dependencyCollection", "requiresDependencyCollection");
 
         if (dependencyCollection != null) {
-            mojo.setDependencyCollectionRequired(dependencyCollection.getValue());
+            mojo.setDependencyCollectionRequired(dependencyCollection);
         }
 
-        String directInvocationOnly = c.getChild("requiresDirectInvocation").getValue();
+        String directInvocationOnly = childValue(c, "directInvocationOnly", "requiresDirectInvocation");
 
         if (directInvocationOnly != null) {
             mojo.setDirectInvocationOnly(Boolean.parseBoolean(directInvocationOnly));
         }
 
-        String requiresProject = c.getChild("requiresProject").getValue();
+        String requiresProject = childValue(c, "projectRequired", "requiresProject");
 
         if (requiresProject != null) {
             mojo.setProjectRequired(Boolean.parseBoolean(requiresProject));
@@ -224,7 +224,7 @@ public class PluginDescriptorBuilder {
             mojo.setAggregator(Boolean.parseBoolean(aggregator));
         }
 
-        String requiresOnline = c.getChild("requiresOnline").getValue();
+        String requiresOnline = childValue(c, "onlineRequired", "requiresOnline");
 
         if (requiresOnline != null) {
             mojo.setOnlineRequired(Boolean.parseBoolean(requiresOnline));
@@ -336,5 +336,15 @@ public class PluginDescriptorBuilder {
         } catch (IOException | XmlPullParserException e) {
             throw new PlexusConfigurationException(e.getMessage(), e);
         }
+    }
+    /**
+     * Descriptors written by plugin-tools 4.x use the Maven 4 element names, older ones the Maven 3 names.
+     */
+    private static String childValue(PlexusConfiguration c, String v4Name, String v3Name) {
+        PlexusConfiguration child = c.getChild(v4Name, false);
+        if (child == null) {
+            child = c.getChild(v3Name, false);
+        }
+        return child != null ? child.getValue() : null;
     }
 }

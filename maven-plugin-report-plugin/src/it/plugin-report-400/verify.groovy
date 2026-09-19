@@ -48,3 +48,6 @@ assert reportMojo.text.contains('<td>Report output directory.<br /><strong>Defau
 // MPLUGIN-515: both dependency scopes are rendered as goal attributes
 assert noopMojo.text.contains('Requires dependency resolution of artifacts in scope: <code>test</code>.')
 assert noopMojo.text.contains('Requires dependency collection of artifacts in scope: <code>compile</code>.')
+// attributes carried by the Maven 4 element names of the descriptor
+assert noopMojo.text.contains('Executes by direct invocation only.')
+assert noopMojo.text.contains('Requires that Maven runs in online mode.')
