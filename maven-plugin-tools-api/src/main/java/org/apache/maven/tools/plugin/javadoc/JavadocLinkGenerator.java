@@ -122,7 +122,8 @@ public class JavadocLinkGenerator {
                 try {
                     externalJavadocSites.add(new JavadocSite(siteUrl, settings));
                 } catch (IOException e) {
-                    LOG.warn("Could not use {} as base URL: {}", siteUrl, e.getMessage(), e);
+                    LOG.warn("Could not use {} as base URL: {}", siteUrl, e.getMessage());
+                    LOG.debug("Could not use {} as base URL", siteUrl, e);
                 }
             }
         } else {
