@@ -35,7 +35,12 @@ public class DescriptorGeneratorMojoTest {
                 arguments(null, "maven-plugin-plugin", "plugin"),
                 arguments(null, "maven-plugin-report-plugin", "plugin-report"),
                 arguments(null, "maven-default-plugin", "default"),
-                arguments(null, "default-maven-plugin", "default"));
+                arguments(null, "default-maven-plugin", "default"),
+                // MPLUGIN-512: too short to carry a prefix, must not throw
+                arguments(null, "maven-plugin", null),
+                arguments(null, "-maven-plugin", null),
+                arguments(null, "maven--plugin", null),
+                arguments(null, "plugin", null));
     }
 
     @ParameterizedTest
