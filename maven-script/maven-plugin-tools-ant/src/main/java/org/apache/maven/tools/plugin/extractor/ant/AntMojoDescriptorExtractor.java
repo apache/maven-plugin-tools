@@ -23,7 +23,6 @@ import javax.inject.Singleton;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,14 +31,12 @@ import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.AbstractScriptedMojoDescriptorExtractor;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.extractor.GroupKey;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParseException;
 import org.apache.maven.tools.plugin.extractor.model.PluginMetadataParser;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
 
 /**
  * Extracts Mojo descriptors from <a href="http://ant.apache.org">Ant</a> sources.
@@ -172,23 +169,6 @@ public class AntMojoDescriptorExtractor extends AbstractScriptedMojoDescriptorEx
                             param.setRequired(true);
 
                             descriptor.addParameter(param);
-                        }
-
-                        @SuppressWarnings("unchecked")
-                        List<ComponentRequirement> requirements = descriptor.getRequirements();
-                        Map<String, ComponentRequirement> reqMap = new HashMap<>();
-
-                        if (requirements != null) {
-                            for (ComponentRequirement req : requirements) {
-                                reqMap.put(req.getRole(), req);
-                            }
-                        }
-
-                        if (!reqMap.containsKey(PathTranslator.class.getName())) {
-                            ComponentRequirement req = new ComponentRequirement();
-                            req.setRole(PathTranslator.class.getName());
-
-                            descriptor.addRequirement(req);
                         }
 
                         String implementation = relativePath;

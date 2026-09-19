@@ -33,7 +33,6 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.path.PathTranslator;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -95,14 +94,19 @@ public class AntMojoDescriptorExtractorTest {
 
             List<ComponentRequirement> components = desc.getRequirements();
 
-            assertNotNull(components);
-            assertEquals(1, components.size());
-
-            ComponentRequirement req = components.get(0);
-            assertEquals(
-                    PathTranslator.class.getName(),
-                    req.getRole(),
-                    "Mojo descriptor: " + desc.getGoal() + " is missing 'PathTranslator' component requirement.");
+            if ("test2".equals(desc.getGoal())) {
+                // declared in mojos.xml by the plugin author: passed through as is
+                assertNotNull(components);
+                assertEquals(1, components.size());
+                assertEquals(
+                        "org.apache.maven.project.path.PathTranslator",
+                        components.get(0).getRole());
+            } else {
+                // nothing is injected implicitly
+                assertTrue(
+                        components == null || components.isEmpty(),
+                        "Mojo descriptor: " + desc.getGoal() + " must not require any component: " + components);
+            }
         }
     }
 
