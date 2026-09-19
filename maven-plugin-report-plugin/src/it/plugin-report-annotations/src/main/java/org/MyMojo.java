@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
         name = "noop",
         defaultPhase = LifecyclePhase.PROCESS_SOURCES,
         requiresDependencyResolution = ResolutionScope.TEST,
+        requiresDependencyCollection = ResolutionScope.COMPILE,
         requiresDirectInvocation = true,
         requiresOnline = true,
         inheritByDefault = false,
