@@ -132,12 +132,12 @@ public class StandaloneDescriptorGenerator {
         JavadocBlockTagsToXhtmlConverter blockTagsConverter =
                 new JavadocBlockTagsToXhtmlConverter(inlineTagsConverter, Collections.emptyMap());
 
-        JavaAnnotationsMojoDescriptorExtractor extractor = new JavaAnnotationsMojoDescriptorExtractor();
-        setField(extractor, "mojoAnnotationsScanner", new DefaultMojoAnnotationsScanner());
-        setField(extractor, "javadocInlineTagsToHtmlConverter", inlineTagsConverter);
-        setField(extractor, "javadocBlockTagsToHtmlConverter", blockTagsConverter);
-        setField(extractor, "repositorySystem", repoSystem);
-        setField(extractor, "archiverManager", createArchiverManager());
+        JavaAnnotationsMojoDescriptorExtractor extractor = JavaAnnotationsMojoDescriptorExtractor.createStandalone(
+                new DefaultMojoAnnotationsScanner(),
+                repoSystem,
+                createArchiverManager(),
+                inlineTagsConverter,
+                blockTagsConverter);
 
         MojoScanner mojoScanner = new DefaultMojoScanner(Collections.singletonMap("java-annotations", extractor));
 
@@ -253,12 +253,6 @@ public class StandaloneDescriptorGenerator {
             goalPrefix = AbstractGeneratorMojo.getDefaultGoalPrefix(project);
         }
         return (goalPrefix == null || goalPrefix.isEmpty()) ? "plugin" : goalPrefix;
-    }
-
-    private static void setField(Object target, String fieldName, Object value) throws Exception {
-        java.lang.reflect.Field field = target.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(target, value);
     }
 
     private static PluginDescriptor buildPluginDescriptor(
