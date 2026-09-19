@@ -21,6 +21,8 @@ package org.apache.maven.plugin.plugin.report;
 import java.io.File;
 import java.util.Locale;
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +37,31 @@ class GoalRendererTest {
         assertEquals(
                 "Map<String,Integer>", GoalRenderer.getShortType("java.util.Map<java.lang.String,java.lang.Integer>"));
         assertEquals("List<...>", GoalRenderer.getShortType("java.util.List<java.util.List<java.lang.String>>"));
+    }
+
+    @Test
+    void linksToSiblingGoalPagesAreKept() throws Exception {
+        // MPLUGIN-518: the goal pages of this plugin are written by this report and may not exist yet
+        File baseDir = new File(this.getClass().getResource("").getFile());
+        PluginDescriptor pluginDescriptor = new PluginDescriptor();
+        MojoDescriptor test = new MojoDescriptor();
+        test.setGoal("test");
+        pluginDescriptor.addMojo(test);
+        MojoDescriptor other = new MojoDescriptor();
+        other.setGoal("other");
+        pluginDescriptor.addMojo(other);
+        // set by PluginDescriptorBuilder when the descriptor is read from plugin.xml
+        other.setPluginDescriptor(pluginDescriptor);
+        GoalRenderer renderer =
+                new GoalRenderer(null, null, Locale.ROOT, null, other, baseDir, false, new SystemStreamLog());
+
+        String siblingLinks =
+                "see <a href=\"test-mojo.html\">test</a>, <a href=\"test-mojo.html#param\">a parameter</a>"
+                        + " and <a href=\"plugin-info.html\">the overview</a>";
+        assertEquals(siblingLinks, renderer.getXhtmlWithValidatedLinks(siblingLinks, "test"));
+
+        String unknownPage = "see <a href=\"unknown-mojo.html\">unknown</a>";
+        assertEquals("see unknown", renderer.getXhtmlWithValidatedLinks(unknownPage, "test"));
     }
 
     @Test

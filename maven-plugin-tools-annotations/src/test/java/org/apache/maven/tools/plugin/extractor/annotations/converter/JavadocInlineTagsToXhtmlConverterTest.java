@@ -79,6 +79,24 @@ class JavadocInlineTagsToXhtmlConverterTest {
     }
 
     @Test
+    void codeWithNestedBraces() {
+        // MPLUGIN-513: braces inside the argument are balanced, so the tag ends at the matching brace
+        String test = "<pre>{@code <agentPath>${project.basedir}/lib/agent.jar</agentPath>}</pre> tail";
+        assertEquals(
+                "<pre><code>&lt;agentPath&gt;${project.basedir}/lib/agent.jar&lt;/agentPath&gt;</code></pre>\n tail",
+                converter.convert(test, context));
+
+        test = "{@code a {b {c}} d} and {@code e}";
+        assertEquals("<code>a {b {c}} d</code> and <code>e</code>", converter.convert(test, context));
+    }
+
+    @Test
+    void unbalancedBracesAreLeftUntouched() {
+        String test = "text {@code ${unterminated";
+        assertEquals("text {@code ${unterminated", converter.convert(test, context));
+    }
+
+    @Test
     void literal() {
         String test = "{@literal text}";
         assertEquals("text", converter.convert(test, context));
