@@ -45,3 +45,6 @@ assert reportMojo.isFile()
 
 assert reportMojo.text.contains('<td>Report output directory.<br /><strong>Default</strong>: <code>${project.build.directory}/generated-site/xdoc</code></td>')
 
+// MPLUGIN-515: both dependency scopes are rendered as goal attributes
+assert noopMojo.text.contains('Requires dependency resolution of artifacts in scope: <code>test</code>.')
+assert noopMojo.text.contains('Requires dependency collection of artifacts in scope: <code>compile</code>.')
