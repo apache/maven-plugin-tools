@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,28 +47,26 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
-import org.apache.maven.tools.plugin.extractor.annotations.JavaAnnotationsMojoDescriptorExtractor;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocBlockTagsToXhtmlConverter;
-import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocInlineTagsToXhtmlConverter;
-import org.apache.maven.tools.plugin.extractor.annotations.scanner.DefaultMojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.generator.PluginDescriptorFilesGenerator;
-import org.apache.maven.tools.plugin.scanner.DefaultMojoScanner;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.LocalRepositoryManager;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResult;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
 /**
- * Minimal standalone runner to generate the bootstrap plugin descriptor container-free.
+ * Minimal standalone runner to generate the bootstrap plugin descriptor.
  */
 public class StandaloneDescriptorGenerator {
 
@@ -96,9 +93,6 @@ public class StandaloneDescriptorGenerator {
         File sourceDirectory = sibling.isDirectory() ? sibling : new File(baseDir, "src/main/java").getAbsoluteFile();
         File classesDirectory = new File(baseDir, "target/classes").getAbsoluteFile();
         File outputDirectory = new File(classesDirectory, "META-INF/maven").getAbsoluteFile();
-
-        RepositorySystem repoSystem = createMinimalRepositorySystem();
-        DefaultRepositorySystemSession repoSession = createRepositorySession(repoSystem);
 
         MavenProject project = newProject(model, pomFile, properties);
 
@@ -127,44 +121,43 @@ public class StandaloneDescriptorGenerator {
 
         project.setArtifacts(populateDependencies(model, project, properties, managedVersions));
 
-        JavadocInlineTagsToXhtmlConverter inlineTagsConverter =
-                new JavadocInlineTagsToXhtmlConverter(Collections.emptyMap());
-        JavadocBlockTagsToXhtmlConverter blockTagsConverter =
-                new JavadocBlockTagsToXhtmlConverter(inlineTagsConverter, Collections.emptyMap());
+        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
+                .setClassPathScanning(PlexusConstants.SCANNING_INDEX)
+                .setAutoWiring(true);
+        PlexusContainer container = new DefaultPlexusContainer(containerConfiguration);
+        try {
+            RepositorySystem repoSystem = container.lookup(RepositorySystem.class);
+            DefaultRepositorySystemSession repoSession = createRepositorySession(repoSystem);
 
-        JavaAnnotationsMojoDescriptorExtractor extractor = JavaAnnotationsMojoDescriptorExtractor.createStandalone(
-                new DefaultMojoAnnotationsScanner(),
-                repoSystem,
-                createArchiverManager(),
-                inlineTagsConverter,
-                blockTagsConverter);
+            MojoScanner mojoScanner = container.lookup(MojoScanner.class);
 
-        MojoScanner mojoScanner = new DefaultMojoScanner(Collections.singletonMap("java-annotations", extractor));
+            PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model, properties);
 
-        PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model, properties);
+            DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
+            request.setRepoSession(repoSession);
+            request.setEncoding("UTF-8");
+            request.setSkipErrorNoDescriptorsFound(true);
+            request.setDependencies(buildScanArtifacts());
 
-        DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-        request.setRepoSession(repoSession);
-        request.setEncoding("UTF-8");
-        request.setSkipErrorNoDescriptorsFound(true);
-        request.setDependencies(buildScanArtifacts());
+            mojoScanner.populatePluginDescriptor(request);
 
-        mojoScanner.populatePluginDescriptor(request);
-
-        outputDirectory.mkdirs();
-        for (MojoDescriptor md : pluginDescriptor.getMojos()) {
-            if (md instanceof ExtendedMojoDescriptor && ((ExtendedMojoDescriptor) md).isV4Api()) {
-                generateV4Factory(md, classesDirectory);
+            outputDirectory.mkdirs();
+            for (MojoDescriptor md : pluginDescriptor.getMojos()) {
+                if (md instanceof ExtendedMojoDescriptor && ((ExtendedMojoDescriptor) md).isV4Api()) {
+                    generateV4Factory(md, classesDirectory);
+                }
             }
-        }
-        generateV4DiIndex(classesDirectory, outputDirectory);
+            generateV4DiIndex(classesDirectory, outputDirectory);
 
-        PluginDescriptorFilesGenerator generator = new PluginDescriptorFilesGenerator();
-        generator.execute(outputDirectory, request);
+            PluginDescriptorFilesGenerator generator = new PluginDescriptorFilesGenerator();
+            generator.execute(outputDirectory, request);
 
-        File generatedFile = new File(outputDirectory, "plugin.xml");
-        if (!generatedFile.exists()) {
-            throw new IllegalStateException("Descriptor was not generated: " + generatedFile.getAbsolutePath());
+            File generatedFile = new File(outputDirectory, "plugin.xml");
+            if (!generatedFile.exists()) {
+                throw new IllegalStateException("Descriptor was not generated: " + generatedFile.getAbsolutePath());
+            }
+        } finally {
+            container.dispose();
         }
     }
 
@@ -473,67 +466,6 @@ public class StandaloneDescriptorGenerator {
         return scanArtifacts;
     }
 
-    private static org.codehaus.plexus.archiver.manager.ArchiverManager createArchiverManager() {
-        return new org.codehaus.plexus.archiver.manager.ArchiverManager() {
-            @Override
-            public org.codehaus.plexus.archiver.Archiver getArchiver(String name)
-                    throws org.codehaus.plexus.archiver.manager.NoSuchArchiverException {
-                if ("jar".equalsIgnoreCase(name)) {
-                    return new org.codehaus.plexus.archiver.jar.JarArchiver();
-                }
-                throw new org.codehaus.plexus.archiver.manager.NoSuchArchiverException(name);
-            }
-
-            @Override
-            public org.codehaus.plexus.archiver.Archiver getArchiver(File file)
-                    throws org.codehaus.plexus.archiver.manager.NoSuchArchiverException {
-                return getArchiver("jar");
-            }
-
-            @Override
-            public java.util.Collection<String> getAvailableArchivers() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public org.codehaus.plexus.archiver.UnArchiver getUnArchiver(String name)
-                    throws org.codehaus.plexus.archiver.manager.NoSuchArchiverException {
-                if ("jar".equalsIgnoreCase(name)) {
-                    return new org.codehaus.plexus.archiver.zip.ZipUnArchiver();
-                }
-                throw new org.codehaus.plexus.archiver.manager.NoSuchArchiverException(name);
-            }
-
-            @Override
-            public org.codehaus.plexus.archiver.UnArchiver getUnArchiver(File file)
-                    throws org.codehaus.plexus.archiver.manager.NoSuchArchiverException {
-                return getUnArchiver("jar");
-            }
-
-            @Override
-            public java.util.Collection<String> getAvailableUnArchivers() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection getResourceCollection(
-                    File file) {
-                return null;
-            }
-
-            @Override
-            public org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection getResourceCollection(
-                    String name) {
-                return null;
-            }
-
-            @Override
-            public java.util.Collection<String> getAvailableResourceCollections() {
-                return Collections.emptyList();
-            }
-        };
-    }
-
     private static DefaultRepositorySystemSession createRepositorySession(RepositorySystem repoSystem)
             throws Exception {
         DefaultRepositorySystemSession repoSession =
@@ -544,92 +476,5 @@ public class StandaloneDescriptorGenerator {
         LocalRepositoryManager lrm = repoSystem.newLocalRepositoryManager(repoSession, localRepo);
         repoSession.setLocalRepositoryManager(lrm);
         return repoSession;
-    }
-
-    private static RepositorySystem createMinimalRepositorySystem() {
-        return (RepositorySystem) java.lang.reflect.Proxy.newProxyInstance(
-                RepositorySystem.class.getClassLoader(),
-                new Class<?>[] {RepositorySystem.class},
-                (proxy, method, args) -> {
-                    switch (method.getName()) {
-                        case "newLocalRepositoryManager":
-                            return createNoopLocalRepositoryManager((LocalRepository) args[1]);
-                        case "resolveArtifact":
-                            throw new org.eclipse.aether.resolution.ArtifactResolutionException(
-                                    Collections.singletonList(new ArtifactResult((ArtifactRequest) args[1])));
-                        case "shutdown":
-                        case "addOnSystemEndedHandler":
-                            return null;
-                        default:
-                            throw new UnsupportedOperationException(method.getName());
-                    }
-                });
-    }
-
-    private static LocalRepositoryManager createNoopLocalRepositoryManager(LocalRepository localRepo) {
-        return new LocalRepositoryManager() {
-            @Override
-            public LocalRepository getRepository() {
-                return localRepo;
-            }
-
-            @Override
-            public String getPathForLocalArtifact(org.eclipse.aether.artifact.Artifact artifact) {
-                return pathFor(artifact);
-            }
-
-            @Override
-            public String getPathForRemoteArtifact(
-                    org.eclipse.aether.artifact.Artifact artifact,
-                    org.eclipse.aether.repository.RemoteRepository repository,
-                    String context) {
-                return pathFor(artifact);
-            }
-
-            @Override
-            public String getPathForLocalMetadata(org.eclipse.aether.metadata.Metadata metadata) {
-                return metadata.getGroupId() + "/" + metadata.getArtifactId() + "/" + metadata.getVersion();
-            }
-
-            @Override
-            public String getPathForRemoteMetadata(
-                    org.eclipse.aether.metadata.Metadata metadata,
-                    org.eclipse.aether.repository.RemoteRepository repository,
-                    String context) {
-                return getPathForLocalMetadata(metadata);
-            }
-
-            @Override
-            public org.eclipse.aether.repository.LocalArtifactResult find(
-                    org.eclipse.aether.RepositorySystemSession session,
-                    org.eclipse.aether.repository.LocalArtifactRequest request) {
-                return new org.eclipse.aether.repository.LocalArtifactResult(request);
-            }
-
-            @Override
-            public void add(
-                    org.eclipse.aether.RepositorySystemSession session,
-                    org.eclipse.aether.repository.LocalArtifactRegistration request) {}
-
-            @Override
-            public org.eclipse.aether.repository.LocalMetadataResult find(
-                    org.eclipse.aether.RepositorySystemSession session,
-                    org.eclipse.aether.repository.LocalMetadataRequest request) {
-                return new org.eclipse.aether.repository.LocalMetadataResult(request);
-            }
-
-            @Override
-            public void add(
-                    org.eclipse.aether.RepositorySystemSession session,
-                    org.eclipse.aether.repository.LocalMetadataRegistration request) {}
-
-            private String pathFor(org.eclipse.aether.artifact.Artifact artifact) {
-                String classifier = artifact.getClassifier();
-                return artifact.getGroupId().replace('.', '/') + "/" + artifact.getArtifactId() + "/"
-                        + artifact.getVersion() + "/" + artifact.getArtifactId() + "-" + artifact.getVersion()
-                        + (classifier == null || classifier.isEmpty() ? "" : "-" + classifier) + "."
-                        + artifact.getExtension();
-            }
-        };
     }
 }
