@@ -97,11 +97,17 @@ public abstract class AbstractGeneratorMojo extends AbstractMojo {
     static String getDefaultGoalPrefix(MavenProject project) {
         String artifactId = project.getArtifactId();
         if (artifactId.endsWith("-maven-plugin")) {
-            return artifactId.substring(0, artifactId.length() - "-maven-plugin".length());
-        } else if (artifactId.startsWith("maven-") && artifactId.endsWith("-plugin")) {
-            return artifactId.substring("maven-".length(), artifactId.length() - "-plugin".length());
+            return emptyToNull(artifactId.substring(0, artifactId.length() - "-maven-plugin".length()));
+        } else if (artifactId.startsWith("maven-")
+                && artifactId.endsWith("-plugin")
+                && artifactId.length() > "maven-".length() + "-plugin".length()) {
+            return emptyToNull(artifactId.substring("maven-".length(), artifactId.length() - "-plugin".length()));
         } else {
             return null;
         }
+    }
+
+    private static String emptyToNull(String value) {
+        return value.isEmpty() ? null : value;
     }
 }
