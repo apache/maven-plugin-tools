@@ -158,6 +158,45 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
     @Inject
     private JavadocBlockTagsToXhtmlConverter javadocBlockTagsToHtmlConverter;
 
+    @Inject
+    public JavaAnnotationsMojoDescriptorExtractor() {}
+
+    /**
+     * Constructor for callers outside the DI container (e.g. the bootstrap module) that need to
+     * assemble an instance without reflecting into private fields.
+     */
+    JavaAnnotationsMojoDescriptorExtractor(
+            MojoAnnotationsScanner mojoAnnotationsScanner,
+            RepositorySystem repositorySystem,
+            ArchiverManager archiverManager,
+            JavadocInlineTagsToXhtmlConverter javadocInlineTagsToHtmlConverter,
+            JavadocBlockTagsToXhtmlConverter javadocBlockTagsToHtmlConverter) {
+        this.mojoAnnotationsScanner = mojoAnnotationsScanner;
+        this.repositorySystem = repositorySystem;
+        this.archiverManager = archiverManager;
+        this.javadocInlineTagsToHtmlConverter = javadocInlineTagsToHtmlConverter;
+        this.javadocBlockTagsToHtmlConverter = javadocBlockTagsToHtmlConverter;
+    }
+
+    /**
+     * Assembles an extractor outside the DI container, e.g. for the bootstrap module that
+     * generates the plugin descriptor of {@code maven-plugin-plugin} itself. Kept in this
+     * package so construction goes through the real constructor instead of field reflection.
+     */
+    public static JavaAnnotationsMojoDescriptorExtractor createStandalone(
+            MojoAnnotationsScanner mojoAnnotationsScanner,
+            RepositorySystem repositorySystem,
+            ArchiverManager archiverManager,
+            JavadocInlineTagsToXhtmlConverter javadocInlineTagsToHtmlConverter,
+            JavadocBlockTagsToXhtmlConverter javadocBlockTagsToHtmlConverter) {
+        return new JavaAnnotationsMojoDescriptorExtractor(
+                mojoAnnotationsScanner,
+                repositorySystem,
+                archiverManager,
+                javadocInlineTagsToHtmlConverter,
+                javadocBlockTagsToHtmlConverter);
+    }
+
     @Override
     public String getName() {
         return NAME;
