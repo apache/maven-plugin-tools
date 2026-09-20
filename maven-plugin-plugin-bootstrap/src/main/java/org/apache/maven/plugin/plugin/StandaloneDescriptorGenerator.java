@@ -20,11 +20,15 @@ package org.apache.maven.plugin.plugin;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +45,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -56,10 +61,8 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.repository.LocalRepositoryManager;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -74,14 +77,18 @@ public class StandaloneDescriptorGenerator {
         try {
             File pomFile =
                     (args.length == 0) ? new File("pom.xml").getAbsoluteFile() : new File(args[0]).getAbsoluteFile();
-            run(pomFile);
+            File[] extraSourceRoots = new File[Math.max(0, args.length - 1)];
+            for (int i = 1; i < args.length; i++) {
+                extraSourceRoots[i - 1] = new File(args[i]).getAbsoluteFile();
+            }
+            run(pomFile, extraSourceRoots);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public static void run(File pomFile) throws Exception {
+    public static void run(File pomFile, File... extraSourceRoots) throws Exception {
         Model model = readModel(pomFile);
 
         Map<String, String> properties = new LinkedHashMap<>();
@@ -89,9 +96,19 @@ public class StandaloneDescriptorGenerator {
         gatherPomChainInfo(pomFile, model, properties, managedVersions);
 
         File baseDir = pomFile.getParentFile();
-        File sibling = new File(baseDir, "../maven-plugin-plugin/src/main/java").getAbsoluteFile();
-        File sourceDirectory = sibling.isDirectory() ? sibling : new File(baseDir, "src/main/java").getAbsoluteFile();
-        File classesDirectory = new File(baseDir, "target/classes").getAbsoluteFile();
+        properties.putIfAbsent("basedir", baseDir.getAbsolutePath());
+        properties.putIfAbsent("project.basedir", baseDir.getAbsolutePath());
+
+        List<File> sourceRoots = findCompileSourceRoots(model, baseDir, properties);
+        if (extraSourceRoots != null) {
+            Collections.addAll(sourceRoots, extraSourceRoots);
+        }
+
+        String outPath = (model.getBuild() != null && model.getBuild().getOutputDirectory() != null)
+                ? interpolate(model.getBuild().getOutputDirectory(), properties)
+                : "target/classes";
+        File outDir = new File(outPath);
+        File classesDirectory = (outDir.isAbsolute() ? outDir : new File(baseDir, outPath)).getAbsoluteFile();
         File outputDirectory = new File(classesDirectory, "META-INF/maven").getAbsoluteFile();
 
         MavenProject project = newProject(model, pomFile, properties);
@@ -113,10 +130,10 @@ public class StandaloneDescriptorGenerator {
         build.setDirectory(targetDirectory.getAbsolutePath());
         build.setOutputDirectory(classesDirectory.getAbsolutePath());
         project.setBuild(build);
-        project.addCompileSourceRoot(sourceDirectory.getAbsolutePath());
-        File localSrc = new File(baseDir, "src/main/java");
-        if (localSrc.isDirectory() && !localSrc.equals(sourceDirectory)) {
-            project.addCompileSourceRoot(localSrc.getAbsolutePath());
+        for (File sourceRoot : sourceRoots) {
+            if (sourceRoot.isDirectory()) {
+                project.addCompileSourceRoot(sourceRoot.getAbsolutePath());
+            }
         }
 
         project.setArtifacts(populateDependencies(model, project, properties, managedVersions));
@@ -126,15 +143,12 @@ public class StandaloneDescriptorGenerator {
                 .setAutoWiring(true);
         PlexusContainer container = new DefaultPlexusContainer(containerConfiguration);
         try {
-            RepositorySystem repoSystem = container.lookup(RepositorySystem.class);
-            DefaultRepositorySystemSession repoSession = createRepositorySession(repoSystem);
-
+            container.addComponent(createMinimalRepositorySystem(), RepositorySystem.class, "");
             MojoScanner mojoScanner = container.lookup(MojoScanner.class);
 
             PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model, properties);
 
             DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-            request.setRepoSession(repoSession);
             request.setEncoding("UTF-8");
             request.setSkipErrorNoDescriptorsFound(true);
             request.setDependencies(buildScanArtifacts());
@@ -419,6 +433,44 @@ public class StandaloneDescriptorGenerator {
         return null;
     }
 
+    static List<File> findCompileSourceRoots(Model model, File baseDir, Map<String, String> properties) {
+        Set<File> roots = new LinkedHashSet<>();
+        String srcPath = (model.getBuild() != null && model.getBuild().getSourceDirectory() != null)
+                ? interpolate(model.getBuild().getSourceDirectory(), properties)
+                : "src/main/java";
+        File defaultSrc = new File(srcPath);
+        roots.add((defaultSrc.isAbsolute() ? defaultSrc : new File(baseDir, srcPath)).getAbsoluteFile());
+
+        if (model.getBuild() != null && model.getBuild().getPlugins() != null) {
+            for (Plugin plugin : model.getBuild().getPlugins()) {
+                if ("maven-compiler-plugin".equals(plugin.getArtifactId())) {
+                    collectCompileSourceRoots(plugin.getConfiguration(), baseDir, properties, roots);
+                    for (PluginExecution exec : plugin.getExecutions()) {
+                        collectCompileSourceRoots(exec.getConfiguration(), baseDir, properties, roots);
+                    }
+                }
+            }
+        }
+        return new ArrayList<>(roots);
+    }
+
+    private static void collectCompileSourceRoots(
+            Object config, File baseDir, Map<String, String> properties, Set<File> roots) {
+        if (config instanceof Xpp3Dom) {
+            Xpp3Dom compileSourceRoots = ((Xpp3Dom) config).getChild("compileSourceRoots");
+            if (compileSourceRoots != null) {
+                for (Xpp3Dom child : compileSourceRoots.getChildren("compileSourceRoot")) {
+                    String val = child.getValue();
+                    if (val != null && !val.trim().isEmpty()) {
+                        String s = interpolate(val.trim(), properties);
+                        File f = new File(s);
+                        roots.add((f.isAbsolute() ? f : new File(baseDir, s)).getAbsoluteFile());
+                    }
+                }
+            }
+        }
+    }
+
     private static Set<Artifact> populateDependencies(
             Model model, MavenProject project, Map<String, String> properties, Map<String, String> managedVersions) {
         Set<Artifact> artifacts = new HashSet<>();
@@ -466,15 +518,15 @@ public class StandaloneDescriptorGenerator {
         return scanArtifacts;
     }
 
-    private static DefaultRepositorySystemSession createRepositorySession(RepositorySystem repoSystem)
-            throws Exception {
-        DefaultRepositorySystemSession repoSession =
-                org.apache.maven.repository.internal.MavenRepositorySystemUtils.newSession();
-        File localRepoFile = Files.createTempDirectory("standalone-repo").toFile();
-        localRepoFile.deleteOnExit();
-        LocalRepository localRepo = new LocalRepository(localRepoFile);
-        LocalRepositoryManager lrm = repoSystem.newLocalRepositoryManager(repoSession, localRepo);
-        repoSession.setLocalRepositoryManager(lrm);
-        return repoSession;
+    private static RepositorySystem createMinimalRepositorySystem() {
+        return (RepositorySystem) Proxy.newProxyInstance(
+                RepositorySystem.class.getClassLoader(),
+                new Class<?>[] {RepositorySystem.class},
+                (proxy, method, args) -> {
+                    if ("resolveArtifact".equals(method.getName())) {
+                        throw new ArtifactResolutionException(Collections.emptyList());
+                    }
+                    return null;
+                });
     }
 }
