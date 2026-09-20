@@ -27,10 +27,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -46,7 +44,14 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.building.DefaultModelBuilderFactory;
+import org.apache.maven.model.building.DefaultModelBuildingRequest;
+import org.apache.maven.model.building.FileModelSource;
+import org.apache.maven.model.building.ModelBuildingRequest;
+import org.apache.maven.model.building.ModelSource;
+import org.apache.maven.model.resolution.ModelResolver;
+import org.apache.maven.model.resolution.UnresolvableModelException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -89,25 +94,18 @@ public class StandaloneDescriptorGenerator {
     }
 
     public static void run(File pomFile, File... extraSourceRoots) throws Exception {
-        Model model = readModel(pomFile);
-
-        Map<String, String> properties = new LinkedHashMap<>();
-        Map<String, String> managedVersions = new LinkedHashMap<>();
-        gatherPomChainInfo(pomFile, model, properties, managedVersions);
-
+        Model model = buildEffectiveModel(pomFile);
         File baseDir = pomFile.getParentFile();
-        properties.putIfAbsent("basedir", baseDir.getAbsolutePath());
-        properties.putIfAbsent("project.basedir", baseDir.getAbsolutePath());
 
-        MavenProject project = newProject(model, pomFile, properties);
+        MavenProject project = newProject(model, pomFile);
 
-        List<File> sourceRoots = findCompileSourceRoots(model, baseDir, properties);
+        List<File> sourceRoots = findCompileSourceRoots(model, baseDir);
         if (extraSourceRoots != null) {
             Collections.addAll(sourceRoots, extraSourceRoots);
         }
 
         String outPath = (model.getBuild() != null && model.getBuild().getOutputDirectory() != null)
-                ? interpolate(model.getBuild().getOutputDirectory(), properties)
+                ? model.getBuild().getOutputDirectory()
                 : "target/classes";
         File outDir = new File(outPath);
         File classesDirectory = (outDir.isAbsolute() ? outDir : new File(baseDir, outPath)).getAbsoluteFile();
@@ -136,7 +134,7 @@ public class StandaloneDescriptorGenerator {
             }
         }
 
-        project.setArtifacts(populateDependencies(model, project, properties, managedVersions));
+        project.setArtifacts(populateDependencies(model));
 
         ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
                 .setClassPathScanning(PlexusConstants.SCANNING_INDEX)
@@ -146,7 +144,7 @@ public class StandaloneDescriptorGenerator {
             container.addComponent(createMinimalRepositorySystem(), RepositorySystem.class, "");
             MojoScanner mojoScanner = container.lookup(MojoScanner.class);
 
-            PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model, properties);
+            PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model);
 
             DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
             request.setEncoding("UTF-8");
@@ -239,47 +237,37 @@ public class StandaloneDescriptorGenerator {
         }
     }
 
-    private static MavenProject newProject(Model model, File pomFile, Map<String, String> properties) {
+    private static MavenProject newProject(Model model, File pomFile) {
         MavenProject project = new MavenProject(model);
         project.setFile(pomFile);
-        if (project.getGroupId() == null && model.getParent() != null) {
-            project.setGroupId(model.getParent().getGroupId());
-        }
-        if (project.getVersion() == null && model.getParent() != null) {
-            project.setVersion(model.getParent().getVersion());
-        }
-        properties.put("project.groupId", project.getGroupId());
-        properties.put("project.artifactId", project.getArtifactId());
-        properties.put("project.version", project.getVersion());
         return project;
     }
 
-    private static String determineGoalPrefix(Model model, MavenProject project, Map<String, String> properties) {
-        String goalPrefix = interpolate(findGoalPrefix(model), properties);
+    private static String determineGoalPrefix(Model model, MavenProject project) {
+        String goalPrefix = findGoalPrefix(model);
         if (goalPrefix == null || goalPrefix.isEmpty()) {
             goalPrefix = AbstractGeneratorMojo.getDefaultGoalPrefix(project);
         }
         return (goalPrefix == null || goalPrefix.isEmpty()) ? "plugin" : goalPrefix;
     }
 
-    private static PluginDescriptor buildPluginDescriptor(
-            MavenProject project, Model model, Map<String, String> properties) {
+    private static PluginDescriptor buildPluginDescriptor(MavenProject project, Model model) {
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
         pluginDescriptor.setGroupId(project.getGroupId());
         pluginDescriptor.setArtifactId(project.getArtifactId());
         pluginDescriptor.setVersion(project.getVersion());
-        pluginDescriptor.setGoalPrefix(determineGoalPrefix(model, project, properties));
+        pluginDescriptor.setGoalPrefix(determineGoalPrefix(model, project));
         pluginDescriptor.setName(project.getName());
         pluginDescriptor.setDescription(project.getDescription());
         pluginDescriptor.setDependencies(GeneratorUtils.toComponentDependencies(project.getArtifacts()));
 
         if (project.getPrerequisites() != null) {
-            String requiredMavenVersion = interpolate(project.getPrerequisites().getMaven(), properties);
+            String requiredMavenVersion = project.getPrerequisites().getMaven();
             if (requiredMavenVersion != null) {
                 pluginDescriptor.setRequiredMavenVersion(requiredMavenVersion);
             }
         }
-        String javaVersion = properties.get("javaVersion");
+        String javaVersion = model.getProperties().getProperty("javaVersion");
         if (javaVersion != null) {
             if ("8".equals(javaVersion)) {
                 javaVersion = "1.8";
@@ -289,114 +277,63 @@ public class StandaloneDescriptorGenerator {
         return pluginDescriptor;
     }
 
-    private static Model readModel(File pomFile) throws Exception {
-        MavenXpp3Reader pomReader = new MavenXpp3Reader();
-        try (InputStream is = Files.newInputStream(pomFile.toPath())) {
-            return pomReader.read(is);
-        }
+    /** Builds the fully inherited, interpolated model, the same way Maven itself would. */
+    static Model buildEffectiveModel(File pomFile) throws Exception {
+        DefaultModelBuildingRequest request = new DefaultModelBuildingRequest();
+        request.setPomFile(pomFile);
+        request.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
+        request.setProcessPlugins(false);
+        request.setSystemProperties(System.getProperties());
+        request.setModelResolver(new LocalRepositoryModelResolver(localRepository()));
+        return new DefaultModelBuilderFactory().newInstance().build(request).getEffectiveModel();
     }
 
-    static void gatherPomChainInfo(
-            File pomFile, Model model, Map<String, String> properties, Map<String, String> managedVersions) {
-        walkParentChain(pomFile, model, m -> {
-            putAllIfAbsent(properties, propertiesOf(m));
-            addManagedVersions(managedVersions, m);
-        });
+    private static File localRepository() {
+        String path = System.getProperty("maven.repo.local");
+        return path != null ? new File(path) : new File(System.getProperty("user.home"), ".m2/repository");
     }
 
-    private static void addManagedVersions(Map<String, String> managedVersions, Model model) {
-        if (model.getDependencyManagement() == null) {
-            return;
+    /** Resolves parent/imported POMs already present in the local repository; no downloading. */
+    private static final class LocalRepositoryModelResolver implements ModelResolver {
+        private final File localRepository;
+
+        LocalRepositoryModelResolver(File localRepository) {
+            this.localRepository = localRepository;
         }
-        for (Dependency managed : model.getDependencyManagement().getDependencies()) {
-            managedVersions.putIfAbsent(managed.getGroupId() + ":" + managed.getArtifactId(), managed.getVersion());
-        }
-    }
 
-    private static void walkParentChain(File pomFile, Model model, java.util.function.Consumer<Model> visitor) {
-        visitor.accept(model);
-
-        Set<String> visitedPoms = new HashSet<>();
-        visitedPoms.add(canonicalPath(pomFile));
-
-        File currentPomFile = pomFile;
-        Parent parent = model.getParent();
-        while (parent != null) {
-            File parentPomFile = resolveParentPomFile(currentPomFile, parent);
-            if (parentPomFile == null || !visitedPoms.add(canonicalPath(parentPomFile))) {
-                break;
+        @Override
+        public ModelSource resolveModel(String groupId, String artifactId, String version)
+                throws UnresolvableModelException {
+            File pom = new File(
+                    localRepository,
+                    groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/' + artifactId + '-' + version
+                            + ".pom");
+            if (!pom.isFile()) {
+                throw new UnresolvableModelException("not found in " + localRepository, groupId, artifactId, version);
             }
-            Model parentModel;
-            try {
-                parentModel = readModel(parentPomFile);
-            } catch (Exception e) {
-                break;
-            }
-            visitor.accept(parentModel);
-            currentPomFile = parentPomFile;
-            parent = parentModel.getParent();
+            return new FileModelSource(pom);
         }
-    }
 
-    private static String canonicalPath(File file) {
-        try {
-            return file.getCanonicalPath();
-        } catch (java.io.IOException e) {
-            return file.getAbsolutePath();
+        @Override
+        public ModelSource resolveModel(Parent parent) throws UnresolvableModelException {
+            return resolveModel(parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
         }
-    }
 
-    private static Map<String, String> propertiesOf(Model model) {
-        Map<String, String> result = new LinkedHashMap<>();
-        if (model.getProperties() != null) {
-            for (String name : model.getProperties().stringPropertyNames()) {
-                result.put(name, model.getProperties().getProperty(name));
-            }
+        @Override
+        public ModelSource resolveModel(Dependency dependency) throws UnresolvableModelException {
+            return resolveModel(dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion());
         }
-        return result;
-    }
 
-    private static void putAllIfAbsent(Map<String, String> target, Map<String, String> source) {
-        for (Map.Entry<String, String> entry : source.entrySet()) {
-            target.putIfAbsent(entry.getKey(), entry.getValue());
-        }
-    }
+        @Override
+        public void addRepository(Repository repository) {}
 
-    private static File resolveParentPomFile(File childPomFile, Parent parent) {
-        String relativePath = parent.getRelativePath();
-        if (relativePath == null || relativePath.isEmpty()) {
-            relativePath = "../pom.xml";
-        }
-        File parentDir = childPomFile.getAbsoluteFile().getParentFile();
-        File candidate = new File(parentDir, relativePath);
-        if (candidate.isDirectory()) {
-            candidate = new File(candidate, "pom.xml");
-        }
-        return candidate.isFile() ? candidate : null;
-    }
+        @Override
+        public void addRepository(Repository repository, boolean replace) {}
 
-    static String interpolate(String value, Map<String, String> properties) {
-        if (value == null || !value.contains("${")) {
-            return value;
+        @Override
+        public ModelResolver newCopy() {
+            return this;
         }
-        String result = value;
-        for (int pass = 0; pass < 5 && result.contains("${"); pass++) {
-            boolean changed = false;
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                if (entry.getValue() == null) {
-                    continue;
-                }
-                String placeholder = "${" + entry.getKey() + "}";
-                if (result.contains(placeholder)) {
-                    result = result.replace(placeholder, entry.getValue());
-                    changed = true;
-                }
-            }
-            if (!changed) {
-                break;
-            }
-        }
-        return result;
     }
 
     static String findGoalPrefix(Model model) {
@@ -433,10 +370,10 @@ public class StandaloneDescriptorGenerator {
         return null;
     }
 
-    static List<File> findCompileSourceRoots(Model model, File baseDir, Map<String, String> properties) {
+    static List<File> findCompileSourceRoots(Model model, File baseDir) {
         Set<File> roots = new LinkedHashSet<>();
         String srcPath = (model.getBuild() != null && model.getBuild().getSourceDirectory() != null)
-                ? interpolate(model.getBuild().getSourceDirectory(), properties)
+                ? model.getBuild().getSourceDirectory()
                 : "src/main/java";
         File defaultSrc = new File(srcPath);
         roots.add((defaultSrc.isAbsolute() ? defaultSrc : new File(baseDir, srcPath)).getAbsoluteFile());
@@ -444,9 +381,9 @@ public class StandaloneDescriptorGenerator {
         if (model.getBuild() != null && model.getBuild().getPlugins() != null) {
             for (Plugin plugin : model.getBuild().getPlugins()) {
                 if ("maven-compiler-plugin".equals(plugin.getArtifactId())) {
-                    collectCompileSourceRoots(plugin.getConfiguration(), baseDir, properties, roots);
+                    collectCompileSourceRoots(plugin.getConfiguration(), baseDir, roots);
                     for (PluginExecution exec : plugin.getExecutions()) {
-                        collectCompileSourceRoots(exec.getConfiguration(), baseDir, properties, roots);
+                        collectCompileSourceRoots(exec.getConfiguration(), baseDir, roots);
                     }
                 }
             }
@@ -454,15 +391,14 @@ public class StandaloneDescriptorGenerator {
         return new ArrayList<>(roots);
     }
 
-    private static void collectCompileSourceRoots(
-            Object config, File baseDir, Map<String, String> properties, Set<File> roots) {
+    private static void collectCompileSourceRoots(Object config, File baseDir, Set<File> roots) {
         if (config instanceof Xpp3Dom) {
             Xpp3Dom compileSourceRoots = ((Xpp3Dom) config).getChild("compileSourceRoots");
             if (compileSourceRoots != null) {
                 for (Xpp3Dom child : compileSourceRoots.getChildren("compileSourceRoot")) {
                     String val = child.getValue();
                     if (val != null && !val.trim().isEmpty()) {
-                        String s = interpolate(val.trim(), properties);
+                        String s = val.trim();
                         File f = new File(s);
                         roots.add((f.isAbsolute() ? f : new File(baseDir, s)).getAbsoluteFile());
                     }
@@ -471,26 +407,23 @@ public class StandaloneDescriptorGenerator {
         }
     }
 
-    private static Set<Artifact> populateDependencies(
-            Model model, MavenProject project, Map<String, String> properties, Map<String, String> managedVersions) {
+    private static Set<Artifact> populateDependencies(Model model) {
         Set<Artifact> artifacts = new HashSet<>();
         for (Dependency dep : model.getDependencies()) {
             String scope = dep.getScope() != null ? dep.getScope() : "compile";
             if ("test".equals(scope) || "provided".equals(scope)) {
                 continue;
             }
-            String depGroupId = interpolate(dep.getGroupId(), properties);
-            String depVersion = interpolate(dep.getVersion(), properties);
-            if (depVersion == null) {
-                depVersion = interpolate(managedVersions.get(depGroupId + ":" + dep.getArtifactId()), properties);
-            }
-            if (depVersion == null) {
-                depVersion = project.getVersion();
-            }
             String depType = dep.getType() != null ? dep.getType() : "jar";
             ArtifactHandler depHandler = new DefaultArtifactHandler(depType);
             Artifact art = new DefaultArtifact(
-                    depGroupId, dep.getArtifactId(), depVersion, scope, depType, dep.getClassifier(), depHandler);
+                    dep.getGroupId(),
+                    dep.getArtifactId(),
+                    dep.getVersion(),
+                    scope,
+                    depType,
+                    dep.getClassifier(),
+                    depHandler);
             artifacts.add(art);
         }
         return artifacts;

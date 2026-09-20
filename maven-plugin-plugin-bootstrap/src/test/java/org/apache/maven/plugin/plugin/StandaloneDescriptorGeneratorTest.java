@@ -19,12 +19,9 @@
 package org.apache.maven.plugin.plugin;
 
 import java.io.File;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -32,7 +29,6 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -90,36 +86,19 @@ class StandaloneDescriptorGeneratorTest {
     }
 
     @Test
-    void testInterpolate() {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("foo", "bar");
-        properties.put("project.version", "1.2.3");
-
-        assertEquals("bar", StandaloneDescriptorGenerator.interpolate("${foo}", properties));
-        assertEquals("v1.2.3!", StandaloneDescriptorGenerator.interpolate("v${project.version}!", properties));
-        assertEquals("${unknown}", StandaloneDescriptorGenerator.interpolate("${unknown}", properties));
-        assertNull(StandaloneDescriptorGenerator.interpolate(null, properties));
-        assertEquals("plain", StandaloneDescriptorGenerator.interpolate("plain", properties));
-    }
-
-    @Test
-    void testGatherPomChainInfoWalksLocalParentChain() throws Exception {
-        File tempRoot = Files.createTempDirectory("parent-chain").toFile();
-        tempRoot.deleteOnExit();
-
-        File parentDir = new File(tempRoot, "parent");
+    void testFindCompileSourceRootsWalksParentChainAndInterpolatesPaths(@TempDir File tempDir) throws Exception {
+        File parentDir = new File(tempDir, "parent");
         parentDir.mkdirs();
-        File parentPom = new File(parentDir, "pom.xml");
         Files.write(
-                parentPom.toPath(),
+                new File(parentDir, "pom.xml").toPath(),
                 ("<project><modelVersion>4.0.0</modelVersion>"
                                 + "<groupId>test</groupId><artifactId>parent</artifactId><version>1.0</version>"
                                 + "<packaging>pom</packaging>"
-                                + "<properties><foo>bar</foo><shared>from-parent</shared></properties>"
+                                + "<properties><srcDir>custom-src</srcDir></properties>"
                                 + "</project>")
                         .getBytes());
 
-        File childDir = new File(tempRoot, "child");
+        File childDir = new File(tempDir, "child");
         childDir.mkdirs();
         File childPom = new File(childDir, "pom.xml");
         Files.write(
@@ -128,22 +107,13 @@ class StandaloneDescriptorGeneratorTest {
                                 + "<parent><groupId>test</groupId><artifactId>parent</artifactId>"
                                 + "<version>1.0</version><relativePath>../parent/pom.xml</relativePath></parent>"
                                 + "<artifactId>child</artifactId>"
-                                + "<properties><baz>qux</baz><shared>from-child</shared></properties>"
+                                + "<build><sourceDirectory>${srcDir}</sourceDirectory></build>"
                                 + "</project>")
                         .getBytes());
 
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model childModel;
-        try (InputStream is = Files.newInputStream(childPom.toPath())) {
-            childModel = reader.read(is);
-        }
-
-        Map<String, String> properties = new HashMap<>();
-        Map<String, String> managedVersions = new HashMap<>();
-        StandaloneDescriptorGenerator.gatherPomChainInfo(childPom, childModel, properties, managedVersions);
-        assertEquals("qux", properties.get("baz"));
-        assertEquals("bar", properties.get("foo"));
-        assertEquals("from-child", properties.get("shared"));
+        Model model = StandaloneDescriptorGenerator.buildEffectiveModel(childPom);
+        List<File> roots = StandaloneDescriptorGenerator.findCompileSourceRoots(model, childDir);
+        assertEquals(Collections.singletonList(new File(childDir, "custom-src").getAbsoluteFile()), roots);
     }
 
     @Test
