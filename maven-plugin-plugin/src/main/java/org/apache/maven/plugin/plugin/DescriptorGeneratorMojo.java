@@ -434,67 +434,66 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
 
     private void generateIndex() throws GeneratorException {
         try {
-            Set<String> diBeans = new TreeSet<>();
-            try (Stream<Path> paths = Files.walk(classesOutputDirectory.toPath())) {
-                List<Path> classes = paths.filter(
-                                p -> p.getFileName().toString().endsWith(".class"))
-                        .collect(Collectors.toList());
-                for (Path classFile : classes) {
-                    String fileString = classFile.toString();
-                    String className = fileString
-                            .substring(0, fileString.length() - ".class".length())
-                            .replace('/', '.');
-                    try (InputStream is = Files.newInputStream(classFile)) {
-                        ClassReader rdr = new ClassReader(is);
-                        rdr.accept(
-                                new ClassVisitor(Opcodes.ASM9) {
-                                    String className;
-
-                                    @Override
-                                    public void visit(
-                                            int version,
-                                            int access,
-                                            String name,
-                                            String signature,
-                                            String superName,
-                                            String[] interfaces) {
-                                        super.visit(version, access, name, signature, superName, interfaces);
-                                        className = name;
-                                    }
-
-                                    @Override
-                                    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                                        if ("Lorg/apache/maven/api/di/Named;".equals(descriptor)) {
-                                            diBeans.add(className.replace('/', '.'));
-                                        }
-                                        return null;
-                                    }
-                                },
-                                ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
-                    }
-
-                    //                    Class<?> clazz = project.getClassRealm().loadClass(className);
-                    //                    boolean hasQualifier = Stream.of(clazz.getAnnotations())
-                    //                            .flatMap(ann -> Stream.of(ann.getClass().getAnnotations()))
-                    //                            .anyMatch(ann -> "org.apache.maven.api.di.Qualifier"
-                    //                                    .equals(ann.annotationType().getName()));
-                    //                    if (hasQualifier) {
-                    //                        diBeans.add(className);
-                    //                    }
-                }
-            }
-            Path path = outputDirectory.toPath().resolve("org.apache.maven.api.di.Inject");
-            if (diBeans.isEmpty()) {
-                Files.deleteIfExists(path);
-            } else {
-                String nl = System.lineSeparator();
-                try (CachingWriter w = new CachingWriter(path, StandardCharsets.UTF_8)) {
-                    String content = diBeans.stream().collect(Collectors.joining(nl, "", nl));
-                    w.write(content);
-                }
-            }
+            generateV4DiIndex(classesOutputDirectory, outputDirectory);
         } catch (Exception e) {
             throw new GeneratorException("Unable to generate index for v4 beans", e);
+        }
+    }
+
+    /** Scans compiled classes for {@code @Named} v4 DI beans and writes/removes the Sisu index file. */
+    static void generateV4DiIndex(File classesDirectory, File outputDirectory) throws Exception {
+        Set<String> diBeans = new TreeSet<>();
+        try (Stream<Path> paths = Files.walk(classesDirectory.toPath())) {
+            for (Path classFile : paths.filter(p -> p.getFileName().toString().endsWith(".class"))
+                    .collect(Collectors.toList())) {
+                try (InputStream is = Files.newInputStream(classFile)) {
+                    new ClassReader(is)
+                            .accept(
+                                    new ClassVisitor(Opcodes.ASM9) {
+                                        private String internalName;
+
+                                        @Override
+                                        public void visit(
+                                                int version,
+                                                int access,
+                                                String name,
+                                                String signature,
+                                                String superName,
+                                                String[] interfaces) {
+                                            super.visit(version, access, name, signature, superName, interfaces);
+                                            internalName = name;
+                                        }
+
+                                        @Override
+                                        public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                                            if ("Lorg/apache/maven/api/di/Named;".equals(descriptor)) {
+                                                diBeans.add(internalName.replace('/', '.'));
+                                            }
+                                            return null;
+                                        }
+                                    },
+                                    ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
+                }
+
+                //                    Class<?> clazz = project.getClassRealm().loadClass(className);
+                //                    boolean hasQualifier = Stream.of(clazz.getAnnotations())
+                //                            .flatMap(ann -> Stream.of(ann.getClass().getAnnotations()))
+                //                            .anyMatch(ann -> "org.apache.maven.api.di.Qualifier"
+                //                                    .equals(ann.annotationType().getName()));
+                //                    if (hasQualifier) {
+                //                        diBeans.add(className);
+                //                    }
+            }
+        }
+        Path path = outputDirectory.toPath().resolve("org.apache.maven.api.di.Inject");
+        if (diBeans.isEmpty()) {
+            Files.deleteIfExists(path);
+        } else {
+            String content =
+                    diBeans.stream().collect(Collectors.joining(System.lineSeparator(), "", System.lineSeparator()));
+            try (CachingWriter w = new CachingWriter(path, StandardCharsets.UTF_8)) {
+                w.write(content);
+            }
         }
     }
 

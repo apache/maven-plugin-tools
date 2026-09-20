@@ -172,7 +172,7 @@ class StandaloneDescriptorGeneratorTest {
                 "org.example", "SomeMojoFactory", "grp:art:1.0:goal", "java.lang.Object");
         Files.write(new File(packageDir, "SomeMojoFactory.class").toPath(), bytes);
 
-        StandaloneDescriptorGenerator.generateV4DiIndex(classesDir, outputDir);
+        DescriptorGeneratorMojo.generateV4DiIndex(classesDir, outputDir);
 
         File indexFile = new File(outputDir, "org.apache.maven.api.di.Inject");
         assertTrue(indexFile.exists(), "index file should be created when a @Named v4 bean is present");
@@ -189,7 +189,7 @@ class StandaloneDescriptorGeneratorTest {
         File indexFile = new File(outputDir, "org.apache.maven.api.di.Inject");
         Files.write(indexFile.toPath(), "stale".getBytes());
 
-        StandaloneDescriptorGenerator.generateV4DiIndex(classesDir, outputDir);
+        DescriptorGeneratorMojo.generateV4DiIndex(classesDir, outputDir);
 
         assertFalse(indexFile.exists(), "stale index file should be removed when no @Named v4 beans remain");
     }
