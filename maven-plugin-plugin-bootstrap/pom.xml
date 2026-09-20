@@ -173,6 +173,12 @@
             <configuration>
               <mainClass>org.apache.maven.plugin.plugin.StandaloneDescriptorGenerator</mainClass>
               <classpathScope>test</classpathScope>
+              <systemProperties>
+                <systemProperty>
+                  <key>maven.repo.local</key>
+                  <value>${settings.localRepository}</value>
+                </systemProperty>
+              </systemProperties>
               <arguments>
                 <argument>${project.basedir}/pom.xml</argument>
               </arguments>
