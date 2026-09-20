@@ -99,6 +99,8 @@ public class StandaloneDescriptorGenerator {
         properties.putIfAbsent("basedir", baseDir.getAbsolutePath());
         properties.putIfAbsent("project.basedir", baseDir.getAbsolutePath());
 
+        MavenProject project = newProject(model, pomFile, properties);
+
         List<File> sourceRoots = findCompileSourceRoots(model, baseDir, properties);
         if (extraSourceRoots != null) {
             Collections.addAll(sourceRoots, extraSourceRoots);
@@ -110,8 +112,6 @@ public class StandaloneDescriptorGenerator {
         File outDir = new File(outPath);
         File classesDirectory = (outDir.isAbsolute() ? outDir : new File(baseDir, outPath)).getAbsoluteFile();
         File outputDirectory = new File(classesDirectory, "META-INF/maven").getAbsoluteFile();
-
-        MavenProject project = newProject(model, pomFile, properties);
 
         ArtifactHandler projectHandler = new DefaultArtifactHandler("maven-plugin");
         Artifact projectArtifact = new DefaultArtifact(
