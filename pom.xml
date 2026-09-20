@@ -29,12 +29,12 @@
 
   <groupId>org.apache.maven.plugin-tools</groupId>
   <artifactId>maven-plugin-tools</artifactId>
-  <version>4.0.0-beta-4-SNAPSHOT</version>
+  <version>3.17.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Maven Plugin Tools</name>
-  <description>The Maven Plugin Tools contains the necessary tools to produce Maven Plugins in scripting languages
-    and to generate content such as descriptor, help, and documentation.</description>
+  <description>The Maven Plugin Tools contains the necessary tools to help produce Maven Plugins
+    by generating content such as descriptor, help, and documentation.</description>
   <url>https://maven.apache.org/plugin-tools</url>
   <inceptionYear>2004</inceptionYear>
 
@@ -94,7 +94,7 @@
     <maven3Version>3.9.16</maven3Version>
     <resolverVersion>1.9.27</resolverVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
-    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST-4.x</maven.site.path>
+    <maven.site.path>plugin-tools-archives/plugin-tools-LATEST</maven.site.path>
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
