@@ -19,20 +19,14 @@
 package org.apache.maven.plugin.plugin;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Proxy;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -68,10 +62,6 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 
 /**
  * Minimal standalone runner to generate the bootstrap plugin descriptor.
@@ -159,7 +149,7 @@ public class StandaloneDescriptorGenerator {
                     generateV4Factory(md, classesDirectory);
                 }
             }
-            generateV4DiIndex(classesDirectory, outputDirectory);
+            DescriptorGeneratorMojo.generateV4DiIndex(classesDirectory, outputDirectory);
 
             PluginDescriptorFilesGenerator generator = new PluginDescriptorFilesGenerator();
             generator.execute(outputDirectory, request);
@@ -186,55 +176,6 @@ public class StandaloneDescriptorGenerator {
         packageDir.mkdirs();
         File classFile = new File(packageDir, generatorClassName + ".class");
         Files.write(classFile.toPath(), bin);
-    }
-
-    static void generateV4DiIndex(File classesDirectory, File outputDirectory) throws Exception {
-        Set<String> diBeans = new TreeSet<>();
-        try (Stream<Path> paths = Files.walk(classesDirectory.toPath())) {
-            List<Path> classFiles = paths.filter(p -> p.getFileName().toString().endsWith(".class"))
-                    .collect(Collectors.toList());
-            for (Path classFile : classFiles) {
-                try (InputStream is = Files.newInputStream(classFile)) {
-                    ClassReader reader = new ClassReader(is);
-                    reader.accept(
-                            new ClassVisitor(Opcodes.ASM9) {
-                                private String internalName;
-
-                                @Override
-                                public void visit(
-                                        int version,
-                                        int access,
-                                        String name,
-                                        String signature,
-                                        String superName,
-                                        String[] interfaces) {
-                                    super.visit(version, access, name, signature, superName, interfaces);
-                                    internalName = name;
-                                }
-
-                                @Override
-                                public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-                                    if ("Lorg/apache/maven/api/di/Named;".equals(descriptor)) {
-                                        diBeans.add(internalName.replace('/', '.'));
-                                    }
-                                    return null;
-                                }
-                            },
-                            ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG);
-                }
-            }
-        }
-
-        File indexFile = new File(outputDirectory, "org.apache.maven.api.di.Inject");
-        if (diBeans.isEmpty()) {
-            Files.deleteIfExists(indexFile.toPath());
-        } else {
-            StringBuilder content = new StringBuilder();
-            for (String bean : diBeans) {
-                content.append(bean).append(System.lineSeparator());
-            }
-            Files.write(indexFile.toPath(), content.toString().getBytes(StandardCharsets.UTF_8));
-        }
     }
 
     private static MavenProject newProject(Model model, File pomFile) {
