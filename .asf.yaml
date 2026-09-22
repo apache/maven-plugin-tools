@@ -46,7 +46,7 @@ project:
   metadata:
     key: maven-plugin-tools
     committee: maven
-    name: Maven Plugin Tools
+    name: Apache Maven Plugin Tools
     description: The Maven Plugin Tools contains the necessary tools to produce Maven Plugins in scripting languages and to generate content such as descriptor, help, and documentation.
     short_description: The Maven Plugin Tools contains the necessary tools to produce Maven Plugins in scripting languages and to generate content such as descriptor, help, and documentation.
     homepage: https://maven.apache.org/plugin-tools/
