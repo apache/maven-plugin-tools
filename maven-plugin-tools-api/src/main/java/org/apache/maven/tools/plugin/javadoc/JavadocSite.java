@@ -119,15 +119,16 @@ class JavadocSite {
      * @throws IOException
      */
     JavadocSite(final URI url, final Settings settings) throws IOException {
+        URI redirectedUrl = getRedirectedUrl(url, settings);
         Map<String, String> containedPackageNamesAndModules;
         boolean requireModuleNameInPath = false;
         try {
             // javadoc > 1.2 && < 10
-            containedPackageNamesAndModules = getPackageListWithModules(url.resolve("package-list"), settings);
+            containedPackageNamesAndModules = getPackageListWithModules(redirectedUrl.resolve("package-list"), settings);
         } catch (FileNotFoundException e) {
             try {
                 // javadoc 10+
-                containedPackageNamesAndModules = getPackageListWithModules(url.resolve("element-list"), settings);
+                containedPackageNamesAndModules = getPackageListWithModules(redirectedUrl.resolve("element-list"), settings);
 
                 Optional<String> firstModuleName = containedPackageNamesAndModules.values().stream()
                         .filter(StringUtils::isNotBlank)
@@ -135,22 +136,20 @@ class JavadocSite {
                 if (firstModuleName.isPresent()) {
                     // are module names part of the URL (since JDK11)?
                     try (Reader reader = getReader(
-                            url.resolve(firstModuleName.get() + "/module-summary.html")
-                                    .toURL(),
-                            null)) {
+                            redirectedUrl.resolve(firstModuleName.get() + "/module-summary.html").toURL(), null)) {
                         requireModuleNameInPath = true;
                     } catch (IOException ioe) {
                         // ignore
                     }
                 }
             } catch (FileNotFoundException e2) {
-                throw new IOException("Found neither 'package-list' nor 'element-list' below url " + url
+                throw new IOException("Found neither 'package-list' nor 'element-list' below url " + redirectedUrl
                         + ". The given URL does probably not specify the root of a javadoc site or has been generated with"
                         + " javadoc 1.2 or older.");
             }
         }
         this.containedPackageNamesAndModules = containedPackageNamesAndModules;
-        this.baseUri = url;
+        this.baseUri = redirectedUrl;
         this.settings = settings;
         this.version = null;
         this.requireModuleNameInPath = requireModuleNameInPath;
@@ -197,6 +196,29 @@ class JavadocSite {
                 }
             }
             return containedPackageNamesAndModules;
+        }
+    }
+
+    static URI getRedirectedUrl(final URI url, final Settings settings) throws IOException {
+        if ("file".equals(url.getScheme())) {
+            return url;
+        }
+
+        try (CloseableHttpClient httpClient = createHttpClient(settings, url.toURL())) {
+            HttpGet httpMethod = new HttpGet(url.toString());
+            HttpClientContext httpContext = HttpClientContext.create();
+            HttpResponse response = httpClient.execute(httpMethod, httpContext);
+            int status = response.getStatusLine().getStatusCode();
+            if (status != HttpStatus.SC_OK) {
+                throw new FileNotFoundException(
+                        "Unexpected HTTP status code " + status + " getting resource " + url + ".");
+            }
+
+            List<URI> redirects = httpContext.getRedirectLocations();
+            if (isNotEmpty(redirects)) {
+                return redirects.get(redirects.size() - 1).resolve(".");
+            }
+            return url;
         }
     }
 
