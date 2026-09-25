@@ -21,4 +21,4 @@ help-deprecated-annotation-only:test
 
     undocumentedParam
       Required: Yes
-      User property: test.undocumented
+      User property: test.undocumented (can be set in the POM or with -Dtest.undocumented=...)

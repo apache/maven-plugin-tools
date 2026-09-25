@@ -308,7 +308,7 @@ public class HelpMojo
         if ( ( fieldConfigurationElement != null ) && isNotEmpty( fieldConfigurationElement.getTextContent() ) )
         {
             String property = getPropertyFromExpression( fieldConfigurationElement.getTextContent() );
-            append( sb, "User property: " + property, 3 );
+            append( sb, "User property: " + property + " (can be set in the POM or with -D" + property + "=...)", 3 );
         }
 
         append( sb, "", 0 );
