@@ -324,6 +324,20 @@
   <build>
     <pluginManagement>
       <plugins>
+
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <inputExcludes combine.children="append">
+              <exclude>src/site/resources/images/*.svg</exclude>
+              <exclude>*.svg</exclude>
+              <!-- Jenkins job with local Maven repository -->
+              <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude>
+              <!-- Hudson Maven3 integration log -->
+            </inputExcludes>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -348,19 +362,7 @@
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <configuration>
-            <excludes combine.children="append">
-              <exclude>src/site/resources/images/*.svg</exclude>
-              <exclude>*.svg</exclude>
-              <!-- Jenkins job with local Maven repository -->
-              <exclude>src/site/xdoc/plugin-descriptors.mmd</exclude>
-              <!-- Hudson Maven3 integration log -->
-            </excludes>
-          </configuration>
-        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>

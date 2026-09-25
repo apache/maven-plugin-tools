@@ -195,10 +195,10 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <excludes combine.children="append">
+            <inputExcludes combine.children="append">
               <!-- This file should exactly match the output of this project -->
               <exclude>src/it/help-basic**/expected-help**.txt</exclude>
-            </excludes>
+            </inputExcludes>
           </configuration>
         </plugin>
       </plugins>
