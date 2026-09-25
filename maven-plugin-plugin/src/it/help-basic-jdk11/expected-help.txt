@@ -10,6 +10,12 @@ help-jdk11:test
 
   Available parameters:
 
+    codeExample
+      A parameter with a preformatted example.
+        <binary>
+          <url>https://example.test/plugin.exe</url>
+        </binary>
+
     defaultParam (Default: escape\backslash)
       This parameter uses "quotation" marks and backslashes '\\' in its
       description. Those characters must be escaped in Java string literals.
