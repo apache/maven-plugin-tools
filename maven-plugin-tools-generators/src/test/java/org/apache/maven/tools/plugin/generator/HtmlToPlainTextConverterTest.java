@@ -65,6 +65,12 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
+    void relativePageUrl() {
+        String test = "<a href=\"test-mojo.html\">test</a>";
+        assertEquals("test <test-mojo.html>", converter.convert(test));
+    }
+
+    @Test
     void nullValue() {
         assertNull(converter.convert(null));
     }
