@@ -32,10 +32,10 @@ The Maven Plugin Plugin is used to create a [Maven plugin descriptor](/ref/curre
 
 The Plugin Plugin has four goals:
 
-- [plugin:descriptor](./descriptor-mojo.html) generates a plugin descriptor,
-- [plugin:addPluginArtifactMetadata](./addPluginArtifactMetadata-mojo.html) injects any plugin-specific artifact metadata to the project's artifact, for subsequent installation and deployment,
-- [plugin:helpmojo](./helpmojo-mojo.html) generates a help mojo which describes all mojos in a plugin,
-- [plugin:help](./help-mojo.html) display help information on maven-plugin-plugin.
+- [plugin:descriptor](./descriptor-goal.html) generates a plugin descriptor,
+- [plugin:addPluginArtifactMetadata](./addPluginArtifactMetadata-goal.html) injects any plugin-specific artifact metadata to the project's artifact, for subsequent installation and deployment,
+- [plugin:helpmojo](./helpmojo-goal.html) generates a help mojo which describes all mojos in a plugin,
+- [plugin:help](./help-goal.html) display help information on maven-plugin-plugin.
 ## Usage
 
 General instructions on how to use the Plugin Plugin can be found on the [usage page](./usage.html). Some more specific use cases are described in the examples given below. Last but not least, users occasionally contribute additional examples, tips or errata to the [Plugin Developers Centre page](https://maven.apache.org/plugin-developers/index.html).
