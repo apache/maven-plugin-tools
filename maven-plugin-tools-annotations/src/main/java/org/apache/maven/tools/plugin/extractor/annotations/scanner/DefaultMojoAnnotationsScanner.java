@@ -62,7 +62,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Mojo scanner with java annotations.
+ * Mojo scanner for java annotations:<ul>
+ *     <li>Plugin Tools' ones for Maven 3 plugins,</li>
+ *     <li>Maven 4 core API ones for Maven 4 plugins.</li>
+ * </ul>
  *
  * @author Olivier Lamy
  * @since 3.0
@@ -71,6 +74,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMojoAnnotationsScanner.class);
+
+    // Maven 4 core API annotations support
     public static final String MVN4_API = "org.apache.maven.api.plugin.annotations.";
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
@@ -78,6 +83,7 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
     public static final String AFTER_V4 = MVN4_API + "After";
     public static final String AFTERS_V4 = MVN4_API + "Afters";
 
+    // Maven 3 Plugin Tools annotations support
     public static final String MOJO_V3 = Mojo.class.getName();
     public static final String EXECUTE_V3 = Execute.class.getName();
     public static final String PARAMETER_V3 = Parameter.class.getName();
