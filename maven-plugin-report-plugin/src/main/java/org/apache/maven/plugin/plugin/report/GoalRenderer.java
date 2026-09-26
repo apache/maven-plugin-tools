@@ -43,7 +43,6 @@ import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.EnhancedParameterWrapper;
-import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.codehaus.plexus.i18n.I18N;
@@ -170,12 +169,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderAttribute(descriptor.isAggregator(), "aggregator");
         renderAttribute(descriptor.isDirectInvocationOnly(), "directInvocationOnly");
         renderAttribute(descriptor.isDependencyResolutionRequired(), "dependencyResolutionRequired");
-
-        if (descriptor instanceof ExtendedMojoDescriptor) {
-            ExtendedMojoDescriptor extendedDescriptor = (ExtendedMojoDescriptor) descriptor;
-            renderAttribute(extendedDescriptor.getDependencyCollectionRequired(), "dependencyCollectionRequired");
-        }
-
+        renderAttribute(descriptor.getDependencyCollectionRequired(), "dependencyCollectionRequired");
         renderAttribute(descriptor.isThreadSafe(), "threadSafe");
         renderAttribute(!descriptor.isThreadSafe(), "notThreadSafe");
         renderAttribute(descriptor.getSince(), "since");
