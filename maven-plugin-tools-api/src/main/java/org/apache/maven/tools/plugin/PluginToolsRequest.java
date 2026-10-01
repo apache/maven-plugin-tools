@@ -117,7 +117,10 @@ public interface PluginToolsRequest {
      *
      * @return a Repository Session
      * @since 3.8.2
+     * @deprecated There is no replacement on the Maven 3 line (the Maven 4 line uses the Maven API
+     *             {@code Session}); this method is removed in the Maven 4 API line.
      */
+    @Deprecated
     RepositorySystemSession getRepoSession();
 
     /**
@@ -125,7 +128,10 @@ public interface PluginToolsRequest {
      *
      * @param repoSession a Repository Session
      * @since 3.8.2
+     * @deprecated There is no replacement on the Maven 3 line (the Maven 4 line uses the Maven API
+     *             {@code Session}); this method is removed in the Maven 4 API line.
      */
+    @Deprecated
     void setRepoSession(RepositorySystemSession repoSession);
 
     /**
