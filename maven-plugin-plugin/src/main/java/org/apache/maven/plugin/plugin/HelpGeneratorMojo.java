@@ -111,7 +111,7 @@ public class HelpGeneratorMojo extends AbstractGeneratorMojo {
                 .setMavenProject(project)
                 .setHelpPackageName(getHelpPackageName())
                 .setGoalPrefix(goalPrefix)
-                .setVelocityComponent(velocity);
+                .setVelocityEngine(velocity.getEngine());
 
         try {
             pluginHelpGenerator.execute(outputDirectory);

@@ -165,11 +165,22 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
         return this;
     }
 
+    /**
+     * @deprecated There is no replacement on the Maven 3 line (the Maven 4 line uses the Maven API
+     *             {@code Session}); this method is removed in the Maven 4 API line.
+     */
     @Override
+    @Deprecated
     public RepositorySystemSession getRepoSession() {
         return repoSession;
     }
 
+    /**
+     * @deprecated There is no replacement on the Maven 3 line (the Maven 4 line uses the Maven API
+     *             {@code Session}); this method is removed in the Maven 4 API line.
+     */
+    @Override
+    @Deprecated
     public void setRepoSession(RepositorySystemSession repoSession) {
         this.repoSession = repoSession;
     }
