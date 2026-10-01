@@ -24,13 +24,18 @@ import javax.inject.Singleton;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +46,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -77,10 +84,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotated
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -147,9 +150,6 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
 
     @Inject
     private RepositorySystem repositorySystem;
-
-    @Inject
-    private ArchiverManager archiverManager;
 
     @Inject
     private JavadocInlineTagsToXhtmlConverter javadocInlineTagsToHtmlConverter;
@@ -562,17 +562,46 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
                                 + "/" + sourcesArtifact.getClassifier());
                 extractDirectory.mkdirs();
 
-                UnArchiver unArchiver = archiverManager.getUnArchiver("jar");
-                unArchiver.setSourceFile(sourcesArtifact.getFile());
-                unArchiver.setDestDirectory(extractDirectory);
-                unArchiver.extract();
+                unzip(sourcesArtifact.getFile(), extractDirectory);
 
                 extendJavaSourceModel(sourceModel, Arrays.asList(extractDirectory), request.getDependencies());
             } else if (sourcesArtifact.getFile().isDirectory()) {
                 extendJavaSourceModel(sourceModel, Arrays.asList(sourcesArtifact.getFile()), request.getDependencies());
             }
-        } catch (ArchiverException | NoSuchArchiverException e) {
+        } catch (IOException e) {
             throw new ExtractionException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Extracts all entries of the given archive into the given directory.
+     *
+     * @param archive the zip or jar file to extract
+     * @param targetDirectory the directory to extract to, created if missing
+     * @throws IOException if reading or writing fails, or if an entry would be written outside of
+     *         {@code targetDirectory}
+     */
+    static void unzip(File archive, File targetDirectory) throws IOException {
+        Path target = targetDirectory.toPath().toAbsolutePath().normalize();
+        Files.createDirectories(target);
+        try (ZipFile zipFile = new ZipFile(archive)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                Path entryPath = target.resolve(entry.getName()).normalize();
+                if (!entryPath.startsWith(target)) {
+                    throw new IOException("Archive " + archive + " contains entry '" + entry.getName()
+                            + "' outside of the target directory " + target);
+                }
+                if (entry.isDirectory()) {
+                    Files.createDirectories(entryPath);
+                } else {
+                    Files.createDirectories(entryPath.getParent());
+                    try (InputStream in = zipFile.getInputStream(entry)) {
+                        Files.copy(in, entryPath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
         }
     }
 
