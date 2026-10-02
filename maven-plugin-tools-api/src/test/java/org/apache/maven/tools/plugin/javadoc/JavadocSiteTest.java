@@ -20,14 +20,19 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import com.sun.net.httpserver.HttpServer;
+import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -122,6 +127,38 @@ class JavadocSiteTest {
                 Collections.singletonMap("java.lang", "java.base"));
         // don't request URL to make test independent of network connectivity
         assertEquals(baseUri.resolve("java.base/java/lang/String.html"), site.createLink("java.lang", "String"));
+    }
+
+    @Test
+    void resolvesBaseUrlBeforeRequestingPackageList() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+        server.createContext("/javadoc", exchange -> {
+            String path = exchange.getRequestURI().getPath();
+            if (path.equals("/javadoc/")) {
+                exchange.getResponseHeaders().add("Location", "/javadoc/index.html");
+                exchange.sendResponseHeaders(302, -1);
+            } else if (path.equals("/javadoc/index.html")) {
+                exchange.sendResponseHeaders(200, -1);
+            } else if (path.equals("/javadoc/package-list")) {
+                byte[] response = "java.lang\n".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, response.length);
+                try (OutputStream output = exchange.getResponseBody()) {
+                    output.write(response);
+                }
+            } else {
+                exchange.sendResponseHeaders(404, -1);
+            }
+            exchange.close();
+        });
+        server.start();
+        try {
+            URI baseUri = URI.create("http://localhost:" + server.getAddress().getPort() + "/javadoc/");
+            JavadocSite site = new JavadocSite(baseUri, (Settings) null);
+            assertTrue(site.hasEntryFor(java.util.Optional.empty(), java.util.Optional.of("java.lang")));
+            assertEquals(baseUri, site.getBaseUri());
+        } finally {
+            server.stop(0);
+        }
     }
 
     @Test
