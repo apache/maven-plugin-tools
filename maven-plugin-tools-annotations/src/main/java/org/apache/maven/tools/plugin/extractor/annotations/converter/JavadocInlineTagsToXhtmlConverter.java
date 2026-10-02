@@ -87,6 +87,7 @@ public class JavadocInlineTagsToXhtmlConverter {
         String html = "<html><head></head><body>" + bodySnippet + "</body>"; // make it a valid HTML document
         final Document document = Jsoup.parse(html);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        return document.body().html();
+        // jsoup always inserts a newline after "-->", which later renders as a stray space
+        return document.body().html().replace("-->\n", "-->");
     }
 }
