@@ -390,6 +390,29 @@ public class HelpMojo
         int lineIndent = getIndentLevel( line );
         StringBuilder buf = new StringBuilder( 256 );
 
+        // Preserve leading spaces in preformatted descriptions instead of treating them as word separators.
+        if ( lineIndent < line.length() && line.charAt( lineIndent ) == ' ' )
+        {
+            for ( int j = 0; j < line.length(); j++ )
+            {
+                char c = line.charAt( j );
+                if ( c == '\t' )
+                {
+                    buf.append( repeat( " ", indentSize - buf.length() % indentSize ) );
+                }
+                else if ( c == '\u00A0' )
+                {
+                    buf.append( ' ' );
+                }
+                else
+                {
+                    buf.append( c );
+                }
+            }
+            lines.add( buf.toString() );
+            return;
+        }
+
         String[] tokens = line.split( " +" );
 
         for ( String token : tokens )
