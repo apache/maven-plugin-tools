@@ -172,7 +172,7 @@ public final class GeneratorUtils {
 
         StringBuffer decoded = new StringBuffer(description.length() + 1024);
 
-        Matcher matcher = Pattern.compile("\\{@(\\w+)\\s*([^\\}]*)\\}").matcher(description);
+        Matcher matcher = Pattern.compile("\\{@(\\w+)\\s*((?:\\{[^\\}]*\\}|[^\\}])*)\\}").matcher(description);
         while (matcher.find()) {
             String tag = matcher.group(1);
             String text = matcher.group(2);
