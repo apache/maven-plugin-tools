@@ -26,9 +26,12 @@ under the License.
 
 # Maven Plugin Tool for Annotations
 
-The Maven Plugin Tool for Annotations is the `java-annotations` implementation of [maven-plugin-tools-api](../maven-plugin-tools-api/index.html) to extract descriptors from plugins written in Java with [Maven Plugin Tools Java Annotations](../maven-plugin-annotations/index.html).
+The Maven Plugin Tool for Annotations is the `java-annotations` implementation of [maven-plugin-tools-api](../maven-plugin-tools-api/index.html) to extract descriptors from plugins written in Java with [Maven 3 Plugin Tools Java Annotations](../maven-plugin-annotations/index.html)
+or since 3.17.0 with [Maven 4 API plugin Annotations](/ref/4-LATEST/api/maven-api-core/apidocs/org/apache/maven/api/plugin/annotations/package-summary.html).
 
 ## Supported Annotations
+
+### for Maven 3 plugins
 
 ```java
 import org.apache.maven.execution.MavenSession;
@@ -142,11 +145,56 @@ public class MyMojo
 }
 ```
 
+### for Maven 4 plugins
+
+In addition to Maven 3 plugins, Maven 4 has a Maven 4-specific API that adds new features:
+
+```java
+import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.di.Inject;
+import org.apache.maven.api.plugin.Log;
+import org.apache.maven.api.plugin.MojoException;
+import org.apache.maven.api.plugin.annotations.Execute;
+import org.apache.maven.api.plugin.annotations.Mojo;
+import org.apache.maven.api.plugin.annotations.Parameter;
+
+@Mojo(name = "<goal-name>")
+public class MyMojo implements org.apache.maven.api.plugin.Mojo {
+  /**
+   * Project directory.
+   */
+  @Parameter(defaultValue = "${basedir}", readonly = true)
+  private Path basedir;
+
+  @Parameter(property = "first.touchFile", defaultValue = "${project.build.directory}/touch.txt", required = true)
+  private Path touchFile;
+
+  @Inject
+  private Session session;
+
+  @Inject
+  private Project project;
+
+  @Inject
+  private MojoExecution mojo;
+
+  @Inject
+  private Log log;
+
+  public void execute() throws MojoException {
+    log.info("Executing first");
+  }
+}
+```
+
 ## See also
 
-- [Maven Plugin Tools Java Annotations](../maven-plugin-annotations/index.html)
-- [Mojo API Specification](/developers/mojo-api-specification.html#The_Descriptor_and_Annotations)
-- [META-INF/maven/plugin.xml plugin descriptor](/ref/current/maven-plugin-api/plugin.html)
+- [Maven 3 Plugin Tools Java Annotations](../maven-plugin-annotations/index.html)
+- [Maven 3 Mojo API Specification](/developers/mojo-api-specification.html#The_Descriptor_and_Annotations)
+- Maven 3 [META-INF/maven/plugin.xml plugin descriptor](/ref/current/maven-plugin-api/plugin.html)
+- Maven 4 [META-INF/maven/plugin.xml plugin descriptor](/ref/4-LATEST/api/maven-api-core/apidocs/org/apache/maven/api/plugin/annotations/package-summary.html)
 - [PluginParameterExpressionEvaluator](/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html), used to evaluate plugin parameters values during Mojo configuration,
 - pseudo parameters:
     - `PluginParameterExpressionEvaluator` [javadoc](https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html) / [source](https://maven.apache.org/ref/current/maven-core/xref/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html)
