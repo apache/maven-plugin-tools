@@ -28,6 +28,7 @@ import java.io.Writer;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.codehaus.plexus.util.io.CachingOutputStream;
 import org.codehaus.plexus.velocity.VelocityComponent;
 
@@ -51,7 +52,7 @@ public class PluginHelpGenerator {
     private String goalPrefix;
     private MavenProject mavenProject;
     private boolean useMaven4Api;
-    private VelocityComponent velocityComponent;
+    private VelocityEngine velocityEngine;
 
     /**
      * Default constructor
@@ -92,8 +93,28 @@ public class PluginHelpGenerator {
         return this;
     }
 
+    /**
+     * Sets the Velocity engine used to render the help class sources.
+     *
+     * @param velocityEngine the engine
+     * @return this generator
+     * @since 4.0.0-beta-4
+     */
+    public PluginHelpGenerator setVelocityEngine(VelocityEngine velocityEngine) {
+        this.velocityEngine = velocityEngine;
+        return this;
+    }
+
+    /**
+     * Sets the Velocity component whose engine is used to render the help class sources.
+     *
+     * @param velocityComponent the component
+     * @return this generator
+     * @deprecated Use {@link #setVelocityEngine(VelocityEngine)}; this method is removed in the Maven 4 API line.
+     */
+    @Deprecated
     public PluginHelpGenerator setVelocityComponent(VelocityComponent velocityComponent) {
-        this.velocityComponent = velocityComponent;
+        this.velocityEngine = velocityComponent.getEngine();
         return this;
     }
 
@@ -128,7 +149,7 @@ public class PluginHelpGenerator {
                         .getResourceAsStream(useMaven4Api ? "help-class-source-v4.vm" : "help-class-source.vm"); //
                 InputStreamReader isReader = new InputStreamReader(is, UTF_8)) {
             // isReader =
-            velocityComponent.getEngine().evaluate(context, stringWriter, "", isReader);
+            velocityEngine.evaluate(context, stringWriter, "", isReader);
         }
         // Apply OS lineSeparator instead of template's lineSeparator to have consistent separators for
         // all source files.
