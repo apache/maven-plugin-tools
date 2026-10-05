@@ -17,8 +17,8 @@
  * under the License.
  */
 
-assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/report-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/noop-goal.html' ).isFile()
+assert new File( basedir, 'target/site/report-goal.html' ).isFile()
 
 def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
 assert pluginInfo.isFile()
@@ -34,7 +34,7 @@ assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t us
 assert pluginInfo.text.contains('Does nothing.')
 
 
-def noopMojo = new File( basedir, 'target/site/noop-mojo.html' )
+def noopMojo = new File( basedir, 'target/site/noop-goal.html' )
 assert noopMojo.isFile()
 
 // deprecated in table and details

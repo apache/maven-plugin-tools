@@ -148,7 +148,7 @@ public class JavaClassConverterContext implements ConverterContext {
                     // Fields and whole-class references to another Mojo link to that Mojo's page.
                     return new URI(
                             null,
-                            "./" + mojoAnnotatedClass.getMojo().name() + "-mojo.html",
+                            "./" + mojoAnnotatedClass.getMojo().name() + "-goal.html",
                             reference.getMember().orElse(null));
                 }
             }
