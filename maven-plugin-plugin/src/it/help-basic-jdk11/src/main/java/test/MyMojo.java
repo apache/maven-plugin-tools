@@ -42,6 +42,18 @@ public class MyMojo extends AbstractMojo {
     private String defaultParam;
 
     /**
+     * A parameter with a preformatted example.
+     *
+     * <pre>{@code
+     *   <binary>
+     *     <url>https://example.test/plugin.exe</url>
+     *   </binary>
+     * }</pre>
+     */
+    @Parameter
+    private String codeExample;
+
+    /**
      * This parameter is deprecated.
      *
      * @deprecated As of version 1.0, use the {@link #defaultParam} instead.

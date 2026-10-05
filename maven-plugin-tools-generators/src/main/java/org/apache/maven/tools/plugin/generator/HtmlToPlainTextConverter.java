@@ -59,17 +59,30 @@ public class HtmlToPlainTextConverter implements Converter {
 
     // the formatting rules, implemented in a breadth-first DOM traverse
     private static class FormattingVisitor implements NodeVisitor {
+        private static final char PRE_START = '\u0001';
+        private static final char PRE_END = '\u0002';
+
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
+
+        private int preformatted;
 
         // hit when the node is first seen
         public void head(Node node, int depth) {
             String name = node.nodeName();
             if (node instanceof TextNode) {
-                accum.append(((TextNode) node).text()); // TextNodes carry all user-readable text in the DOM.
+                TextNode textNode = (TextNode) node;
+                // TextNode#text() normalizes whitespace. Keep the original text inside preformatted blocks.
+                accum.append(preformatted > 0 ? textNode.getWholeText() : textNode.text());
             } else if (name.equals("li")) {
                 accum.append("\n * ");
             } else if (name.equals("dt")) {
                 accum.append("  ");
+            } else if (name.equals("pre")) {
+                if (accum.length() > 0 && accum.charAt(accum.length() - 1) != '\n') {
+                    accum.append('\n');
+                }
+                accum.append(PRE_START);
+                preformatted++;
             } else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr")) {
                 accum.append("\n");
             }
@@ -78,8 +91,20 @@ public class HtmlToPlainTextConverter implements Converter {
         // hit when all of the node's children (if any) have been visited
         public void tail(Node node, int depth) {
             String name = node.nodeName();
-            if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
-                accum.append("\n");
+            boolean preformattedEndsWithNewline = false;
+            if (name.equals("pre")) {
+                preformatted--;
+                preformattedEndsWithNewline = accum.length() > 0 && accum.charAt(accum.length() - 1) == '\n';
+                accum.append(PRE_END);
+            }
+            if (name.equals("pre")) {
+                if (!preformattedEndsWithNewline) {
+                    accum.append('\n');
+                }
+            } else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+                if (accum.length() == 0 || accum.charAt(accum.length() - 1) != '\n') {
+                    accum.append("\n");
+                }
             } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
                 String link = node.absUrl("href");
@@ -91,8 +116,26 @@ public class HtmlToPlainTextConverter implements Converter {
 
         @Override
         public String toString() {
-            // collate multiple consecutive spaces
-            return accum.toString().replaceAll(" +", " ").replace("\n ", "\n");
+            String text = accum.toString();
+            StringBuilder result = new StringBuilder(text.length());
+            int start = 0;
+            int preStart;
+            while ((preStart = text.indexOf(PRE_START, start)) >= 0) {
+                appendNormalText(result, text.substring(start, preStart));
+                int preEnd = text.indexOf(PRE_END, preStart);
+                if (preEnd < 0) {
+                    appendNormalText(result, text.substring(preStart + 1));
+                    return result.toString();
+                }
+                result.append(text, preStart + 1, preEnd);
+                start = preEnd + 1;
+            }
+            appendNormalText(result, text.substring(start));
+            return result.toString();
+        }
+
+        private static void appendNormalText(StringBuilder result, String text) {
+            result.append(text.replaceAll(" +", " ").replace("\n ", "\n"));
         }
     }
 }
