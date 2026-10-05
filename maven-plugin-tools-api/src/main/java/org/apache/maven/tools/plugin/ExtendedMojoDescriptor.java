@@ -35,6 +35,7 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
     private final boolean containsXhtmlTextValues;
     private boolean v4Api;
     private List<AfterLink> afterLinks;
+    private List<ResolutionEntry> resolutions;
 
     public ExtendedMojoDescriptor() {
         this(false);
@@ -88,6 +89,43 @@ public class ExtendedMojoDescriptor extends MojoDescriptor {
             this.afterLinks = new ArrayList<>();
         }
         this.afterLinks.add(afterLink);
+    }
+
+    /** Returns the Maven 4 resolution injections declared by this mojo. */
+    public List<ResolutionEntry> getResolutions() {
+        return resolutions != null ? Collections.unmodifiableList(resolutions) : Collections.emptyList();
+    }
+
+    public void addResolution(ResolutionEntry resolution) {
+        if (this.resolutions == null) {
+            this.resolutions = new ArrayList<>();
+        }
+        this.resolutions.add(resolution);
+    }
+
+    /** Maven 4 resolution metadata kept without a compile-time dependency on its API. */
+    public static class ResolutionEntry {
+        private final String field;
+        private final String pathScope;
+        private final String requestType;
+
+        public ResolutionEntry(String field, String pathScope, String requestType) {
+            this.field = field;
+            this.pathScope = pathScope;
+            this.requestType = requestType;
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public String getPathScope() {
+            return pathScope;
+        }
+
+        public String getRequestType() {
+            return requestType;
+        }
     }
 
     /**

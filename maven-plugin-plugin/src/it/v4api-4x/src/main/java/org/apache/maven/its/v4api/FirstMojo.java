@@ -19,6 +19,7 @@
 package org.apache.maven.its.v4api;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.Project;
@@ -28,17 +29,15 @@ import org.apache.maven.api.plugin.Log;
 import org.apache.maven.api.plugin.MojoException;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
+import org.apache.maven.api.plugin.annotations.Resolution;
 
 /**
  * Test mojo for the v4 api plugin descriptor generation.
- * This mojo is not actually runnable because:
- *  - it's using a custom lifecycle which is not defined
- *  - it has a @Inject dependency on ArtifactInstaller (hint=test) which does not exist
  *
  * @since 1.2
  */
 @Mojo(name = "first", defaultPhase = "integration-test")
-public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
+public class FirstMojo extends AbstractResolutionMojo implements org.apache.maven.api.plugin.Mojo {
 
     /**
      * Project directory.
@@ -69,7 +68,18 @@ public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
     @Inject
     private Log log;
 
+    @Resolution(pathScope = "main-compile")
+    private List<Path> compilePaths;
+
     public void execute() throws MojoException {
+        if (!containsDependency(compilePaths) || !containsDependency(inheritedCompilePaths)) {
+            throw new IllegalStateException("Compile dependency was not injected");
+        }
         log.info("Executing first");
+    }
+
+    private boolean containsDependency(List<Path> paths) {
+        return paths != null
+                && paths.stream().anyMatch(path -> path.getFileName().toString().startsWith("commons-lang3-"));
     }
 }

@@ -29,6 +29,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 
 /**
  * @author Olivier Lamy
@@ -51,6 +52,8 @@ public class MojoAnnotatedClass {
      * key is field name
      */
     private Map<String, ParameterAnnotationContent> parameters;
+
+    private Map<String, ResolutionAnnotationContent> resolutions;
 
     /**
      * key is field name
@@ -128,6 +131,13 @@ public class MojoAnnotatedClass {
         return this;
     }
 
+    public Map<String, ResolutionAnnotationContent> getResolutions() {
+        if (this.resolutions == null) {
+            this.resolutions = new HashMap<>();
+        }
+        return resolutions;
+    }
+
     public Map<String, ComponentAnnotationContent> getComponents() {
         if (this.components == null) {
             this.components = new HashMap<>();
@@ -160,6 +170,7 @@ public class MojoAnnotatedClass {
     public boolean hasAnnotations() {
         return !(getComponents().isEmpty()
                 && getParameters().isEmpty()
+                && getResolutions().isEmpty()
                 && execute == null
                 && mojo == null
                 && getAfterAnnotations().isEmpty());
@@ -184,6 +195,7 @@ public class MojoAnnotatedClass {
         sb.append(", execute=").append(execute);
         sb.append(", afterAnnotations=").append(afterAnnotations);
         sb.append(", parameters=").append(parameters);
+        sb.append(", resolutions=").append(resolutions);
         sb.append(", components=").append(components);
         sb.append(", v4api=").append(v4Api);
         sb.append('}');
