@@ -53,6 +53,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
 
     private boolean requiresOnline = false;
 
+    private boolean dependencyCollection;
+
+    private String dependencyResolutionPathScopes;
+
     private boolean inheritByDefault = true;
 
     private String configurator;
@@ -170,6 +174,26 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
 
     public void requiresOnline(boolean requiresOnline) {
         this.requiresOnline = requiresOnline;
+    }
+
+    public void onlineRequired(boolean requiresOnline) {
+        this.requiresOnline = requiresOnline;
+    }
+
+    public boolean isDependencyCollection() {
+        return dependencyCollection;
+    }
+
+    public void dependencyCollection(boolean dependencyCollection) {
+        this.dependencyCollection = dependencyCollection;
+    }
+
+    public String getDependencyResolutionPathScopes() {
+        return dependencyResolutionPathScopes;
+    }
+
+    public void dependencyResolutionPathScopes(String dependencyResolutionPathScopes) {
+        this.dependencyResolutionPathScopes = dependencyResolutionPathScopes;
     }
 
     @Override
