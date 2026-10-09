@@ -105,7 +105,7 @@
     <!-- whenever the ASM version is updated also the
     maven-plugin-tools-annotations/src/main/java/o/a/m/tools/plugins/extractor/annotations/JavaAnnotationsMojoDescriptorExtractor#CLASS_VERSION_TO_JAVA_STRING
     needs to be updated as well -->
-    <asmVersion>9.10.1</asmVersion>
+    <asmVersion>9.11</asmVersion>
     <javaParserVersion>3.28.2</javaParserVersion>
     <plexusUtilsVersion>4.1.0</plexusUtilsVersion>
     <plexusXmlVersion>3.1.0</plexusXmlVersion>
