@@ -72,7 +72,6 @@ public class ExecuteAnnotationContent implements Execute {
             this.phase = null;
             this.customPhase = null;
         }
-        this.phase = LifecyclePhase.valueOf(phase);
     }
 
     public void customPhase(String customPhase) {
