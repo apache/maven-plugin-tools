@@ -20,6 +20,9 @@ package org.apache.maven.plugin.plugin;
 
 import java.io.File;
 import java.lang.reflect.Proxy;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -139,7 +142,7 @@ public class StandaloneDescriptorGenerator {
             DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
             request.setEncoding("UTF-8");
             request.setSkipErrorNoDescriptorsFound(true);
-            request.setDependencies(buildScanArtifacts());
+            request.setDependencies(buildScanArtifacts(StandaloneDescriptorGenerator.class.getClassLoader()));
 
             mojoScanner.populatePluginDescriptor(request);
 
@@ -370,15 +373,26 @@ public class StandaloneDescriptorGenerator {
         return artifacts;
     }
 
-    static Set<Artifact> buildScanArtifacts() {
-        Set<Artifact> scanArtifacts = new HashSet<>();
-        String classpath = System.getProperty("java.class.path", "");
-        int index = 0;
-        for (String entry : classpath.split(File.pathSeparator)) {
-            if (entry.isEmpty()) {
-                continue;
+    // exec:java runs in Maven's JVM: java.class.path is only the launcher, real classpath is in the URLClassLoader
+    static Set<Artifact> buildScanArtifacts(ClassLoader loader) throws URISyntaxException {
+        Set<File> entries = new LinkedHashSet<>();
+        for (ClassLoader cl = loader; cl != null; cl = cl.getParent()) {
+            if (cl instanceof URLClassLoader) {
+                for (URL url : ((URLClassLoader) cl).getURLs()) {
+                    if ("file".equals(url.getProtocol())) {
+                        entries.add(new File(url.toURI()));
+                    }
+                }
             }
-            File file = new File(entry);
+        }
+        for (String entry : System.getProperty("java.class.path", "").split(File.pathSeparator)) {
+            if (!entry.isEmpty()) {
+                entries.add(new File(entry).getAbsoluteFile());
+            }
+        }
+        Set<Artifact> scanArtifacts = new HashSet<>();
+        int index = 0;
+        for (File file : entries) {
             if (!file.exists()) {
                 continue;
             }
