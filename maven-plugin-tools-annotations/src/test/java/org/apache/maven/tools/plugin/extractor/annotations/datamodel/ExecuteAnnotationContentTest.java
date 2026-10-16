@@ -54,11 +54,11 @@ class ExecuteAnnotationContentTest {
     }
 
     @Test
-    void noneIsKeptAsCustomPhase() {
+    void noneIsMappedToLifecyclePhaseNone() {
         ExecuteAnnotationContent content = new ExecuteAnnotationContent();
         content.phase("none");
 
-        assertNull(content.phase());
-        assertEquals("none", content.customPhase());
+        assertEquals(LifecyclePhase.NONE, content.phase());
+        assertNull(content.customPhase());
     }
 }
