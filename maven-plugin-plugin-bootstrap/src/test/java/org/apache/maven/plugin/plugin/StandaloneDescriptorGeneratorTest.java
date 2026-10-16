@@ -19,6 +19,8 @@
 package org.apache.maven.plugin.plugin;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
@@ -117,26 +119,18 @@ class StandaloneDescriptorGeneratorTest {
     }
 
     @Test
-    void testBuildScanArtifactsIncludesClasspathEntries() throws Exception {
-        String originalClasspath = System.getProperty("java.class.path");
-        try {
-            File tempDir = Files.createTempDirectory("scan-artifacts").toFile();
-            tempDir.deleteOnExit();
-            File classpathJar = new File(tempDir, "somelib.jar");
-            classpathJar.createNewFile();
+    void testBuildScanArtifactsIncludesClassLoaderEntries(@TempDir File tempDir) throws Exception {
+        File classpathJar = new File(tempDir, "somelib.jar");
+        classpathJar.createNewFile();
 
-            System.setProperty("java.class.path", classpathJar.getAbsolutePath());
-
-            Set<Artifact> scanArtifacts = StandaloneDescriptorGenerator.buildScanArtifacts();
+        try (URLClassLoader loader =
+                new URLClassLoader(new URL[] {classpathJar.toURI().toURL()}, null)) {
+            Set<Artifact> scanArtifacts = StandaloneDescriptorGenerator.buildScanArtifacts(loader);
 
             assertTrue(
                     scanArtifacts.stream()
                             .anyMatch(a -> classpathJar.getAbsoluteFile().equals(a.getFile())),
-                    "the real classpath jar should be included for scanning");
-        } finally {
-            if (originalClasspath != null) {
-                System.setProperty("java.class.path", originalClasspath);
-            }
+                    "the class loader jar should be included for scanning");
         }
     }
 
