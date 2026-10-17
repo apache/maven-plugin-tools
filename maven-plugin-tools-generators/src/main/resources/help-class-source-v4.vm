@@ -379,9 +379,27 @@ public class HelpMojo
 
         String[] plainLines = text.split( "(\r\n)|(\r)|(\n)" );
 
-        for ( String plainLine : plainLines )
+        for ( int i = 0; i < plainLines.length; i++ )
         {
-            toLines( lines, ind + plainLine, indentSize, lineLength );
+            String plainLine = plainLines[i];
+            if ( plainLine.trim().isEmpty() )
+            {
+                boolean previousLineIsPreformatted = i > 0
+                    && !plainLines[i - 1].trim().isEmpty()
+                    && plainLines[i - 1].startsWith( " " );
+                boolean nextLineIsPreformatted = i + 1 < plainLines.length
+                    && !plainLines[i + 1].trim().isEmpty()
+                    && plainLines[i + 1].startsWith( " " );
+                // The whitespace-only line before a preformatted block is a boundary, not displayed content.
+                if ( !nextLineIsPreformatted || previousLineIsPreformatted )
+                {
+                    lines.add( "" );
+                }
+            }
+            else
+            {
+                toLines( lines, ind + plainLine, indentSize, lineLength );
+            }
         }
 
         return lines;
