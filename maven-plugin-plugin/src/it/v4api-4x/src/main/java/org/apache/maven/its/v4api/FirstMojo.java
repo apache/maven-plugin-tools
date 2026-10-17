@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.maven.api.MojoExecution;
+import org.apache.maven.api.Node;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.di.Inject;
@@ -71,8 +72,13 @@ public class FirstMojo extends AbstractResolutionMojo implements org.apache.mave
     @Resolution(pathScope = "main-compile", requestType = "resolve")
     private List<Path> compilePaths;
 
+    @Resolution
+    private Node unscopedDependencies;
+
     public void execute() throws MojoException {
-        if (!containsDependency(compilePaths) || !containsDependency(inheritedCompilePaths)) {
+        if (!containsDependency(compilePaths)
+                || !containsDependency(inheritedCompilePaths)
+                || unscopedDependencies == null) {
             throw new IllegalStateException("Compile dependency was not injected");
         }
         log.info("Executing first");

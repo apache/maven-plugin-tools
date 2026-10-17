@@ -18,7 +18,11 @@
  */
 package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
-/** Holds a Maven 4 {@code @Resolution} annotation and its field name. */
+/**
+ * Holds a Maven 4 {@code @Resolution} annotation and its field name.
+ *
+ * @since 4.0.0
+ */
 public class ResolutionAnnotationContent {
     private final String fieldName;
 

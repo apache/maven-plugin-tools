@@ -364,7 +364,10 @@ public class PluginDescriptorFilesGenerator implements Generator {
                 for (ExtendedMojoDescriptor.ResolutionEntry resolution : resolutions) {
                     w.startElement("resolution");
                     GeneratorUtils.element(w, "field", resolution.getField());
-                    GeneratorUtils.element(w, "pathScope", resolution.getPathScope());
+                    if (resolution.getPathScope() != null
+                            && !resolution.getPathScope().isEmpty()) {
+                        GeneratorUtils.element(w, "pathScope", resolution.getPathScope());
+                    }
                     if (resolution.getRequestType() != null
                             && !resolution.getRequestType().isEmpty()) {
                         GeneratorUtils.element(w, "requestType", resolution.getRequestType());
