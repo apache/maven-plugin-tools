@@ -41,7 +41,8 @@ assert mojo.phase.text() == 'integration-test'
 assert mojo.resolutions.resolution.size() == 2
 assert mojo.resolutions.resolution.collect { it.field.text() } == ['compilePaths', 'inheritedCompilePaths']
 assert mojo.resolutions.resolution.collect { it.pathScope.text() } == ['main-compile', 'main-compile']
-assert mojo.resolutions.resolution.collect { it.requestType.text() } == ['', '']
+assert mojo.resolutions.resolution[0].requestType.text() == 'resolve'
+assert mojo.resolutions.resolution[1].requestType.isEmpty()
 
 assert mojo.parameters.parameter.size() == 3
 

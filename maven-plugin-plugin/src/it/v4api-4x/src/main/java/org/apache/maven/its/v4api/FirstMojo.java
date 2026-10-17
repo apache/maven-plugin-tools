@@ -68,7 +68,7 @@ public class FirstMojo extends AbstractResolutionMojo implements org.apache.mave
     @Inject
     private Log log;
 
-    @Resolution(pathScope = "main-compile")
+    @Resolution(pathScope = "main-compile", requestType = "resolve")
     private List<Path> compilePaths;
 
     public void execute() throws MojoException {

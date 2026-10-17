@@ -365,7 +365,10 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     w.startElement("resolution");
                     GeneratorUtils.element(w, "field", resolution.getField());
                     GeneratorUtils.element(w, "pathScope", resolution.getPathScope());
-                    GeneratorUtils.element(w, "requestType", resolution.getRequestType());
+                    if (resolution.getRequestType() != null
+                            && !resolution.getRequestType().isEmpty()) {
+                        GeneratorUtils.element(w, "requestType", resolution.getRequestType());
+                    }
                     w.endElement();
                 }
                 w.endElement();

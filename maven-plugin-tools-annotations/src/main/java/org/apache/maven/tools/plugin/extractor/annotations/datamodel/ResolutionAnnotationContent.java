@@ -49,4 +49,10 @@ public class ResolutionAnnotationContent {
     public void requestType(String requestType) {
         this.requestType = requestType;
     }
+
+    @Override
+    public String toString() {
+        return "ResolutionAnnotationContent{fieldName='" + fieldName + "', pathScope='" + pathScope + "', requestType='"
+                + requestType + "'}";
+    }
 }
