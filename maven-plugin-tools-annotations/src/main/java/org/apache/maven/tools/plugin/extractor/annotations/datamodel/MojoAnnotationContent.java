@@ -244,6 +244,10 @@ public class MojoAnnotationContent extends AnnotatedContent implements Mojo {
         sb.append(", requiresDependencyCollection='")
                 .append(requiresDependencyCollection)
                 .append('\'');
+        sb.append(", dependencyCollection=").append(dependencyCollection);
+        sb.append(", dependencyResolutionPathScopes='")
+                .append(dependencyResolutionPathScopes)
+                .append('\'');
         sb.append(", instantiationStrategy='").append(instantiationStrategy).append('\'');
         sb.append(", executionStrategy='").append(executionStrategy).append('\'');
         sb.append(", requiresProject=").append(requiresProject);
