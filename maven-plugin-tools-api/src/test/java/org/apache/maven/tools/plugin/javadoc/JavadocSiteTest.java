@@ -26,7 +26,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -131,15 +133,17 @@ class JavadocSiteTest {
 
     @Test
     void resolvesBaseUrlBeforeRequestingPackageList() throws Exception {
+        List<String> requests = Collections.synchronizedList(new ArrayList<>());
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
         server.createContext("/javadoc", exchange -> {
             String path = exchange.getRequestURI().getPath();
+            requests.add(exchange.getRequestMethod() + " " + path);
             if (path.equals("/javadoc/")) {
-                exchange.getResponseHeaders().add("Location", "/javadoc/index.html");
+                exchange.getResponseHeaders().add("Location", "/javadoc/api/");
                 exchange.sendResponseHeaders(302, -1);
-            } else if (path.equals("/javadoc/index.html")) {
+            } else if (path.equals("/javadoc/api/")) {
                 exchange.sendResponseHeaders(200, -1);
-            } else if (path.equals("/javadoc/package-list")) {
+            } else if (path.equals("/javadoc/api/package-list")) {
                 byte[] response = "java.lang\n".getBytes(StandardCharsets.UTF_8);
                 exchange.sendResponseHeaders(200, response.length);
                 try (OutputStream output = exchange.getResponseBody()) {
@@ -154,8 +158,15 @@ class JavadocSiteTest {
         try {
             URI baseUri = URI.create("http://localhost:" + server.getAddress().getPort() + "/javadoc/");
             JavadocSite site = new JavadocSite(baseUri, (Settings) null);
+            URI redirectedBaseUri = baseUri.resolve("api/");
             assertTrue(site.hasEntryFor(java.util.Optional.empty(), java.util.Optional.of("java.lang")));
-            assertEquals(baseUri, site.getBaseUri());
+            assertEquals(redirectedBaseUri, site.getBaseUri());
+            assertTrue(requests.contains("GET /javadoc/package-list"));
+            assertTrue(requests.contains("GET /javadoc/element-list"));
+            assertTrue(requests.contains("HEAD /javadoc/"));
+            assertFalse(requests.contains("GET /javadoc/"));
+            assertTrue(requests.contains("GET /javadoc/api/package-list"));
+            assertTrue(requests.indexOf("GET /javadoc/package-list") < requests.indexOf("HEAD /javadoc/"));
         } finally {
             server.stop(0);
         }

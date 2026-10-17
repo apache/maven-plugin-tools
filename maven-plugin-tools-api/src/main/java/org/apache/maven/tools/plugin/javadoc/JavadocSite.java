@@ -52,7 +52,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -65,6 +68,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
@@ -119,27 +123,42 @@ class JavadocSite {
      * @throws IOException
      */
     JavadocSite(final URI url, final Settings settings) throws IOException {
-        URI redirectedUrl = getRedirectedUrl(url, settings);
-        Map<String, String> containedPackageNamesAndModules;
-        boolean requireModuleNameInPath = false;
+        URI resolvedUrl = url;
+        JavadocMetadata metadata;
+        try {
+            metadata = readMetadata(resolvedUrl, settings);
+        } catch (FileNotFoundException e) {
+            URI redirectedUrl = getRedirectedUrl(url, settings);
+            if (redirectedUrl.equals(url)) {
+                throw e;
+            }
+            resolvedUrl = redirectedUrl;
+            metadata = readMetadata(resolvedUrl, settings);
+        }
+        this.containedPackageNamesAndModules = metadata.containedPackageNamesAndModules;
+        this.baseUri = resolvedUrl;
+        this.settings = settings;
+        this.version = null;
+        this.requireModuleNameInPath = metadata.requireModuleNameInPath;
+    }
+
+    private static JavadocMetadata readMetadata(URI baseUri, Settings settings) throws IOException {
         try {
             // javadoc > 1.2 && < 10
-            containedPackageNamesAndModules =
-                    getPackageListWithModules(redirectedUrl.resolve("package-list"), settings);
+            return new JavadocMetadata(getPackageListWithModules(baseUri.resolve("package-list"), settings), false);
         } catch (FileNotFoundException e) {
             try {
                 // javadoc 10+
-                containedPackageNamesAndModules =
-                        getPackageListWithModules(redirectedUrl.resolve("element-list"), settings);
-
+                Map<String, String> containedPackageNamesAndModules =
+                        getPackageListWithModules(baseUri.resolve("element-list"), settings);
+                boolean requireModuleNameInPath = false;
                 Optional<String> firstModuleName = containedPackageNamesAndModules.values().stream()
                         .filter(StringUtils::isNotBlank)
                         .findFirst();
                 if (firstModuleName.isPresent()) {
                     // are module names part of the URL (since JDK11)?
                     try (Reader reader = getReader(
-                            redirectedUrl
-                                    .resolve(firstModuleName.get() + "/module-summary.html")
+                            baseUri.resolve(firstModuleName.get() + "/module-summary.html")
                                     .toURL(),
                             null)) {
                         requireModuleNameInPath = true;
@@ -147,17 +166,24 @@ class JavadocSite {
                         // ignore
                     }
                 }
+                return new JavadocMetadata(containedPackageNamesAndModules, requireModuleNameInPath);
             } catch (FileNotFoundException e2) {
-                throw new IOException("Found neither 'package-list' nor 'element-list' below url " + redirectedUrl
+                throw new FileNotFoundException("Found neither 'package-list' nor 'element-list' below url " + baseUri
                         + ". The given URL does probably not specify the root of a javadoc site or has been generated with"
                         + " javadoc 1.2 or older.");
             }
         }
-        this.containedPackageNamesAndModules = containedPackageNamesAndModules;
-        this.baseUri = redirectedUrl;
-        this.settings = settings;
-        this.version = null;
-        this.requireModuleNameInPath = requireModuleNameInPath;
+    }
+
+    private static final class JavadocMetadata {
+        private final Map<String, String> containedPackageNamesAndModules;
+
+        private final boolean requireModuleNameInPath;
+
+        private JavadocMetadata(Map<String, String> containedPackageNamesAndModules, boolean requireModuleNameInPath) {
+            this.containedPackageNamesAndModules = containedPackageNamesAndModules;
+            this.requireModuleNameInPath = requireModuleNameInPath;
+        }
     }
 
     /** Constructor for offline sites without modules. This throws {@link UnsupportedOperationException}
@@ -210,20 +236,55 @@ class JavadocSite {
         }
 
         try (CloseableHttpClient httpClient = createHttpClient(settings, url.toURL())) {
-            HttpGet httpMethod = new HttpGet(url.toString());
             HttpClientContext httpContext = HttpClientContext.create();
-            HttpResponse response = httpClient.execute(httpMethod, httpContext);
+            try (CloseableHttpResponse response =
+                    executeWithTimeoutRetry(httpClient, new HttpHead(url.toString()), httpContext)) {
+                int status = response.getStatusLine().getStatusCode();
+                if (status == HttpStatus.SC_METHOD_NOT_ALLOWED || status == HttpStatus.SC_NOT_IMPLEMENTED) {
+                    return getRedirectedUrlWithGet(httpClient, url);
+                }
+                if (status == HttpStatus.SC_NOT_FOUND) {
+                    return url;
+                }
+                if (status != HttpStatus.SC_OK) {
+                    throw new FileNotFoundException(
+                            "Unexpected HTTP status code " + status + " getting resource " + url + ".");
+                }
+
+                List<URI> redirects = httpContext.getRedirectLocations();
+                if (isNotEmpty(redirects)) {
+                    return redirects.get(redirects.size() - 1).resolve(".");
+                }
+                return url;
+            }
+        }
+    }
+
+    private static URI getRedirectedUrlWithGet(CloseableHttpClient httpClient, URI url) throws IOException {
+        HttpClientContext httpContext = HttpClientContext.create();
+        try (CloseableHttpResponse response =
+                executeWithTimeoutRetry(httpClient, new HttpGet(url.toString()), httpContext)) {
             int status = response.getStatusLine().getStatusCode();
             if (status != HttpStatus.SC_OK) {
                 throw new FileNotFoundException(
                         "Unexpected HTTP status code " + status + " getting resource " + url + ".");
             }
-
+            EntityUtils.consume(response.getEntity());
             List<URI> redirects = httpContext.getRedirectLocations();
             if (isNotEmpty(redirects)) {
                 return redirects.get(redirects.size() - 1).resolve(".");
             }
             return url;
+        }
+    }
+
+    private static CloseableHttpResponse executeWithTimeoutRetry(
+            CloseableHttpClient httpClient, HttpRequestBase request, HttpClientContext context) throws IOException {
+        try {
+            return httpClient.execute(request, context);
+        } catch (SocketTimeoutException e) {
+            // A transient timeout should not fail the build without one retry, as in getReader().
+            return httpClient.execute(request, context);
         }
     }
 
