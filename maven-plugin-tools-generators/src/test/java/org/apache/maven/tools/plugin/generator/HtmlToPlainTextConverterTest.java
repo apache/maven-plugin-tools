@@ -85,6 +85,27 @@ class HtmlToPlainTextConverterTest {
                 converter.convert(test));
     }
 
+    @Test
+    void preformattedTextPreservesWhitespace() {
+        String test =
+                "For example:<pre>\n  &lt;binary&gt;\n    &lt;url&gt;https://example.test/plugin.exe&lt;/url&gt;\n  &lt;/binary&gt;\n</pre>";
+        assertEquals(
+                "For example:\n  <binary>\n    <url>https://example.test/plugin.exe</url>\n  </binary>\n",
+                converter.convert(test));
+    }
+
+    @Test
+    void preformattedTextWithoutTrailingNewlinePreservesWhitespace() {
+        assertEquals("before\n  first\n  second\nafter", converter.convert("before<pre>  first\n  second</pre>after"));
+    }
+
+    @Test
+    void multiplePreformattedBlocksPreserveTheirBoundaries() {
+        assertEquals(
+                "one\n  first\nmiddle\nsecond  \nend",
+                converter.convert("one<pre>  first</pre>middle<pre>second  </pre>end"));
+    }
+
     @ParameterizedTest(name = "{0} to {1}") // With JUnit 6.0.0 the non-printable chars will be kept in display, see
     // https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests-display-names-quoted-text
     @MethodSource("provideConvertParamsBreakLines")
