@@ -21,10 +21,7 @@ package org.apache.maven.its.v4api;
 import org.apache.maven.api.plugin.MojoException;
 import org.apache.maven.api.plugin.annotations.Mojo;
 
-@Mojo(
-        name = "collection",
-        dependencyCollection = true,
-        dependencyResolutionPathScopes = "main-compile")
+@Mojo(name = "collection", dependencyCollection = true, dependencyResolutionPathScopes = "main-compile")
 public class CollectionMojo implements org.apache.maven.api.plugin.Mojo {
     @Override
     public void execute() throws MojoException {}
