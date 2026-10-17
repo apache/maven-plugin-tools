@@ -81,9 +81,11 @@ public class HtmlToPlainTextConverter implements Converter {
             if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
                 accum.append("\n");
             } else if (name.equals("a")) {
-                // link is empty if it cannot be made absolute
                 String link = node.absUrl("href");
-                if (!link.isEmpty()) {
+                if (link.isEmpty()) {
+                    link = node.attr("href");
+                }
+                if (!link.isEmpty() && !link.startsWith("#")) {
                     accum.append(String.format(" <%s>", link));
                 }
             }
