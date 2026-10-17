@@ -356,6 +356,26 @@ public class PluginDescriptorFilesGenerator implements Generator {
                 }
                 w.endElement(); // afterLinks
             }
+
+            List<ExtendedMojoDescriptor.ResolutionEntry> resolutions =
+                    ((ExtendedMojoDescriptor) mojoDescriptor).getResolutions();
+            if (!resolutions.isEmpty()) {
+                w.startElement("resolutions");
+                for (ExtendedMojoDescriptor.ResolutionEntry resolution : resolutions) {
+                    w.startElement("resolution");
+                    GeneratorUtils.element(w, "field", resolution.getField());
+                    if (resolution.getPathScope() != null
+                            && !resolution.getPathScope().isEmpty()) {
+                        GeneratorUtils.element(w, "pathScope", resolution.getPathScope());
+                    }
+                    if (resolution.getRequestType() != null
+                            && !resolution.getRequestType().isEmpty()) {
+                        GeneratorUtils.element(w, "requestType", resolution.getRequestType());
+                    }
+                    w.endElement();
+                }
+                w.endElement();
+            }
         }
 
         // ----------------------------------------------------------------------

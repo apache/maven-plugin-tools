@@ -48,6 +48,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoAnnotationVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoClassVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
@@ -75,6 +76,7 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
     public static final String MOJO_V4 = MVN4_API + "Mojo";
     public static final String EXECUTE_V4 = MVN4_API + "Execute";
     public static final String PARAMETER_V4 = MVN4_API + "Parameter";
+    public static final String RESOLUTION_V4 = MVN4_API + "Resolution";
     public static final String AFTER_V4 = MVN4_API + "After";
     public static final String AFTERS_V4 = MVN4_API + "Afters";
 
@@ -370,6 +372,16 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
                 mojoAnnotatedClass
                         .getParameters()
                         .put(parameterAnnotationContent.getFieldName(), parameterAnnotationContent);
+            }
+
+            // @Resolution annotations (Maven 4 API only)
+            for (MojoFieldVisitor resolutionVisitor :
+                    mojoClassVisitor.findFieldWithAnnotation(new HashSet<>(Arrays.asList(RESOLUTION_V4)))) {
+                ResolutionAnnotationContent resolution =
+                        new ResolutionAnnotationContent(resolutionVisitor.getFieldName());
+                populateAnnotationContent(
+                        resolution, resolutionVisitor.getAnnotationVisitorMap().get(RESOLUTION_V4));
+                mojoAnnotatedClass.getResolutions().put(resolution.getFieldName(), resolution);
             }
 
             // @Component annotations

@@ -24,6 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +40,9 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.DefaultMojoAnnotationsScanner;
+import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -115,5 +120,34 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     void assertExecute2Mojo() {
         // two conflicting phase ids set
         assertThrows(InvalidPluginDescriptorException.class, () -> extractDescriptorFromMojoClass(Execute2Mojo.class));
+    }
+
+    @Test
+    void resolutionHierarchyUsesChildAnnotationForShadowedField() {
+        MojoAnnotatedClass grandparent = new MojoAnnotatedClass().setClassName("Grandparent");
+        ResolutionAnnotationContent inherited = new ResolutionAnnotationContent("inherited");
+        inherited.pathScope("main-compile");
+        grandparent.getResolutions().put(inherited.getFieldName(), inherited);
+
+        MojoAnnotatedClass parent =
+                new MojoAnnotatedClass().setClassName("Parent").setParentClassName("Grandparent");
+        ResolutionAnnotationContent parentPaths = new ResolutionAnnotationContent("paths");
+        parentPaths.pathScope("main-runtime");
+        parent.getResolutions().put(parentPaths.getFieldName(), parentPaths);
+
+        MojoAnnotatedClass child = new MojoAnnotatedClass().setParentClassName("Parent");
+        ResolutionAnnotationContent childPaths = new ResolutionAnnotationContent("paths");
+        childPaths.pathScope("main-test");
+        child.getResolutions().put(childPaths.getFieldName(), childPaths);
+
+        Map<String, MojoAnnotatedClass> classes = new HashMap<>();
+        classes.put("Grandparent", grandparent);
+        classes.put("Parent", parent);
+        Map<String, ResolutionAnnotationContent> resolutions =
+                new JavaAnnotationsMojoDescriptorExtractor().getResolutionsParentHierarchy(child, classes);
+
+        assertEquals(Arrays.asList("inherited", "paths"), new ArrayList<>(resolutions.keySet()));
+        assertEquals(inherited, resolutions.get("inherited"));
+        assertEquals(childPaths, resolutions.get("paths"));
     }
 }
