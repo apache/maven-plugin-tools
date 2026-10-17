@@ -124,11 +124,13 @@ class JavadocSite {
         boolean requireModuleNameInPath = false;
         try {
             // javadoc > 1.2 && < 10
-            containedPackageNamesAndModules = getPackageListWithModules(redirectedUrl.resolve("package-list"), settings);
+            containedPackageNamesAndModules =
+                    getPackageListWithModules(redirectedUrl.resolve("package-list"), settings);
         } catch (FileNotFoundException e) {
             try {
                 // javadoc 10+
-                containedPackageNamesAndModules = getPackageListWithModules(redirectedUrl.resolve("element-list"), settings);
+                containedPackageNamesAndModules =
+                        getPackageListWithModules(redirectedUrl.resolve("element-list"), settings);
 
                 Optional<String> firstModuleName = containedPackageNamesAndModules.values().stream()
                         .filter(StringUtils::isNotBlank)
@@ -136,7 +138,10 @@ class JavadocSite {
                 if (firstModuleName.isPresent()) {
                     // are module names part of the URL (since JDK11)?
                     try (Reader reader = getReader(
-                            redirectedUrl.resolve(firstModuleName.get() + "/module-summary.html").toURL(), null)) {
+                            redirectedUrl
+                                    .resolve(firstModuleName.get() + "/module-summary.html")
+                                    .toURL(),
+                            null)) {
                         requireModuleNameInPath = true;
                     } catch (IOException ioe) {
                         // ignore
