@@ -64,6 +64,7 @@ public class HtmlToPlainTextConverter implements Converter {
 
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
 
+        // Nested <pre> elements are invalid HTML; Jsoup normalises them before traversal.
         private int preformatted;
 
         // hit when the node is first seen
@@ -96,8 +97,6 @@ public class HtmlToPlainTextConverter implements Converter {
                 preformatted--;
                 preformattedEndsWithNewline = accum.length() > 0 && accum.charAt(accum.length() - 1) == '\n';
                 accum.append(PRE_END);
-            }
-            if (name.equals("pre")) {
                 if (!preformattedEndsWithNewline) {
                     accum.append('\n');
                 }

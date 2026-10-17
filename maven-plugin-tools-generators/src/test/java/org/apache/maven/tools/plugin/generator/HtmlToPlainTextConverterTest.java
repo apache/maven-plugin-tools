@@ -94,6 +94,18 @@ class HtmlToPlainTextConverterTest {
                 converter.convert(test));
     }
 
+    @Test
+    void preformattedTextWithoutTrailingNewlinePreservesWhitespace() {
+        assertEquals("before\n  first\n  second\nafter", converter.convert("before<pre>  first\n  second</pre>after"));
+    }
+
+    @Test
+    void multiplePreformattedBlocksPreserveTheirBoundaries() {
+        assertEquals(
+                "one\n  first\nmiddle\nsecond  \nend",
+                converter.convert("one<pre>  first</pre>middle<pre>second  </pre>end"));
+    }
+
     @ParameterizedTest(name = "{0} to {1}") // With JUnit 6.0.0 the non-printable chars will be kept in display, see
     // https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests-display-names-quoted-text
     @MethodSource("provideConvertParamsBreakLines")
