@@ -38,6 +38,14 @@ assert mojo.onlineRequired.text() == 'false'
 assert mojo.aggregator.text() == 'false'
 assert mojo.phase.text() == 'integration-test'
 
+assert mojo.resolutions.resolution.size() == 3
+assert mojo.resolutions.resolution.collect { it.field.text() } == ['compilePaths', 'inheritedCompilePaths', 'unscopedDependencies']
+assert mojo.resolutions.resolution.collect { it.pathScope.text() } == ['main-compile', 'main-compile', '']
+assert mojo.resolutions.resolution[0].requestType.text() == 'resolve'
+assert mojo.resolutions.resolution[1].requestType.isEmpty()
+assert mojo.resolutions.resolution[2].pathScope.isEmpty()
+assert mojo.resolutions.resolution[2].requestType.isEmpty()
+
 assert mojo.parameters.parameter.size() == 3
 
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "basedir" }[0]
