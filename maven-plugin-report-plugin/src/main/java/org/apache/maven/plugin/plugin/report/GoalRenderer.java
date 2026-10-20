@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
 import org.apache.maven.doxia.util.DoxiaUtils;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -153,7 +152,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private void renderDescriptionPrefix(String prefixKey) {
         sink.paragraph();
-        sink.inline(Semantics.STRONG);
+        sink.inline(InlineSemantics.strong());
         sink.text(getI18nString(prefixKey));
         sink.inline_();
         sink.text(":");
@@ -206,7 +205,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             linkPatternedText(getI18nString(attributeKey));
             if (codeArgument.isPresent()) {
                 text(": ");
-                sink.inline(Semantics.CODE);
+                sink.inline(InlineSemantics.code());
                 sink.text(codeArgument.get());
                 sink.inline_();
             }
@@ -244,7 +243,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         if (link.isPresent()) {
             sink.link(link.get(), null);
         }
-        sink.inline(Semantics.CODE);
+        sink.inline(InlineSemantics.code());
         sink.text(text);
         sink.inline_();
         if (link.isPresent()) {
@@ -351,7 +350,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         if (StringUtils.isNotEmpty(deprecated)) {
             String deprecatedXhtml = getXhtmlWithValidatedLinks(deprecated, context);
             sink.division();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(getI18nString("parameter.deprecated"));
             sink.inline_();
             sink.lineBreak();
@@ -364,11 +363,11 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     private void renderTableCellDetail(String nameKey, String value) {
         if (StringUtils.isNotEmpty(value)) {
             sink.lineBreak();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(getI18nString(nameKey));
             sink.inline_();
             sink.text(": ");
-            sink.inline(Semantics.CODE);
+            sink.inline(InlineSemantics.code());
             sink.text(value);
             sink.inline_();
         }
@@ -381,14 +380,14 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     private void renderDetail(String param, String value, Optional<String> valueLink) {
         if (value != null && !value.isEmpty()) {
             sink.listItem();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(param);
             sink.inline_();
             sink.text(": ");
             if (valueLink.isPresent()) {
                 sink.link(valueLink.get());
             }
-            sink.inline(Semantics.CODE);
+            sink.inline(InlineSemantics.code());
             sink.text(value);
             sink.inline_();
             if (valueLink.isPresent()) {
