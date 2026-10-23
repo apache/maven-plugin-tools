@@ -29,3 +29,16 @@ jobs:
       maven4-enabled: true  # build by Maven 3.x and 4.x
       maven4-version: '4.0.0-rc-6' # the same as used in project
 
+  bootstrap:
+    name: Verify bootstrap profile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Build with bootstrap profile
+        run: mvn -B -Pbootstrap verify
+
