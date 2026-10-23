@@ -411,10 +411,19 @@ public class StandaloneDescriptorGenerator {
                 RepositorySystem.class.getClassLoader(),
                 new Class<?>[] {RepositorySystem.class},
                 (proxy, method, args) -> {
-                    if ("resolveArtifact".equals(method.getName())) {
-                        throw new ArtifactResolutionException(Collections.emptyList());
+                    switch (method.getName()) {
+                        case "resolveArtifact":
+                            throw new ArtifactResolutionException(Collections.emptyList());
+                        case "equals":
+                            return proxy == args[0];
+                        case "hashCode":
+                            return System.identityHashCode(proxy);
+                        case "toString":
+                            return "bootstrap RepositorySystem";
+                        default:
+                            throw new UnsupportedOperationException(
+                                    "RepositorySystem." + method.getName() + "() not supported in bootstrap mode");
                     }
-                    return null;
                 });
     }
 }
