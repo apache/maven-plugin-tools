@@ -19,6 +19,8 @@
 
 assert new File( basedir, 'target/site/noop-goal.html' ).isFile()
 assert new File( basedir, 'target/site/report-goal.html' ).isFile()
+assert new File( basedir, 'target/site/noop-mojo.html' ).text.contains( 'noop-goal.html' )
+assert new File( basedir, 'target/site/report-mojo.html' ).text.contains( 'report-goal.html' )
 
 def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
 assert pluginInfo.isFile()
