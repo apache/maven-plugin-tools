@@ -64,6 +64,7 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 
 /**
@@ -87,7 +88,23 @@ public class StandaloneDescriptorGenerator {
     }
 
     public static void run(File pomFile, File... extraSourceRoots) throws Exception {
-        Model model = buildEffectiveModel(pomFile);
+        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
+                .setClassPathScanning(PlexusConstants.SCANNING_INDEX)
+                .setAutoWiring(true);
+        PlexusContainer container = new DefaultPlexusContainer(containerConfiguration);
+        try {
+            generate(container, pomFile, extraSourceRoots);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    private static void generate(PlexusContainer container, File pomFile, File... extraSourceRoots) throws Exception {
+        // same hook Maven uses for IDE/xmvn workspaces; absent in a plain Maven build
+        WorkspaceReader workspace = container.hasComponent(WorkspaceReader.class, "ide")
+                ? container.lookup(WorkspaceReader.class, "ide")
+                : null;
+        Model model = buildEffectiveModel(pomFile, workspace);
         File baseDir = pomFile.getParentFile();
 
         MavenProject project = newProject(model, pomFile);
@@ -129,40 +146,32 @@ public class StandaloneDescriptorGenerator {
 
         project.setArtifacts(populateDependencies(model));
 
-        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
-                .setClassPathScanning(PlexusConstants.SCANNING_INDEX)
-                .setAutoWiring(true);
-        PlexusContainer container = new DefaultPlexusContainer(containerConfiguration);
-        try {
-            container.addComponent(createMinimalRepositorySystem(), RepositorySystem.class, "");
-            MojoScanner mojoScanner = container.lookup(MojoScanner.class);
+        container.addComponent(createMinimalRepositorySystem(), RepositorySystem.class, "");
+        MojoScanner mojoScanner = container.lookup(MojoScanner.class);
 
-            PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model);
+        PluginDescriptor pluginDescriptor = buildPluginDescriptor(project, model);
 
-            DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-            request.setEncoding("UTF-8");
-            request.setSkipErrorNoDescriptorsFound(true);
-            request.setDependencies(buildScanArtifacts(StandaloneDescriptorGenerator.class.getClassLoader()));
+        DefaultPluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
+        request.setEncoding("UTF-8");
+        request.setSkipErrorNoDescriptorsFound(true);
+        request.setDependencies(buildScanArtifacts(StandaloneDescriptorGenerator.class.getClassLoader()));
 
-            mojoScanner.populatePluginDescriptor(request);
+        mojoScanner.populatePluginDescriptor(request);
 
-            outputDirectory.mkdirs();
-            for (MojoDescriptor md : pluginDescriptor.getMojos()) {
-                if (md instanceof ExtendedMojoDescriptor && ((ExtendedMojoDescriptor) md).isV4Api()) {
-                    generateV4Factory(md, classesDirectory);
-                }
+        outputDirectory.mkdirs();
+        for (MojoDescriptor md : pluginDescriptor.getMojos()) {
+            if (md instanceof ExtendedMojoDescriptor && ((ExtendedMojoDescriptor) md).isV4Api()) {
+                generateV4Factory(md, classesDirectory);
             }
-            DescriptorGeneratorMojo.generateV4DiIndex(classesDirectory, outputDirectory);
+        }
+        DescriptorGeneratorMojo.generateV4DiIndex(classesDirectory, outputDirectory);
 
-            PluginDescriptorFilesGenerator generator = new PluginDescriptorFilesGenerator();
-            generator.execute(outputDirectory, request);
+        PluginDescriptorFilesGenerator generator = new PluginDescriptorFilesGenerator();
+        generator.execute(outputDirectory, request);
 
-            File generatedFile = new File(outputDirectory, "plugin.xml");
-            if (!generatedFile.exists()) {
-                throw new IllegalStateException("Descriptor was not generated: " + generatedFile.getAbsolutePath());
-            }
-        } finally {
-            container.dispose();
+        File generatedFile = new File(outputDirectory, "plugin.xml");
+        if (!generatedFile.exists()) {
+            throw new IllegalStateException("Descriptor was not generated: " + generatedFile.getAbsolutePath());
         }
     }
 
@@ -222,13 +231,13 @@ public class StandaloneDescriptorGenerator {
     }
 
     /** Builds the fully inherited, interpolated model, the same way Maven itself would. */
-    static Model buildEffectiveModel(File pomFile) throws Exception {
+    static Model buildEffectiveModel(File pomFile, WorkspaceReader workspace) throws Exception {
         DefaultModelBuildingRequest request = new DefaultModelBuildingRequest();
         request.setPomFile(pomFile);
         request.setValidationLevel(ModelBuildingRequest.VALIDATION_LEVEL_MINIMAL);
         request.setProcessPlugins(false);
         request.setSystemProperties(System.getProperties());
-        request.setModelResolver(new LocalRepositoryModelResolver(localRepository()));
+        request.setModelResolver(new LocalRepositoryModelResolver(workspace, localRepository()));
         return new DefaultModelBuilderFactory().newInstance().build(request).getEffectiveModel();
     }
 
@@ -237,17 +246,26 @@ public class StandaloneDescriptorGenerator {
         return path != null ? new File(path) : new File(System.getProperty("user.home"), ".m2/repository");
     }
 
-    /** Resolves parent/imported POMs already present in the local repository; no downloading. */
+    /** Resolves parent/imported POMs via the workspace reader or the local repository; no downloading. */
     private static final class LocalRepositoryModelResolver implements ModelResolver {
+        private final WorkspaceReader workspace;
         private final File localRepository;
 
-        LocalRepositoryModelResolver(File localRepository) {
+        LocalRepositoryModelResolver(WorkspaceReader workspace, File localRepository) {
+            this.workspace = workspace;
             this.localRepository = localRepository;
         }
 
         @Override
         public ModelSource resolveModel(String groupId, String artifactId, String version)
                 throws UnresolvableModelException {
+            if (workspace != null) {
+                File pom = workspace.findArtifact(
+                        new org.eclipse.aether.artifact.DefaultArtifact(groupId, artifactId, "", "pom", version));
+                if (pom != null && pom.isFile()) {
+                    return new FileModelSource(pom);
+                }
+            }
             File pom = new File(
                     localRepository,
                     groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/' + artifactId + '-' + version
