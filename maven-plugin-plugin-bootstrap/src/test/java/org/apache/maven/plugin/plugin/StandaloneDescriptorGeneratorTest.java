@@ -32,6 +32,8 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.aether.repository.WorkspaceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -113,9 +115,53 @@ class StandaloneDescriptorGeneratorTest {
                                 + "</project>")
                         .getBytes());
 
-        Model model = StandaloneDescriptorGenerator.buildEffectiveModel(childPom);
+        Model model = StandaloneDescriptorGenerator.buildEffectiveModel(childPom, null);
         List<File> roots = StandaloneDescriptorGenerator.findCompileSourceRoots(model, childDir);
         assertEquals(Collections.singletonList(new File(childDir, "custom-src").getAbsoluteFile()), roots);
+    }
+
+    @Test
+    void testBuildEffectiveModelResolvesParentThroughWorkspaceReader(@TempDir File tempDir) throws Exception {
+        File parentPom = new File(tempDir, "somewhere-else.pom");
+        Files.write(
+                parentPom.toPath(),
+                ("<project><modelVersion>4.0.0</modelVersion>"
+                                + "<groupId>test</groupId><artifactId>ws-parent</artifactId><version>1.0</version>"
+                                + "<packaging>pom</packaging>"
+                                + "<properties><fromParent>yes</fromParent></properties>"
+                                + "</project>")
+                        .getBytes());
+        File childPom = new File(tempDir, "pom.xml");
+        Files.write(
+                childPom.toPath(),
+                ("<project><modelVersion>4.0.0</modelVersion>"
+                                + "<parent><groupId>test</groupId><artifactId>ws-parent</artifactId>"
+                                + "<version>1.0</version><relativePath/></parent>"
+                                + "<artifactId>child</artifactId>"
+                                + "</project>")
+                        .getBytes());
+
+        WorkspaceReader workspace = new WorkspaceReader() {
+            @Override
+            public WorkspaceRepository getRepository() {
+                return new WorkspaceRepository("test");
+            }
+
+            @Override
+            public File findArtifact(org.eclipse.aether.artifact.Artifact artifact) {
+                return "ws-parent".equals(artifact.getArtifactId()) && "pom".equals(artifact.getExtension())
+                        ? parentPom
+                        : null;
+            }
+
+            @Override
+            public List<String> findVersions(org.eclipse.aether.artifact.Artifact artifact) {
+                return Collections.emptyList();
+            }
+        };
+
+        Model model = StandaloneDescriptorGenerator.buildEffectiveModel(childPom, workspace);
+        assertEquals("yes", model.getProperties().getProperty("fromParent"));
     }
 
     @Test
