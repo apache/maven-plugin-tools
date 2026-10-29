@@ -114,4 +114,22 @@ class HtmlToPlainTextConverterTest {
                 "Generates something for the project.",
                 converter.convert("Generates <i>something</i> <b>for the project."));
     }
+
+    @Test
+    void singleLevelList() {
+        String test = "<ul><li>Item one</li><li>Item two</li></ul>";
+        assertEquals("\n* Item one\n* Item two", converter.convert(test));
+    }
+
+    @Test
+    void nestedListIsIndented() {
+        String test = "<ul><li>Outer one<ul><li>Inner one</li><li>Inner two</li></ul></li><li>Outer two</li></ul>";
+        assertEquals("\n* Outer one\n  * Inner one\n  * Inner two\n* Outer two", converter.convert(test));
+    }
+
+    @Test
+    void doublyNestedListIndentsFurther() {
+        String test = "<ul><li>Level one<ul><li>Level two<ul><li>Level three</li></ul></li></ul></li></ul>";
+        assertEquals("\n* Level one\n  * Level two\n    * Level three", converter.convert(test));
+    }
 }

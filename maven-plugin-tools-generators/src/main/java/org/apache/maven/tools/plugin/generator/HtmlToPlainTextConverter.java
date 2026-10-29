@@ -59,7 +59,12 @@ public class HtmlToPlainTextConverter implements Converter {
 
     // the formatting rules, implemented in a breadth-first DOM traverse
     private static class FormattingVisitor implements NodeVisitor {
+        // Placeholder for indentation spaces that must survive the whitespace cleanup in toString(), which
+        // otherwise collates any run of real spaces -- including nested <li> indentation -- down to one.
+        private static final char INDENT_MARKER = '\u0001';
+
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
+        private int listDepth = 0; // nesting depth of the current <ul>/<ol>, used to indent nested <li> items
 
         // hit when the node is first seen
         public void head(Node node, int depth) {
@@ -67,7 +72,13 @@ public class HtmlToPlainTextConverter implements Converter {
             if (node instanceof TextNode) {
                 accum.append(((TextNode) node).text()); // TextNodes carry all user-readable text in the DOM.
             } else if (name.equals("li")) {
-                accum.append("\n * ");
+                accum.append('\n');
+                for (int i = 1; i < listDepth; i++) {
+                    accum.append(INDENT_MARKER).append(INDENT_MARKER);
+                }
+                accum.append("* ");
+            } else if (name.equals("ul") || name.equals("ol")) {
+                listDepth++;
             } else if (name.equals("dt")) {
                 accum.append("  ");
             } else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr")) {
@@ -78,7 +89,9 @@ public class HtmlToPlainTextConverter implements Converter {
         // hit when all of the node's children (if any) have been visited
         public void tail(Node node, int depth) {
             String name = node.nodeName();
-            if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+            if (name.equals("ul") || name.equals("ol")) {
+                listDepth = Math.max(0, listDepth - 1);
+            } else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
                 accum.append("\n");
             } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
@@ -91,8 +104,12 @@ public class HtmlToPlainTextConverter implements Converter {
 
         @Override
         public String toString() {
-            // collate multiple consecutive spaces
-            return accum.toString().replaceAll(" +", " ").replace("\n ", "\n");
+            // collate multiple consecutive spaces, then turn the indentation placeholders -- untouched by the
+            // collation above since they aren't spaces -- into the real spaces they stand for.
+            return accum.toString()
+                    .replaceAll(" +", " ")
+                    .replace("\n ", "\n")
+                    .replace(String.valueOf(INDENT_MARKER), " ");
         }
     }
 }
