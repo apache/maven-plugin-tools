@@ -103,4 +103,16 @@ class GeneratorUtilsTest {
                         + "&lt;/javaAgents&gt;\n</code> after",
                 GeneratorUtils.decodeJavadocTags(description));
     }
+
+    @Test
+    void decodeJavadocCodeWithMultipleLevelsOfNestedBraces() {
+        String description = "before {@link java.lang.String label} {@code ${outer${inner}} and "
+                + "\\} and \\{escaped <x>} after {@link java.lang.Object second}";
+
+        assertEquals(
+                "before <code>java.lang.String label</code> "
+                        + "<code>${outer${inner}} and \\} and \\{escaped &lt;x&gt;</code> after "
+                        + "<code>java.lang.Object second</code>",
+                GeneratorUtils.decodeJavadocTags(description));
+    }
 }
