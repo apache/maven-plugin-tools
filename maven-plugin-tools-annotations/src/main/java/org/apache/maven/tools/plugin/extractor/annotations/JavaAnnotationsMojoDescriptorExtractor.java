@@ -74,6 +74,7 @@ import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ComponentAn
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ExecuteAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.MojoAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ParameterAnnotationContent;
+import org.apache.maven.tools.plugin.extractor.annotations.datamodel.ResolutionAnnotationContent;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotatedClass;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScanner;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.MojoAnnotationsScannerRequest;
@@ -747,6 +748,8 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
                 mojoDescriptor.addParameter(parameter);
             }
 
+            addResolutions(mojoDescriptor, mojoAnnotatedClass, mojoAnnotatedClasses);
+
             // Component annotations
             Map<String, ComponentAnnotationContent> components =
                     getComponentsParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
@@ -772,6 +775,20 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             mojoDescriptors.add(mojoDescriptor);
         }
         return mojoDescriptors;
+    }
+
+    private void addResolutions(
+            ExtendedMojoDescriptor mojoDescriptor,
+            MojoAnnotatedClass mojoAnnotatedClass,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        if (mojoAnnotatedClass.isV4Api()) {
+            Map<String, ResolutionAnnotationContent> resolutions =
+                    getResolutionsParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
+            for (ResolutionAnnotationContent resolution : resolutions.values()) {
+                mojoDescriptor.addResolution(new ExtendedMojoDescriptor.ResolutionEntry(
+                        resolution.getFieldName(), resolution.pathScope(), resolution.requestType()));
+            }
+        }
     }
 
     protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy(
@@ -832,6 +849,24 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             map.put(parameterAnnotationContent.getFieldName(), parameterAnnotationContent);
         }
         return map;
+    }
+
+    protected Map<String, ResolutionAnnotationContent> getResolutionsParentHierarchy(
+            MojoAnnotatedClass mojoAnnotatedClass, Map<String, MojoAnnotatedClass> mojoAnnotatedClasses) {
+        Map<String, ResolutionAnnotationContent> resolutions = new TreeMap<>();
+        collectResolutions(mojoAnnotatedClass, mojoAnnotatedClasses, resolutions);
+        return resolutions;
+    }
+
+    private void collectResolutions(
+            MojoAnnotatedClass mojoAnnotatedClass,
+            Map<String, MojoAnnotatedClass> mojoAnnotatedClasses,
+            Map<String, ResolutionAnnotationContent> resolutions) {
+        MojoAnnotatedClass parent = mojoAnnotatedClasses.get(mojoAnnotatedClass.getParentClassName());
+        if (parent != null) {
+            collectResolutions(parent, mojoAnnotatedClasses, resolutions);
+        }
+        resolutions.putAll(mojoAnnotatedClass.getResolutions());
     }
 
     protected List<ParameterAnnotationContent> getParametersParent(
