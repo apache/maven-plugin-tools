@@ -109,6 +109,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- maven-shared-utils 3.4.2 (via maven-reporting-impl) brings in commons-io 2.11.0, which has a known vulnerability -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.22.0</version>
+      </dependency>
+
       <!-- maven -->
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
