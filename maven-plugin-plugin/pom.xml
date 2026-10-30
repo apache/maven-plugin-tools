@@ -40,7 +40,6 @@
 
   <properties>
     <it.debug>true</it.debug>
-    <javaVersion>8</javaVersion>
   </properties>
 
   <dependencies>
