@@ -86,6 +86,8 @@ import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
     private static final String VALUE_AUTO = "auto";
 
+    private static final String INJECT_DESCRIPTOR = "Lorg/apache/maven/api/di/Inject;";
+
     /**
      * The directory where the generated <code>plugin.xml</code> file will be put.
      */
@@ -510,7 +512,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
         }
     }
 
-    private void generateFactory(MojoDescriptor md) throws IOException {
+    private void generateFactory(MojoDescriptor md) throws IOException, GeneratorException {
         String mojoClassName = md.getImplementation();
         String packageName = mojoClassName.substring(0, mojoClassName.lastIndexOf('.'));
         String generatorClassName = mojoClassName.substring(mojoClassName.lastIndexOf('.') + 1) + "Factory";
@@ -518,7 +520,11 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
 
         getLog().debug("Generating v4 factory for " + mojoClassName);
 
-        byte[] bin = computeGeneratorClassBytes(packageName, generatorClassName, mojoName, mojoClassName);
+        Path mojoClassFile = classesOutputDirectory.toPath().resolve(mojoClassName.replace('.', '/') + ".class");
+        byte[] mojoClassBytes = Files.isRegularFile(mojoClassFile) ? Files.readAllBytes(mojoClassFile) : null;
+
+        byte[] bin =
+                computeGeneratorClassBytes(packageName, generatorClassName, mojoName, mojoClassName, mojoClassBytes);
 
         try (OutputStream os = new CachingOutputStream(classesOutputDirectory
                 .toPath()
@@ -527,8 +533,19 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
         }
     }
 
+    /**
+     * Generates the factory for a v4 mojo. The factory constructor mirrors the mojo constructor DI would use
+     * (descriptor, generic signature and annotations, including those of its parameters) and passes its
+     * parameters on, so that constructor injection keeps working.
+     *
+     * @param mojoClassBytes the compiled mojo class, or {@code null} if it is not available, in which case the
+     *            mojo's no-arg constructor is called
+     */
     static byte[] computeGeneratorClassBytes(
-            String packageName, String generatorClassName, String mojoName, String mojoClassName) {
+            String packageName, String generatorClassName, String mojoName, String mojoClassName, byte[] mojoClassBytes)
+            throws GeneratorException {
+        MojoConstructor constructor =
+                mojoClassBytes != null ? findMojoConstructor(mojoClassName, mojoClassBytes) : MojoConstructor.NO_ARG;
         String mojo = mojoClassName.replace('.', '/');
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cw.visitSource(generatorClassName + ".java", null);
@@ -543,15 +560,120 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
                 null,
                 mojo,
                 null);
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "<init>", "()V", null, null);
+        MethodVisitor mv = cw.visitMethod(
+                ACC_PUBLIC + ACC_SYNTHETIC,
+                "<init>",
+                constructor.descriptor,
+                constructor.signature,
+                constructor.exceptions);
+        if (constructor != MojoConstructor.NO_ARG) {
+            copyConstructorAnnotations(mojoClassBytes, constructor.descriptor, mv);
+        }
         mv.visitCode();
         mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mojo, "<init>", "()V", false);
+        int slot = 1;
+        for (Type argumentType : Type.getArgumentTypes(constructor.descriptor)) {
+            mv.visitVarInsn(argumentType.getOpcode(Opcodes.ILOAD), slot);
+            slot += argumentType.getSize();
+        }
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mojo, "<init>", constructor.descriptor, false);
         mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(-1, -1);
         mv.visitEnd();
         cw.visitEnd();
         return cw.toByteArray();
+    }
+
+    /**
+     * Selects the mojo constructor the way Maven 4 DI does: the constructor annotated with {@code @Inject},
+     * otherwise the no-arg constructor (kept for compatibility), otherwise the only constructor.
+     */
+    private static MojoConstructor findMojoConstructor(String mojoClassName, byte[] mojoClassBytes)
+            throws GeneratorException {
+        List<MojoConstructor> constructors = new ArrayList<>();
+        List<MojoConstructor> injectConstructors = new ArrayList<>();
+        new ClassReader(mojoClassBytes)
+                .accept(
+                        new ClassVisitor(Opcodes.ASM9) {
+                            @Override
+                            public MethodVisitor visitMethod(
+                                    int access, String name, String descriptor, String signature, String[] exceptions) {
+                                if (!"<init>".equals(name) || (access & ACC_PRIVATE) != 0) {
+                                    return null;
+                                }
+                                MojoConstructor constructor = new MojoConstructor(descriptor, signature, exceptions);
+                                constructors.add(constructor);
+                                return new MethodVisitor(Opcodes.ASM9) {
+                                    @Override
+                                    public AnnotationVisitor visitAnnotation(String annotation, boolean visible) {
+                                        if (INJECT_DESCRIPTOR.equals(annotation)) {
+                                            injectConstructors.add(constructor);
+                                        }
+                                        return null;
+                                    }
+                                };
+                            }
+                        },
+                        ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+
+        MojoConstructor selected;
+        if (injectConstructors.size() > 1) {
+            throw new GeneratorException("Mojo " + mojoClassName + " has more than one @Inject constructor", null);
+        } else if (injectConstructors.size() == 1) {
+            selected = injectConstructors.get(0);
+        } else if (constructors.stream().anyMatch(c -> c.descriptor.equals(MojoConstructor.NO_ARG.descriptor))) {
+            selected = MojoConstructor.NO_ARG;
+        } else if (constructors.size() == 1) {
+            selected = constructors.get(0);
+        } else {
+            throw new GeneratorException(
+                    "Mojo " + mojoClassName + " needs a no-arg constructor or a non-private constructor annotated"
+                            + " with @Inject",
+                    null);
+        }
+        return selected.descriptor.equals(MojoConstructor.NO_ARG.descriptor) ? MojoConstructor.NO_ARG : selected;
+    }
+
+    private static void copyConstructorAnnotations(
+            byte[] mojoClassBytes, String constructorDescriptor, MethodVisitor to) {
+        new ClassReader(mojoClassBytes)
+                .accept(
+                        new ClassVisitor(Opcodes.ASM9) {
+                            @Override
+                            public MethodVisitor visitMethod(
+                                    int access, String name, String descriptor, String signature, String[] exceptions) {
+                                if (!"<init>".equals(name) || !constructorDescriptor.equals(descriptor)) {
+                                    return null;
+                                }
+                                return new MethodVisitor(Opcodes.ASM9) {
+                                    @Override
+                                    public void visitParameter(String parameterName, int access) {
+                                        to.visitParameter(parameterName, access);
+                                    }
+
+                                    @Override
+                                    public AnnotationVisitor visitAnnotation(String annotation, boolean visible) {
+                                        return visible ? to.visitAnnotation(annotation, true) : null;
+                                    }
+
+                                    @Override
+                                    public void visitAnnotableParameterCount(int parameterCount, boolean visible) {
+                                        if (visible) {
+                                            to.visitAnnotableParameterCount(parameterCount, true);
+                                        }
+                                    }
+
+                                    @Override
+                                    public AnnotationVisitor visitParameterAnnotation(
+                                            int parameter, String annotation, boolean visible) {
+                                        return visible
+                                                ? to.visitParameterAnnotation(parameter, annotation, true)
+                                                : null;
+                                    }
+                                };
+                            }
+                        },
+                        ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
     }
 
     private PluginDescriptor extendPluginDescriptor(PluginToolsRequest request) {
@@ -637,5 +759,19 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
         }
 
         return filteredArtifacts;
+    }
+
+    private static final class MojoConstructor {
+        static final MojoConstructor NO_ARG = new MojoConstructor("()V", null, null);
+
+        final String descriptor;
+        final String signature;
+        final String[] exceptions;
+
+        MojoConstructor(String descriptor, String signature, String[] exceptions) {
+            this.descriptor = descriptor;
+            this.signature = signature;
+            this.exceptions = exceptions;
+        }
     }
 }
