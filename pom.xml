@@ -88,7 +88,6 @@
   </distributionManagement>
 
   <properties>
-    <javaVersion>8</javaVersion>
     <pluginTestingHarnessVersion>3.5.1</pluginTestingHarnessVersion>
     <maven4Version>4.0.0-rc-6</maven4Version>
     <maven3Version>3.10.0</maven3Version>
