@@ -17,7 +17,7 @@
  * under the License.
  */
 
-File touchFile = new File( basedir, "javasample-maven-plugin/target/site/touch-mojo.html" )
+File touchFile = new File( basedir, "javasample-maven-plugin/target/site/touch-goal.html" )
 assert touchFile.exists()
 assert touchFile.isFile()
 content = touchFile.text
