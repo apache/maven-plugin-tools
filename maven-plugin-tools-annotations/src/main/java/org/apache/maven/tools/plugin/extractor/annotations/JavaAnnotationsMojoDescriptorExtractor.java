@@ -663,10 +663,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             mojoDescriptor.setInstantiationStrategy(mojo.instantiationStrategy().id());
 
             mojoDescriptor.setAggregator(mojo.aggregator());
-            mojoDescriptor.setDependencyResolutionRequired(
-                    mojo.requiresDependencyResolution().id());
-            mojoDescriptor.setDependencyCollectionRequired(
-                    mojo.requiresDependencyCollection().id());
+            setDependencyRequirements(mojoDescriptor, mojo, mojoAnnotatedClass.isV4Api());
 
             mojoDescriptor.setDirectInvocationOnly(mojo.requiresDirectInvocation());
             mojoDescriptor.setDeprecated(mojo.getDeprecated());
@@ -772,6 +769,22 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             mojoDescriptors.add(mojoDescriptor);
         }
         return mojoDescriptors;
+    }
+
+    private void setDependencyRequirements(
+            ExtendedMojoDescriptor mojoDescriptor, MojoAnnotationContent mojo, boolean isV4Api) {
+        mojoDescriptor.setDependencyResolutionRequired(
+                mojo.requiresDependencyResolution().id());
+        mojoDescriptor.setDependencyCollectionRequired(
+                mojo.requiresDependencyCollection().id());
+
+        if (isV4Api && StringUtils.isNotEmpty(mojo.getDependencyResolutionPathScopes())) {
+            if (mojo.isDependencyCollection()) {
+                mojoDescriptor.setDependencyCollectionRequired(mojo.getDependencyResolutionPathScopes());
+            } else {
+                mojoDescriptor.setDependencyResolutionRequired(mojo.getDependencyResolutionPathScopes());
+            }
+        }
     }
 
     protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy(
