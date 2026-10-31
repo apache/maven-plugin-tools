@@ -86,4 +86,33 @@ class GeneratorUtilsTest {
         assertEquals(a3.getVersion(), componentDependency2.getVersion());
         assertEquals(a3.getType(), componentDependency2.getType());
     }
+
+    @Test
+    void decodeJavadocCodeWithNestedClosingBrace() {
+        String description = "{@code <javaAgents>\n"
+                + "  <agent>\n"
+                + "    <agentPath>${project.basedir}/lib/agent.jar</agentPath>\n"
+                + "  </agent>\n"
+                + "</javaAgents>\n} after";
+
+        assertEquals(
+                "<code>&lt;javaAgents&gt;\n"
+                        + "  &lt;agent&gt;\n"
+                        + "    &lt;agentPath&gt;${project.basedir}/lib/agent.jar&lt;/agentPath&gt;\n"
+                        + "  &lt;/agent&gt;\n"
+                        + "&lt;/javaAgents&gt;\n</code> after",
+                GeneratorUtils.decodeJavadocTags(description));
+    }
+
+    @Test
+    void decodeJavadocCodeWithMultipleLevelsOfNestedBraces() {
+        String description = "before {@link java.lang.String label} {@code ${outer${inner}} and "
+                + "\\} and \\{escaped <x>} after {@link java.lang.Object second}";
+
+        assertEquals(
+                "before <code>java.lang.String label</code> "
+                        + "<code>${outer${inner}} and \\} and \\{escaped &lt;x&gt;</code> after "
+                        + "<code>java.lang.Object second</code>",
+                GeneratorUtils.decodeJavadocTags(description));
+    }
 }

@@ -123,40 +123,6 @@ public final class GeneratorUtils {
     }
 
     /**
-     * Returns a literal replacement <code>String</code> for the specified <code>String</code>. This method
-     * produces a <code>String</code> that will work as a literal replacement <code>s</code> in the
-     * <code>appendReplacement</code> method of the {@link Matcher} class. The <code>String</code> produced will
-     * match the sequence of characters in <code>s</code> treated as a literal sequence. Slashes ('\') and dollar
-     * signs ('$') will be given no special meaning. TODO: copied from Matcher class of Java 1.5, remove once target
-     * platform can be upgraded
-     *
-     * @see <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Matcher.html">java.util.regex.Matcher</a>
-     * @param s The string to be literalized
-     * @return A literal string replacement
-     */
-    private static String quoteReplacement(String s) {
-        if ((s.indexOf('\\') == -1) && (s.indexOf('$') == -1)) {
-            return s;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '\\') {
-                sb.append('\\');
-                sb.append('\\');
-            } else if (c == '$') {
-                sb.append('\\');
-                sb.append('$');
-            } else {
-                sb.append(c);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * Decodes javadoc inline tags into equivalent HTML tags. For instance, the inline tag "{@code <A&B>}" should be
      * rendered as "<code>&lt;A&amp;B&gt;</code>".
      *
@@ -170,12 +136,20 @@ public final class GeneratorUtils {
             return "";
         }
 
-        StringBuffer decoded = new StringBuffer(description.length() + 1024);
+        StringBuilder decoded = new StringBuilder(description.length() + 1024);
 
-        Matcher matcher = Pattern.compile("\\{@(\\w+)\\s*([^\\}]*)\\}").matcher(description);
-        while (matcher.find()) {
+        Matcher matcher = Pattern.compile("\\{@(\\w+)\\s*").matcher(description);
+        int copiedUntil = 0;
+        int searchFrom = 0;
+        while (matcher.find(searchFrom)) {
+            int tagEnd = findInlineTagEnd(description, matcher.end());
+            if (tagEnd < 0) {
+                searchFrom = matcher.start() + 2;
+                continue;
+            }
+
             String tag = matcher.group(1);
-            String text = matcher.group(2);
+            String text = description.substring(matcher.end(), tagEnd);
             text = text.replace("&", "&amp;");
             text = text.replace("<", "&lt;");
             text = text.replace(">", "&gt;");
@@ -210,11 +184,35 @@ public final class GeneratorUtils {
                     text = "<code>" + text + "</code>";
                 }
             }
-            matcher.appendReplacement(decoded, (text != null) ? quoteReplacement(text) : "");
+
+            decoded.append(description, copiedUntil, matcher.start());
+            decoded.append((text != null) ? text : "");
+            copiedUntil = tagEnd + 1;
+            searchFrom = copiedUntil;
         }
-        matcher.appendTail(decoded);
+        decoded.append(description, copiedUntil, description.length());
 
         return decoded.toString();
+    }
+
+    private static int findInlineTagEnd(String description, int contentStart) {
+        int braceDepth = 1;
+        int precedingBackslashes = 0;
+        for (int i = contentStart; i < description.length(); i++) {
+            char c = description.charAt(i);
+            if (c == '\\') {
+                precedingBackslashes++;
+                continue;
+            }
+            boolean escaped = (precedingBackslashes & 1) != 0;
+            precedingBackslashes = 0;
+            if (!escaped && c == '{') {
+                braceDepth++;
+            } else if (!escaped && c == '}' && --braceDepth == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
