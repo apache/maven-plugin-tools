@@ -107,12 +107,23 @@ class GeneratorUtilsTest {
     @Test
     void decodeJavadocCodeWithMultipleLevelsOfNestedBraces() {
         String description = "before {@link java.lang.String label} {@code ${outer${inner}} and "
-                + "\\} and \\{escaped <x>} after {@link java.lang.Object second}";
+                + "\\{braces\\} and <x>} after {@link java.lang.Object second}";
 
         assertEquals(
                 "before <code>java.lang.String label</code> "
-                        + "<code>${outer${inner}} and \\} and \\{escaped &lt;x&gt;</code> after "
+                        + "<code>${outer${inner}} and \\{braces\\} and &lt;x&gt;</code> after "
                         + "<code>java.lang.Object second</code>",
                 GeneratorUtils.decodeJavadocTags(description));
+    }
+
+    @Test
+    void decodeJavadocCodeEndingWithBackslashes() {
+        assertEquals("before <code>C:\\</code> after", GeneratorUtils.decodeJavadocTags("before {@code C:\\} after"));
+        assertEquals("<code>C:\\\\</code>", GeneratorUtils.decodeJavadocTags("{@code C:\\\\}"));
+    }
+
+    @Test
+    void decodeJavadocLiteralEndingWithBackslash() {
+        assertEquals("before C:\\ after", GeneratorUtils.decodeJavadocTags("before {@literal C:\\} after"));
     }
 }

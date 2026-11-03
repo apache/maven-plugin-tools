@@ -197,18 +197,12 @@ public final class GeneratorUtils {
 
     private static int findInlineTagEnd(String description, int contentStart) {
         int braceDepth = 1;
-        int precedingBackslashes = 0;
         for (int i = contentStart; i < description.length(); i++) {
             char c = description.charAt(i);
-            if (c == '\\') {
-                precedingBackslashes++;
-                continue;
-            }
-            boolean escaped = (precedingBackslashes & 1) != 0;
-            precedingBackslashes = 0;
-            if (!escaped && c == '{') {
+            // Backslashes are literal characters in Javadoc; only braces affect tag nesting.
+            if (c == '{') {
                 braceDepth++;
-            } else if (!escaped && c == '}' && --braceDepth == 0) {
+            } else if (c == '}' && --braceDepth == 0) {
                 return i;
             }
         }
