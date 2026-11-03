@@ -86,6 +86,12 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
+    void consecutiveExplicitLineBreaksArePreserved() {
+        assertEquals("before\n\nafter", converter.convert("before<br><br>after"));
+        assertEquals("before\n\nafter\n", converter.convert("<pre>before<br><br>after</pre>"));
+    }
+
+    @Test
     void preformattedTextPreservesWhitespace() {
         String test =
                 "For example:<pre>\n  &lt;binary&gt;\n    &lt;url&gt;https://example.test/plugin.exe&lt;/url&gt;\n  &lt;/binary&gt;\n</pre>";

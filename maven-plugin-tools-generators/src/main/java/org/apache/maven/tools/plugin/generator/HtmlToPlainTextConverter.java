@@ -100,7 +100,9 @@ public class HtmlToPlainTextConverter implements Converter {
                 if (!preformattedEndsWithNewline) {
                     accum.append('\n');
                 }
-            } else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+            } else if (name.equals("br")) {
+                accum.append('\n');
+            } else if (StringUtil.in(name, "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
                 if (accum.length() == 0 || accum.charAt(accum.length() - 1) != '\n') {
                     accum.append("\n");
                 }
