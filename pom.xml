@@ -359,7 +359,7 @@
               <excludes>
                 <exclude>**/it/source-encoding/</exclude>
                 <!-- Intentionally contains no type declaration (MPLUGIN-421). -->
-                <exclude>**/it/mplugin-421/**/CommentOnly.java</exclude>
+                <exclude>**/mojo-sources/**/CommentOnly.java</exclude>
               </excludes>
             </java>
           </configuration>
