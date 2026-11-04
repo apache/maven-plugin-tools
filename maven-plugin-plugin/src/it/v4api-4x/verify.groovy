@@ -80,4 +80,7 @@ assert parameter.expression.isEmpty()
 assert new File( basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class" ).isFile()
 assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/v4api/HelpMojo.java" ).isFile()
 
+def helpLog = new File(basedir, "help.log").text.replace("\r", "")
+assert helpLog.contains("  unindented  code   spaces\n    tabbed  code   spaces")
+
 return true;

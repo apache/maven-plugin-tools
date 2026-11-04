@@ -37,11 +37,15 @@ import org.jsoup.select.NodeVisitor;
 public class HtmlToPlainTextConverter implements Converter {
     @Override
     public String convert(String text) {
+        return convert(text, false);
+    }
+
+    String convert(String text, boolean preserveHelpWhitespace) {
         if (StringUtils.isBlank(text)) {
             return text;
         }
         Document document = Jsoup.parse(text);
-        return getPlainText(document);
+        return getPlainText(document, preserveHelpWhitespace);
     }
 
     /**
@@ -50,8 +54,8 @@ public class HtmlToPlainTextConverter implements Converter {
      * @param element the root element to format
      * @return formatted text
      */
-    private String getPlainText(Element element) {
-        FormattingVisitor formatter = new FormattingVisitor();
+    private String getPlainText(Element element, boolean preserveHelpWhitespace) {
+        FormattingVisitor formatter = new FormattingVisitor(preserveHelpWhitespace);
         NodeTraversor.traverse(formatter, element); // walk the DOM, and call .head() and .tail() for each node
 
         return formatter.toString();
@@ -66,6 +70,11 @@ public class HtmlToPlainTextConverter implements Converter {
 
         // Nested <pre> elements are invalid HTML; Jsoup normalises them before traversal.
         private int preformatted;
+        private final boolean preserveHelpWhitespace;
+
+        FormattingVisitor(boolean preserveHelpWhitespace) {
+            this.preserveHelpWhitespace = preserveHelpWhitespace;
+        }
 
         // hit when the node is first seen
         public void head(Node node, int depth) {
@@ -128,7 +137,10 @@ public class HtmlToPlainTextConverter implements Converter {
                     appendNormalText(result, text.substring(preStart + 1));
                     return result.toString();
                 }
-                result.append(text, preStart + 1, preEnd);
+                String preformattedText = text.substring(preStart + 1, preEnd);
+                // Help templates already decode NBSP after word wrapping. Keep spaces inside
+                // preformatted blocks out of that wrapping without changing ordinary descriptors.
+                result.append(preserveHelpWhitespace ? preformattedText.replace(' ', '\u00a0') : preformattedText);
                 start = preEnd + 1;
             }
             appendNormalText(result, text.substring(start));

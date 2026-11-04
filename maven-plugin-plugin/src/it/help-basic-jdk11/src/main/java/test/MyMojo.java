@@ -49,6 +49,8 @@ public class MyMojo extends AbstractMojo {
      *     <url>https://example.test/plugin.exe</url>
      *   </binary>
      * }</pre>
+     * <pre>unindented  code   spaces
+     * 	tabbed  code   spaces</pre>
      */
     @Parameter
     private String codeExample;
