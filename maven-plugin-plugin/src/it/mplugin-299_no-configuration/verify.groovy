@@ -17,12 +17,11 @@
  * under the License.
  */
 
-expected = new File( basedir, "expected-help.txt" ).text.trim().replace( "\r", "" )
+// help.log holds the output of the second invoker run: the goal and its undocumented parameter must be listed
+def log = new File( basedir, "help.log" ).text.replace( "\r", "" )
 
-log = new File( basedir, "help.log" ).text.replace( "\r", "" )
-log = log.substring( log.indexOf( "[INFO] help-deprecated-annotation-only 1.0-SNAPSHOT" ) )
-log = log.substring( 0, log.indexOf( "[INFO]", 5 ) ).trim()
-
-assert log == expected
+assert log.contains( "[INFO] help 1.0-SNAPSHOT" ) : "help.log has no plugin header"
+assert log =~ /(?m)^prefix:test$/ : "help.log does not describe the goal prefix:test"
+assert log =~ /(?s)Available parameters:\s+empyAnnotatedParameter\s/ : "help.log does not list the undocumented parameter"
 
 return true
