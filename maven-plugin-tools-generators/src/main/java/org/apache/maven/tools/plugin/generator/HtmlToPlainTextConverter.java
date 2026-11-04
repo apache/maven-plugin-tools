@@ -40,6 +40,20 @@ public class HtmlToPlainTextConverter implements Converter {
         return convert(text, false);
     }
 
+    /**
+     * Converts (X)HTML to plain text, optionally encoding spaces inside {@code <pre>} blocks
+     * as XML-safe non-breaking spaces (U+00A0) for the limited help descriptor.
+     * The generated help templates preserve these spaces during word wrapping and decode
+     * them to ordinary spaces on output. Ordinary prose keeps its existing wrapping behavior.
+     *
+     * <p>{@link PluginDescriptorFilesGenerator} enables this only for
+     * {@code LIMITED_FOR_HELP_MOJO}; {@link #convert(String)} and standard descriptors
+     * retain ordinary spaces.
+     *
+     * @param text the (X)HTML to convert
+     * @param preserveHelpWhitespace whether to encode preformatted spaces for generated help
+     * @return the plain-text equivalent, with encoded preformatted spaces when requested
+     */
     String convert(String text, boolean preserveHelpWhitespace) {
         if (StringUtils.isBlank(text)) {
             return text;
