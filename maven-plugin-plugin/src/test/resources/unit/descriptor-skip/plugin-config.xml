@@ -27,7 +27,7 @@ under the License.
         <configuration>
           <goalPrefix>prefix</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-          <!-- no extractors: a run that is not skipped just writes an empty plugin.xml -->
+          <!-- the empty element selects no extractor, because the scanner drops empty names: a run that is not skipped just writes an empty plugin.xml -->
           <extractors>
             <extractor/>
           </extractors>
