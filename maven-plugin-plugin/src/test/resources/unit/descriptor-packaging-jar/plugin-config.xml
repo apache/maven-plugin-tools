@@ -27,7 +27,7 @@ under the License.
         <configuration>
           <goalPrefix>prefix</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-          <!-- no extractors: the test only needs the descriptor file to be written -->
+          <!-- the empty element selects no extractor, because the scanner drops empty names: the test only needs the descriptor file to be written -->
           <extractors>
             <extractor/>
           </extractors>

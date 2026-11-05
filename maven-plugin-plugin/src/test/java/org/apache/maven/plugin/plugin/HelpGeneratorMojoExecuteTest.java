@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.apache.maven.api.plugin.testing.MojoExtension.setVariableValueToObject;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MojoTest
@@ -45,23 +45,32 @@ class HelpGeneratorMojoExecuteTest {
     @Inject
     private MavenProject project;
 
-    /** MPLUGIN-363: generating the help mojo again must not change a single byte of it. */
+    /**
+     * MPLUGIN-363: every line separator of the generated help mojo is the one of the platform, whatever the
+     * separators of the template or of the values written into it are. The goal prefix is written into a comment of
+     * the source, so it carries all three separator styles here.
+     */
     @Test
     @InjectMojo(goal = "helpmojo", pom = "plugin-config.xml")
     @Basedir("/unit/help-reproducible")
-    void helpMojoSourceIsReproducible(HelpGeneratorMojo mojo) throws Exception {
+    void helpMojoSourceUsesOnlyThePlatformLineSeparator(HelpGeneratorMojo mojo) throws Exception {
         project.setGroupId("org.apache.maven.its.plugin");
         project.setArtifactId("help");
         project.setVersion("1.0-SNAPSHOT");
         project.setPackaging("maven-plugin");
+        setVariableValueToObject(mojo, "goalPrefix", "one\r\ntwo\rthree\nfour");
 
-        Path first = generate(mojo, "run1");
-        Path second = generate(mojo, "run2");
+        Path generated = generate(mojo, "run1");
 
-        String firstSource = new String(Files.readAllBytes(first), StandardCharsets.UTF_8);
-        assertTrue(firstSource.contains("package org.apache.maven.its.plugin.help;"), firstSource);
-        assertTrue(firstSource.contains("prefix"), firstSource);
-        assertEquals(firstSource, new String(Files.readAllBytes(second), StandardCharsets.UTF_8));
+        String source = new String(Files.readAllBytes(generated), StandardCharsets.UTF_8);
+        assertTrue(source.contains("package org.apache.maven.its.plugin.help;"), source);
+        assertTrue(
+                source.contains("one" + System.lineSeparator() + "two" + System.lineSeparator() + "three"
+                        + System.lineSeparator() + "four"),
+                source);
+        String withoutSeparators = source.replace(System.lineSeparator(), "");
+        assertFalse(withoutSeparators.contains("\r"), "stray carriage return in the generated source");
+        assertFalse(withoutSeparators.contains("\n"), "stray line feed in the generated source");
     }
 
     private Path generate(HelpGeneratorMojo mojo, String directoryName) throws Exception {
