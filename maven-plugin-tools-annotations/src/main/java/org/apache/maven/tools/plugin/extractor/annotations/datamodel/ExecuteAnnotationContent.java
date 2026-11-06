@@ -60,7 +60,7 @@ public class ExecuteAnnotationContent implements Execute {
     public void phase(String phase) {
         if (phase != null && !phase.isEmpty()) {
             for (LifecyclePhase p : LifecyclePhase.values()) {
-                if (Objects.equals(phase, p.id()) || Objects.equals(phase, p.name())) {
+                if (Objects.equals(phase, p.id()) || phase.equalsIgnoreCase(p.name())) {
                     this.phase = p;
                     this.customPhase = null;
                     return;
@@ -72,7 +72,6 @@ public class ExecuteAnnotationContent implements Execute {
             this.phase = null;
             this.customPhase = null;
         }
-        this.phase = LifecyclePhase.valueOf(phase);
     }
 
     public void customPhase(String customPhase) {
