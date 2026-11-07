@@ -25,7 +25,6 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -146,7 +145,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             sink.tableCell();
             if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
                 sink.division();
-                sink.inline(SinkEventAttributeSet.Semantics.STRONG);
+                sink.inline(InlineSemantics.strong());
                 sink.text(getI18nString("goal.deprecated"));
                 sink.text(".");
                 sink.inline_();

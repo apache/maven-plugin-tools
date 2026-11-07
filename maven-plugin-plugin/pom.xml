@@ -40,7 +40,6 @@
 
   <properties>
     <it.debug>true</it.debug>
-    <javaVersion>8</javaVersion>
   </properties>
 
   <dependencies>
@@ -152,6 +151,11 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -161,14 +165,15 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <excludes combine.children="append">
+            <inputExcludes combine.children="append">
               <!-- This file should exactly match the output of this project -->
-              <exclude>src/it/help-basic**/expected-help**.txt</exclude>
-            </excludes>
+              <exclude>src/it/help-basic**/**/expected-help**.txt</exclude>
+            </inputExcludes>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -258,10 +263,6 @@
                 <maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
                 <maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
               </properties>
-              <pomExcludes>
-                <pomExclude>plugin-info-jdk/pom.xml</pomExclude>
-                <!-- relies on just a given plugin.xml for generating a report, this is no longer supported -->
-              </pomExcludes>
               <extraArtifacts>
                 <!-- used in ITs -->
                 <extraArtifact>org.apache.maven.plugin-tools:maven-plugin-tools-annotations:${project.version}:jar:test-sources</extraArtifact>
