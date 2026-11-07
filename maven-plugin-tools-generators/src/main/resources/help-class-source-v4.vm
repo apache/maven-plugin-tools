@@ -379,9 +379,27 @@ public class HelpMojo
 
         String[] plainLines = text.split( "(\r\n)|(\r)|(\n)" );
 
-        for ( String plainLine : plainLines )
+        for ( int i = 0; i < plainLines.length; i++ )
         {
-            toLines( lines, ind + plainLine, indentSize, lineLength );
+            String plainLine = plainLines[i];
+            if ( plainLine.trim().isEmpty() )
+            {
+                boolean previousLineIsPreformatted = i > 0
+                    && !plainLines[i - 1].trim().isEmpty()
+                    && plainLines[i - 1].startsWith( " " );
+                boolean nextLineIsPreformatted = i + 1 < plainLines.length
+                    && !plainLines[i + 1].trim().isEmpty()
+                    && plainLines[i + 1].startsWith( " " );
+                // The whitespace-only line before a preformatted block is a boundary, not displayed content.
+                if ( !nextLineIsPreformatted || previousLineIsPreformatted )
+                {
+                    lines.add( "" );
+                }
+            }
+            else
+            {
+                toLines( lines, ind + plainLine, indentSize, lineLength );
+            }
         }
 
         return lines;
@@ -399,6 +417,29 @@ public class HelpMojo
     {
         int lineIndent = getIndentLevel( line );
         StringBuilder buf = new StringBuilder( 256 );
+
+        // Preserve leading spaces in preformatted descriptions instead of treating them as word separators.
+        if ( lineIndent < line.length() && line.charAt( lineIndent ) == ' ' )
+        {
+            for ( int j = 0; j < line.length(); j++ )
+            {
+                char c = line.charAt( j );
+                if ( c == '\t' )
+                {
+                    buf.append( repeat( " ", indentSize - buf.length() % indentSize ) );
+                }
+                else if ( c == '\u00A0' )
+                {
+                    buf.append( ' ' );
+                }
+                else
+                {
+                    buf.append( c );
+                }
+            }
+            lines.add( buf.toString() );
+            return;
+        }
 
         String[] tokens = line.split( " +" );
 
