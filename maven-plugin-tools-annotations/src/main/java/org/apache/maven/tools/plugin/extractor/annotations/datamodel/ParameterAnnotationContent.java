@@ -19,6 +19,7 @@
 package org.apache.maven.tools.plugin.extractor.annotations.datamodel;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +38,8 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
     private String property;
 
     private String defaultValue;
+
+    private String[] defaultValues;
 
     private boolean required = false;
 
@@ -111,6 +114,15 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
     }
 
     @Override
+    public String[] defaultValues() {
+        return defaultValues;
+    }
+
+    public void defaultValues(String[] defaultValues) {
+        this.defaultValues = defaultValues;
+    }
+
+    @Override
     public boolean required() {
         return required;
     }
@@ -162,6 +174,7 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
         sb.append(", alias='").append(alias).append('\'');
         sb.append(", property='").append(property).append('\'');
         sb.append(", defaultValue='").append(defaultValue).append('\'');
+        sb.append(", defaultValues='").append(Arrays.toString(defaultValues)).append('\'');
         sb.append(", required=").append(required);
         sb.append(", readonly=").append(readonly);
         sb.append(", methodSource=").append(annotationOnMethod);
@@ -205,7 +218,7 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
         if (!Objects.equals(alias, that.alias)) {
             return false;
         }
-        if (!Objects.equals(defaultValue, that.defaultValue)) {
+        if (!Objects.equals(defaultValue, that.defaultValue) || !Arrays.equals(defaultValues, that.defaultValues)) {
             return false;
         }
         return Objects.equals(property, that.property);
@@ -220,6 +233,7 @@ public class ParameterAnnotationContent extends AnnotatedField implements Parame
                 typeParameters,
                 property,
                 defaultValue,
+                Arrays.hashCode(defaultValues),
                 required,
                 readonly,
                 annotationOnMethod);

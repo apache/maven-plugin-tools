@@ -38,9 +38,12 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -52,6 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,8 +66,8 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     MojoDescriptor extractDescriptorFromMojoClass(Class<? extends AbstractMojo> mojoClass)
             throws InvalidPluginDescriptorException, ExtractionException, IOException, URISyntaxException {
         // copy class to an empty tmp directory
-        Path sourceClass = Paths.get(
-                mojoClass.getResource(mojoClass.getSimpleName() + ".class").toURI());
+        String classFile = mojoClass.getName().substring(mojoClass.getName().lastIndexOf('.') + 1) + ".class";
+        Path sourceClass = Paths.get(mojoClass.getResource(classFile).toURI());
         Files.copy(sourceClass, targetDir.resolve(sourceClass.getFileName()));
         JavaAnnotationsMojoDescriptorExtractor mojoDescriptorExtractor = new JavaAnnotationsMojoDescriptorExtractor();
         mojoDescriptorExtractor.mojoAnnotationsScanner = new DefaultMojoAnnotationsScanner();
@@ -145,6 +149,88 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
         assertEquals("hello", mojoDescriptor.getGoal());
         assertEquals("org.apache.maven.plugin.coreit.HelloMojo", mojoDescriptor.getImplementation());
         assertEquals("Says hello.", mojoDescriptor.getDescription());
+    }
+
+    @Test
+    void scanNonCollectionParametersWithMultiValueDefault() throws Exception {
+        assertThrows(
+                InvalidParameterException.class,
+                () -> extractDescriptorFromMojoClass(MultiDefaultValueOnNonCollectionTypeMojo.class));
+    }
+
+    @Test
+    void scanCollectionParametersWithMultiValueDefault() throws Exception {
+        MojoDescriptor mojoDescriptor = extractDescriptorFromMojoClass(MultiDefaultValueOnCollectionTypesMojo.class);
+        assertEquals(4, mojoDescriptor.getParameters().size());
+        mojoDescriptor.getParameters().forEach(parameter -> {
+            assertEquals("value1,value2", parameter.getDefaultValue());
+        });
+    }
+
+    @Test
+    void scanScalarAndArrayDefaults() throws Exception {
+        MojoDescriptor descriptor = extractDescriptorFromMojoClass(DefaultValuesMojo.class);
+        Map<String, String> defaults = new HashMap<>();
+        descriptor.getParameters().forEach(parameter -> defaults.put(parameter.getName(), parameter.getDefaultValue()));
+        assertEquals(4, defaults.size());
+        assertEquals("scalar", defaults.get("scalar"));
+        assertEquals("one", defaults.get("single"));
+        assertNull(defaults.get("empty"));
+        assertNull(defaults.get("absent"));
+    }
+
+    @Test
+    void rejectBothDefaultAttributes() {
+        InvalidParameterException exception = assertThrows(
+                InvalidParameterException.class, () -> extractDescriptorFromMojoClass(ConflictingDefaultsMojo.class));
+        assertTrue(exception.getMessage().contains("defaultValue and defaultValues"));
+    }
+
+    @Test
+    void rejectBothDefaultAttributesEvenWhenEmpty() {
+        assertThrows(
+                InvalidParameterException.class,
+                () -> extractDescriptorFromMojoClass(EmptyConflictingDefaultsMojo.class));
+    }
+
+    @Mojo(name = "defaults")
+    public static class DefaultValuesMojo extends AbstractMojo {
+        @Parameter(defaultValue = "scalar")
+        private String scalar;
+
+        @Parameter(defaultValues = {"one"})
+        private String single;
+
+        @Parameter(defaultValues = {})
+        private String empty;
+
+        @Parameter
+        private String absent;
+
+        @Override
+        public void execute() {}
+    }
+
+    @Mojo(name = "conflicting-defaults")
+    public static class ConflictingDefaultsMojo extends AbstractMojo {
+        @Parameter(
+                defaultValue = "one",
+                defaultValues = {"two"})
+        private String value;
+
+        @Override
+        public void execute() {}
+    }
+
+    @Mojo(name = "empty-conflicting-defaults")
+    public static class EmptyConflictingDefaultsMojo extends AbstractMojo {
+        @Parameter(
+                defaultValue = "",
+                defaultValues = {})
+        private String value;
+
+        @Override
+        public void execute() {}
     }
 
     /**

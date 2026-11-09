@@ -43,6 +43,13 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
 
     private Map<String, MojoAnnotationVisitor> arrayVisitors;
 
+    // only set on array sub-visitors: owner and attribute name to flush the collected elements to
+    private MojoAnnotationVisitor arrayOwner;
+
+    private String arrayName;
+
+    private List<Object> arrayElements;
+
     MojoAnnotationVisitor(String annotationClassName) {
         super(Opcodes.ASM9);
         this.annotationClassName = annotationClassName;
@@ -54,7 +61,26 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
 
     @Override
     public void visit(String name, Object value) {
-        annotationValues.put(name, value);
+        if (arrayOwner != null && name == null) {
+            if (arrayElements == null) {
+                arrayElements = new ArrayList<>();
+            }
+            arrayElements.add(value);
+        } else {
+            annotationValues.put(name, value);
+        }
+    }
+
+    @Override
+    public void visitEnd() {
+        if (arrayOwner == null || nestedAnnotationVisitors != null) {
+            return;
+        }
+        if (arrayElements == null) {
+            arrayOwner.annotationValues.put(arrayName, new String[0]);
+        } else if (arrayElements.stream().allMatch(String.class::isInstance)) {
+            arrayOwner.annotationValues.put(arrayName, arrayElements.toArray(new String[0]));
+        }
     }
 
     @Override
@@ -76,6 +102,8 @@ public class MojoAnnotationVisitor extends AnnotationVisitor {
     @Override
     public AnnotationVisitor visitArray(String name) {
         MojoAnnotationVisitor arrayVisitor = new MojoAnnotationVisitor(this.annotationClassName);
+        arrayVisitor.arrayOwner = this;
+        arrayVisitor.arrayName = name;
         if (this.arrayVisitors == null) {
             this.arrayVisitors = new HashMap<>();
         }

@@ -62,13 +62,28 @@ public @interface Parameter {
     String property() default "";
 
     /**
-     * parameter default value, may contain <code>${...}</code> expressions which will be interpreted at
+     * Parameter default value, may contain <code>${...}</code> expressions which will be interpreted at
      * inject time: see
      * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
      * PluginParameterExpressionEvaluator</a>.
+     * The type conversion from String into the target type is described in <a href="/guides/mini/guide-configuring-plugins.html#Configuring_Parameters">Configuring Parameters</a>.
+     * Cannot be specified together with {@link #defaultValues()}.
      * @return the default value
+     * @see #defaultValues()
      */
     String defaultValue() default "";
+
+    /**
+     * Default values concatenated with commas in the generated plugin descriptor.
+     * Each String value has the format outlined in {@link #defaultValue()}.
+     * Multiple values are only supported for collection or array parameters. An empty array specifies no default.
+     * Cannot be specified together with {@link #defaultValue()}, even if either is explicitly empty.
+     * Descriptor generation requires maven-plugin-plugin 4.0.0-beta-4 or later.
+     * @return the default values
+     * @see #defaultValue()
+     * @since 4.0.0-beta-4
+     */
+    String[] defaultValues() default {};
 
     /**
      * is the parameter required?
