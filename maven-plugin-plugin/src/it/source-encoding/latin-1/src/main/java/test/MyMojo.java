@@ -21,12 +21,12 @@ package test;
 // NOTE: This source file is by design encoded using ISO-8859-1!
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * TEST-CHARS: ÄÖÜäöüß
- *  
- * @goal test
  */
+@Mojo(name = "test")
 public class MyMojo extends AbstractMojo {
 
     public void execute() {}

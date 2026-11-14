@@ -37,7 +37,6 @@ The Maven Plugin Tools contains the necessary tools to generate repetitive conte
 |**[maven-plugin-report-plugin](./maven-plugin-report-plugin/index.html)**|The Plugin Report Plugin is used to create reports about the plugin being built.|
 |[maven-plugin-tools-generators](./maven-plugin-tools-generators/index.html)|Generators (XML descriptor, help, documentation), used by maven-plugin-plugin to generate content from descriptor extracted from sources.|
 |[maven-plugin-tools-api](./maven-plugin-tools-api/index.html)|Extractor API, used by maven-plugin-plugin to extract Mojo information.|
-|&nbsp;&nbsp;[maven-plugin-tools-java](./maven-plugin-tools-java/index.html)|Extractor for plugins written in Java annotated with Mojo Javadoc Tags.|
 |&nbsp;&nbsp;[maven-plugin-tools-annotations](./maven-plugin-tools-annotations/index.html)|Extractor for plugins written in Java with Java annotations.|
 |&nbsp;&nbsp;&nbsp;&nbsp;[maven-plugin-annotations](./maven-plugin-annotations/index.html)|Provides the Java annotations to use in Mojos.|
 |[maven-script](./maven-script/index.html) (deprecated)|Maven Script Mojo Support lets developer write Maven plugins/goals with scripting languages instead of compiled Java.<br />Deprecated since 3.7.0|
