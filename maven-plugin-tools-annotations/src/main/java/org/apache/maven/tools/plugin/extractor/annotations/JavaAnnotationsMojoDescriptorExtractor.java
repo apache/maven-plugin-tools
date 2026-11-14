@@ -706,7 +706,6 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
 
             mojoDescriptor.setGoal(mojo.name());
             mojoDescriptor.setOnlineRequired(mojo.requiresOnline());
-
             mojoDescriptor.setPhase(mojo.defaultPhase().id());
 
             // Parameter annotations
@@ -714,35 +713,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
                     getParametersParentHierarchy(mojoAnnotatedClass, mojoAnnotatedClasses);
 
             for (ParameterAnnotationContent parameterAnnotationContent : new TreeSet<>(parameters.values())) {
-                org.apache.maven.plugin.descriptor.Parameter parameter =
-                        new org.apache.maven.plugin.descriptor.Parameter();
-                String name = StringUtils.isEmpty(parameterAnnotationContent.name())
-                        ? parameterAnnotationContent.getFieldName()
-                        : parameterAnnotationContent.name();
-                parameter.setName(name);
-                parameter.setAlias(parameterAnnotationContent.alias());
-                parameter.setDefaultValue(parameterAnnotationContent.defaultValue());
-                parameter.setDeprecated(parameterAnnotationContent.getDeprecated());
-                parameter.setDescription(parameterAnnotationContent.getDescription());
-                parameter.setEditable(!parameterAnnotationContent.readonly());
-                String property = parameterAnnotationContent.property();
-                if (StringUtils.contains(property, '$')
-                        || StringUtils.contains(property, '{')
-                        || StringUtils.contains(property, '}')) {
-                    throw new InvalidParameterException(
-                            "Invalid property for parameter '" + parameter.getName() + "', "
-                                    + "forbidden characters ${}: " + property,
-                            null);
-                }
-                parameter.setExpression((property == null || property.isEmpty()) ? "" : "${" + property + "}");
-                StringBuilder type = new StringBuilder(parameterAnnotationContent.getClassName());
-                if (!parameterAnnotationContent.getTypeParameters().isEmpty()) {
-                    type.append(parameterAnnotationContent.getTypeParameters().stream()
-                            .collect(Collectors.joining(", ", "<", ">")));
-                }
-                parameter.setType(type.toString());
-                parameter.setSince(parameterAnnotationContent.getSince());
-                parameter.setRequired(parameterAnnotationContent.required());
+                org.apache.maven.plugin.descriptor.Parameter parameter = extractParameter(parameterAnnotationContent);
 
                 mojoDescriptor.addParameter(parameter);
             }
@@ -772,6 +743,78 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
             mojoDescriptors.add(mojoDescriptor);
         }
         return mojoDescriptors;
+    }
+
+    private org.apache.maven.plugin.descriptor.Parameter extractParameter(
+            ParameterAnnotationContent parameterAnnotationContent) throws InvalidParameterException {
+        org.apache.maven.plugin.descriptor.Parameter parameter = new org.apache.maven.plugin.descriptor.Parameter();
+        String name = StringUtils.isEmpty(parameterAnnotationContent.name())
+                ? parameterAnnotationContent.getFieldName()
+                : parameterAnnotationContent.name();
+        parameter.setName(name);
+        parameter.setAlias(parameterAnnotationContent.alias());
+        parameter.setDeprecated(parameterAnnotationContent.getDeprecated());
+        parameter.setDescription(parameterAnnotationContent.getDescription());
+        parameter.setEditable(!parameterAnnotationContent.readonly());
+        String property = parameterAnnotationContent.property();
+        if (StringUtils.contains(property, '$')
+                || StringUtils.contains(property, '{')
+                || StringUtils.contains(property, '}')) {
+            throw new InvalidParameterException(
+                    "Invalid property for parameter '" + parameter.getName() + "', " + "forbidden characters ${}: "
+                            + property,
+                    null);
+        }
+        parameter.setExpression((property == null || property.isEmpty()) ? "" : "${" + property + "}");
+        StringBuilder type = new StringBuilder(parameterAnnotationContent.getClassName());
+        String rawType = type.toString();
+        if (!parameterAnnotationContent.getTypeParameters().isEmpty()) {
+            type.append(parameterAnnotationContent.getTypeParameters().stream()
+                    .collect(Collectors.joining(", ", "<", ">")));
+        }
+        parameter.setType(type.toString());
+        parameter.setSince(parameterAnnotationContent.getSince());
+        parameter.setRequired(parameterAnnotationContent.required());
+        String defaultValue = parameterAnnotationContent.defaultValue();
+        String[] defaultValues = parameterAnnotationContent.defaultValues();
+        if (defaultValue != null && defaultValues != null) {
+            throw new InvalidParameterException(
+                    "Invalid default value for parameter '" + parameter.getName()
+                            + "': defaultValue and defaultValues cannot both be specified",
+                    null);
+        }
+        if (defaultValue != null) {
+            parameter.setDefaultValue(defaultValue);
+        } else if (defaultValues != null) {
+            if (defaultValues.length == 1) {
+                parameter.setDefaultValue(defaultValues[0]);
+            } else if (defaultValues.length > 1) {
+                // check if type is either a collection or an array, otherwise we cannot set a default value with
+                // multiple values
+                if (!isCollection(rawType)) {
+                    throw new InvalidParameterException(
+                            "Invalid default value for parameter '" + parameter.getName() + "' of type '"
+                                    + type.toString() + "', "
+                                    + "multiple values are only allowed for collection or array types",
+                            null);
+                }
+                parameter.setDefaultValue(String.join(",", defaultValues));
+            }
+        }
+        return parameter;
+    }
+
+    /**
+     * Checks if the given class name represents a collection type (Collection, List, Set, or array).
+     * This is just a heuristics as the full class hierarchy is not known at this point.
+     * @param className
+     * @return true if the class name represents a collection type, false otherwise
+     */
+    static boolean isCollection(String className) {
+        return className.endsWith("Collection")
+                || className.endsWith("List")
+                || className.endsWith("Set")
+                || className.endsWith("[]");
     }
 
     protected MojoAnnotatedClass findClassWithExecuteAnnotationInParentHierarchy(
