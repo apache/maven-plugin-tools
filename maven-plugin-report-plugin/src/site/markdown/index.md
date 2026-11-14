@@ -32,8 +32,8 @@ The Maven Plugin Report Plugin is used to create report files for the Mojos.
 
 The Plugin Report Plugin has two goals:
 
-- [plugin-report:report](./report-mojo.html) which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo).
-- [plugin-report:report-no-fork](./report-no-fork-mojo.html) which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo) without forking the `process-classes` phase again. Note that this goal does require generation of classes before site generation, e.g. by invoking `mvn clean verify site`.
+- [plugin-report:report](./report-goal.html) which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo).
+- [plugin-report:report-no-fork](./report-no-fork-goal.html) which generates the plugin documentation: one overview report and documentation for each plugin's goal (mojo) without forking the `process-classes` phase again. Note that this goal does require generation of classes before site generation, e.g. by invoking `mvn clean verify site`.
 ## Usage
 
 General instructions on how to use the Plugin Report Plugin can be found on the [usage page](./usage.html).

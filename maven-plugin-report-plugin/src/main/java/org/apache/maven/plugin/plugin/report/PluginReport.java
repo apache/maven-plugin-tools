@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,8 +64,8 @@ import org.eclipse.aether.version.Version;
 
 /**
  * Generates the plugin's report: the plugin details page at <code>plugin-info.html</code>
- * and one <code><i>goal</i>-mojo.html</code> per goal.
- * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-mojo.html">plugin:descriptor</a>.
+ * and one <code><i>goal</i>-goal.html</code> per goal.
+ * Relies on one output file from <a href="../maven-plugin-plugin/descriptor-goal.html">plugin:descriptor</a>.
  *
  * @author <a href="snicoll@apache.org">Stephane Nicoll</a>
  * @author <a href="mailto:vincent.siveton@gmail.com">Vincent Siveton</a>
@@ -81,6 +82,14 @@ public class PluginReport extends AbstractMavenReport {
      */
     @Parameter(defaultValue = "false", property = "maven.plugin.report.skip")
     private boolean skip;
+
+    /**
+     * Set this to {@code false} to stop generating compatibility pages using the legacy {@code -mojo.html} suffix.
+     *
+     * @since 4.0.0
+     */
+    @Parameter(defaultValue = "true", property = "maven.plugin.report.generateLegacyMojoReports")
+    private boolean generateLegacyMojoReports;
 
     /**
      * Set this to "true" to generate the usage section for "plugin-info.html" with
@@ -293,9 +302,9 @@ public class PluginReport extends AbstractMavenReport {
             throws MavenReportException {
         if (pluginDescriptor.getMojos() != null) {
             for (MojoDescriptor descriptor : pluginDescriptor.getMojos()) {
+                String filename = descriptor.getGoal() + "-goal.html";
                 GoalRenderer renderer;
                 try {
-                    String filename = descriptor.getGoal() + "-mojo.html";
                     Sink sink = getSinkFactory().createSink(getReportOutputDirectory(), filename);
                     renderer = new GoalRenderer(
                             sink,
@@ -310,7 +319,30 @@ public class PluginReport extends AbstractMavenReport {
                     throw new MavenReportException("Cannot generate sink for mojo " + descriptor.getGoal(), e);
                 }
                 renderer.render();
+                if (generateLegacyMojoReports) {
+                    writeLegacyMojoRedirect(descriptor.getGoal(), filename);
+                }
             }
+        }
+    }
+
+    private void writeLegacyMojoRedirect(String goal, String filename) throws MavenReportException {
+        String redirect = "<!DOCTYPE html>\n"
+                + "<html><head><meta http-equiv=\"refresh\" content=\"0; URL='"
+                + filename
+                + "'\"><link rel=\"canonical\" href=\""
+                + filename
+                + "\"></head><body><p>This page moved to <a href=\""
+                + filename
+                + "\">"
+                + filename
+                + "</a>.</p></body></html>\n";
+        try {
+            Files.write(
+                    new File(getReportOutputDirectory(), goal + "-mojo.html").toPath(),
+                    redirect.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new MavenReportException("Cannot generate legacy page for goal " + goal, e);
         }
     }
 
