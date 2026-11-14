@@ -19,12 +19,12 @@
 package test;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
  * MOJO-DESCRIPTION.
- *
- * @goal test
  */
+@Mojo(name = "test")
 public class MyMojo extends AbstractMojo {
 
     public void execute() {}

@@ -71,6 +71,16 @@ public class PluginHelpGenerator {
                 .anyMatch(dep ->
                         "org.apache.maven".equals(dep.getGroupId()) && "maven-api-core".equals(dep.getArtifactId()));
 
+        if (!useMaven4Api
+                && !mavenProject
+                        .getArtifactMap()
+                        .containsKey("org.apache.maven.plugin-tools:maven-plugin-annotations")) {
+            throw new GeneratorException(
+                    "The generated HelpMojo uses Mojo annotations: add a dependency on "
+                            + "org.apache.maven.plugin-tools:maven-plugin-annotations with provided scope.",
+                    null);
+        }
+
         try {
             String sourcePath = helpImplementation.replace('.', File.separatorChar) + ".java";
 
@@ -113,15 +123,12 @@ public class PluginHelpGenerator {
 
     private String getHelpClassSources(String pluginHelpPath) throws IOException {
         VelocityContext context = new VelocityContext();
-        boolean useAnnotations =
-                mavenProject.getArtifactMap().containsKey("org.apache.maven.plugin-tools:maven-plugin-annotations");
 
         context.put("helpPackageName", helpPackageName);
         context.put("pluginHelpPath", pluginHelpPath);
         context.put("artifactId", mavenProject.getArtifactId());
         // TODO: evaluate prefix from deserialized plugin
         context.put("goalPrefix", goalPrefix);
-        context.put("useAnnotations", useAnnotations);
 
         StringWriter stringWriter = new StringWriter();
 
