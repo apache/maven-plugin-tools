@@ -37,8 +37,8 @@ import java.lang.annotation.Target;
  * @author Olivier Lamy
  * @since 3.0
  * @see <a href="https://maven.apache.org/guides/mini/guide-configuring-plugins.html">Configuring Plug-Ins</a>
- * @see <a href="https://eclipse.dev/sisu/org.eclipse.sisu.plexus/configuration.html#Collection_Objects?">Plexus Component Configurator API</a>
- * @see <a href="https://jcp.org/en/jsr/detail?id=330">Mojo API</a>
+ * @see <a href="https://eclipse.dev/sisu/org.eclipse.sisu.plexus/configuration.html#Collection_Objects">Plexus Component Configurator API</a>
+ * @see <a href="https://jcp.org/en/jsr/detail?id=330">JSR 330</a>
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
