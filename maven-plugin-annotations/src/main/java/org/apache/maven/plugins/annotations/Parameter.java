@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * Used to configure your Mojo parameters to be injected by
- * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/MavenPluginManager.html">
+ * <a href="https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/MavenPluginManager.html">
  * <code>MavenPluginManager.getConfiguredMojo(...)</code></a>.
  * <p>
  * Beans injected into Mojo parameters are prepared by <a href="https://www.eclipse.org/sisu/">Sisu</a> JSR330-based
@@ -36,6 +36,9 @@ import java.lang.annotation.Target;
  *
  * @author Olivier Lamy
  * @since 3.0
+ * @see <a href="https://maven.apache.org/guides/mini/guide-configuring-plugins.html">Configuring Plug-Ins</a>
+ * @see <a href="https://eclipse.dev/sisu/org.eclipse.sisu.plexus/configuration.html#Collection_Objects?">Plexus Component Configurator API</a>
+ * @see <a href="https://jcp.org/en/jsr/detail?id=330">Mojo API</a>
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
@@ -64,9 +67,9 @@ public @interface Parameter {
     /**
      * Parameter default value, may contain <code>${...}</code> expressions which will be interpreted at
      * inject time: see
-     * <a href="/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
+     * <a href="https://maven.apache.org/ref/current/maven-core/apidocs/org/apache/maven/plugin/PluginParameterExpressionEvaluator.html">
      * PluginParameterExpressionEvaluator</a>.
-     * The type conversion from String into the target type is described in <a href="/guides/mini/guide-configuring-plugins.html#Configuring_Parameters">Configuring Parameters</a>.
+     * The type conversion from String into the target type is described in <a href="https://maven.apache.org/guides/mini/guide-configuring-plugins.html#Configuring_Parameters">Configuring Parameters</a>.
      * Cannot be specified together with {@link #defaultValues()}.
      * @return the default value
      * @see #defaultValues()
@@ -76,7 +79,8 @@ public @interface Parameter {
     /**
      * Default values concatenated with commas in the generated plugin descriptor.
      * Each String value has the format outlined in {@link #defaultValue()}.
-     * Multiple values are only supported for collection or array parameters. An empty array specifies no default.
+     * Note that the String itself must not contain commas as those are always interpreted as value separation characters (with no way to escape them).
+     * Multiple values are only supported for <a href="https://maven.apache.org/guides/mini/guide-configuring-plugins.html#mapping-collections-and-arrays">collection or array type parameters</a>.
      * Cannot be specified together with {@link #defaultValue()}, even if either is explicitly empty.
      * Descriptor generation requires maven-plugin-plugin 4.0.0-beta-4 or later.
      * @return the default values

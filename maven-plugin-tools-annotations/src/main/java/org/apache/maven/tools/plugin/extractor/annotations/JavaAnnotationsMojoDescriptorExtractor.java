@@ -814,6 +814,8 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         return className.endsWith("Collection")
                 || className.endsWith("List")
                 || className.endsWith("Set")
+                || className.endsWith("Queue")
+                || className.endsWith("Deque")
                 || className.endsWith("[]");
     }
 
