@@ -141,4 +141,39 @@ class HtmlToPlainTextConverterTest {
                 "Generates something for the project.",
                 converter.convert("Generates <i>something</i> <b>for the project."));
     }
+
+    @Test
+    void singleLevelList() {
+        String test = "<ul><li>Item one</li><li>Item two</li></ul>";
+        assertEquals("\n* Item one\n* Item two", converter.convert(test));
+    }
+
+    @Test
+    void nestedListIsIndented() {
+        String test = "<ul><li>Outer one<ul><li>Inner one</li><li>Inner two</li></ul></li><li>Outer two</li></ul>";
+        assertEquals("\n* Outer one\n  * Inner one\n  * Inner two\n* Outer two", converter.convert(test));
+    }
+
+    @Test
+    void nestedListAndPreformattedTextPreserveBothWhitespaceRules() {
+        String test = "<ul><li>Outer<ul><li>Example:<pre>  first\n    second</pre></li></ul></li></ul>";
+
+        assertEquals(
+                "\n* Outer\n  * Example:\n\u00a0\u00a0first\n\u00a0\u00a0\u00a0\u00a0second\n",
+                ((HtmlToPlainTextConverter) converter).convert(test, true));
+    }
+
+    @Test
+    void doublyNestedListIndentsFurther() {
+        String test = "<ul><li>Level one<ul><li>Level two<ul><li>Level three</li></ul></li></ul></li></ul>";
+        assertEquals("\n* Level one\n  * Level two\n    * Level three", converter.convert(test));
+    }
+
+    @Test
+    void normalTextDoesNotKeepTrailingSpaceBeforePreformattedBlock() {
+        String test = "<p>Description</p> <pre>  first\n    second\n</pre>";
+        assertEquals(
+                "\nDescription\n\n\u00a0\u00a0first\n\u00a0\u00a0\u00a0\u00a0second\n",
+                ((HtmlToPlainTextConverter) converter).convert(test, true));
+    }
 }

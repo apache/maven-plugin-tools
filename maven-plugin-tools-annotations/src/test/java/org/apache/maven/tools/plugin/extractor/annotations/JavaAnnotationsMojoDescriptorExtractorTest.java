@@ -18,12 +18,19 @@
  */
 package org.apache.maven.tools.plugin.extractor.annotations;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +44,14 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocBlockTagsToXhtmlConverter;
+import org.apache.maven.tools.plugin.extractor.annotations.converter.JavadocInlineTagsToXhtmlConverter;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.DefaultMojoAnnotationsScanner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -115,5 +125,79 @@ class JavaAnnotationsMojoDescriptorExtractorTest {
     void assertExecute2Mojo() {
         // two conflicting phase ids set
         assertThrows(InvalidPluginDescriptorException.class, () -> extractDescriptorFromMojoClass(Execute2Mojo.class));
+    }
+
+    @Test
+    void nestedMojoKeepsItsJavadocMetadata() throws Exception {
+        MojoDescriptor mojoDescriptor = extractDescriptorFromSources("NestedMojos.java");
+
+        assertEquals("nested", mojoDescriptor.getGoal());
+        assertEquals("org.apache.maven.plugin.coreit.NestedMojos$NestedMojo", mojoDescriptor.getImplementation());
+        assertEquals("Runs the nested goal.", mojoDescriptor.getDescription());
+        assertEquals("1.2", mojoDescriptor.getSince());
+        assertEquals("Use a top-level Mojo instead.", mojoDescriptor.getDeprecated());
+    }
+
+    @Test
+    void commentOnlySourceDoesNotPreventExtraction() throws Exception {
+        MojoDescriptor mojoDescriptor = extractDescriptorFromSources("HelloMojo.java", "CommentOnly.java");
+
+        assertEquals("hello", mojoDescriptor.getGoal());
+        assertEquals("org.apache.maven.plugin.coreit.HelloMojo", mojoDescriptor.getImplementation());
+        assertEquals("Says hello.", mojoDescriptor.getDescription());
+    }
+
+    /**
+     * Compiles the named sources of {@code src/test/resources/mojo-sources} and extracts the single mojo they
+     * contain, with the sources registered as compile source root so that the Javadoc is read.
+     */
+    private MojoDescriptor extractDescriptorFromSources(String... fileNames) throws Exception {
+        Path sourceRoot = targetDir.resolve("sources");
+        Path classesDirectory = targetDir.resolve("classes");
+        Files.createDirectories(classesDirectory);
+
+        List<String> arguments = new ArrayList<>();
+        arguments.add("-d");
+        arguments.add(classesDirectory.toString());
+        arguments.add("-classpath");
+        arguments.add(System.getProperty("java.class.path"));
+        for (String fileName : fileNames) {
+            Path source = sourceRoot.resolve("org/apache/maven/plugin/coreit").resolve(fileName);
+            Files.createDirectories(source.getParent());
+            try (InputStream in =
+                    getClass().getResourceAsStream("/mojo-sources/org/apache/maven/plugin/coreit/" + fileName)) {
+                assertNotNull(in, fileName);
+                Files.copy(in, source);
+            }
+            arguments.add(source.toString());
+        }
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        assertNotNull(compiler);
+        assertEquals(0, compiler.run(null, null, null, arguments.toArray(new String[0])));
+
+        MavenProject mavenProject = new MavenProject();
+        mavenProject.setArtifact(
+                new DefaultArtifact("groupId", "artifactId", "1.0.0", null, "jar", "classifier", null));
+        mavenProject.getBuild().setOutputDirectory(classesDirectory.toString());
+        mavenProject.addCompileSourceRoot(sourceRoot.toString());
+
+        JavaAnnotationsMojoDescriptorExtractor extractor = new JavaAnnotationsMojoDescriptorExtractor();
+        extractor.mojoAnnotationsScanner = new DefaultMojoAnnotationsScanner();
+        JavadocInlineTagsToXhtmlConverter inlineConverter = new JavadocInlineTagsToXhtmlConverter(new HashMap<>());
+        inject(extractor, "javadocInlineTagsToHtmlConverter", inlineConverter);
+        inject(
+                extractor,
+                "javadocBlockTagsToHtmlConverter",
+                new JavadocBlockTagsToXhtmlConverter(inlineConverter, new HashMap<>()));
+        List<MojoDescriptor> mojoDescriptors =
+                extractor.execute(new DefaultPluginToolsRequest(mavenProject, new PluginDescriptor()));
+        assertEquals(1, mojoDescriptors.size());
+        return mojoDescriptors.get(0);
+    }
+
+    private static void inject(Object target, String fieldName, Object value) throws ReflectiveOperationException {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, value);
     }
 }

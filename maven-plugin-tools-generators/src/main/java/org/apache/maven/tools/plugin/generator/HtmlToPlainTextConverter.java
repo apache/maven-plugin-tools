@@ -80,7 +80,12 @@ public class HtmlToPlainTextConverter implements Converter {
         private static final char PRE_START = '\u0001';
         private static final char PRE_END = '\u0002';
 
+        // Placeholder for indentation spaces that must survive the whitespace cleanup in toString(), which
+        // otherwise collates any run of real spaces -- including nested <li> indentation -- down to one.
+        private static final char INDENT_MARKER = '\u0003';
+
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
+        private int listDepth = 0; // nesting depth of the current <ul>/<ol>, used to indent nested <li> items
 
         // Nested <pre> elements are invalid HTML; Jsoup normalises them before traversal.
         private int preformatted;
@@ -98,7 +103,13 @@ public class HtmlToPlainTextConverter implements Converter {
                 // TextNode#text() normalizes whitespace. Keep the original text inside preformatted blocks.
                 accum.append(preformatted > 0 ? textNode.getWholeText() : textNode.text());
             } else if (name.equals("li")) {
-                accum.append("\n * ");
+                accum.append('\n');
+                for (int i = 1; i < listDepth; i++) {
+                    accum.append(INDENT_MARKER).append(INDENT_MARKER);
+                }
+                accum.append("* ");
+            } else if (name.equals("ul") || name.equals("ol")) {
+                listDepth++;
             } else if (name.equals("dt")) {
                 accum.append("  ");
             } else if (name.equals("pre")) {
@@ -129,6 +140,8 @@ public class HtmlToPlainTextConverter implements Converter {
                 if (accum.length() == 0 || accum.charAt(accum.length() - 1) != '\n') {
                     accum.append("\n");
                 }
+            } else if (name.equals("ul") || name.equals("ol")) {
+                listDepth = Math.max(0, listDepth - 1);
             } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
                 String link = node.absUrl("href");
@@ -162,7 +175,9 @@ public class HtmlToPlainTextConverter implements Converter {
         }
 
         private static void appendNormalText(StringBuilder result, String text) {
-            result.append(text.replaceAll(" +", " ").replace("\n ", "\n"));
+            String normalText =
+                    text.replaceAll(" +", " ").replace("\n ", "\n").replace(String.valueOf(INDENT_MARKER), " ");
+            result.append(normalText.replaceAll(" +(?=\\n|$)", ""));
         }
     }
 }
