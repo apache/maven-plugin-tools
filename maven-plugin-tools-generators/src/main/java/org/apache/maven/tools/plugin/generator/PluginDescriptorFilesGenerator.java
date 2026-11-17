@@ -313,7 +313,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (mojoDescriptor.getPhase() != null && !mojoDescriptor.getPhase().isEmpty()) {
+        if (StringUtils.isNotEmpty(mojoDescriptor.getPhase())) {
             GeneratorUtils.element(w, "phase", mojoDescriptor.getPhase());
         }
 
@@ -429,7 +429,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
         if (mojoDescriptor.getSince() != null) {
             w.startElement("since");
 
-            if (mojoDescriptor.getSince() == null || mojoDescriptor.getSince().isEmpty()) {
+            if (StringUtils.isEmpty(mojoDescriptor.getSince())) {
                 w.writeText("No version given");
             } else {
                 w.writeText(mojoDescriptor.getSince());
@@ -529,7 +529,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     if (parameter.getSince() != null) {
                         w.startElement("since");
 
-                        if (parameter.getSince() == null || parameter.getSince().isEmpty()) {
+                        if (StringUtils.isEmpty(parameter.getSince())) {
                             w.writeText("No version given");
                         } else {
                             w.writeText(parameter.getSince());

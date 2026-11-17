@@ -506,14 +506,12 @@ class JavadocSite {
         if (settings != null && settings.getActiveProxy() != null) {
             Proxy activeProxy = settings.getActiveProxy();
 
-            if ((activeProxy.getHost() != null && !activeProxy.getHost().isEmpty())
+            if (StringUtils.isNotEmpty(activeProxy.getHost())
                     && (url == null || !isNonProxyHost(activeProxy.getNonProxyHosts(), url.getHost()))) {
                 HttpHost proxy = new HttpHost(activeProxy.getHost(), activeProxy.getPort());
                 builder.setProxy(proxy);
 
-                if ((activeProxy.getUsername() != null
-                                && !activeProxy.getUsername().isEmpty())
-                        && activeProxy.getPassword() != null) {
+                if (StringUtils.isNotEmpty(activeProxy.getUsername()) && activeProxy.getPassword() != null) {
                     Credentials credentials =
                             new UsernamePasswordCredentials(activeProxy.getUsername(), activeProxy.getPassword());
 

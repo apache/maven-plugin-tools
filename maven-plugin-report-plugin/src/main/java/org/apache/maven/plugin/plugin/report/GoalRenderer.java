@@ -87,10 +87,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderDescription("fullname", descriptor.getPluginDescriptor().getId() + ":" + descriptor.getGoal(), false);
 
         String context = "goal " + descriptor.getGoal();
-        if (descriptor.getDeprecated() != null && !descriptor.getDeprecated().isEmpty()) {
+        if (StringUtils.isNotEmpty(descriptor.getDeprecated())) {
             renderDescription("deprecated", getXhtmlWithValidatedLinks(descriptor.getDeprecated(), context), true);
         }
-        if (descriptor.getDescription() != null && !descriptor.getDescription().isEmpty()) {
+        if (StringUtils.isNotEmpty(descriptor.getDescription())) {
             renderDescription("description", getXhtmlWithValidatedLinks(descriptor.getDescription(), context), true);
         } else {
             renderDescription("description", getI18nString("nodescription"), false);
@@ -268,7 +268,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         String description;
         String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
         renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
-        if (parameter.getDescription() != null && !parameter.getDescription().isEmpty()) {
+        if (StringUtils.isNotEmpty(parameter.getDescription())) {
             description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
         } else {
             description = getI18nString("nodescription");
@@ -309,7 +309,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             Map.Entry<String, Optional<String>> typeAndLink = getLinkedType(parameter, false);
             renderDetail(getI18nString("parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
 
-            if (parameter.getSince() != null && !parameter.getSince().isEmpty()) {
+            if (StringUtils.isNotEmpty(parameter.getSince())) {
                 renderDetail(getI18nString("parameter.since"), parameter.getSince());
             }
 
@@ -342,7 +342,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     }
 
     private void renderDeprecatedParameterDescription(String deprecated, String context) {
-        if (deprecated != null && !deprecated.isEmpty()) {
+        if (StringUtils.isNotEmpty(deprecated)) {
             String deprecatedXhtml = getXhtmlWithValidatedLinks(deprecated, context);
             sink.division();
             sink.inline(InlineSemantics.strong());
@@ -356,7 +356,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     }
 
     private void renderTableCellDetail(String nameKey, String value) {
-        if (value != null && !value.isEmpty()) {
+        if (StringUtils.isNotEmpty(value)) {
             sink.lineBreak();
             sink.inline(InlineSemantics.strong());
             sink.text(getI18nString(nameKey));

@@ -258,9 +258,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         sb.append("<project>").append(Markup.EOL);
         sb.append("  ...").append(Markup.EOL);
         sb.append("  <build>").append(Markup.EOL);
-        sb.append("    <!-- ")
-                .append(getI18nString("usage.pluginManagement"))
-                .append(" -->")
+        sb.append("    <!-- " + getI18nString("usage.pluginManagement") + " -->")
                 .append(Markup.EOL);
         sb.append("    <pluginManagement>").append(Markup.EOL);
         sb.append("      <plugins>").append(Markup.EOL);
@@ -284,10 +282,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         sb.append("        ...").append(Markup.EOL);
         sb.append("      </plugins>").append(Markup.EOL);
         sb.append("    </pluginManagement>").append(Markup.EOL);
-        sb.append("    <!-- ")
-                .append(getI18nString("usage.plugins"))
-                .append(" -->")
-                .append(Markup.EOL);
+        sb.append("    <!-- " + getI18nString("usage.plugins") + " -->").append(Markup.EOL);
         sb.append("    <plugins>").append(Markup.EOL);
         sb.append("      <plugin>").append(Markup.EOL);
         sb.append("        <groupId>")
@@ -305,10 +300,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
 
         if (hasMavenReport) {
             sb.append("  ...").append(Markup.EOL);
-            sb.append("  <!-- ")
-                    .append(getI18nString("usage.reporting"))
-                    .append(" -->")
-                    .append(Markup.EOL);
+            sb.append("  <!-- " + getI18nString("usage.reporting") + " -->").append(Markup.EOL);
             sb.append("  <reporting>").append(Markup.EOL);
             sb.append("    <plugins>").append(Markup.EOL);
             sb.append("      <plugin>").append(Markup.EOL);
