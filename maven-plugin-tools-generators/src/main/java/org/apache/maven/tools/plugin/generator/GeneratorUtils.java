@@ -255,7 +255,7 @@ public final class GeneratorUtils {
         }
 
         // strip the header/body stuff
-        String ls = System.getProperty("line.separator");
+        String ls = System.lineSeparator();
         int startPos = commentCleaned.indexOf("<body>" + ls) + 6 + ls.length();
         int endPos = commentCleaned.indexOf(ls + "</body>");
         commentCleaned = commentCleaned.substring(startPos, endPos);

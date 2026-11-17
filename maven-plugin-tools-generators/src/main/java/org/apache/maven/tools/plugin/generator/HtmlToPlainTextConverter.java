@@ -67,6 +67,7 @@ public class HtmlToPlainTextConverter implements Converter {
         private int listDepth = 0; // nesting depth of the current <ul>/<ol>, used to indent nested <li> items
 
         // hit when the node is first seen
+        @Override
         public void head(Node node, int depth) {
             String name = node.nodeName();
             if (node instanceof TextNode) {
@@ -87,6 +88,7 @@ public class HtmlToPlainTextConverter implements Converter {
         }
 
         // hit when all of the node's children (if any) have been visited
+        @Override
         public void tail(Node node, int depth) {
             String name = node.nodeName();
             if (name.equals("ul") || name.equals("ol")) {

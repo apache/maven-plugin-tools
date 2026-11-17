@@ -329,6 +329,7 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
         this.buildContext = buildContext;
     }
 
+    @Override
     public void generate() throws MojoExecutionException {
         if (!"maven-plugin".equalsIgnoreCase(project.getArtifactId())
                 && project.getArtifactId().toLowerCase().startsWith("maven-")

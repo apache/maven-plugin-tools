@@ -47,10 +47,12 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
         this.setComponents(delegate.getComponents());
     }
 
+    @Override
     public void setRequiredJavaVersion(String requiredJavaVersion) {
         this.requiredJavaVersion = requiredJavaVersion;
     }
 
+    @Override
     public String getRequiredJavaVersion() {
         return requiredJavaVersion;
     }
@@ -80,10 +82,12 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
     }
 
     /* -- START delegate methods --*/
+    @Override
     public List<MojoDescriptor> getMojos() {
         return delegate.getMojos();
     }
 
+    @Override
     public void addMojo(MojoDescriptor mojoDescriptor) throws DuplicateMojoDescriptorException {
         delegate.addMojo(mojoDescriptor);
     }
@@ -94,118 +98,147 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
         }
     }
 
+    @Override
     public String getGroupId() {
         return delegate.getGroupId();
     }
 
+    @Override
     public void setGroupId(String groupId) {
         delegate.setGroupId(groupId);
     }
 
+    @Override
     public String getArtifactId() {
         return delegate.getArtifactId();
     }
 
+    @Override
     public void setArtifactId(String artifactId) {
         delegate.setArtifactId(artifactId);
     }
 
+    @Override
     public String getPluginLookupKey() {
         return delegate.getPluginLookupKey();
     }
 
+    @Override
     public String getId() {
         return delegate.getId();
     }
 
+    @Override
     public String getGoalPrefix() {
         return delegate.getGoalPrefix();
     }
 
+    @Override
     public void setGoalPrefix(String goalPrefix) {
         delegate.setGoalPrefix(goalPrefix);
     }
 
+    @Override
     public void setVersion(String version) {
         delegate.setVersion(version);
     }
 
+    @Override
     public String getVersion() {
         return delegate.getVersion();
     }
 
+    @Override
     public void setSource(String source) {
         delegate.setSource(source);
     }
 
+    @Override
     public String getSource() {
         return delegate.getSource();
     }
 
+    @Override
     public boolean isInheritedByDefault() {
         return delegate.isInheritedByDefault();
     }
 
+    @Override
     public void setInheritedByDefault(boolean inheritedByDefault) {
         delegate.setInheritedByDefault(inheritedByDefault);
     }
 
+    @Override
     public List<Artifact> getArtifacts() {
         return delegate.getArtifacts();
     }
 
+    @Override
     public void setArtifacts(List<Artifact> artifacts) {
         delegate.setArtifacts(artifacts);
     }
 
+    @Override
     public Map<String, Artifact> getArtifactMap() {
         return delegate.getArtifactMap();
     }
 
+    @Override
     public MojoDescriptor getMojo(String goal) {
         return delegate.getMojo(goal);
     }
 
+    @Override
     public void setClassRealm(ClassRealm classRealm) {
         delegate.setClassRealm(classRealm);
     }
 
+    @Override
     public ClassRealm getClassRealm() {
         return delegate.getClassRealm();
     }
 
+    @Override
     public void setIntroducedDependencyArtifacts(Set<Artifact> introducedDependencyArtifacts) {
         delegate.setIntroducedDependencyArtifacts(introducedDependencyArtifacts);
     }
 
+    @Override
     public Set<Artifact> getIntroducedDependencyArtifacts() {
         return delegate.getIntroducedDependencyArtifacts();
     }
 
+    @Override
     public void setName(String name) {
         delegate.setName(name);
     }
 
+    @Override
     public String getName() {
         return delegate.getName();
     }
 
+    @Override
     public void setDescription(String description) {
         delegate.setDescription(description);
     }
 
+    @Override
     public String getDescription() {
         return delegate.getDescription();
     }
 
+    @Override
     public void setRequiredMavenVersion(String requiredMavenVersion) {
         delegate.setRequiredMavenVersion(requiredMavenVersion);
     }
 
+    @Override
     public String getRequiredMavenVersion() {
         return delegate.getRequiredMavenVersion();
     }
 
+    @Override
     public void setPlugin(Plugin plugin) {
         delegate.setPlugin(plugin);
     }
@@ -225,6 +258,7 @@ public class ExtendedPluginDescriptor extends PluginDescriptor {
         delegate.setPluginArtifact(pluginArtifact);
     }
 
+    @Override
     public PluginDescriptor clone() {
         return delegate.clone();
     }
