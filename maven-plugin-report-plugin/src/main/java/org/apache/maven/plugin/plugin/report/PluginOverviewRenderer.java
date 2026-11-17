@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -144,7 +143,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             }
 
             sink.tableCell();
-            if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
+            if (mojo.getDeprecated() != null && !mojo.getDeprecated().isEmpty()) {
                 sink.division();
                 sink.inline(InlineSemantics.strong());
                 sink.text(getI18nString("goal.deprecated"));
@@ -157,7 +156,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             }
 
             String description;
-            if (StringUtils.isNotEmpty(mojo.getDescription())) {
+            if (mojo.getDescription() != null && !mojo.getDescription().isEmpty()) {
                 description = mojo.getDescription();
             } else {
                 description = getI18nString("goal.nodescription");
