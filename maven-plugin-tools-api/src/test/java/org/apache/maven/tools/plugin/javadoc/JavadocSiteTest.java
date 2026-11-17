@@ -114,7 +114,7 @@ class JavadocSiteTest {
     }
 
     @Test
-    void classLinkFromPackageAndClassNameWithExternalJavadocRequiringModules() throws URISyntaxException, IOException {
+    void classLinkFromPackageAndClassNameWithExternalJavadocRequiringModules() throws Exception {
         URI baseUri = new URI("https://docs.oracle.com/en/java/javase/11/docs/api/");
         JavadocSite site = new JavadocSite(
                 baseUri,
