@@ -170,6 +170,7 @@ public class DefaultPluginToolsRequest implements PluginToolsRequest {
         return repoSession;
     }
 
+    @Override
     public void setRepoSession(RepositorySystemSession repoSession) {
         this.repoSession = repoSession;
     }
