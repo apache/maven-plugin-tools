@@ -139,7 +139,7 @@ public class PluginHelpGenerator {
      * @return The implementation.
      */
     private String getImplementation() {
-        return (helpPackageName == null || helpPackageName.isEmpty())
+        return helpPackageName == null || helpPackageName.isEmpty()
                 ? HELP_MOJO_CLASS_NAME
                 : helpPackageName + '.' + HELP_MOJO_CLASS_NAME;
     }

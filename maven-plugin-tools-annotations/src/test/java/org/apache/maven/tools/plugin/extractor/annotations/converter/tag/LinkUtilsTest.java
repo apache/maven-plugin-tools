@@ -33,14 +33,14 @@ class LinkUtilsTest {
     @Test
     void createUnresolvableLink() {
         JavadocReference reference = JavadocReference.parse("Unresolvable");
-        ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> URI.create(""), reference);
+        ConverterContext context = new SimpleConverterContext("myPackage", ref -> URI.create(""), reference);
         assertEquals(
                 "Unresolvable<!-- this link could not be resolved -->", LinkUtils.createLink("Unresolvable", context));
     }
 
     @Test
     void createLinkWithNoJavadoc() {
-        ConverterContext context = new SimpleConverterContext("myPackage", (ref) -> {
+        ConverterContext context = new SimpleConverterContext("myPackage", ref -> {
             throw new IllegalArgumentException("Could not get javadoc");
         });
         assertEquals(
@@ -60,7 +60,7 @@ class LinkUtilsTest {
                 "Missing<!-- this link could not be resolved -->",
                 LinkUtils.createLink("Missing", unresolvedReferenceContext));
 
-        ConverterContext unresolvedUrlContext = new SimpleConverterContext("myPackage", (ref) -> {
+        ConverterContext unresolvedUrlContext = new SimpleConverterContext("myPackage", ref -> {
             throw new UnsolvedSymbolException("MissingAncestor");
         });
         assertEquals(
