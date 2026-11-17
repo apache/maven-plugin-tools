@@ -734,7 +734,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
                                     + "forbidden characters ${}: " + property,
                             null);
                 }
-                parameter.setExpression((property == null || property.isEmpty()) ? "" : "${" + property + "}");
+                parameter.setExpression(property == null || property.isEmpty() ? "" : "${" + property + "}");
                 StringBuilder type = new StringBuilder(parameterAnnotationContent.getClassName());
                 if (!parameterAnnotationContent.getTypeParameters().isEmpty()) {
                     type.append(parameterAnnotationContent.getTypeParameters().stream()

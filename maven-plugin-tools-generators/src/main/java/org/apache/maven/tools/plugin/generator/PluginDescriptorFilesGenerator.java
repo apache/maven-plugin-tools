@@ -97,8 +97,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
 
     private String getVersion() {
         Package p = this.getClass().getPackage();
-        String version = (p == null) ? null : p.getSpecificationVersion();
-        return (version == null) ? "SNAPSHOT" : version;
+        String version = p == null ? null : p.getSpecificationVersion();
+        return version == null ? "SNAPSHOT" : version;
     }
 
     public void writeDescriptor(File destinationFile, PluginToolsRequest request, DescriptorType type)

@@ -210,7 +210,7 @@ public final class GeneratorUtils {
                     text = "<code>" + text + "</code>";
                 }
             }
-            matcher.appendReplacement(decoded, (text != null) ? quoteReplacement(text) : "");
+            matcher.appendReplacement(decoded, text != null ? quoteReplacement(text) : "");
         }
         matcher.appendTail(decoded);
 
@@ -482,7 +482,7 @@ public final class GeneratorUtils {
             if (impl.lastIndexOf('.') != -1) {
                 String name = impl.substring(0, impl.lastIndexOf('.'));
                 if (packageNames.get(name) != null) {
-                    int next = (packageNames.get(name)).intValue() + 1;
+                    int next = packageNames.get(name).intValue() + 1;
                     packageNames.put(name, Integer.valueOf(next));
                 } else {
                     packageNames.put(name, Integer.valueOf(1));

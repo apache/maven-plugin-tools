@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -172,7 +173,7 @@ public final class JavaSourceModel implements Closeable {
                     .map(directory::relativize)
                     .filter(path -> path.getFileName().toString().endsWith(".class"))
                     .map(Path::getParent)
-                    .filter(path -> path != null)
+                    .filter(Objects::nonNull)
                     .map(Path::toString)
                     .map(name -> name.replace(File.separatorChar, '.'))
                     .filter(name -> !name.isEmpty())
