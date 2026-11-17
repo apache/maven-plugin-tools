@@ -258,7 +258,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getDependencyResolutionRequired())) {
+        if (mojoDescriptor.getDependencyResolutionRequired() != null
+                && !mojoDescriptor.getDependencyResolutionRequired().isEmpty()) {
             GeneratorUtils.element(
                     w,
                     isV4 ? "dependencyResolution" : "requiresDependencyResolution",
@@ -312,7 +313,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getPhase())) {
+        if (mojoDescriptor.getPhase() != null && !mojoDescriptor.getPhase().isEmpty()) {
             GeneratorUtils.element(w, "phase", mojoDescriptor.getPhase());
         }
 
@@ -320,15 +321,18 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getExecutePhase())) {
+        if (mojoDescriptor.getExecutePhase() != null
+                && !mojoDescriptor.getExecutePhase().isEmpty()) {
             GeneratorUtils.element(w, "executePhase", mojoDescriptor.getExecutePhase());
         }
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getExecuteGoal())) {
+        if (mojoDescriptor.getExecuteGoal() != null
+                && !mojoDescriptor.getExecuteGoal().isEmpty()) {
             GeneratorUtils.element(w, "executeGoal", mojoDescriptor.getExecuteGoal());
         }
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getExecuteLifecycle())) {
+        if (mojoDescriptor.getExecuteLifecycle() != null
+                && !mojoDescriptor.getExecuteLifecycle().isEmpty()) {
             GeneratorUtils.element(w, "executeLifecycle", mojoDescriptor.getExecuteLifecycle());
         }
 
@@ -378,7 +382,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (StringUtils.isNotEmpty(mojoDescriptor.getComponentConfigurator())) {
+        if (mojoDescriptor.getComponentConfigurator() != null
+                && !mojoDescriptor.getComponentConfigurator().isEmpty()) {
             w.startElement("configurator");
             w.writeText(mojoDescriptor.getComponentConfigurator());
             w.endElement();
@@ -388,7 +393,9 @@ public class PluginDescriptorFilesGenerator implements Generator {
         //
         // ----------------------------------------------------------------------
 
-        if (!isV4 && StringUtils.isNotEmpty(mojoDescriptor.getComponentComposer())) {
+        if (!isV4
+                && (mojoDescriptor.getComponentComposer() != null
+                        && !mojoDescriptor.getComponentComposer().isEmpty())) {
             w.startElement("composer");
             w.writeText(mojoDescriptor.getComponentComposer());
             w.endElement();
@@ -422,7 +429,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
         if (mojoDescriptor.getSince() != null) {
             w.startElement("since");
 
-            if (StringUtils.isEmpty(mojoDescriptor.getSince())) {
+            if (mojoDescriptor.getSince() == null || mojoDescriptor.getSince().isEmpty()) {
                 w.writeText("No version given");
             } else {
                 w.writeText(mojoDescriptor.getSince());
@@ -438,7 +445,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
         if (mojoDescriptor.getDeprecated() != null) {
             w.startElement("deprecated");
 
-            if (StringUtils.isEmpty(mojoDescriptor.getDeprecated())) {
+            if (mojoDescriptor.getDeprecated() == null
+                    || mojoDescriptor.getDeprecated().isEmpty()) {
                 w.writeText("No reason given");
             } else {
                 w.writeText(getTextValue(type, containsXhtmlTextValues, mojoDescriptor.getDeprecated()));
@@ -521,7 +529,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     if (parameter.getSince() != null) {
                         w.startElement("since");
 
-                        if (StringUtils.isEmpty(parameter.getSince())) {
+                        if (parameter.getSince() == null || parameter.getSince().isEmpty()) {
                             w.writeText("No version given");
                         } else {
                             w.writeText(parameter.getSince());
@@ -531,7 +539,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     }
 
                     if (parameter.getDeprecated() != null) {
-                        if (StringUtils.isEmpty(parameter.getDeprecated())) {
+                        if (parameter.getDeprecated() == null
+                                || parameter.getDeprecated().isEmpty()) {
                             GeneratorUtils.element(w, "deprecated", "No reason given");
                         } else {
                             GeneratorUtils.element(
@@ -553,15 +562,19 @@ public class PluginDescriptorFilesGenerator implements Generator {
                             w, "description", getTextValue(type, containsXhtmlTextValues, parameter.getDescription()));
 
                     if (isV4) {
-                        if (StringUtils.isNotEmpty(parameter.getExpression())) {
+                        if (parameter.getExpression() != null
+                                && !parameter.getExpression().isEmpty()) {
                             GeneratorUtils.element(w, "expression", parameter.getExpression());
                         }
-                        if (StringUtils.isNotEmpty(parameter.getDefaultValue())) {
+                        if (parameter.getDefaultValue() != null
+                                && !parameter.getDefaultValue().isEmpty()) {
                             GeneratorUtils.element(w, "defaultValue", parameter.getDefaultValue());
                         }
                     } else {
-                        if (StringUtils.isNotEmpty(parameter.getDefaultValue())
-                                || StringUtils.isNotEmpty(parameter.getExpression())) {
+                        if ((parameter.getDefaultValue() != null
+                                        && !parameter.getDefaultValue().isEmpty())
+                                || (parameter.getExpression() != null
+                                        && !parameter.getExpression().isEmpty())) {
                             configuration.add(parameter);
                         }
                     }
@@ -598,7 +611,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
                     w.addAttribute("default-value", parameter.getDefaultValue());
                 }
 
-                if (StringUtils.isNotEmpty(parameter.getExpression())) {
+                if (parameter.getExpression() != null
+                        && !parameter.getExpression().isEmpty()) {
                     w.writeText(parameter.getExpression());
                 }
 
@@ -623,7 +637,8 @@ public class PluginDescriptorFilesGenerator implements Generator {
 
                 GeneratorUtils.element(w, "role", requirement.getRole());
 
-                if (StringUtils.isNotEmpty(requirement.getRoleHint())) {
+                if (requirement.getRoleHint() != null
+                        && !requirement.getRoleHint().isEmpty()) {
                     GeneratorUtils.element(w, "role-hint", requirement.getRoleHint());
                 }
 
