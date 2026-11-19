@@ -318,7 +318,7 @@ public class HelpMojo
         if ( isNotEmpty( parameterExpression ) )
         {
             String property = getPropertyFromExpression( parameterExpression );
-            append( sb, "User property: " + property, 3 );
+            append( sb, "User property: " + property + " (can be set in the POM or with -D" + property + "=...)", 3 );
         }
 
         append( sb, "", 0 );
