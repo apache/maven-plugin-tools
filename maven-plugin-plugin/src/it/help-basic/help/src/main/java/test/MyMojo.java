@@ -26,6 +26,15 @@ import org.apache.maven.plugins.annotations.Parameter;
  * MOJO-DESCRIPTION. Some "quotation" marks and backslashes '\\', some <strong>important</strong> javadoc<br> and an
  * inline link to {@link test.AnotherMojo}.
  *
+ * Nested list:
+ * <ul>
+ *   <li>Outer<ul><li>A nested item with enough words to exceed the help line width and preserve its indentation when rendered.</li></ul></li>
+ * </ul>
+ * <pre>
+ *   first  line
+ *     second  line
+ * </pre>
+ *
  * @deprecated As of 1.0, use the "quoted" goal instead.
  * @since 2.1
  */

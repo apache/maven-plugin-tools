@@ -35,6 +35,9 @@ import org.apache.maven.api.plugin.annotations.Parameter;
  *  - it's using a custom lifecycle which is not defined
  *  - it has a @Inject dependency on ArtifactInstaller (hint=test) which does not exist
  *
+ * <pre>unindented  code   spaces
+ * 	tabbed  code   spaces</pre>
+ *
  * @since 1.2
  */
 @Mojo(name = "first", defaultPhase = "integration-test")

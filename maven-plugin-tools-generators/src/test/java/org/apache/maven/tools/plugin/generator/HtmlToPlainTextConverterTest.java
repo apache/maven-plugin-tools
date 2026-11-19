@@ -85,6 +85,33 @@ class HtmlToPlainTextConverterTest {
                 converter.convert(test));
     }
 
+    @Test
+    void consecutiveExplicitLineBreaksArePreserved() {
+        assertEquals("before\n\nafter", converter.convert("before<br><br>after"));
+        assertEquals("before\n\nafter\n", converter.convert("<pre>before<br><br>after</pre>"));
+    }
+
+    @Test
+    void preformattedTextPreservesWhitespace() {
+        String test =
+                "For example:<pre>\n  &lt;binary&gt;\n    &lt;url&gt;https://example.test/plugin.exe&lt;/url&gt;\n  &lt;/binary&gt;\n</pre>";
+        assertEquals(
+                "For example:\n  <binary>\n    <url>https://example.test/plugin.exe</url>\n  </binary>\n",
+                converter.convert(test));
+    }
+
+    @Test
+    void preformattedTextWithoutTrailingNewlinePreservesWhitespace() {
+        assertEquals("before\n  first\n  second\nafter", converter.convert("before<pre>  first\n  second</pre>after"));
+    }
+
+    @Test
+    void multiplePreformattedBlocksPreserveTheirBoundaries() {
+        assertEquals(
+                "one\n  first\nmiddle\nsecond  \nend",
+                converter.convert("one<pre>  first</pre>middle<pre>second  </pre>end"));
+    }
+
     @ParameterizedTest(name = "{0} to {1}") // With JUnit 6.0.0 the non-printable chars will be kept in display, see
     // https://docs.junit.org/current/user-guide/#writing-tests-parameterized-tests-display-names-quoted-text
     @MethodSource("provideConvertParamsBreakLines")
@@ -128,8 +155,25 @@ class HtmlToPlainTextConverterTest {
     }
 
     @Test
+    void nestedListAndPreformattedTextPreserveBothWhitespaceRules() {
+        String test = "<ul><li>Outer<ul><li>Example:<pre>  first\n    second</pre></li></ul></li></ul>";
+
+        assertEquals(
+                "\n* Outer\n  * Example:\n\u00a0\u00a0first\n\u00a0\u00a0\u00a0\u00a0second\n",
+                ((HtmlToPlainTextConverter) converter).convert(test, true));
+    }
+
+    @Test
     void doublyNestedListIndentsFurther() {
         String test = "<ul><li>Level one<ul><li>Level two<ul><li>Level three</li></ul></li></ul></li></ul>";
         assertEquals("\n* Level one\n  * Level two\n    * Level three", converter.convert(test));
+    }
+
+    @Test
+    void normalTextDoesNotKeepTrailingSpaceBeforePreformattedBlock() {
+        String test = "<p>Description</p> <pre>  first\n    second\n</pre>";
+        assertEquals(
+                "\nDescription\n\n\u00a0\u00a0first\n\u00a0\u00a0\u00a0\u00a0second\n",
+                ((HtmlToPlainTextConverter) converter).convert(test, true));
     }
 }

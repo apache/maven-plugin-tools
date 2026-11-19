@@ -18,6 +18,8 @@
  */
 package org.apache.maven.tools.plugin.generator;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
@@ -32,11 +35,17 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptorBuilder;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.ExtendedMojoDescriptor;
 import org.apache.maven.tools.plugin.javadoc.JavadocLinkGenerator;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,6 +55,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl </a>
  */
 class PluginDescriptorFilesGeneratorTest extends AbstractGeneratorTestCase {
+    @ParameterizedTest
+    @EnumSource(PluginDescriptorFilesGenerator.DescriptorType.class)
+    void preformattedWhitespaceIsEncodedOnlyForHelp(
+            PluginDescriptorFilesGenerator.DescriptorType type, @TempDir Path directory) throws Exception {
+        String description = "ordinary   prose<pre>unindented  spaces\n\t tabbed  spaces  \n"
+                + "a  long  preformatted  line  that  must  not  lose  its  spaces\n"
+                + "</pre>after   prose";
+        ExtendedMojoDescriptor mojo = new ExtendedMojoDescriptor(true);
+        mojo.setGoal("example");
+        mojo.setImplementation("ExampleMojo");
+        mojo.setDescription(description);
+        PluginDescriptor plugin = new PluginDescriptor();
+        mojo.setPluginDescriptor(plugin);
+        plugin.addMojo(mojo);
+        File output = directory.resolve("plugin.xml").toFile();
+        new PluginDescriptorFilesGenerator()
+                .writeDescriptor(output, new DefaultPluginToolsRequest(new MavenProject(), plugin), type);
+        String actual = ((org.w3c.dom.Element) DocumentBuilderFactory.newInstance()
+                        .newDocumentBuilder()
+                        .parse(output)
+                        .getElementsByTagName("mojo")
+                        .item(0))
+                .getElementsByTagName("description")
+                .item(0)
+                .getTextContent();
+        String plain = new HtmlToPlainTextConverter().convert(description);
+        if (type == PluginDescriptorFilesGenerator.DescriptorType.XHTML) {
+            assertEquals(description, actual);
+        } else if (type == PluginDescriptorFilesGenerator.DescriptorType.STANDARD) {
+            assertEquals(plain, actual);
+        } else {
+            assertEquals(
+                    "ordinary prose\nunindented\u00a0\u00a0spaces\n\t\u00a0tabbed\u00a0\u00a0spaces\u00a0\u00a0\n"
+                            + "a\u00a0\u00a0long\u00a0\u00a0preformatted\u00a0\u00a0line\u00a0\u00a0that\u00a0\u00a0must\u00a0\u00a0not\u00a0\u00a0lose\u00a0\u00a0its\u00a0\u00a0spaces\nafter prose",
+                    actual);
+            assertEquals(plain, actual.replace('\u00a0', ' '));
+        }
+    }
+
     @Override
     protected void extendPluginDescriptor(PluginDescriptor pluginDescriptor) throws DuplicateParameterException {
         Parameter parameterWithGenerics = new Parameter();
