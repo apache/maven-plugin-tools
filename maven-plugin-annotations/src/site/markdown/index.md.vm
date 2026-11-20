@@ -31,4 +31,4 @@ ${project.description}
 Usage
 -----
 
-To be able to [use Maven Plugin Tools Java Annotations](../maven-plugin-tools-annotations/index.html), some configuration has to be done in `pom.xml`: see [ Using Plugin Tools Java5 Annotations](../maven-plugin-plugin/examples/using-annotations.html#POM_configuration) example in [ `maven-plugin-plugin`](../maven-plugin-plugin) documentation.
+To be able to [use Maven 3 Plugin Tools Java Annotations](../maven-plugin-tools-annotations/index.html), some configuration has to be done in `pom.xml`: see [ Using Plugin Tools Java5 Annotations](../maven-plugin-plugin/examples/using-annotations.html#POM_configuration) example in [ `maven-plugin-plugin`](../maven-plugin-plugin) documentation.
