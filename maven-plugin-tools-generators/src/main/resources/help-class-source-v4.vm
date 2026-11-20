@@ -22,7 +22,7 @@ import org.apache.maven.api.di.Inject;
 import org.apache.maven.api.plugin.MojoException;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
-import org.apache.maven.api.plugin.Log;
+import org.apache.maven.api.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,7 +48,7 @@ public class HelpMojo
     implements org.apache.maven.api.plugin.Mojo
 {
     @Inject
-    private Log logger;
+    private Logger logger;
 
     /**
      * If <code>true</code>, display all settable properties for each goal.

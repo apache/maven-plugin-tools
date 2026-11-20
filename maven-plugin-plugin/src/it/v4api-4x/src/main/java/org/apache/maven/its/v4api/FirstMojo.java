@@ -24,7 +24,7 @@ import org.apache.maven.api.MojoExecution;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.di.Inject;
-import org.apache.maven.api.plugin.Log;
+import org.apache.maven.api.logging.Logger;
 import org.apache.maven.api.plugin.MojoException;
 import org.apache.maven.api.plugin.annotations.Mojo;
 import org.apache.maven.api.plugin.annotations.Parameter;
@@ -67,7 +67,7 @@ public class FirstMojo implements org.apache.maven.api.plugin.Mojo {
     private MojoExecution mojo;
 
     @Inject
-    private Log log;
+    private Logger log;
 
     public void execute() throws MojoException {
         log.info("Executing first");
