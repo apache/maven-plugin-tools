@@ -122,7 +122,6 @@ public class DescriptorGeneratorMojo extends AbstractGeneratorMojo {
      * The extractors with the following names ship with {@code maven-plugin-tools}:
      * <ol>
      *  <li>{@code java-annotations}</li>
-     *  <li>{@code java-javadoc}, deprecated</li>
      *  <li>{@code ant}, deprecated</li>
      *  <li>{@code bsh}, deprecated</li>
      * </ol>

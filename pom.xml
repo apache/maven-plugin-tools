@@ -63,7 +63,6 @@
   <modules>
     <module>maven-plugin-tools-generators</module>
     <module>maven-plugin-tools-api</module>
-    <module>maven-plugin-tools-java</module>
     <module>maven-plugin-tools-annotations</module>
     <module>maven-plugin-annotations</module>
     <module>maven-script</module>
@@ -130,11 +129,6 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-java</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -262,11 +256,6 @@
         <version>2.4.1</version>
       </dependency>
 
-      <dependency>
-        <groupId>com.thoughtworks.qdox</groupId>
-        <artifactId>qdox</artifactId>
-        <version>2.2.0</version>
-      </dependency>
       <dependency>
         <groupId>com.github.javaparser</groupId>
         <artifactId>javaparser-core</artifactId>
