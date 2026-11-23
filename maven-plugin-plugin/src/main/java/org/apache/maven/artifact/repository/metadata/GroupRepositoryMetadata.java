@@ -38,22 +38,27 @@ public class GroupRepositoryMetadata extends AbstractRepositoryMetadata {
         this.groupId = groupId;
     }
 
+    @Override
     public boolean storedInGroupDirectory() {
         return true;
     }
 
+    @Override
     public boolean storedInArtifactVersionDirectory() {
         return false;
     }
 
+    @Override
     public String getGroupId() {
         return groupId;
     }
 
+    @Override
     public String getArtifactId() {
         return null;
     }
 
+    @Override
     public String getBaseVersion() {
         return null;
     }
@@ -81,18 +86,22 @@ public class GroupRepositoryMetadata extends AbstractRepositoryMetadata {
         }
     }
 
+    @Override
     public Object getKey() {
         return groupId;
     }
 
+    @Override
     public boolean isSnapshot() {
         return false;
     }
 
+    @Override
     public ArtifactRepository getRepository() {
         return null;
     }
 
+    @Override
     public void setRepository(ArtifactRepository remoteRepository) {
         // intentionally blank
     }

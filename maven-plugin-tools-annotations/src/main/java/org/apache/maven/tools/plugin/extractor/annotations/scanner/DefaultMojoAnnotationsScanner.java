@@ -53,7 +53,6 @@ import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.Mojo
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoFieldVisitor;
 import org.apache.maven.tools.plugin.extractor.annotations.scanner.visitors.MojoParameterVisitor;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.reflection.Reflector;
 import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.objectweb.asm.ClassReader;
@@ -397,7 +396,8 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
                         }
                     }
 
-                    if (StringUtils.isEmpty(componentAnnotationContent.getRoleClassName())) {
+                    if (componentAnnotationContent.getRoleClassName() == null
+                            || componentAnnotationContent.getRoleClassName().isEmpty()) {
                         componentAnnotationContent.setRoleClassName(mojoComponentVisitor.getClassName());
                     }
                 }

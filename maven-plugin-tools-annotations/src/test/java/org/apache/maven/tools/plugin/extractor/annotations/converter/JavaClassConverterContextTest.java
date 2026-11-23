@@ -80,16 +80,16 @@ class JavaClassConverterContextTest {
         // test resolvable reference
         assertEquals(
                 new FullyQualifiedJavadocReference(currentPackageName, "OtherClass", false),
-                context.resolveReference((JavadocReference.parse(OtherClass.class.getName()))));
+                context.resolveReference(JavadocReference.parse(OtherClass.class.getName())));
 
         // already fully resolved class
         assertEquals(
                 new FullyQualifiedJavadocReference(currentPackageName, "OtherClass", false),
-                context.resolveReference((JavadocReference.parse(OtherClass.class.getName()))));
+                context.resolveReference(JavadocReference.parse(OtherClass.class.getName())));
         // already fully resolved package
         assertEquals(
                 new FullyQualifiedJavadocReference(currentPackageName, false),
-                context.resolveReference((JavadocReference.parse(currentPackageName))));
+                context.resolveReference(JavadocReference.parse(currentPackageName)));
 
         // Class from java's standard import "java.lang"
         assertEquals(
@@ -102,7 +102,7 @@ class JavaClassConverterContextTest {
                         "org.apache.maven.tools.plugin.extractor.annotations.converter.test.other",
                         "OtherClassOtherPackage.EmbeddedEnum",
                         false),
-                context.resolveReference((JavadocReference.parse("OtherClassOtherPackage.EmbeddedEnum"))));
+                context.resolveReference(JavadocReference.parse("OtherClassOtherPackage.EmbeddedEnum")));
 
         // nested class from JDK
         assertEquals(
@@ -116,22 +116,22 @@ class JavaClassConverterContextTest {
         assertEquals(
                 new FullyQualifiedJavadocReference(
                         currentPackageName, "CurrentClass", "field1", MemberType.FIELD, false),
-                context.resolveReference((JavadocReference.parse("#field1"))));
+                context.resolveReference(JavadocReference.parse("#field1")));
         // field from super class
         assertEquals(
                 new FullyQualifiedJavadocReference(
                         currentPackageName, "SuperClass", "superField1", MemberType.FIELD, false),
-                context.resolveReference((JavadocReference.parse("#superField1"))));
+                context.resolveReference(JavadocReference.parse("#superField1")));
         // method
         assertEquals(
                 new FullyQualifiedJavadocReference(
                         currentPackageName, "CurrentClass", "noParamMethod()", MemberType.METHOD, false),
-                context.resolveReference((JavadocReference.parse("#noParamMethod()"))));
+                context.resolveReference(JavadocReference.parse("#noParamMethod()")));
         // method without parentheses
         assertEquals(
                 new FullyQualifiedJavadocReference(
                         currentPackageName, "CurrentClass", "noParamMethod()", MemberType.METHOD, false),
-                context.resolveReference((JavadocReference.parse("#noParamMethod"))));
+                context.resolveReference(JavadocReference.parse("#noParamMethod")));
 
         // method with unresolved java.lang argument
         assertEquals(
@@ -141,7 +141,7 @@ class JavaClassConverterContextTest {
                         "simpleParamMethod(java.lang.Integer)",
                         MemberType.METHOD,
                         false),
-                context.resolveReference((JavadocReference.parse("#simpleParamMethod(Integer)"))));
+                context.resolveReference(JavadocReference.parse("#simpleParamMethod(Integer)")));
 
         // method with unresolved java.lang argument with name
         assertEquals(
@@ -151,7 +151,7 @@ class JavaClassConverterContextTest {
                         "simpleParamMethod(java.lang.Integer)",
                         MemberType.METHOD,
                         false),
-                context.resolveReference((JavadocReference.parse("#simpleParamMethod(Integer value)"))));
+                context.resolveReference(JavadocReference.parse("#simpleParamMethod(Integer value)")));
 
         // method with primitive arguments
         assertEquals(
@@ -161,8 +161,8 @@ class JavaClassConverterContextTest {
                         "complexParamMethod(int,org.apache.maven.tools.plugin.extractor.annotations.converter.test.other.OtherClassOtherPackage.EmbeddedEnum)",
                         MemberType.METHOD,
                         false),
-                context.resolveReference((JavadocReference.parse(
-                        "#complexParamMethod(int value1, OtherClassOtherPackage.EmbeddedEnum value2)"))));
+                context.resolveReference(JavadocReference.parse(
+                        "#complexParamMethod(int value1, OtherClassOtherPackage.EmbeddedEnum value2)")));
         // method with array arguments
         assertEquals(
                 new FullyQualifiedJavadocReference(
@@ -171,7 +171,7 @@ class JavaClassConverterContextTest {
                         "arrayParamMethod(int[],java.lang.String[][][])",
                         MemberType.METHOD,
                         false),
-                context.resolveReference((JavadocReference.parse("#arrayParamMethod(int[], String[][][])"))));
+                context.resolveReference(JavadocReference.parse("#arrayParamMethod(int[], String[][][])")));
 
         // method with generic arguments
         assertEquals(
@@ -181,19 +181,19 @@ class JavaClassConverterContextTest {
                         "genericsParamMethod(java.util.Collection,java.util.function.BiConsumer)",
                         MemberType.METHOD,
                         false),
-                context.resolveReference((JavadocReference.parse(
-                        "#genericsParamMethod(Collection something, java.util.function.BiConsumer function)"))));
+                context.resolveReference(JavadocReference.parse(
+                        "#genericsParamMethod(Collection something, java.util.function.BiConsumer function)")));
 
         // method with unresolvable type
         assertThrows(
                 IllegalArgumentException.class,
                 () -> context.resolveReference(
-                        (JavadocReference.parse("#genericsParamMethod(Collection something, BiConsumer function)"))));
+                        JavadocReference.parse("#genericsParamMethod(Collection something, BiConsumer function)")));
         // constructor
         assertEquals(
                 new FullyQualifiedJavadocReference(
                         currentPackageName, "CurrentClass", "CurrentClass()", MemberType.CONSTRUCTOR, false),
-                context.resolveReference((JavadocReference.parse("#CurrentClass()"))));
+                context.resolveReference(JavadocReference.parse("#CurrentClass()")));
     }
 
     @Test

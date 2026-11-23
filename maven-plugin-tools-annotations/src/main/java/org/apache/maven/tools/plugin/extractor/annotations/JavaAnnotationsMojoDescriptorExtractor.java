@@ -290,7 +290,7 @@ public class JavaAnnotationsMojoDescriptorExtractor implements MojoDescriptorExt
         // try to get artifact with sources classifier, extract somewhere then scan for @since, @deprecated
         for (Artifact artifact : externalArtifacts) {
             // parameter for test-sources too ?? olamy I need that for it test only
-            if (StringUtils.equalsIgnoreCase("tests", artifact.getClassifier())) {
+            if ("tests".equalsIgnoreCase(artifact.getClassifier())) {
                 extendJavaSourceModelWithSourcesJar(sourceModel, artifact, request, "test-sources");
             } else {
                 extendJavaSourceModelWithSourcesJar(sourceModel, artifact, request, "sources");
