@@ -274,6 +274,7 @@ public class DefaultMojoAnnotationsScanner implements MojoAnnotationsScanner {
 
     protected void populateAnnotationContent(Object content, MojoAnnotationVisitor mojoAnnotationVisitor)
             throws ReflectorException {
+        // This only iterates over explicitly defined annotation values, not implicit default values
         for (Map.Entry<String, Object> entry :
                 mojoAnnotationVisitor.getAnnotationValues().entrySet()) {
             reflector.invoke(content, entry.getKey(), new Object[] {entry.getValue()});
