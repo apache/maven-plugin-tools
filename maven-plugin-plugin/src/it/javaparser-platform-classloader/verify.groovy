@@ -19,17 +19,17 @@
 
 import groovy.xml.XmlParser
 
-File descriptorFile = new File( basedir, "plugin/target/classes/META-INF/maven/plugin.xml" )
+File descriptorFile = new File(basedir, "plugin/target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile )
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 def mojo = pluginDescriptor.mojos.mojo.find { it.goal.text() == "hello" }
 
 assert mojo != null
-assert mojo.description.text().contains( "PlatformType" )
+assert mojo.description.text().contains("PlatformType")
 
-File buildLog = new File( basedir, "build.log" )
+File buildLog = new File(basedir, "build.log")
 assert buildLog.isFile()
-assert !buildLog.text.contains( "Unresolvable link in javadoc tag with value PlatformType" )
+assert !buildLog.text.contains("Unresolvable link in javadoc tag with value PlatformType")
 
 return true

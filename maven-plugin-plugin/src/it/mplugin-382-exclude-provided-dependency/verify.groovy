@@ -19,10 +19,10 @@
 
 import groovy.xml.XmlParser
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 // one mojo with one parameter
 assert pluginDescriptor.mojos.mojo.size() == 1
@@ -32,7 +32,11 @@ assert pluginDescriptor.mojos.mojo.parameters.parameter.size() == 1
 assert pluginDescriptor.dependencies.dependency.size() == 2
 
 // expected dependencies on list
-assert pluginDescriptor.dependencies.dependency.find{ it.artifactId.text() == "commons-math3" } != null
-assert pluginDescriptor.dependencies.dependency.find{ it.artifactId.text() == "commons-rng-client-api" } != null
+assert pluginDescriptor.dependencies.dependency.find{
+    it.artifactId.text() == "commons-math3"
+} != null
+assert pluginDescriptor.dependencies.dependency.find{
+    it.artifactId.text() == "commons-rng-client-api"
+} != null
 
-return true;
+return true

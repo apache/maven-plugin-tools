@@ -19,13 +19,13 @@
 
 import groovy.xml.XmlParser
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-File helpClass = new File( basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance_from_deps/annotation_with_inheritance_from_deps/HelpMojo.class" );
+File helpClass = new File(basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance_from_deps/annotation_with_inheritance_from_deps/HelpMojo.class")
 assert helpClass.exists()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first"}[0]
 
@@ -62,7 +62,9 @@ assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 6
 
-def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
+def parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "aliasedParam"
+}[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
@@ -92,7 +94,9 @@ assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'the cool bar to go'
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromSetter"}[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "paramFromSetter"
+}[0]
 
 assert parameter.name.text() == 'paramFromSetter'
 assert parameter.alias.isEmpty()
@@ -102,7 +106,9 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'setter as parameter.'
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromAdd"}[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "paramFromAdd"
+}[0]
 
 assert parameter.name.text() == 'paramFromAdd'
 assert parameter.alias.isEmpty()
@@ -112,7 +118,9 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'add method as parameter.'
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "paramFromSetterDeprecated"}[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "paramFromSetterDeprecated"
+}[0]
 
 assert parameter.name.text() == 'paramFromSetterDeprecated'
 assert parameter.alias.isEmpty()
@@ -122,4 +130,4 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == 'deprecated setter as parameter.'
 
-return true;
+return true
