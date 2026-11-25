@@ -19,16 +19,16 @@
 
 import groovy.xml.XmlParser
 
-File touchFile = new File( basedir, "target/touch.txt" )
+File touchFile = new File(basedir, "target/touch.txt")
 assert touchFile.isFile()
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-File helpClass = new File( basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance/annotation_with_inheritance/HelpMojo.class" );
+File helpClass = new File(basedir, "target/classes/org/apache/maven/its/annotation_with_inheritance/annotation_with_inheritance/HelpMojo.class")
 assert helpClass.exists()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "first" }[0]
 
@@ -64,7 +64,9 @@ assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 4
 
-def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
+def parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "aliasedParam"
+}[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
@@ -99,4 +101,4 @@ mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
 assert mojo.requiresDependencyCollection.text() == 'compile'
 assert mojo.threadSafe.text() == 'true'
 
-return true;
+return true

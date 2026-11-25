@@ -18,9 +18,9 @@
  */
 
 // help.log holds the output of the second invoker run: the goal and its undocumented parameter must be listed
-def log = new File( basedir, "help.log" ).text.replace( "\r", "" )
+def log = new File(basedir, "help.log").text.replace("\r", "")
 
-assert log.contains( "[INFO] help 1.0-SNAPSHOT" ) : "help.log has no plugin header"
+assert log.contains("[INFO] help 1.0-SNAPSHOT") : "help.log has no plugin header"
 assert log =~ /(?m)^prefix:test$/ : "help.log does not describe the goal prefix:test"
 assert log =~ /(?s)Available parameters:\s+empyAnnotatedParameter\s/ : "help.log does not list the undocumented parameter"
 

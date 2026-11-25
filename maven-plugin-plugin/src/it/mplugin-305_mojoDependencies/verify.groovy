@@ -18,18 +18,18 @@
 import groovy.xml.XmlParser
 
 def parameterCount = { String variant ->
-    File descriptorFile = new File( basedir, "target/${variant}/classes/META-INF/maven/plugin.xml" )
+    File descriptorFile = new File(basedir, "target/${variant}/classes/META-INF/maven/plugin.xml")
     assert descriptorFile.isFile() : "no plugin descriptor for ${variant}"
-    def pluginDescriptor = new XmlParser().parse( descriptorFile )
+    def pluginDescriptor = new XmlParser().parse(descriptorFile)
     assert pluginDescriptor.mojos.mojo.size() == 1
     return pluginDescriptor.mojos.mojo.parameters.parameter.size()
 }
 
 // no <mojoDependencies>: every dependency is scanned for inherited parameters
-assert parameterCount( "default" ) == 48
+assert parameterCount("default") == 48
 // <mojoDependencies/>: no dependency is scanned
-assert parameterCount( "empty" ) == 0
+assert parameterCount("empty") == 0
 // a single entry: only maven-surefire-common (3.1.0) is scanned
-assert parameterCount( "single" ) == 51
+assert parameterCount("single") == 51
 
 return true
