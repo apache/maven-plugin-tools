@@ -19,13 +19,13 @@
 
 import groovy.xml.XmlParser
 
-File touchFile = new File( basedir, "module-mojo/target/touch.txt" )
+File touchFile = new File(basedir, "module-mojo/target/touch.txt")
 assert touchFile.isFile()
 
-File descriptorFile = new File( basedir, "module-mojo/target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "module-mojo/target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 assert pluginDescriptor.mojos.mojo.size() == 3
 
@@ -63,7 +63,9 @@ assert mojo.requirements.requirement[1].'field-name'.text() == 'projectHelper'
 
 assert mojo.parameters.parameter.size() == 3
 
-def parameter = mojo.parameters.parameter.findAll{ it.name.text() == "aliasedParam"}[0]
+def parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "aliasedParam"
+}[0]
 
 assert parameter.name.text() == 'aliasedParam'
 assert parameter.alias.text() == 'alias'
@@ -98,4 +100,4 @@ mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "second"}[0]
 assert mojo.requiresDependencyCollection.text() == 'compile'
 assert mojo.threadSafe.text() == 'true'
 
-return true;
+return true

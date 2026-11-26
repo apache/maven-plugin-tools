@@ -18,13 +18,12 @@
  */
 
 // each module documents the same mojo; they differ in how the deprecations are declared
-for ( String module in [ "help", "help-deprecated-annotation-only" ] )
-{
-    def expected = new File( basedir, "${module}/expected-help.txt" ).text.trim().replace( "\r", "" )
+for (String module in ["help", "help-deprecated-annotation-only"]) {
+    def expected = new File(basedir, "${module}/expected-help.txt").text.trim().replace("\r", "")
 
-    def log = new File( basedir, "${module}.log" ).text.replace( "\r", "" )
-    log = log.substring( log.indexOf( "[INFO] ${module} 1.0-SNAPSHOT" ) )
-    log = log.substring( 0, log.indexOf( "[INFO]", 5 ) ).trim()
+    def log = new File(basedir, "${module}.log").text.replace("\r", "")
+    log = log.substring(log.indexOf("[INFO] ${module} 1.0-SNAPSHOT"))
+    log = log.substring(0, log.indexOf("[INFO]", 5)).trim()
 
     assert log == expected : "unexpected help output of ${module}"
 }
