@@ -36,114 +36,142 @@ public class EnhancedParameterWrapper extends Parameter {
         this.delegate = delegate;
     }
 
+    @Override
     public String getName() {
         return delegate.getName();
     }
 
+    @Override
     public void setName(String name) {
         delegate.setName(name);
     }
 
+    @Override
     public String getType() {
         return delegate.getType();
     }
 
+    @Override
     public void setType(String type) {
         delegate.setType(type);
     }
 
+    @Override
     public boolean isRequired() {
         return delegate.isRequired();
     }
 
+    @Override
     public void setRequired(boolean required) {
         delegate.setRequired(required);
     }
 
+    @Override
     public String getDescription() {
         return delegate.getDescription();
     }
 
+    @Override
     public void setDescription(String description) {
         delegate.setDescription(description);
     }
 
+    @Override
     public String getExpression() {
         return delegate.getExpression();
     }
 
+    @Override
     public void setExpression(String expression) {
         delegate.setExpression(expression);
     }
 
+    @Override
     public String getDeprecated() {
         return delegate.getDeprecated();
     }
 
+    @Override
     public void setDeprecated(String deprecated) {
         delegate.setDeprecated(deprecated);
     }
 
+    @Override
     public int hashCode() {
         return delegate.hashCode();
     }
 
+    @Override
     public boolean equals(Object other) {
         return delegate.equals(other);
     }
 
+    @Override
     public String getAlias() {
         return delegate.getAlias();
     }
 
+    @Override
     public void setAlias(String alias) {
         delegate.setAlias(alias);
     }
 
+    @Override
     public boolean isEditable() {
         return delegate.isEditable();
     }
 
+    @Override
     public void setEditable(boolean editable) {
         delegate.setEditable(editable);
     }
 
+    @Override
     public void setDefaultValue(String defaultValue) {
         delegate.setDefaultValue(defaultValue);
     }
 
+    @Override
     public String getDefaultValue() {
         return delegate.getDefaultValue();
     }
 
+    @Override
     public String toString() {
         return delegate.toString();
     }
 
+    @Override
     public Requirement getRequirement() {
         return delegate.getRequirement();
     }
 
+    @Override
     public void setRequirement(Requirement requirement) {
         delegate.setRequirement(requirement);
     }
 
+    @Override
     public String getImplementation() {
         return delegate.getImplementation();
     }
 
+    @Override
     public void setImplementation(String implementation) {
         delegate.setImplementation(implementation);
     }
 
+    @Override
     public String getSince() {
         return delegate.getSince();
     }
 
+    @Override
     public void setSince(String since) {
         delegate.setSince(since);
     }
 
+    @Override
     public Parameter clone() {
         return delegate.clone();
     }

@@ -138,7 +138,7 @@ public class RequirementsHistory {
         }
 
         if (jdk == null) {
-            String version = (compiler == null) ? null : compiler.getVersion();
+            String version = compiler == null ? null : compiler.getVersion();
 
             if (version != null) {
                 return "Default target for maven-compiler-plugin version " + version;

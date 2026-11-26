@@ -20,8 +20,12 @@ package org.apache.maven.tools.plugin.javadoc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +37,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import com.sun.net.httpserver.HttpServer;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
 import org.junit.jupiter.api.Test;
@@ -121,7 +124,7 @@ class JavadocSiteTest {
     }
 
     @Test
-    void classLinkFromPackageAndClassNameWithExternalJavadocRequiringModules() throws URISyntaxException, IOException {
+    void classLinkFromPackageAndClassNameWithExternalJavadocRequiringModules() throws Exception {
         URI baseUri = new URI("https://docs.oracle.com/en/java/javase/11/docs/api/");
         JavadocSite site = new JavadocSite(
                 baseUri,
@@ -134,29 +137,66 @@ class JavadocSiteTest {
     @Test
     void resolvesBaseUrlBeforeRequestingPackageList() throws Exception {
         List<String> requests = Collections.synchronizedList(new ArrayList<>());
-        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
-        server.createContext("/javadoc", exchange -> {
-            String path = exchange.getRequestURI().getPath();
-            requests.add(exchange.getRequestMethod() + " " + path);
-            if (path.equals("/javadoc/")) {
-                exchange.getResponseHeaders().add("Location", "/javadoc/api/");
-                exchange.sendResponseHeaders(302, -1);
-            } else if (path.equals("/javadoc/api/")) {
-                exchange.sendResponseHeaders(200, -1);
-            } else if (path.equals("/javadoc/api/package-list")) {
-                byte[] response = "java.lang\n".getBytes(StandardCharsets.UTF_8);
-                exchange.sendResponseHeaders(200, response.length);
-                try (OutputStream output = exchange.getResponseBody()) {
-                    output.write(response);
+        try (ServerSocket server = new ServerSocket(0, 0, InetAddress.getByName("127.0.0.1"))) {
+            Thread serverThread = new Thread(() -> {
+                while (!server.isClosed()) {
+                    try (Socket socket = server.accept()) {
+                        socket.setSoTimeout(5000);
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(socket.getInputStream(), StandardCharsets.ISO_8859_1));
+                        String requestLine = reader.readLine();
+                        if (requestLine == null) {
+                            continue;
+                        }
+                        String[] request = requestLine.split(" ");
+                        String method = request[0];
+                        String path = request[1];
+                        String line;
+                        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                            // Consume the request headers before replying.
+                        }
+                        requests.add(method + " " + path);
+
+                        int status;
+                        String reason;
+                        String location = null;
+                        byte[] body = new byte[0];
+                        if (path.equals("/javadoc/")) {
+                            status = 302;
+                            reason = "Found";
+                            location = "/javadoc/api/";
+                        } else if (path.equals("/javadoc/api/") || path.equals("/javadoc/api/element-list")) {
+                            status = 200;
+                            reason = "OK";
+                        } else if (path.equals("/javadoc/api/package-list")) {
+                            status = 200;
+                            reason = "OK";
+                            body = "java.lang\n".getBytes(StandardCharsets.UTF_8);
+                        } else {
+                            status = 404;
+                            reason = "Not Found";
+                        }
+
+                        OutputStream output = socket.getOutputStream();
+                        String response = "HTTP/1.1 " + status + " " + reason + "\r\n"
+                                + (location == null ? "" : "Location: " + location + "\r\n")
+                                + "Content-Length: " + body.length + "\r\n"
+                                + "Connection: close\r\n\r\n";
+                        output.write(response.getBytes(StandardCharsets.US_ASCII));
+                        if (method.equals("GET")) {
+                            output.write(body);
+                        }
+                        output.flush();
+                    } catch (IOException e) {
+                        if (!server.isClosed()) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-            } else {
-                exchange.sendResponseHeaders(404, -1);
-            }
-            exchange.close();
-        });
-        server.start();
-        try {
-            URI baseUri = URI.create("http://localhost:" + server.getAddress().getPort() + "/javadoc/");
+            }, "javadoc-test-http-server");
+            serverThread.setDaemon(true);
+            serverThread.start();
+            URI baseUri = URI.create("http://127.0.0.1:" + server.getLocalPort() + "/javadoc/");
             JavadocSite site = new JavadocSite(baseUri, (Settings) null);
             URI redirectedBaseUri = baseUri.resolve("api/");
             assertTrue(site.hasEntryFor(java.util.Optional.empty(), java.util.Optional.of("java.lang")));
@@ -167,8 +207,6 @@ class JavadocSiteTest {
             assertFalse(requests.contains("GET /javadoc/"));
             assertTrue(requests.contains("GET /javadoc/api/package-list"));
             assertTrue(requests.indexOf("GET /javadoc/package-list") < requests.indexOf("HEAD /javadoc/"));
-        } finally {
-            server.stop(0);
         }
     }
 

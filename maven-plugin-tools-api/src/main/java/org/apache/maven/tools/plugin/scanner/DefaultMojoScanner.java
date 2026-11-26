@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -155,7 +154,7 @@ public class DefaultMojoScanner implements MojoScanner {
             orderedExtractors.add(extractor);
         }
 
-        Collections.sort(orderedExtractors, MojoDescriptorExtractorComparator.INSTANCE);
+        orderedExtractors.sort(MojoDescriptorExtractorComparator.INSTANCE);
 
         return orderedExtractors;
     }

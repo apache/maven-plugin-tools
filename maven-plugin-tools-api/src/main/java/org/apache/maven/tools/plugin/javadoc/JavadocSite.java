@@ -39,36 +39,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.Credentials;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.tools.plugin.javadoc.FullyQualifiedJavadocReference.MemberType;
@@ -239,7 +240,7 @@ class JavadocSite {
             HttpClientContext httpContext = HttpClientContext.create();
             try (CloseableHttpResponse response =
                     executeWithTimeoutRetry(httpClient, new HttpHead(url.toString()), httpContext)) {
-                int status = response.getStatusLine().getStatusCode();
+                int status = response.getCode();
                 if (status == HttpStatus.SC_METHOD_NOT_ALLOWED || status == HttpStatus.SC_NOT_IMPLEMENTED) {
                     return getRedirectedUrlWithGet(httpClient, url);
                 }
@@ -251,7 +252,7 @@ class JavadocSite {
                             "Unexpected HTTP status code " + status + " getting resource " + url + ".");
                 }
 
-                List<URI> redirects = httpContext.getRedirectLocations();
+                List<URI> redirects = httpContext.getRedirectLocations().getAll();
                 if (isNotEmpty(redirects)) {
                     return redirects.get(redirects.size() - 1).resolve(".");
                 }
@@ -264,13 +265,13 @@ class JavadocSite {
         HttpClientContext httpContext = HttpClientContext.create();
         try (CloseableHttpResponse response =
                 executeWithTimeoutRetry(httpClient, new HttpGet(url.toString()), httpContext)) {
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status != HttpStatus.SC_OK) {
                 throw new FileNotFoundException(
                         "Unexpected HTTP status code " + status + " getting resource " + url + ".");
             }
             EntityUtils.consume(response.getEntity());
-            List<URI> redirects = httpContext.getRedirectLocations();
+            List<URI> redirects = httpContext.getRedirectLocations().getAll();
             if (isNotEmpty(redirects)) {
                 return redirects.get(redirects.size() - 1).resolve(".");
             }
@@ -279,7 +280,7 @@ class JavadocSite {
     }
 
     private static CloseableHttpResponse executeWithTimeoutRetry(
-            CloseableHttpClient httpClient, HttpRequestBase request, HttpClientContext context) throws IOException {
+            CloseableHttpClient httpClient, ClassicHttpRequest request, HttpClientContext context) throws IOException {
         try {
             return httpClient.execute(request, context);
         } catch (SocketTimeoutException e) {
@@ -579,10 +580,10 @@ class JavadocSite {
 
         builder.setConnectionManager(new PoolingHttpClientConnectionManager(csfRegistry));
         builder.setDefaultRequestConfig(RequestConfig.custom()
-                .setSocketTimeout(DEFAULT_TIMEOUT)
-                .setConnectTimeout(DEFAULT_TIMEOUT)
+                .setResponseTimeout(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS)
+                .setConnectTimeout(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS)
                 .setCircularRedirectsAllowed(true)
-                .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
+                .setCookieSpec(StandardCookieSpec.IGNORE)
                 .build());
 
         // Some web servers don't allow the default user-agent sent by httpClient
@@ -594,17 +595,19 @@ class JavadocSite {
         if (settings != null && settings.getActiveProxy() != null) {
             Proxy activeProxy = settings.getActiveProxy();
 
-            if (StringUtils.isNotEmpty(activeProxy.getHost())
+            if ((activeProxy.getHost() != null && !activeProxy.getHost().isEmpty())
                     && (url == null || !isNonProxyHost(activeProxy.getNonProxyHosts(), url.getHost()))) {
                 HttpHost proxy = new HttpHost(activeProxy.getHost(), activeProxy.getPort());
                 builder.setProxy(proxy);
 
-                if (StringUtils.isNotEmpty(activeProxy.getUsername()) && activeProxy.getPassword() != null) {
-                    Credentials credentials =
-                            new UsernamePasswordCredentials(activeProxy.getUsername(), activeProxy.getPassword());
+                if ((activeProxy.getUsername() != null
+                                && !activeProxy.getUsername().isEmpty())
+                        && activeProxy.getPassword() != null) {
+                    Credentials credentials = new UsernamePasswordCredentials(
+                            activeProxy.getUsername(), activeProxy.getPassword().toCharArray());
 
-                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                    credentialsProvider.setCredentials(AuthScope.ANY, credentials);
+                    CredentialsStore credentialsProvider = new BasicCredentialsProvider();
+                    credentialsProvider.setCredentials(new AuthScope(null, -1), credentials);
                     builder.setDefaultCredentialsProvider(credentialsProvider);
                 }
             }
@@ -624,7 +627,7 @@ class JavadocSite {
 
             final HttpGet httpMethod = new HttpGet(url.toString());
 
-            HttpResponse response;
+            ClassicHttpResponse response;
             HttpClientContext httpContext = HttpClientContext.create();
             try {
                 response = httpClient.execute(httpMethod, httpContext);
@@ -633,13 +636,13 @@ class JavadocSite {
                 response = httpClient.execute(httpMethod, httpContext);
             }
 
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status != HttpStatus.SC_OK) {
                 throw new FileNotFoundException(
                         "Unexpected HTTP status code " + status + " getting resource " + url.toExternalForm() + ".");
             } else {
                 int pos = url.getPath().lastIndexOf('/');
-                List<URI> redirects = httpContext.getRedirectLocations();
+                List<URI> redirects = httpContext.getRedirectLocations().getAll();
                 if (pos >= 0 && isNotEmpty(redirects)) {
                     URI location = redirects.get(redirects.size() - 1);
                     String suffix = url.getPath().substring(pos);
@@ -659,7 +662,7 @@ class JavadocSite {
                     super.close();
 
                     if (httpMethod != null) {
-                        httpMethod.releaseConnection();
+                        httpMethod.reset();
                     }
                     if (httpClient != null) {
                         httpClient.close();
