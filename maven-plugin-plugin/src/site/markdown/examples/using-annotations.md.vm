@@ -47,7 +47,7 @@ For more information on these annotations, see the [corresponding documentation]
 
 Notice that Plugin Tools Java Annotations are named after Plugin Tools Javadoc Tags with following little differences:
 
-|[Plugin Tools Javadoc Tags](../../maven-plugin-tools-java/index.html)|[Plugin Tools Java Annotation](../../maven-plugin-tools-annotations/index.html)|
+|Plugin Tools Javadoc Tags|[Plugin Tools Java Annotation](../../maven-plugin-tools-annotations/index.html)|
 |:---|:---|
 |`@goal "goal-name"`|`@Mojo( name = "goal-name" )`|
 |`@phase "<phase-name>"`|`@Mojo( defaultPhase = LifecyclePhase.<phase> )`|

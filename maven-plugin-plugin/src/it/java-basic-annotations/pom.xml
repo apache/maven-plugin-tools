@@ -30,7 +30,7 @@ under the License.
   <name>Maven Integration Test :: basic-java-annotations</name>
   <description>
     Test plugin-plugin, which tests maven-plugin-tools-api and
-    maven-plugin-tools-java. This will generate a plugin descriptor from
+    maven-plugin-tools-annotations. This will generate a plugin descriptor from
     java-based mojo sources, install the plugin, and then use it.
   </description>
 

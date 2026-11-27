@@ -21,6 +21,6 @@ under the License.
   "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
   "https://checkstyle.org/dtds/suppressions_1_2.dtd">
  <suppressions>
-  <suppress checks="MethodLengthCheck" files="PluginDescriptorFilesGenerator.java|JavaJavadocMojoDescriptorExtractor.java" />
+  <suppress checks="MethodLengthCheck" files="PluginDescriptorFilesGenerator.java" />
   <suppress checks="ParameterNumberCheck" files="ParameterAnnotationContent.java|GoalRenderer.java" />
 </suppressions>
