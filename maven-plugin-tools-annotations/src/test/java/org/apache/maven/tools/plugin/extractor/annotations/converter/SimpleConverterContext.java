@@ -50,7 +50,7 @@ public class SimpleConverterContext implements ConverterContext {
     public SimpleConverterContext(String packageName, URI javadocBaseUrl, JavadocReference... unresolvableReferences) {
         this(
                 packageName,
-                (ref) -> new JavadocLinkGenerator(javadocBaseUrl, "11").createLink(ref),
+                ref -> new JavadocLinkGenerator(javadocBaseUrl, "11").createLink(ref),
                 unresolvableReferences);
     }
 

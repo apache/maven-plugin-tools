@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.markup.Markup;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -76,7 +74,8 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
     protected void renderBody() {
         startSection(getTitle());
 
-        if (!(pluginDescriptor.getMojos() != null && pluginDescriptor.getMojos().size() > 0)) {
+        if (!(pluginDescriptor.getMojos() != null
+                && !pluginDescriptor.getMojos().isEmpty())) {
             paragraph(getI18nString("goals.nogoal"));
             endSection();
             return;
@@ -144,9 +143,9 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             }
 
             sink.tableCell();
-            if (StringUtils.isNotEmpty(mojo.getDeprecated())) {
+            if (mojo.getDeprecated() != null && !mojo.getDeprecated().isEmpty()) {
                 sink.division();
-                sink.inline(SinkEventAttributeSet.Semantics.STRONG);
+                sink.inline(InlineSemantics.strong());
                 sink.text(getI18nString("goal.deprecated"));
                 sink.text(".");
                 sink.inline_();
@@ -157,7 +156,7 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
             }
 
             String description;
-            if (StringUtils.isNotEmpty(mojo.getDescription())) {
+            if (mojo.getDescription() != null && !mojo.getDescription().isEmpty()) {
                 description = mojo.getDescription();
             } else {
                 description = getI18nString("goal.nodescription");
@@ -182,13 +181,13 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         String maven = RequirementsHistory.discoverMavenRequirement(project, pluginDescriptor);
         sink.tableRow();
         tableCell(getI18nString("systemrequirements.maven"));
-        tableCell((maven != null ? maven : getI18nString("systemrequirements.nominimum")));
+        tableCell(maven != null ? maven : getI18nString("systemrequirements.nominimum"));
         sink.tableRow_();
 
         String jdk = RequirementsHistory.discoverJdkRequirement(project, pluginDescriptor);
         sink.tableRow();
         tableCell(getI18nString("systemrequirements.jdk"));
-        tableCell((jdk != null ? jdk : getI18nString("systemrequirements.nominimum")));
+        tableCell(jdk != null ? jdk : getI18nString("systemrequirements.nominimum"));
         sink.tableRow_();
 
         endTable();
@@ -259,7 +258,9 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         sb.append("<project>").append(Markup.EOL);
         sb.append("  ...").append(Markup.EOL);
         sb.append("  <build>").append(Markup.EOL);
-        sb.append("    <!-- " + getI18nString("usage.pluginManagement") + " -->")
+        sb.append("    <!-- ")
+                .append(getI18nString("usage.pluginManagement"))
+                .append(" -->")
                 .append(Markup.EOL);
         sb.append("    <pluginManagement>").append(Markup.EOL);
         sb.append("      <plugins>").append(Markup.EOL);
@@ -283,7 +284,10 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
         sb.append("        ...").append(Markup.EOL);
         sb.append("      </plugins>").append(Markup.EOL);
         sb.append("    </pluginManagement>").append(Markup.EOL);
-        sb.append("    <!-- " + getI18nString("usage.plugins") + " -->").append(Markup.EOL);
+        sb.append("    <!-- ")
+                .append(getI18nString("usage.plugins"))
+                .append(" -->")
+                .append(Markup.EOL);
         sb.append("    <plugins>").append(Markup.EOL);
         sb.append("      <plugin>").append(Markup.EOL);
         sb.append("        <groupId>")
@@ -301,7 +305,10 @@ class PluginOverviewRenderer extends AbstractPluginReportRenderer {
 
         if (hasMavenReport) {
             sb.append("  ...").append(Markup.EOL);
-            sb.append("  <!-- " + getI18nString("usage.reporting") + " -->").append(Markup.EOL);
+            sb.append("  <!-- ")
+                    .append(getI18nString("usage.reporting"))
+                    .append(" -->")
+                    .append(Markup.EOL);
             sb.append("  <reporting>").append(Markup.EOL);
             sb.append("    <plugins>").append(Markup.EOL);
             sb.append("      <plugin>").append(Markup.EOL);

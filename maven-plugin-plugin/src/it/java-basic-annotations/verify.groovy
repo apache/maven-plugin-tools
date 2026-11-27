@@ -19,13 +19,13 @@
 
 import groovy.xml.XmlParser
 
-File touchFile = new File( basedir, "target/touch.txt" )
+File touchFile = new File(basedir, "target/touch.txt")
 assert touchFile.isFile()
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 assert pluginDescriptor.requiredJavaVersion.text() == '1.8'
 assert pluginDescriptor.requiredMavenVersion.text() == maven3Version
@@ -79,7 +79,9 @@ assert mojo.requirements.requirement[5].'field-name'.text() == 'settings'
 
 assert mojo.parameters.parameter.size() == 3
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "namedParam"
+}[0]
 assert parameter.name.text() == 'namedParam'
 assert parameter.alias.text() == 'alias'
 assert parameter.type.text() == 'java.lang.String'
@@ -97,7 +99,9 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == 'Project directory.'
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "touchFile"
+}[0]
 assert parameter.name.text() == 'touchFile'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.io.File'
@@ -138,7 +142,9 @@ assert parameter.required.text() == 'false'
 assert parameter.editable.text() == 'true'
 assert parameter.description.text() == ''
 
-def requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
+def requirement = mojo.requirements.requirement.findAll{
+    it.'field-name'.text() == "projectHelper"
+}[0]
 assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
 // check values set by every annotation
@@ -175,12 +181,14 @@ assert parameter.required.text() == 'true'
 assert parameter.editable.text() == 'false'
 assert parameter.description.text() == 'Parameter description.'
 
-requirement = mojo.requirements.requirement.findAll{ it.'field-name'.text() == "projectHelper" }[0]
+requirement = mojo.requirements.requirement.findAll{
+    it.'field-name'.text() == "projectHelper"
+}[0]
 assert requirement.role.text() == 'org.apache.maven.project.MavenProjectHelper'
 
 // check help mojo source and class
-assert new File( basedir, "target/classes/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.class" ).isFile()
-assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.java" ).isFile()
+assert new File(basedir, "target/classes/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.class").isFile()
+assert new File(basedir, "target/generated-sources/plugin/org/apache/maven/its/basic_java_annotations/maven_it_basic_java_annotations/HelpMojo.java").isFile()
 
 mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "help"}[0]
 assert mojo.goal.text() == 'help'
@@ -194,4 +202,4 @@ assert mojo.deprecated.text() == 'No reason given'
 parameter = mojo.parameters.parameter.findAll{ it.name.text() == "param" }[0]
 assert parameter.deprecated.text() == 'No reason given'
 
-return true;
+return true

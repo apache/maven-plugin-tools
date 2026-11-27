@@ -17,14 +17,14 @@
 
 import groovy.xml.XmlParser
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 def mojo = pluginDescriptor.mojos.mojo.findAll{ it.goal.text() == "help" }[0]
 
 // check help mojo plugin descriptor
 assert mojo != null
 
-return true;
+return true

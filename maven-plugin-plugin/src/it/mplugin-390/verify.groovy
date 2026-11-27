@@ -17,13 +17,13 @@
  * under the License.
  */
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-File touchFile = new File( basedir, "target/touch.txt" );
+File touchFile = new File(basedir, "target/touch.txt")
 assert touchFile.isFile()
 
 // the touch file should be newer than the descriptor
 assert touchFile.lastModified() > descriptorFile.lastModified()
 
-return true;
+return true

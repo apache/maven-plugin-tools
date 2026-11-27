@@ -17,8 +17,8 @@
  * under the License.
  */
 
-build = new File( basedir, "build.log" ).text
-assert build.contains( "[WARNING] Error analyzing class com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class in " )
-assert build =~  /com[\\\/]ibm[\\\/]icu[\\\/]icu4j[\\\/]2.6.1[\\\/]icu4j-2.6.1.jar: ignoring class/
+build = new File(basedir, "build.log").text
+assert build.contains("[WARNING] Error analyzing class com/ibm/icu/impl/data/LocaleElements_zh__PINYIN.class in ")
+assert build =~ /com[\\\/]ibm[\\\/]icu[\\\/]icu4j[\\\/]2.6.1[\\\/]icu4j-2.6.1.jar: ignoring class/
 
-return true;
+return true

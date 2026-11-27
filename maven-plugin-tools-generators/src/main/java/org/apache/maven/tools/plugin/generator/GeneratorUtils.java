@@ -184,7 +184,6 @@ public final class GeneratorUtils {
                     text = "<code>" + text + "</code>";
                 }
             }
-
             decoded.append(description, copiedUntil, matcher.start());
             decoded.append((text != null) ? text : "");
             copiedUntil = tagEnd + 1;
@@ -247,7 +246,7 @@ public final class GeneratorUtils {
         }
 
         // strip the header/body stuff
-        String ls = System.getProperty("line.separator");
+        String ls = System.lineSeparator();
         int startPos = commentCleaned.indexOf("<body>" + ls) + 6 + ls.length();
         int endPos = commentCleaned.indexOf(ls + "</body>");
         commentCleaned = commentCleaned.substring(startPos, endPos);
@@ -474,7 +473,7 @@ public final class GeneratorUtils {
             if (impl.lastIndexOf('.') != -1) {
                 String name = impl.substring(0, impl.lastIndexOf('.'));
                 if (packageNames.get(name) != null) {
-                    int next = (packageNames.get(name)).intValue() + 1;
+                    int next = packageNames.get(name).intValue() + 1;
                     packageNames.put(name, Integer.valueOf(next));
                 } else {
                     packageNames.put(name, Integer.valueOf(1));
