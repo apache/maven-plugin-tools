@@ -19,10 +19,10 @@
 
 import groovy.xml.XmlParser
 
-File descriptorFile = new File( basedir, "target/classes/META-INF/maven/plugin.xml" );
+File descriptorFile = new File(basedir, "target/classes/META-INF/maven/plugin.xml")
 assert descriptorFile.isFile()
 
-def pluginDescriptor = new XmlParser().parse( descriptorFile );
+def pluginDescriptor = new XmlParser().parse(descriptorFile)
 
 assert pluginDescriptor.requiredJavaVersion.text() == '17'
 assert pluginDescriptor.requiredMavenVersion.text() == maven4Version
@@ -40,7 +40,9 @@ assert mojo.phase.text() == 'integration-test'
 
 assert mojo.afterLinks.afterLink.size() == 3
 
-afterLink = mojo.afterLinks.afterLink.findAll{ it.phase.text() == "integration-test" }[0]
+afterLink = mojo.afterLinks.afterLink.findAll{
+    it.phase.text() == "integration-test"
+}[0]
 assert afterLink.phase.text() == 'integration-test'
 assert afterLink.type.isEmpty()
 assert afterLink.scope.isEmpty()
@@ -69,7 +71,9 @@ assert parameter.description.text() == 'Project directory.'
 assert parameter.defaultValue.text() == '${basedir}'
 assert parameter.expression.isEmpty()
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "touchFile" }[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "touchFile"
+}[0]
 assert parameter.name.text() == 'touchFile'
 assert parameter.alias.isEmpty()
 assert parameter.type.text() == 'java.nio.file.Path'
@@ -81,7 +85,9 @@ assert parameter.description.text() == ''
 assert parameter.defaultValue.text() == '${project.build.directory}/touch.txt'
 assert parameter.expression.text() == '${first.touchFile}'
 
-parameter = mojo.parameters.parameter.findAll{ it.name.text() == "namedParam" }[0]
+parameter = mojo.parameters.parameter.findAll{
+    it.name.text() == "namedParam"
+}[0]
 assert parameter.name.text() == 'namedParam'
 assert parameter.alias.text() == 'alias'
 assert parameter.type.text() == 'java.lang.String'
@@ -94,7 +100,7 @@ assert parameter.defaultValue.isEmpty()
 assert parameter.expression.isEmpty()
 
 // check help mojo source and class
-assert new File( basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class" ).isFile()
-assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/v4api/HelpMojo.java" ).isFile()
+assert new File(basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class").isFile()
+assert new File(basedir, "target/generated-sources/plugin/org/apache/maven/its/v4api/HelpMojo.java").isFile()
 
-return true;
+return true

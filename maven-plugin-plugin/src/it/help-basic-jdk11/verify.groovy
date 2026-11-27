@@ -17,12 +17,12 @@
  * under the License.
  */
 
-expected = new File( basedir, "expected-help.txt" ).text.trim().replace( "\r", "" );
+expected = new File(basedir, "expected-help.txt").text.trim().replace("\r", "")
 
-log = new File( basedir, "help.log" ).text.replace( "\r", "" );
-log = log.substring( log.indexOf( "[INFO] help-jdk11 1.0-SNAPSHOT" ) );
-log = log.substring( 0, log.indexOf( "[INFO]", 5 ) ).trim();
+log = new File(basedir, "help.log").text.replace("\r", "")
+log = log.substring(log.indexOf("[INFO] help-jdk11 1.0-SNAPSHOT"))
+log = log.substring(0, log.indexOf("[INFO]", 5)).trim()
 
-assert log == expected;
+assert log == expected
 
-return true;
+return true

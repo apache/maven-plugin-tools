@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet.Semantics;
 import org.apache.maven.doxia.util.DoxiaUtils;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
@@ -88,10 +87,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         renderDescription("fullname", descriptor.getPluginDescriptor().getId() + ":" + descriptor.getGoal(), false);
 
         String context = "goal " + descriptor.getGoal();
-        if (StringUtils.isNotEmpty(descriptor.getDeprecated())) {
+        if (descriptor.getDeprecated() != null && !descriptor.getDeprecated().isEmpty()) {
             renderDescription("deprecated", getXhtmlWithValidatedLinks(descriptor.getDeprecated(), context), true);
         }
-        if (StringUtils.isNotEmpty(descriptor.getDescription())) {
+        if (descriptor.getDescription() != null && !descriptor.getDescription().isEmpty()) {
             renderDescription("description", getXhtmlWithValidatedLinks(descriptor.getDescription(), context), true);
         } else {
             renderDescription("description", getI18nString("nodescription"), false);
@@ -152,7 +151,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
 
     private void renderDescriptionPrefix(String prefixKey) {
         sink.paragraph();
-        sink.inline(Semantics.STRONG);
+        sink.inline(InlineSemantics.strong());
         sink.text(getI18nString(prefixKey));
         sink.inline_();
         sink.text(":");
@@ -200,7 +199,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             linkPatternedText(getI18nString(attributeKey));
             if (codeArgument.isPresent()) {
                 text(": ");
-                sink.inline(Semantics.CODE);
+                sink.inline(InlineSemantics.code());
                 sink.text(codeArgument.get());
                 sink.inline_();
             }
@@ -238,7 +237,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         if (link.isPresent()) {
             sink.link(link.get(), null);
         }
-        sink.inline(Semantics.CODE);
+        sink.inline(InlineSemantics.code());
         sink.text(text);
         sink.inline_();
         if (link.isPresent()) {
@@ -269,7 +268,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
         String description;
         String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
         renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
-        if (StringUtils.isNotEmpty(parameter.getDescription())) {
+        if (parameter.getDescription() != null && !parameter.getDescription().isEmpty()) {
             description = getXhtmlWithValidatedLinks(parameter.getDescription(), context);
         } else {
             description = getI18nString("nodescription");
@@ -298,7 +297,8 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             String context = "Parameter " + parameter.getName() + " in goal " + descriptor.getGoal();
             renderDeprecatedParameterDescription(parameter.getDeprecated(), context);
             sink.division();
-            if (StringUtils.isNotEmpty(parameter.getDescription())) {
+            if (parameter.getDescription() != null
+                    && !parameter.getDescription().isEmpty()) {
                 sink.rawText(getXhtmlWithValidatedLinks(parameter.getDescription(), context));
             } else {
                 sink.text(getI18nString("nodescription"));
@@ -309,7 +309,7 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
             Map.Entry<String, Optional<String>> typeAndLink = getLinkedType(parameter, false);
             renderDetail(getI18nString("parameter.type"), typeAndLink.getKey(), typeAndLink.getValue());
 
-            if (StringUtils.isNotEmpty(parameter.getSince())) {
+            if (parameter.getSince() != null && !parameter.getSince().isEmpty()) {
                 renderDetail(getI18nString("parameter.since"), parameter.getSince());
             }
 
@@ -342,10 +342,10 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     }
 
     private void renderDeprecatedParameterDescription(String deprecated, String context) {
-        if (StringUtils.isNotEmpty(deprecated)) {
+        if (deprecated != null && !deprecated.isEmpty()) {
             String deprecatedXhtml = getXhtmlWithValidatedLinks(deprecated, context);
             sink.division();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(getI18nString("parameter.deprecated"));
             sink.inline_();
             sink.lineBreak();
@@ -356,13 +356,13 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     }
 
     private void renderTableCellDetail(String nameKey, String value) {
-        if (StringUtils.isNotEmpty(value)) {
+        if (value != null && !value.isEmpty()) {
             sink.lineBreak();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(getI18nString(nameKey));
             sink.inline_();
             sink.text(": ");
-            sink.inline(Semantics.CODE);
+            sink.inline(InlineSemantics.code());
             sink.text(value);
             sink.inline_();
         }
@@ -375,14 +375,14 @@ public class GoalRenderer extends AbstractPluginReportRenderer {
     private void renderDetail(String param, String value, Optional<String> valueLink) {
         if (value != null && !value.isEmpty()) {
             sink.listItem();
-            sink.inline(Semantics.STRONG);
+            sink.inline(InlineSemantics.strong());
             sink.text(param);
             sink.inline_();
             sink.text(": ");
             if (valueLink.isPresent()) {
                 sink.link(valueLink.get());
             }
-            sink.inline(Semantics.CODE);
+            sink.inline(InlineSemantics.code());
             sink.text(value);
             sink.inline_();
             if (valueLink.isPresent()) {

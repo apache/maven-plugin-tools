@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility methods for dealing with links generated from Javadoc tags.
  */
-public class LinkUtils {
+public final class LinkUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(LinkUtils.class);
 
