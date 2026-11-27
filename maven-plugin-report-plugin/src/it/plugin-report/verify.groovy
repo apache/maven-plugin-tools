@@ -17,8 +17,10 @@
  * under the License.
  */
 
-assert new File( basedir, 'target/site/noop-mojo.html' ).isFile()
-assert new File( basedir, 'target/site/report-mojo.html' ).isFile()
+assert new File( basedir, 'target/site/noop-goal.html' ).isFile()
+assert new File( basedir, 'target/site/report-goal.html' ).isFile()
+assert new File( basedir, 'target/site/noop-mojo.html' ).text.contains( 'noop-goal.html' )
+assert new File( basedir, 'target/site/report-mojo.html' ).text.contains( 'report-goal.html' )
 
 def pluginInfo = new File( basedir, 'target/site/plugin-info.html' )
 assert pluginInfo.isFile()
@@ -34,13 +36,13 @@ assert pluginInfo.text.contains('<div><strong>Deprecated.</strong> You don\'t us
 assert pluginInfo.text.contains('Does nothing.')
 
 
-def noopMojo = new File( basedir, 'target/site/noop-mojo.html' )
+def noopMojo = new File( basedir, 'target/site/noop-goal.html' )
 assert noopMojo.isFile()
 
 // deprecated in table and details
 assert noopMojo.text.count('<div><strong>Deprecated.</strong><br />Just testing.</div><br />') == 2
 
-def reportMojo = new File( basedir, 'target/site/report-mojo.html' )
+def reportMojo = new File( basedir, 'target/site/report-goal.html' )
 assert reportMojo.isFile()
 
 assert reportMojo.text.contains('<td>Report output directory.<br /><strong>Default</strong>: <code>${project.build.directory}/generated-site/xdoc</code></td>')
