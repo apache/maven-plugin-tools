@@ -37,11 +37,29 @@ import org.jsoup.select.NodeVisitor;
 public class HtmlToPlainTextConverter implements Converter {
     @Override
     public String convert(String text) {
+        return convert(text, false);
+    }
+
+    /**
+     * Converts (X)HTML to plain text, optionally encoding spaces inside {@code <pre>} blocks
+     * as XML-safe non-breaking spaces (U+00A0) for the limited help descriptor.
+     * The generated help templates preserve these spaces during word wrapping and decode
+     * them to ordinary spaces on output. Ordinary prose keeps its existing wrapping behavior.
+     *
+     * <p>{@link PluginDescriptorFilesGenerator} enables this only for
+     * {@code LIMITED_FOR_HELP_MOJO}; {@link #convert(String)} and standard descriptors
+     * retain ordinary spaces.
+     *
+     * @param text the (X)HTML to convert
+     * @param preserveHelpWhitespace whether to encode preformatted spaces for generated help
+     * @return the plain-text equivalent, with encoded preformatted spaces when requested
+     */
+    String convert(String text, boolean preserveHelpWhitespace) {
         if (StringUtils.isBlank(text)) {
             return text;
         }
         Document document = Jsoup.parse(text);
-        return getPlainText(document);
+        return getPlainText(document, preserveHelpWhitespace);
     }
 
     /**
@@ -50,8 +68,8 @@ public class HtmlToPlainTextConverter implements Converter {
      * @param element the root element to format
      * @return formatted text
      */
-    private String getPlainText(Element element) {
-        FormattingVisitor formatter = new FormattingVisitor();
+    private String getPlainText(Element element, boolean preserveHelpWhitespace) {
+        FormattingVisitor formatter = new FormattingVisitor(preserveHelpWhitespace);
         NodeTraversor.traverse(formatter, element); // walk the DOM, and call .head() and .tail() for each node
 
         return formatter.toString();
@@ -59,19 +77,32 @@ public class HtmlToPlainTextConverter implements Converter {
 
     // the formatting rules, implemented in a breadth-first DOM traverse
     private static class FormattingVisitor implements NodeVisitor {
+        private static final char PRE_START = '\u0001';
+        private static final char PRE_END = '\u0002';
+
         // Placeholder for indentation spaces that must survive the whitespace cleanup in toString(), which
         // otherwise collates any run of real spaces -- including nested <li> indentation -- down to one.
-        private static final char INDENT_MARKER = '\u0001';
+        private static final char INDENT_MARKER = '\u0003';
 
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
         private int listDepth = 0; // nesting depth of the current <ul>/<ol>, used to indent nested <li> items
+
+        // Nested <pre> elements are invalid HTML; Jsoup normalises them before traversal.
+        private int preformatted;
+        private final boolean preserveHelpWhitespace;
+
+        FormattingVisitor(boolean preserveHelpWhitespace) {
+            this.preserveHelpWhitespace = preserveHelpWhitespace;
+        }
 
         // hit when the node is first seen
         @Override
         public void head(Node node, int depth) {
             String name = node.nodeName();
             if (node instanceof TextNode) {
-                accum.append(((TextNode) node).text()); // TextNodes carry all user-readable text in the DOM.
+                TextNode textNode = (TextNode) node;
+                // TextNode#text() normalizes whitespace. Keep the original text inside preformatted blocks.
+                accum.append(preformatted > 0 ? textNode.getWholeText() : textNode.text());
             } else if (name.equals("li")) {
                 accum.append('\n');
                 for (int i = 1; i < listDepth; i++) {
@@ -82,6 +113,12 @@ public class HtmlToPlainTextConverter implements Converter {
                 listDepth++;
             } else if (name.equals("dt")) {
                 accum.append("  ");
+            } else if (name.equals("pre")) {
+                if (accum.length() > 0 && accum.charAt(accum.length() - 1) != '\n') {
+                    accum.append('\n');
+                }
+                accum.append(PRE_START);
+                preformatted++;
             } else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr")) {
                 accum.append("\n");
             }
@@ -91,10 +128,22 @@ public class HtmlToPlainTextConverter implements Converter {
         @Override
         public void tail(Node node, int depth) {
             String name = node.nodeName();
-            if (name.equals("ul") || name.equals("ol")) {
+            boolean preformattedEndsWithNewline = false;
+            if (name.equals("pre")) {
+                preformatted--;
+                preformattedEndsWithNewline = accum.length() > 0 && accum.charAt(accum.length() - 1) == '\n';
+                accum.append(PRE_END);
+                if (!preformattedEndsWithNewline) {
+                    accum.append('\n');
+                }
+            } else if (name.equals("br")) {
+                accum.append('\n');
+            } else if (StringUtil.in(name, "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
+                if (accum.length() == 0 || accum.charAt(accum.length() - 1) != '\n') {
+                    accum.append("\n");
+                }
+            } else if (name.equals("ul") || name.equals("ol")) {
                 listDepth = Math.max(0, listDepth - 1);
-            } else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5")) {
-                accum.append("\n");
             } else if (name.equals("a")) {
                 // link is empty if it cannot be made absolute
                 String link = node.absUrl("href");
@@ -106,12 +155,31 @@ public class HtmlToPlainTextConverter implements Converter {
 
         @Override
         public String toString() {
-            // collate multiple consecutive spaces, then turn the indentation placeholders -- untouched by the
-            // collation above since they aren't spaces -- into the real spaces they stand for.
-            return accum.toString()
-                    .replaceAll(" +", " ")
-                    .replace("\n ", "\n")
-                    .replace(String.valueOf(INDENT_MARKER), " ");
+            String text = accum.toString();
+            StringBuilder result = new StringBuilder(text.length());
+            int start = 0;
+            int preStart;
+            while ((preStart = text.indexOf(PRE_START, start)) >= 0) {
+                appendNormalText(result, text.substring(start, preStart));
+                int preEnd = text.indexOf(PRE_END, preStart);
+                if (preEnd < 0) {
+                    appendNormalText(result, text.substring(preStart + 1));
+                    return result.toString();
+                }
+                String preformattedText = text.substring(preStart + 1, preEnd);
+                // Help templates already decode NBSP after word wrapping. Keep spaces inside
+                // preformatted blocks out of that wrapping without changing ordinary descriptors.
+                result.append(preserveHelpWhitespace ? preformattedText.replace(' ', '\u00a0') : preformattedText);
+                start = preEnd + 1;
+            }
+            appendNormalText(result, text.substring(start));
+            return result.toString();
+        }
+
+        private static void appendNormalText(StringBuilder result, String text) {
+            String normalText =
+                    text.replaceAll(" +", " ").replace("\n ", "\n").replace(String.valueOf(INDENT_MARKER), " ");
+            result.append(normalText.replaceAll(" +(?=\\n|$)", ""));
         }
     }
 }

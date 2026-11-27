@@ -216,7 +216,7 @@ public class PluginDescriptorFilesGenerator implements Generator {
             xhtmlText = text;
         }
         if (type != DescriptorType.XHTML) {
-            return new HtmlToPlainTextConverter().convert(text);
+            return new HtmlToPlainTextConverter().convert(text, type == DescriptorType.LIMITED_FOR_HELP_MOJO);
         } else {
             return xhtmlText;
         }
