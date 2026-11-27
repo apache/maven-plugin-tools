@@ -80,4 +80,15 @@ assert parameter.expression.isEmpty()
 assert new File( basedir, "target/classes/org/apache/maven/its/v4api/HelpMojo.class" ).isFile()
 assert new File( basedir, "target/generated-sources/plugin/org/apache/maven/its/v4api/HelpMojo.java" ).isFile()
 
+def collectionMojo = pluginDescriptor.mojos.mojo.find { it.goal.text() == 'collection' }
+assert collectionMojo.dependencyCollection.text() == 'main-compile'
+assert collectionMojo.dependencyResolution.isEmpty()
+
+def resolutionMojo = pluginDescriptor.mojos.mojo.find { it.goal.text() == 'resolution' }
+assert resolutionMojo.dependencyResolution.text() == 'main-compile'
+assert resolutionMojo.dependencyCollection.isEmpty()
+
+def onlineMojo = pluginDescriptor.mojos.mojo.find { it.goal.text() == 'online' }
+assert onlineMojo.onlineRequired.text() == 'true'
+
 return true;
